@@ -1,0 +1,49 @@
+package co.bada.leejava.member;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository("memberDao")
+public class MemberServiceImpl implements MemberService {
+	@Autowired
+	MemberMapper map;
+	
+	@Override
+	public List<MemberVO> memberSelectList() {
+		// TODO Auto-generated method stub
+		return map.memberSelectList();
+	}
+
+	@Override
+	public MemberVO memberSelect(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberSelect(mvo);
+	}
+
+	@Override
+	public int memberInsert(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberInsert(mvo);
+	}
+
+	@Override
+	public int memberUpdate(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberUpdate(mvo);
+	}
+
+	@Override
+	public int memberDelete(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberDelete(mvo);
+	}
+
+	@Override
+	public boolean memberEmailCheck(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberEmailCheck(mvo);
+	}
+
+}

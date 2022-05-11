@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.member.MemberMapper">
+
+<select id="memberSelectList" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * FROM MEMBER
+</select>
+
+<select id="memberSelect" parameterType="co.bada.leejava.member.MemberVO"
+resultType="co.bada.leejava.member.MemberVO">
+	SELECT * FROM MEMBER WHERE M_EMAIL = #{m_email} 
+		<if test="m_password !=null">
+			AND M_PASSWORD = #{m_password}
+		</if>
+</select>
+
+<insert id="memberInsert" parameterType="co.bada.leejava.member.MemberVO">
+	INSERT INTO MEMBER VALUES(
+		#{m_email}, #{m_nickname}, #{m_password}, sysdate, 
+		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status})
+</insert>
+
+<update id="memberUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER SET 
+		M_NICKNAME = #{m_nickname}, 
+		M_PASSWORD = #{m_password}, 
+		M_PHONE = #{m_phone}, 
+		M_ADDRESS = #{m_address} 
+</update>
+
+<!-- 회원탈퇴의 경우 상태만 변경하고, 스케줄러나 프로지서를 통해 일주일 뒤에 완전 삭제가능한지 체크 -->
+<delete id="memberDelete" parameterType="co.bada.leejava.member.MemberVO">
+	DELETE FROM MEMBER WHERE M_EMAIL = #{m_email}
+</delete>
+
+<select id="memberEmailCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	SELECT
+		 CASE WHEN COUNT(*) >=1  THEN 'FALSE'  ELSE 'TRUE' END 
+	FROM MEMBER
+	WHERE M_EMAIL = #{m_email};
+</select>
+
+</mapper>

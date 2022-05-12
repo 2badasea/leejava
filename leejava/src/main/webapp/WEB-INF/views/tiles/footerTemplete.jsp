@@ -5,6 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<style>
+
+</style>
 </head>
 <body>
 <div class="footer">FOOTER</div>

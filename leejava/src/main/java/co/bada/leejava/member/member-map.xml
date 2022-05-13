@@ -17,7 +17,7 @@ resultType="co.bada.leejava.member.MemberVO">
 <insert id="memberInsert" parameterType="co.bada.leejava.member.MemberVO">
 	INSERT INTO MEMBER VALUES(
 		#{m_email}, #{m_nickname}, #{m_password}, sysdate, 
-		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status})
+		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate})
 </insert>
 
 <update id="memberUpdate" parameterType="co.bada.leejava.member.MemberVO">
@@ -35,9 +35,17 @@ resultType="co.bada.leejava.member.MemberVO">
 
 <select id="memberEmailCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
 	SELECT
-		 CASE WHEN COUNT(*) >=1  THEN 'FALSE'  ELSE 'TRUE' END 
+		 CASE WHEN COUNT(*)=0  THEN 'TRUE'  ELSE 'FALSE' END 
 	FROM MEMBER
-	WHERE M_EMAIL = #{m_email};
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- 닉네임 중복체크 확인 -->
+<select id="memberNicknameCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	SELECT 
+		CASE WHEN COUNT(*)=0 THEN 'TRUE' ELSE 'FALSE' END
+	FROM MEMBER
+	WHERE M_NICKNAME = #{m_nickname}
 </select>
 
 </mapper>

@@ -66,6 +66,12 @@
 			<version>3.0.5</version>
 		</dependency>
 
+		<!-- coolSMS 인증을 위한 라이브러리 -->
+		<dependency>
+			<groupId>net.nurigo</groupId>
+			<artifactId>javaSDK</artifactId>
+			<version>2.2</version>
+		</dependency>
 
 		<!-- 위에까지가 내가 추가한 라이브러리 -->
 

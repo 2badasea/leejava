@@ -12,4 +12,5 @@ public class MemberVO {
 	private String m_phone;		// 연락처 
 	private String m_address;	// 주소
 	private String m_status; 	// 권한
+	private String m_birthdate; // 생년월일
 }

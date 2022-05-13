@@ -46,4 +46,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.memberEmailCheck(mvo);
 	}
 
+	@Override
+	public boolean memberNicknameCheck(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberNicknameCheck(mvo);
+	}
+
 }

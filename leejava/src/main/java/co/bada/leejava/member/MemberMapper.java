@@ -9,4 +9,5 @@ public interface MemberMapper {
 	int memberUpdate(MemberVO mvo);			// 회원정보 변경
 	int memberDelete(MemberVO mvo);			// 회원탈퇴 
 	boolean memberEmailCheck(MemberVO mvo);	// 회원가입 시 이메일 중복 확인
+	boolean memberNicknameCheck(MemberVO mvo); // 닉네임 중복체크
 }

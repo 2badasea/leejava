@@ -42,9 +42,77 @@ span {
 #codeCheck{
 	display: none;
 }
+
+/* 모달창 스타일 부분 */
+#modal {
+  display: none;
+  position:relative;
+  width:100%;
+  height:100%;
+  z-index:1;
+}
+
+#modal h2 {
+  margin:0;
+}
+#modal button {
+  display:inline-block;
+  width:100px;
+  margin-left:calc(100% - 100px - 10px);
+}
+
+#modal .modal_content {
+  width:300px;
+  margin:100px auto;
+  padding:20px 10px;
+  background:#fff;
+  border:2px solid #666;
+}
+
+#modal .modal_layer {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0, 0, 0, 0.5);
+  z-index:-1;
+} 
+#show {
+	display: block;
+}
+
 </style>
 </head>
 <body>
+
+
+
+<div id="modal">
+   
+    <div class="modal_content">
+        <h2>모달 창</h2>
+       
+        <p>모달 창 입니다.</p>
+       
+        <button type="button" id="modalCloseBtn">모달 창 닫기</button>
+       
+    </div>
+   
+    <div class="modal_layer"></div>
+</div>
+<script>
+	// modal창 외부 클릭 닫기
+	// modal창만 적용시키고, content창은 제외시키는 것. 
+	$(function(){
+		$('#modal').click(function(){
+			$('#modal').fadeOut('fast');
+		})
+	})
+	
+</script>
+
+
 
 	<div class="wrapper">
 		<div>
@@ -103,34 +171,34 @@ span {
 					<script>
 					
 					// 카운트다운 타이머 function 
-					function startTimer(duration, display) {
-					    var timer = duration;
-					    var minutes;
-					    var seconds;
+// 					function startTimer(duration, display) {
+// 					    var timer = duration;
+// 					    var minutes;
+// 					    var seconds;
 					    
-					    var setTime = setInterval(function () {
-					        minutes = parseInt(timer / 60, 10);
-					        seconds = parseInt(timer % 60, 10);
+// 					    var setTime = setInterval(function () {
+// 					        minutes = parseInt(timer / 60, 10);
+// 					        seconds = parseInt(timer % 60, 10);
 					
-					        minutes = minutes < 10 ? "0" + minutes : minutes;
-					        seconds = seconds < 10 ? "0" + seconds : seconds;
+// 					        minutes = minutes < 10 ? "0" + minutes : minutes;
+// 					        seconds = seconds < 10 ? "0" + seconds : seconds;
 					
-					        display.innerHTML = "남은 시간: " + minutes + ":" + seconds;
+// 					        display.innerHTML = "남은 시간: " + minutes + ":" + seconds;
 					
-					        if (--timer < 0) {
-					        	clearInterval(setTime);
-					        	$("#codeCheck").attr("disabled", true);
-					            $("#codeCheck").css("display", "none");
-					        	$("#backPhone").val('');
-					        }
-					    }, 1000);
-					}
+// 					        if (--timer < 0) {
+// 					        	clearInterval(setTime);
+// 					        	$("#codeCheck").attr("disabled", true);
+// 					            $("#codeCheck").css("display", "none");
+// 					        	$("#backPhone").val('');
+// 					        }
+// 					    }, 1000);
+// 					}
 					
-					window.onload = function () {
-					    var fiveMinutes = 5;
-					    var display = document.getElementById('timer');
-					    startTimer(fiveMinutes, display);
-					};
+// 					window.onload = function () {
+// 					    var fiveMinutes = 5;
+// 					    var display = document.getElementById('timer');
+// 					    startTimer(fiveMinutes, display);
+// 					};
 					
 					// 휴대폰 coolsms인증하기 => 작성후 확인 후 밑으로 옮길 것.
 					$("#phoneCheckBtn").on("click", function(){
@@ -148,13 +216,20 @@ span {
 							success: function(number){
 								console.log("인증번호: " + number);
 								$("#codeCheck").css("display", "block");
-								startTimer();
+// 								startTimer();
+								$("#modal").css("display", "block");
 							},
 							error : function(text){
 								console.log("에러: " + text);
 							}
 						})
-					})
+					}) 
+					
+					// modal창 닫는 이벤트
+					document.getElementById("modalCloseBtn").onclick = function() {
+						alert("인증이 실패했습니다. 다시 번호를 입력해주세요")
+			       		document.getElementById("modal").style.display="none";
+				    } 
 					</script>
 					
 					<tr>

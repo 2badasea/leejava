@@ -22,7 +22,7 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>5.2.9.RELEASE</version>
 		</dependency>
-
+	
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
@@ -63,8 +63,9 @@
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-extras</artifactId>
-			<version>3.0.5</version>
+			<version>3.0.8</version>
 		</dependency>
+
 
 		<!-- coolSMS 인증을 위한 라이브러리 -->
 		<dependency>

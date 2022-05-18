@@ -43,8 +43,8 @@ span {
 	display: none;
 }
 
-/* 모달창 스타일 부분 */
-#modal {
+/* 모달창 style부분 */
+#container {
   display: none;
   position:relative;
   width:100%;
@@ -52,24 +52,24 @@ span {
   z-index:1;
 }
 
-#modal h2 {
+#container h2 {
   margin:0;
 }
-#modal button {
-  display:inline-block;
-  width:100px;
-  margin-left:calc(100% - 100px - 10px);
+#container button {
+	width:100px;
+	float: right;
 }
 
-#modal .modal_content {
-  width:300px;
+#container .modal {
+  width:350px;
   margin:100px auto;
   padding:20px 10px;
   background:#fff;
   border:2px solid #666;
+  height: 150px;
 }
 
-#modal .modal_layer {
+#container .modal_layer {
   position:fixed;
   top:0;
   left:0;
@@ -78,40 +78,68 @@ span {
   background:rgba(0, 0, 0, 0.5);
   z-index:-1;
 } 
-#show {
-	display: block;
+
+#inputCode {
+	width: 60%;
+	height: 25px;
 }
+
+
+  
 
 </style>
 </head>
 <body>
 
-
-
-<div id="modal">
+<!-- 인증번호 modal창 뿐 -->
+<div id="container">
    
-    <div class="modal_content">
-        <h2>모달 창</h2>
-       
-        <p>모달 창 입니다.</p>
-       
-        <button type="button" id="modalCloseBtn">모달 창 닫기</button>
+    <div class="modal">
+        <h3 align="center">연락처 인증</h3>
+        <br>
+        <input type="text" id="inputCode">
+		<button type="button" id="codeCheckBtn" class="button">인증번호 확인</button>
+		<br>
+		<span style="color: red; size: 15px;" id="timer">00 : 05</span>
+		<br>
+        <button type="button" id="modalCloseBtn">닫기</button>
        
     </div>
    
     <div class="modal_layer"></div>
 </div>
+
 <script>
-	// modal창 외부 클릭 닫기
-	// modal창만 적용시키고, content창은 제외시키는 것. 
-	$(function(){
-		$('#modal').click(function(){
-			$('#modal').fadeOut('fast');
-		})
+	// 입력값이랑 비교하는 이벤트
+	$('#codeCheckBtn').on('click', function() {
+		var inputCode = $('#inputCode').val();  // codeCheckBtn value값에 인증코드 부여. 
+		var ajaxCode = $('#codeCheckBtn').val();
+		
+		if( inputCode === ajaxCode ) {
+			alert('인증완료되었습니다.');
+			$('#container').css('display', 'none');
+			$('#phoneCheckBtn').css('display', 'none');
+			$('#backPhone').attr('readonly', true);
+			var phone = $('#frontPhone').val() + $('#backPhone').val();
+			console.log('phone의 name 속성에 들어갈 번호: ' + phone);
+			$('#phone').val(phone);
+		} else {
+			alert('인증번호가 틀렸습니다.');
+			$('#inputCode').val('').focus();
+		}
+		
+		
 	})
 	
+	// modal창 닫기 이벤트
+    document.getElementById("modalCloseBtn").onclick = function() {
+		alert('인증이 취소되었습니다.');
+        document.getElementById("container").style.display="none";
+        $('#backPhone').val('');
+    } 
 </script>
 
+<!--  모달창 끝 -->
 
 
 	<div class="wrapper">
@@ -159,89 +187,29 @@ span {
 								<option value="019">019</option>
 							</select> 
 							<input type="text" id="backPhone">
+							<input type="hidden" id="phone" name="phone">
 							<button type="button" id="phoneCheckBtn" class="button">휴대폰 인증</button>
-							<div id="codeCheck">
-								<input type="text" id="inputCode">
-								<button type="button" id="codeCheckBtn" class="button">인증번호 확인</button>
-								<br>
-								<span style="color: red; size: 15px;" id="timer"></span>
-							</div>
 						</td>
 					</tr>
-					<script>
-					
-					// 카운트다운 타이머 function 
-// 					function startTimer(duration, display) {
-// 					    var timer = duration;
-// 					    var minutes;
-// 					    var seconds;
-					    
-// 					    var setTime = setInterval(function () {
-// 					        minutes = parseInt(timer / 60, 10);
-// 					        seconds = parseInt(timer % 60, 10);
-					
-// 					        minutes = minutes < 10 ? "0" + minutes : minutes;
-// 					        seconds = seconds < 10 ? "0" + seconds : seconds;
-					
-// 					        display.innerHTML = "남은 시간: " + minutes + ":" + seconds;
-					
-// 					        if (--timer < 0) {
-// 					        	clearInterval(setTime);
-// 					        	$("#codeCheck").attr("disabled", true);
-// 					            $("#codeCheck").css("display", "none");
-// 					        	$("#backPhone").val('');
-// 					        }
-// 					    }, 1000);
-// 					}
-					
-// 					window.onload = function () {
-// 					    var fiveMinutes = 5;
-// 					    var display = document.getElementById('timer');
-// 					    startTimer(fiveMinutes, display);
-// 					};
-					
-					// 휴대폰 coolsms인증하기 => 작성후 확인 후 밑으로 옮길 것.
-					$("#phoneCheckBtn").on("click", function(){
-						var frontPhone = $("#frontPhone").val();
-						var backPhone = $("#backPhone").val();
-						var inputPhone = frontPhone + backPhone;
-						alert("입력한 폰 번호: " + inputPhone);
-						
-						$.ajax({
-							type: "POST",
-							url: "ajaxCoolSMS.do",
-							data: {
-								inputPhone : inputPhone
-							},
-							success: function(number){
-								console.log("인증번호: " + number);
-								$("#codeCheck").css("display", "block");
-// 								startTimer();
-								$("#modal").css("display", "block");
-							},
-							error : function(text){
-								console.log("에러: " + text);
-							}
-						})
-					}) 
-					
-					// modal창 닫는 이벤트
-					document.getElementById("modalCloseBtn").onclick = function() {
-						alert("인증이 실패했습니다. 다시 번호를 입력해주세요")
-			       		document.getElementById("modal").style.display="none";
-				    } 
-					</script>
-					
 					<tr>
 						<th>주소</th>
-						<td></td>
+						<td>
+							<input type="text" id="sample4_postcode" placeholder="우편번호">
+							<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+							<input type="text" id="sample4_roadAddress" placeholder="도로명주소">
+							<input type="text" id="sample4_jibunAddress" placeholder="지번주소">
+							<span id="guide" style="color:#999;display:none"></span>
+							<input type="text" id="sample4_detailAddress" placeholder="상세주소">
+							<input type="text" id="sample4_extraAddress" placeholder="참고항목">
+							<input type="hidden" id="address" name="address">
+						</td>
 					</tr>
 					<tr>
 						<th>생년월일</th>
 						<td>
-							<select></select> 
-							<select></select>
-							<select></select>
+							<select id="year"></select>년 
+							<select id="month"></select>월
+							<select id="day"></select>일
 						</td>
 					</tr>
 				</table>
@@ -253,6 +221,9 @@ span {
 
 </body>
 <script>
+	// 넘길 주소값 =>   도로명주소(지번주소) / 상세주소(참고주소)  형태로 name속성의 value값 지정하기 
+
+
 	// 이메일 중복체크 확인
 	$("#emailCheckBtn").on("click", function(){
 		var email = $("#email").val();
@@ -354,5 +325,124 @@ span {
 	}
 	
 	
+	// 휴대폰 coolsms인증하기 => 작성후 확인 후 밑으로 옮길 것.
+	$("#phoneCheckBtn").on("click", function(){
+		var frontPhone = $("#frontPhone").val();
+		var backPhone = $("#backPhone").val();
+		var inputPhone = frontPhone + backPhone;
+		alert("입력한 폰 번호: " + inputPhone);
+		
+		$.ajax({
+			type: "POST",
+			url: "ajaxCoolSMS.do",
+			data: {
+				inputPhone : inputPhone
+			},
+			success: function(number){
+				console.log("인증번호: " + number);
+				$('#container').css('display', 'block');
+				modalTimer();
+				$('#codeCheckBtn').val(number);
+			},
+			error : function(text){
+				console.log("에러: " + text);
+			}
+		})
+	}) 
+	
+	
+	// 인증시간 타이머 구현
+	var timer = null;
+	
+	function modalTimer(){
+	var display = $('#timer');
+	var leftSec = 180; // 유효시간 설정. 테스트를 위해 일단 10으로 설정. => 나중에 180초로 설정하기
+	startTimer(leftSec, display);
+}
+
+	function startTimer(count, display){
+		var minutes, seconds;
+		timer = setInterval(function(){
+			minutes = parseInt(count/ 60, 10); 
+			seconds = parseInt(count %60, 10);
+			
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds;
+			
+			display.html(minutes + " : " + seconds);
+			
+			// 타이머 끝
+			if( --count < 0){
+				clearInterval(timer);
+				alert('인증시간이 초과되었습니다. 재인증해주세요');
+				$('#container').css('display', 'none');
+				$('#backPhone').val('');
+			}
+		}, 1000); // 1초 간격으로 시간경과 표시
+	}
+	
+	
+</script>
+
+<!-- 밑은 주소 API 스크립트 적용 부분 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    //본 예제에서는 도로명 주소 표기 방식에 대한 법령에 따라, 내려오는 데이터를 조합하여 올바른 주소를 구성하는 방법을 설명합니다.
+    function sample4_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var roadAddr = data.roadAddress; // 도로명 주소 변수
+                var extraRoadAddr = ''; // 참고 항목 변수
+
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                   extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraRoadAddr !== ''){
+                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample4_postcode').value = data.zonecode;
+                document.getElementById("sample4_roadAddress").value = roadAddr;
+                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+                
+                // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
+                if(roadAddr !== ''){
+                    document.getElementById("sample4_extraAddress").value = extraRoadAddr;
+                } else {
+                    document.getElementById("sample4_extraAddress").value = '';
+                }
+
+                var guideTextBox = document.getElementById("guide");
+                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                if(data.autoRoadAddress) {
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                    guideTextBox.style.display = 'block';
+
+                } else if(data.autoJibunAddress) {
+                    var expJibunAddr = data.autoJibunAddress;
+                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                    guideTextBox.style.display = 'block';
+                    document.getElementById("sample4_jibunAddress").value = expJibunAddr;
+                    
+                } else {
+                    guideTextBox.innerHTML = '';
+                    guideTextBox.style.display = 'none';
+                }
+            }
+        }).open();
+    }
 </script>
 </html>

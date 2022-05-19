@@ -203,7 +203,7 @@ span {
 							<input type="text" id="sample4_extraAddress" placeholder="참고항목">
 							<input type="hidden" id="address" name="address">
 						</td>
-					</tr>
+					</tr> 
 					<tr>
 						<th>생년월일</th>
 						<td>
@@ -230,7 +230,7 @@ span {
 		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
 		if(email == ""){
-			alert("이메일을 입력하세요");
+			alert("이메일을 입력하세요")
 			return false;
 		} else if (regEmail.test(email)) {
 			alert("이메일 정규식 통과");
@@ -444,5 +444,19 @@ span {
             }
         }).open();
     }
+</script>
+<script>
+	// 생년월일 코드 문서가 모두 출력되면 스크립트문이 실행되도록. 
+	$(document).ready(function(){
+		var now = new Date(); 
+		var year = now.getFullYear();
+		var mon = ( now.getMonth() + 1) > 9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+		var day = ( now.getDate()) > 9 ? ''+(now.getDate()) : '0'+(now.getDate());
+		
+	})
+	
+	
+	
+	
 </script>
 </html>

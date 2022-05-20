@@ -48,4 +48,13 @@ resultType="co.bada.leejava.member.MemberVO">
 	WHERE M_NICKNAME = #{m_nickname}
 </select>
 
+<!-- 동의약관 insert부분. -->
+<insert id="memberJointerms" parameterType="co.bada.leejava.member.MemberVO">
+	INSERT INTO JOINTERMS VALUES(
+		#{m_email}, 
+		#{m_privacy}, 
+		#{m_promotion}
+		)
+</insert>
+
 </mapper>

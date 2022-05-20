@@ -108,37 +108,6 @@ span {
    
     <div class="modal_layer"></div>
 </div>
-
-<script>
-	// 입력값이랑 비교하는 이벤트
-	$('#codeCheckBtn').on('click', function() {
-		var inputCode = $('#inputCode').val();  // codeCheckBtn value값에 인증코드 부여. 
-		var ajaxCode = $('#codeCheckBtn').val();
-		
-		if( inputCode === ajaxCode ) {
-			alert('인증완료되었습니다.');
-			$('#container').css('display', 'none');
-			$('#phoneCheckBtn').css('display', 'none');
-			$('#backPhone').attr('readonly', true);
-			var phone = $('#frontPhone').val() + $('#backPhone').val();
-			console.log('phone의 name 속성에 들어갈 번호: ' + phone);
-			$('#phone').val(phone);
-		} else {
-			alert('인증번호가 틀렸습니다.');
-			$('#inputCode').val('').focus();
-		}
-		
-		
-	})
-	
-	// modal창 닫기 이벤트
-    document.getElementById("modalCloseBtn").onclick = function() {
-		alert('인증이 취소되었습니다.');
-        document.getElementById("container").style.display="none";
-        $('#backPhone').val('');
-    } 
-</script>
-
 <!--  모달창 끝 -->
 
 
@@ -210,9 +179,13 @@ span {
 							<select id="year"></select>년 
 							<select id="month"></select>월
 							<select id="day"></select>일
+							<input type="hidden" id="birthdate" name="birthdate">
 						</td>
 					</tr>
 				</table>
+				<br>
+				<input type="hidden" id="privacy" name="privacy" value="${privacy }">
+				<input type="hidden" id="promotion" name="promotion" value="${promotion }">
 			</form>
 			<button type="button" id="joinBtn" class="button">가입 완료</button>
 		</div>
@@ -221,8 +194,57 @@ span {
 
 </body>
 <script>
-	// 넘길 주소값 =>   도로명주소(지번주소) / 상세주소(참고주소)  형태로 name속성의 value값 지정하기 
-
+	// 회원 가입 버튼 
+	$('#joinBtn').on('click', function() {
+		// 1. 이메일 중복체크 여부 검사
+		if( $('#emailCheckBtn').val() != 'Y'){
+			alert('이메일 중복체크를 해주세요');
+			$('#emailCheckBtn').focus();
+			return false;
+		}
+		
+		// 2. 닉네임 중복 체크 여부 검사. 
+		if( $('#nicknameCheckBtn').val() != 'Y'){
+			alert('닉네임 중복체크를 해주세용');
+			$('#nicknameCheckBtn').focus();
+			return false;
+		}
+		
+		// 3. 패스워드 일치여부 확인
+		if( $('#password').val() == null){
+			alert('사용하실 패스워드를 입력해주세요');
+			return false;
+		} else if( $('#password').val() != $('#passwordCheck').val() ){
+			alert('패스워드가 일치하지 않습니다.');
+			return false;
+		}
+		
+		// 4. 연락처 정보 검증
+		if( $('#phoneCheckBtn').val() != 'Y'){
+			alert("사용자 연락처 정보는 필수입니다.");
+			return false;
+		}
+		
+		// 5. 주소값 생성 판단. 일단 도로명 주소와 상세 주소만 넘기자. name있는 곳 태그에 값 부여하기 
+		var doroAddress = $('#sample4_roadAddress').val();
+		var jibunAddress = $('#sample4_jibunAddress').val();
+		var detailAddress = $('#sample4_detailAddress').val(); 
+		
+		var sendAddresss = doroAddress + '(' + jibunAddress + ') ' + detailAddress;
+		$('#address').val(sendAddresss);  
+		
+		// 6. 생년 월일 넘기기
+		//"birthdate"
+		var sendBirthdate = $('#year').val() + $('#month').val() + $('#day').val();
+		$('#birthdate').val(sendBirthdate);
+		
+		// 
+		$('#frm').submit();
+	
+	})
+	
+	
+	 
 
 	// 이메일 중복체크 확인
 	$("#emailCheckBtn").on("click", function(){
@@ -230,12 +252,15 @@ span {
 		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
 		if(email == ""){
-			alert("이메일을 입력하세요")
+			alert("이메일을 입력하세요");
+			$('#email').focus();
 			return false;
 		} else if (regEmail.test(email)) {
 			alert("이메일 정규식 통과");
 		} else {
 			alert("입력하신 이메일 양식이 올바르지 않습니다.");
+			$('#email').val('');
+			$('#email').focus();
 			return false;
 		}
 		
@@ -278,10 +303,10 @@ span {
 			},
 			success: function(responseText){
 				if( responseText == "YES"){
-					alert("사용 가능한 이메일 입니다.");
+					alert("사용 가능한 닉네임 입니다.");
 					$("#nicknameCheckBtn").val('Y'); // 중복체크 했는지 체크용
 				} else {
-					alert("중복된 이메일 입니다.");
+					alert("중복된 닉네임 입니다.");
 					$("#nickname").val('');
 					$("#nickname").focus();
 				}
@@ -381,6 +406,33 @@ span {
 		}, 1000); // 1초 간격으로 시간경과 표시
 	}
 	
+	// 입력값이랑 비교하는 이벤트
+	$('#codeCheckBtn').on('click', function() {
+		var inputCode = $('#inputCode').val();  // codeCheckBtn value값에 인증코드 부여. 
+		var ajaxCode = $('#codeCheckBtn').val();
+		
+		if( inputCode === ajaxCode ) {
+			alert('인증완료되었습니다.');
+			$('#container').css('display', 'none');
+			$('#phoneCheckBtn').val('Y');
+			$('#phoneCheckBtn').css('display', 'none');
+			$('#backPhone').attr('readonly', true);
+			var phone = $('#frontPhone').val() + $('#backPhone').val();
+			console.log('phone의 name 속성에 들어갈 번호: ' + phone);
+			$('#phone').val(phone);
+		} else {
+			alert('인증번호가 틀렸습니다.');
+			$('#inputCode').val('').focus();
+		}
+	})
+	
+	// modal창 닫기 이벤트
+    document.getElementById("modalCloseBtn").onclick = function() {
+		alert('인증이 취소되었습니다.');
+        document.getElementById("container").style.display="none";
+        $('#backPhone').val('');
+    }
+	
 	
 </script>
 
@@ -423,7 +475,7 @@ span {
                 } else {
                     document.getElementById("sample4_extraAddress").value = '';
                 }
-
+				
                 var guideTextBox = document.getElementById("guide");
                 // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
                 if(data.autoRoadAddress) {
@@ -448,12 +500,34 @@ span {
 <script>
 	// 생년월일 코드 문서가 모두 출력되면 스크립트문이 실행되도록. 
 	$(document).ready(function(){
-		var now = new Date(); 
+		var now = new Date(); // new 연산자를 통해 Date() 생성자함수로 현재 날짜 정보를 가지고 있는 객체 생성
 		var year = now.getFullYear();
-		var mon = ( now.getMonth() + 1) > 9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+		var month = ( now.getMonth() + 1) > 9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
 		var day = ( now.getDate()) > 9 ? ''+(now.getDate()) : '0'+(now.getDate());
 		
+		// 년도(id=year) selectbox 만들기
+		for(var i = 1900; i <= year; i++){
+			$('#year').append('<option value="'+ i + '">' + i + '년</option>');
+		}
+		
+		// 월별(id=month) selectbox 만들기
+		for(var i = 1; i<=12; i++){
+			var mon = i>9 ? ''+i : '0'+i;
+			$('#month').append('<option value="'+ mon + '">' + i + '월</option>');
+		}
+		
+		// 일별(id=day) selectbox 만들기 
+		for(var i = 1; i<=31; i++){
+			var dd = i>9 ? ''+i : '0'+i;
+			$('#day').append('<option value="' + dd + '">' + i + '일</option>');
+		}
+		
+		$('#year > option[value=' + year +  ']').attr('selected', 'true');
+		$('#month > option[value=' + month + ']').attr('selected', 'true');
+		$('#day > option[value=' + day + ']').attr('selected', 'true');
 	})
+	
+	
 	
 	
 	

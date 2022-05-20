@@ -52,4 +52,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.memberNicknameCheck(mvo);
 	}
 
+	@Override
+	public int memberJointerms(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberJointerms(mvo);
+	}
+
 }

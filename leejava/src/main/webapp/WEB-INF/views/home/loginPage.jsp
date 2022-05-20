@@ -89,6 +89,7 @@
 </style>
 </head>
 <body>
+<input type="hidden" id="message" value="${message }">
  <div class="wrapper">
         <div class="loginFrame">
             <div class="loginTitle">
@@ -107,7 +108,7 @@
                     <span id="showComment">Show</span>
                 </div>
             </div>
-            <input type="password" placeholder="Input your Password" id="password" name="password">
+            <input type="password" placeholder="Input your Password" id="password" name="password" >
             </form>
             <div class="socialLogin">
                 <div class="socialIcon">
@@ -129,38 +130,50 @@
     </div>
 </body>
 <script>
-	// enterkey로 로그인 하기
+	
+	// enterkey로 로그인 기능 정의
+	$('#password').on('keypress', function(e) {
+		if (e.keyCode == '13') {
+			$('#loginBtn').click();
+		}
+	});
 
 	// 로그인 처리 시작
-	$("#loginBtn").on("click", function(){
+	$("#loginBtn").on("click", function() {
 		alert("로그인 처리 시작");
-		
+
 		var email = $("#email").val();
 		var password = $("#password").val();
-		
-		if(email == "" || password == "") {
+
+		if (email == "" || password == "") {
 			alert("아이디 또는 비밀번호를 제대로 입력하세용");
 		}
-		
+
 		$.ajax({
-			type: "POST",
-			url: "login.do",
-			data: {
+			type : "POST",
+			url : "login.do",
+			data : {
 				email : email,
 				password : password
 			},
-			success: function(responseText){
-				if( responseText == "NO"){
-					alert("로그인에 실패했습니다.");
-					location.reload();
+			success : function(responseText) {
+				if (responseText == "NO") {
+					alert("아이디 또는 비밀번호가 틀렸습니다.");
+
 				} else {
 					alert("로그인 성공");
-					location.href="home.do";
+					location.href = "home.do";
 				}
 			}
 		})
-		
-		
+	})
+</script>
+<script>
+	$(document).ready(function(){
+		var message = $('#message').val();
+		if( message != ""){
+			alert(message);
+		}
 	})
 </script>
 </html>

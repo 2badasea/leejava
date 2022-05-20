@@ -13,4 +13,8 @@ public class MemberVO {
 	private String m_address;	// 주소
 	private String m_status; 	// 권한
 	private String m_birthdate; // 생년월일
+	
+	// 가입약관 동의여부
+	private String m_privacy; // 개인정보 유효기간
+	private String m_promotion; // 프로모션 수신 여부
 }

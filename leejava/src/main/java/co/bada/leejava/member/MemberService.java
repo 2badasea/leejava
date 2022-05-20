@@ -10,4 +10,5 @@ public interface MemberService {
 	int memberDelete(MemberVO mvo);			// 회원탈퇴 
 	boolean memberEmailCheck(MemberVO mvo);	// 회원가입 시 이메일 중복 확인
 	boolean memberNicknameCheck(MemberVO mvo); // 닉네임 중복체크
+	int memberJointerms(MemberVO mvo);  	// 가입약관 넣기
 }

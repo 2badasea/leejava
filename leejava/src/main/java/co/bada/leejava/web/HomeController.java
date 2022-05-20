@@ -170,5 +170,66 @@ public class HomeController {
 		return Integer.toString(randomNumber);
 	}
 	
+	// 회원가입 요청 
+	@RequestMapping("/memberJoin.do")
+	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model) {
+		
+		// 일단 모든 넘어온 값들 확인ㄱㄱ
+		System.out.println("Eamil 값: " + request.getParameter("email"));
+		System.out.println("nickname 값: " + request.getParameter("nickname"));
+		System.out.println("password 값: " + request.getParameter("password"));
+		System.out.println("phone 값: " + request.getParameter("phone"));
+		System.out.println("address 값: " + request.getParameter("address"));
+		System.out.println("birthdate 값: " + request.getParameter("birthdate"));
+		System.out.println("privacy 값: " + request.getParameter("privacy"));
+		System.out.println("promotion 값: " + request.getParameter("promotion"));
+		
+		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한 : USER) 
+		String m_email = request.getParameter("email");
+		String m_nickname = request.getParameter("nickname");
+		String m_password = request.getParameter("password");
+		String m_phone = request.getParameter("phone");
+		String m_address = request.getParameter("address");
+		String m_birthdate = request.getParameter("birthdate");
+		// String m_joindate = 쿼리에서 sysdate로 처리함.
+		String m_joinpath = "자바이야기";
+		String m_status = "USER";
+		String m_privacy = request.getParameter("privacy");
+		String m_promotion = request.getParameter("promotion");
+		
+		mvo.setM_email(m_email);
+		mvo.setM_nickname(m_nickname);
+		mvo.setM_password(m_password);
+		mvo.setM_phone(m_phone);
+		mvo.setM_address(m_address);
+		mvo.setM_birthdate(m_birthdate);
+		mvo.setM_joinpath(m_joinpath);
+		mvo.setM_status(m_status);
+		
+		mvo.setM_privacy(m_privacy);
+		mvo.setM_promotion(m_promotion);
+		
+		String message = null;
+		
+		int n = memberDao.memberInsert(mvo);
+		if( n == 0) {
+			System.out.println("회원가입 실패");
+			message = "회원가입이 실패했습니다. 관리자에게 문의해주세요";
+		} else {
+			System.out.println("회원가입 성공");
+			message = "회원가입이 성공했습니다. 로그인 해주세요";
+		}
+		
+		int m = memberDao.memberJointerms(mvo);
+		if(m == 0) {
+			System.out.println("가입약관 오류");
+		} else {
+			System.out.println("가입약관 정상 반영");
+		}
+		
+		model.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
+		return "home/loginPage";
+	}
+	
 	
 }

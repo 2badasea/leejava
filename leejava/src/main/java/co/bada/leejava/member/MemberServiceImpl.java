@@ -58,4 +58,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.memberJointerms(mvo);
 	}
 
+	@Override
+	public String selectSalt(MemberVO mvo) {
+		// String 타입의 m_salt값이 리턴되어야 함. 
+		return map.selectSalt(mvo);  //
+	}
+
 }

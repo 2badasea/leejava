@@ -6,6 +6,7 @@
 	SELECT * FROM MEMBER
 </select>
 
+<!-- 원래 이메일 중복여부와 로그인 용도를 위해 선언했지만, 단순히 정보만 조회하는 것으로, 이메일 여부와 -->
 <select id="memberSelect" parameterType="co.bada.leejava.member.MemberVO"
 resultType="co.bada.leejava.member.MemberVO">
 	SELECT * FROM MEMBER WHERE M_EMAIL = #{m_email} 
@@ -14,10 +15,18 @@ resultType="co.bada.leejava.member.MemberVO">
 		</if>
 </select>
 
+<!-- 이메일 아이디를 통해 salt값을 조회 -->
+<select id="selectSalt" parameterType="co.bada.leejava.member.MemberVO" resultType="string">
+	SELECT M_SALT 
+	FROM MEMBER 
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+
 <insert id="memberInsert" parameterType="co.bada.leejava.member.MemberVO">
 	INSERT INTO MEMBER VALUES(
 		#{m_email}, #{m_nickname}, #{m_password}, sysdate, 
-		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate})
+		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate}, #{m_salt})
 </insert>
 
 <update id="memberUpdate" parameterType="co.bada.leejava.member.MemberVO">

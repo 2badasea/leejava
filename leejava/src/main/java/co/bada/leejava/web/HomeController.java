@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.bada.leejava.CoolSMS;
+import co.bada.leejava.SHA256Util;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 
@@ -61,21 +62,31 @@ public class HomeController {
 	public String login(Model model, MemberVO mvo, HttpSession session, HttpServletRequest request) {
 		
 		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		System.out.println("확인 Email: " + email + " Password: " + password);
+		String formPassword = request.getParameter("password");
+		System.out.println("확인 Email: " + email + " Password: " + formPassword);
+		
 		
 		mvo.setM_email(email);
-		mvo.setM_password(password);
-		
-		mvo = memberDao.memberSelect(mvo);
+		String m_salt = memberDao.selectSalt(mvo);
 		String responseText = null;
-		if(mvo != null) {
-			session.setAttribute( "session_user", email);
-			System.out.println( "세션에 담은 값: " + email);
-			responseText = "YES";
-		} else {
-			responseText = "NO";
+		if( m_salt != null) {
+			// m_salt값과 입력한 패스워드값을 getEncrypt( ) 메소드의 인자로 넘겨서 넘어오는 다이제스트값과 db상의 m_password비교. 
+			String m_password = SHA256Util.getEncrypt(formPassword, m_salt);
+			mvo.setM_password(m_password);
+			mvo = memberDao.memberSelect(mvo);  // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
+			if(mvo != null) {
+				session.setAttribute("session_user", email);
+				System.out.println("세션에 담은 값: " + email);
+				responseText = "YES";
+			} else {
+				responseText = "NO";
+			}
+			
+		}else { 
+			// m_salt값을 조회할 수 없었던 경우.
+			responseText = "NO"; 
 		}
+		
 		return responseText;
 	}
 	
@@ -187,7 +198,7 @@ public class HomeController {
 		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한 : USER) 
 		String m_email = request.getParameter("email");
 		String m_nickname = request.getParameter("nickname");
-		String m_password = request.getParameter("password");
+		String password = request.getParameter("password");
 		String m_phone = request.getParameter("phone");
 		String m_address = request.getParameter("address");
 		String m_birthdate = request.getParameter("birthdate");
@@ -197,6 +208,16 @@ public class HomeController {
 		String m_privacy = request.getParameter("privacy");
 		String m_promotion = request.getParameter("promotion");
 		
+		
+		
+		/* 패스워드 암호화 부분 */
+		// salt 생성. salt값도 db에 들어간다.
+		String m_salt = SHA256Util.generateSalt();
+		System.out.println("salt 값 조회: " + m_salt);
+		String m_password = SHA256Util.getEncrypt(password, m_salt);
+		System.out.println("암호화된 m_password : " + m_password);
+		
+		
 		mvo.setM_email(m_email);
 		mvo.setM_nickname(m_nickname);
 		mvo.setM_password(m_password);
@@ -205,6 +226,7 @@ public class HomeController {
 		mvo.setM_birthdate(m_birthdate);
 		mvo.setM_joinpath(m_joinpath);
 		mvo.setM_status(m_status);
+		mvo.setM_salt(m_salt);  // salt값도 db컬럼에 담는다.
 		
 		mvo.setM_privacy(m_privacy);
 		mvo.setM_promotion(m_promotion);
@@ -220,15 +242,25 @@ public class HomeController {
 			message = "회원가입이 성공했습니다. 로그인 해주세요";
 		}
 		
-		int m = memberDao.memberJointerms(mvo);
-		if(m == 0) {
-			System.out.println("가입약관 오류");
-		} else {
-			System.out.println("가입약관 정상 반영");
+		if(n == 1) {
+			// 회원가입이 성공적으로 됐다면, 이것도 추가.
+			int m = memberDao.memberJointerms(mvo);
+			if(m == 0) {
+				System.out.println("가입약관 오류");
+			} else {
+				System.out.println("가입약관 정상 반영");
+			}
 		}
 		
 		model.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
 		return "home/loginPage";
+	}
+	
+	// 관리자 페이지로 이동 
+	@RequestMapping("/adminPage.do")
+	public String adminPage(Model model, HttpServletRequest request) {
+		
+		return "home/admin/adminPage";
 	}
 	
 	

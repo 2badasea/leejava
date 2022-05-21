@@ -82,6 +82,9 @@ a {
 		<div class="sidebar_menu">
 			<hr>
 			<ul id="mainMenu">
+				<c:if test="${session_user == \"bada\"}">
+					<li><a href="adminPage.do" class="sideMenu">관리자 화면</a></li>
+				</c:if>
 				<li><a href="quizlet.do">퀴즐렛 학습하기</a></li>
 				<ul id="subMenu">커뮤니티
 					<li><a href="#" class="sideMenu">QNA</a></li>

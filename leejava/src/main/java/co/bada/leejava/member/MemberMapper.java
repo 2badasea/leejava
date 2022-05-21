@@ -11,4 +11,5 @@ public interface MemberMapper {
 	boolean memberEmailCheck(MemberVO mvo);	// 회원가입 시 이메일 중복 확인
 	boolean memberNicknameCheck(MemberVO mvo); // 닉네임 중복체크
 	int memberJointerms(MemberVO mvo);  	// 가입약관 넣기
+	String selectSalt(MemberVO mvo);		// 이메일 아이디를 통해서 salt값 조회
 }

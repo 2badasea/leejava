@@ -260,7 +260,7 @@ public class HomeController {
 	@RequestMapping("/adminPage.do")
 	public String adminPage(Model model, HttpServletRequest request) {
 		
-		return "home/admin/adminPage";
+		return "home/admin/adminHome";
 	}
 	
 	

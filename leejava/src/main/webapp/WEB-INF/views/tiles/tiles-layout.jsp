@@ -7,19 +7,42 @@
 <head>
 <meta charset="UTF-8">
 <title><tiles:getAsString name="title" /></title>
-<script src="http://code.jquery.com/jquery-latest.js"></script> 
-<link rel="stylesheet" href="resources/css/common.css">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+}
+
+.side {
+	float: left;
+	height:auto;
+	width: 14rem!important;
+	/* 	position: sticky;  */
+/* 	position: -webkit-sticky; */
+
+}
+
+.wrapper {
+	width: 100%;
+}	
+.content {
+	width: 80rem!important;
+}
+
+
 </style>
 </head>
 <body>
-	<div class="wrap">
-		<div class="content">
-				<tiles:insertAttribute name="left" />
-			<div class="page_content">
-				<tiles:insertAttribute name="body" />
-				<tiles:insertAttribute name="foot" />
-			</div>
+	<div class="wrapper">
+		<div class="side">
+			<tiles:insertAttribute name="left" />
+		</div>
+		<div style="float: left;" class="content">
+			<tiles:insertAttribute name="body" />
+			<tiles:insertAttribute name="foot" />
 		</div>
 	</div>
 </body>

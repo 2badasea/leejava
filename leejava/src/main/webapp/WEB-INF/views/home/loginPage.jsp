@@ -11,9 +11,6 @@
 	crossorigin="anonymous"></script>
 <style>
 .wrapper {
-	width: 30%;
-	padding: 10%;
-	margin-left: 300px;
 }
 
 .loginFrame {
@@ -90,7 +87,7 @@
 </head>
 <body>
 <input type="hidden" id="message" value="${message }">
- <div class="wrapper">
+ <div class="">
         <div class="loginFrame">
             <div class="loginTitle">
                 <h1 style="font-weight:bolder;">Log in</h1>

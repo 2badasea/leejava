@@ -10,7 +10,9 @@
 <style type="text/css">
 .sidebar {
 	background-color: #05AA6D;
-	position: fixed;
+	min-height: 100vh; 
+	
+	
 }
 .sideWrap {
 	padding: 20px;

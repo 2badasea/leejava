@@ -4,7 +4,7 @@
        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
  
 <tiles-definitions>
-	<!-- main layout -->
+	<!-- User layout -->
 	<definition name="layout-tiles" template="/WEB-INF/views/tiles/tiles-layout.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/tiles/headerTemplete.jsp" />
 		<put-attribute name="left" value="/WEB-INF/views/tiles/sidebarTemplete.jsp" />
@@ -17,4 +17,24 @@
 		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
 		<put-attribute name="title" value="메인페이지 테스트" />
 	</definition>
+	
+	
+	<!-- admin layout  -->
+	<definition name="admin-tiles" template="/WEB-INF/views/tiles/adminLayout.jsp">
+		<put-attribute name="atitle" value="Java story Admin" />
+		<put-attribute name="aheader" value="/WEB-INF/views/tiles/adminHeader.jsp" />
+		<put-attribute name="asidebar" value="/WEB-INF/views/tiles/adminSidebar.jsp" />
+		<put-attribute name="abody" value="" />
+		<put-attribute name="afooter" value="/WEB-INF/views/tiles/adminFooter.jsp" />
+	</definition>
+	
+	<definition name="home/admin/*" extends="admin-tiles">
+		<put-attribute name="abody" value="/WEB-INF/views/home/admin/{1}.jsp" />
+	</definition>
+	
+	
+	
+	
 </tiles-definitions>
+
+

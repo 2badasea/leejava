@@ -10,13 +10,19 @@
 <script src="https://kit.fontawesome.com/fe7e33d80b.js"
 	crossorigin="anonymous"></script>
 <style>
-.wrapper {
+.loginWrapper {
+	width: 80em;
 }
 
 .loginFrame {
 	border: 1px solid gainsboro;
 	border-radius: 30px;
 	padding: 50px;
+	width: 40%;
+	display: block;
+	margin-top: 15%;
+	margin-left: 25%;
+	margin-bottom: 10%;
 }
 .inputEmail_upper {
 	margin-top: 20px;
@@ -87,7 +93,7 @@
 </head>
 <body>
 <input type="hidden" id="message" value="${message }">
- <div class="">
+ <div class="loginWrapper">
         <div class="loginFrame">
             <div class="loginTitle">
                 <h1 style="font-weight:bolder;">Log in</h1>

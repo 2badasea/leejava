@@ -28,9 +28,6 @@ body {
 .wrapper {
 	width: 100%;
 }	
-.content {
-	width: 80rem!important;
-}
 
 
 </style>
@@ -40,7 +37,7 @@ body {
 		<div class="side">
 			<tiles:insertAttribute name="left" />
 		</div>
-		<div style="float: left;" class="content">
+		<div style="float: left;">
 			<tiles:insertAttribute name="body" />
 			<tiles:insertAttribute name="foot" />
 		</div>

@@ -3,7 +3,8 @@
 <mapper namespace="co.bada.leejava.member.MemberMapper">
 
 <select id="memberSelectList" resultType="co.bada.leejava.member.MemberVO">
-	SELECT * FROM MEMBER
+	SELECT * 
+	FROM MEMBER
 </select>
 
 <!-- 원래 이메일 중복여부와 로그인 용도를 위해 선언했지만, 단순히 정보만 조회하는 것으로, 이메일 여부와 -->

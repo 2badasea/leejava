@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.notice.NoticeMapper">
+
+<!--  공지사항 전체 조회 -->
+<select id="noticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
+	SELECT * 
+	FROM NOTICE
+</select>
+
+<!-- 개별 공지사항 조회 -->
+<select id="noticeSelect" resultType="co.bada.leejava.notice.NoticeVO">
+	SELECT * 
+	FROM NOTICE 
+	WHERE N_NO = #{n_no}
+</select>
+
+<!--  공지사항 등록 -->
+<insert id="noticeInsert" parameterType="co.bada.leejava.notice.NoticeVO">
+	INSERT INTO NOTICE 
+	VALUES( 
+		(SELECT MAX(N_NO)+1 FROM NOTICE),
+		#{n_writer},
+		#{n_wdate},
+		#{n_category},
+		#{n_title},
+		#{n_content},
+		#{n_file},
+		#{n_pfile},
+		#{n_hit},
+		#{n_fixed}
+	)	
+</insert>
+
+<!-- 공지사항 수정(수정 가능한 값은: 카테고리, 제목, 내용, 첨부파일, 물리파일, 고정여부-->
+<update id="noticeUpdate" parameterType="co.bada.leejava.notice.NoticeVO">
+	UPDATE NOTICE 
+		<set>
+			<if test="n_category != null">N_CATEGORY = #{n_category},</if>			
+			<if test="n_title != null">N_TITLE = #{n_title},</if>			
+			<if test="n_content != null">N_CONTENT = #{n_content},</if>			
+			<if test="n_file != null">N_FILE = #{n_file},</if>			
+			<if test="n_pfile != null">N_PFILE = #{n_pfile}</if>			
+			<if test="n_fixed != null">N_fixed = #{n_fixed}</if>			
+		</set>
+	WHERE N_NO = #{n_no}
+</update>
+
+<!-- 공지사항 삭제 -->
+<delete id="noticeDelete" parameterType="co.bada.leejava.notice.NoticeVO">
+	DELETE 
+	FROM NOTICE 
+	WHERE N_NO = #{n_no}
+</delete>
+
+
+</mapper>

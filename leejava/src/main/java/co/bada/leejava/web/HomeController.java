@@ -74,13 +74,13 @@ public class HomeController {
 			String m_password = SHA256Util.getEncrypt(formPassword, m_salt);
 			mvo.setM_password(m_password);
 			mvo = memberDao.memberSelect(mvo);  // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
+			String nickname = mvo.getM_nickname(); // nickname을 가져옴. 사이트에서 사용할 수 있는
 			if(mvo != null) {
 				session.setAttribute("session_user", email);
-				System.out.println("세션에 담은 값: " + email);
+				session.setAttribute("session_nickname", nickname);
+				System.out.println("세션에 담은 값: " + email + ", " + nickname);
 				responseText = "YES";
-			} else {
-				responseText = "NO";
-			}
+			} 
 			
 		}else { 
 			// m_salt값을 조회할 수 없었던 경우.

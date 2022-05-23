@@ -10,7 +10,7 @@
 </head>
 <body>
 <h1>
-	Hello ${session_user }!!
+	Hello ${session_nickname }!!
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>

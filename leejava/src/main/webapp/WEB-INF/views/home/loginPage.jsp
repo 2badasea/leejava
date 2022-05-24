@@ -20,10 +20,11 @@
 	padding: 50px;
 	width: 40%;
 	display: block;
-	margin-top: 15%;
-	margin-left: 25%;
+	margin-top: 10%;
+	margin-left: 15%;
 	margin-bottom: 10%;
 }
+
 .inputEmail_upper {
 	margin-top: 20px;
 }
@@ -86,6 +87,7 @@
 	text-decoration: none;
 	color: black;
 }
+
 #forgotDiv {
 	margin-top: 20px;
 }

@@ -8,20 +8,19 @@
 <title>회원가입 양식 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
-.wrapper {
-	width: 50%;
+.joinFormWrapper {
+	width: 62%;
+	margin-left: 15%;
+    margin-top: 5%;
 }
-
 #title {
 	text-align: center;
 }
-
 .joinform {
-	border: 1px solid whitesmoke;
+	border: 2px solid whitesmoke;
 	border-radius: 30px;
-	width: 100%;
+	padding: 15px;
 }
-
 .button {
 	background-color: #05AA6D;
 	border-radius: 30px;
@@ -29,7 +28,6 @@
 	border-style: none;
 	width: 20%;
 }
-
 .button:hover {
 	cursor: pointer;
 	transition: 0.3s;
@@ -42,7 +40,6 @@ span {
 #codeCheck{
 	display: none;
 }
-
 /* 모달창 style부분 */
 #container {
   display: none;
@@ -51,7 +48,6 @@ span {
   height:100%;
   z-index:1;
 }
-
 #container h2 {
   margin:0;
 }
@@ -59,7 +55,6 @@ span {
 	width:100px;
 	float: right;
 }
-
 #container .modal {
   width:350px;
   margin:100px auto;
@@ -68,7 +63,6 @@ span {
   border:2px solid #666;
   height: 150px;
 }
-
 #container .modal_layer {
   position:fixed;
   top:0;
@@ -78,15 +72,28 @@ span {
   background:rgba(0, 0, 0, 0.5);
   z-index:-1;
 } 
-
 #inputCode {
 	width: 60%;
 	height: 25px;
 }
-
-
-  
-
+tr > th {
+	width: 120px;
+}
+tr {
+	height: 35px;
+}
+/* 	특정 선택자 제외하기  */
+td > input:not(#addressBtn)  {
+	width: 40%;
+}
+.button {
+	height: 30px;
+	margin-left: 3%;
+}
+#joinBtn {
+	margin: auto;
+	display: block;
+}
 </style>
 </head>
 <body>
@@ -111,7 +118,7 @@ span {
 <!--  모달창 끝 -->
 
 
-	<div class="wrapper">
+	<div class="joinFormWrapper">
 		<div>
 			<h3 id="title">자바이야기 회원가입</h3>
 			<hr>
@@ -164,7 +171,7 @@ span {
 						<th>주소</th>
 						<td>
 							<input type="text" id="sample4_postcode" placeholder="우편번호">
-							<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+							<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기" id="addressBtn"><br>
 							<input type="text" id="sample4_roadAddress" placeholder="도로명주소">
 							<input type="text" id="sample4_jibunAddress" placeholder="지번주소">
 							<span id="guide" style="color:#999;display:none"></span>

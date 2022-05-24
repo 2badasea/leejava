@@ -8,9 +8,7 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
 footer {
-	background-color: #FFF0F0;
-	height: 70px;
-	width: 100%;
+	
 }
 </style>
 </head>

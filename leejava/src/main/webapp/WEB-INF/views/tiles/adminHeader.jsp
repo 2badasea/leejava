@@ -8,6 +8,6 @@
 <!-- Custom styles for this template-->
 </head>
 <body>
-	<!-- End of Topbar -->
+	<span>admin header 영역</span>
 </body>
 </html>

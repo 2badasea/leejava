@@ -9,7 +9,8 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
 .mainSearchWrapper {
-	margin-left: 300px;
+	margin-left: 10%;
+	margin-top: 10%;
 }
 
 .searchTh {
@@ -66,8 +67,8 @@ tr > td {
 			</div>
 			<br>
 			<br>
+			<hr>
 			<br>
-
 			<!--실질적인 공지사항 리스트들의 목록 -->
 			<div class="noticeListWrapper">
 				<h4>공지사항 리스트</h4>

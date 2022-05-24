@@ -4,5 +4,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- summernote 이미지업로드 경로 bean으로 등록하기 -->
+	<bean id="summernoteImageUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\summernoteimageupload\" />
+	</bean>
+	
+	<!-- 공지사항 첨부파일 업로드 경로 bean으로 등록하기 -->
+	<bean id="noticeUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\noticeuploadfiles\" />
+	</bean>
+	
+	
 		
 </beans>

@@ -33,8 +33,10 @@
 .sidebar_menu {
 	margin-top: 100px;
 }
-button {
-	height: 25px;
+#sidebar_loginBtn, 
+#sidebar_memberJoinBtn, 
+#logoutBtn{
+	height: 30px;
 }
 #mainMenu, 
 #subMenu {

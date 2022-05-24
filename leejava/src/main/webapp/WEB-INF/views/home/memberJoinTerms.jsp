@@ -10,30 +10,26 @@
 <style>
 	.termsWrap {
         width: 50%;
-        margin-top: 50px;
+        margin-left: 15%;
+ 	    margin-top: 7%;
         
     }
-
     .termsTitle {
         text-align: center;
     }
-
     .serviceTerms,
     .privacyTerms,
     .expireDateTerms,
     .promotionTerms {
         border: 0.5px solid whitesmoke;
     }
-
     input[type="checkbox"] {
         width: 20px;
         height: 20px;
     }
-
     textarea {
         width: 100%;
     }
-
     #nextBtn {
         width: 50%;
         height: 50px;
@@ -45,7 +41,6 @@
         display: block;
         font-size: medium;
     }
-
     #nextBtn:hover {
         transition: 0.5s;
         background-color: white;

@@ -13,33 +13,46 @@
 	margin: 0px;
 	padding: 0px;
 }
-body {
-}
-
-.side {
-	float: left;
-	height:auto;
-	width: 14rem!important;
-	/* 	position: sticky;  */
-/* 	position: -webkit-sticky; */
-
-}
 
 .wrapper {
 	width: 100%;
-}	
-
-
+	height: 100%;
+	display: flex;
+}
+.sideWrapper {
+	width: 12%;
+}
+.mainWrapper {
+	width: 85%;
+}
+.headerWrapper {
+	height: 5%;
+	background-color: #FFF0F0	;
+}
+.bodyWrapper{
+	min-height: 700px; 
+}
+.footerWrapper{
+	background-color: #FFF0F0;
+	height: 70px;
+}
 </style>
 </head>
 <body>
 	<div class="wrapper">
-		<div class="side">
+		<div class="sideWrapper">
 			<tiles:insertAttribute name="left" />
 		</div>
-		<div style="float: left;">
-			<tiles:insertAttribute name="body" />
-			<tiles:insertAttribute name="foot" />
+		<div class="mainWrapper">
+			<div class="headerWrapper">
+				<tiles:insertAttribute name="header" />
+			</div>
+			<div class="bodyWrapper">
+				<tiles:insertAttribute name="body" />
+			</div>
+			<div class="footerWrapper">
+				<tiles:insertAttribute name="foot" />
+			</div>
 		</div>
 	</div>
 </body>

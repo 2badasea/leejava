@@ -46,16 +46,17 @@ select {
 		<div class="mainFormWrapper">
 			<h3>공지사항 등록</h3>
 			<!-- 공지사항 항목 구성( 카테고리, 제목, 내용, 첨부파일 -->
+			<form action="noticeRegister.do" id="frm" method="post" enctype="multipart/form-data">
 			<table border="1">
 				<tr>
 					<th style="width: 150px;">제목</th>
-					<td style="width: 500px;"><input type="text" name="n_title">
+					<td style="width: 500px;"><input type="text" name="n_title" id="n_title">
 					</td>
 					<th style="width: 200px;">카테고리</th>
-					<td style="width: 200px"><select name="n_category">
-							<option selected="selected">전체</option>
-							<option>긴급</option>
-							<option>이벤트</option>
+					<td style="width: 200px"><select name="n_category" id="n_category">
+							<option selected="selected" value="">전체</option>
+							<option value="긴급">긴급</option>
+							<option value="이벤트">이벤트</option>
 					</select></td>
 				</tr>
 				<tr>
@@ -65,10 +66,12 @@ select {
 				</tr>
 				<tr>
 					<th>첨부파일</th>
-					<td colspan="3"><input type="file" name="n_file" id="n_file">
+					<td colspan="3">
+						<input type="file" name="filename" id="n_file">
 					</td>
 				</tr>
 			</table>
+			</form>
 			<div class="noticeRegisterBtns">
 				<button id="noticeRegisterBtn">공지사항 등록</button>
 				<button id="goBackBtn">돌아가기</button>
@@ -77,6 +80,26 @@ select {
 	</div>
 </body>
 <script>
+	// 공지사항 등록 버튼 ( 제목 null인지 아닌지 체크, 내용은 무관 )
+	$('#noticeRegisterBtn').on('click', function(){ 
+		// 제목만 체크
+		var noticeTitle = $("#n_title").val();
+		if( noticeTitle === null) {
+			alert("제목을 입력하세요");
+			$("#n_title").focus(); 
+			return false;
+		}
+		
+		$("#frm").submit();
+		
+	})
+
+	// 돌아가기 버튼 
+	$("#goBackBtn").on("click", function(){ 
+			location.href='adminNoticeList.do';
+	});
+	
+	
 	// 문서가 로드되면 서머노트 적용시키도록 
 	$(document).ready(function() {
 	  		var toolbar = [
@@ -126,23 +149,17 @@ select {
 			$.ajax({
 				data : data,
 				type : "POST",
-				url : "uploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
+				url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
 				contentType : false,
 				enctype : 'multipart/form-data',
 				processData : false,
 				success : function(responseData) {
-					console.log("data 확인: " + responseData);
-					$(el).summernote('editor.insertImage', responseData.url);
+					console.log("responseData 확인: " + responseData);
+					console.log("responseDate.url 확인: " + responseData.url);
+					$(el).summernote('insertImage', responseData.url);
 				}
 			});
 		}
 	});
-	
-	
-	
-	
-	
-	
-	
 </script>
 </html>

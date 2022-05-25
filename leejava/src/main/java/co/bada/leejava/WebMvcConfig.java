@@ -12,7 +12,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     //로 접속하면 C:/leejava/summernoteimageupload/ 밑에 있는 파일을 불러온다.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploadSummernoteImageFile.do")
+        registry.addResourceHandler("/ajaxUploadSummernoteImageFile.do")
                 .addResourceLocations("file:///C:/leejava/summernoteimageupload/");
     }
 }

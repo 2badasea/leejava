@@ -13,5 +13,7 @@ public interface NoticeService {
 	int noticeUpdate(NoticeVO nvo); // 공지사항 수정
 
 	int noticeDelete(NoticeVO nvo); // 공지사항 삭제
+	
+	
 
 }

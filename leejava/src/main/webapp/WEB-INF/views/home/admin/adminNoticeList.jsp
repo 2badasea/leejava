@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +30,7 @@ tr > td {
 </script>
 </head>
 <body>
-
+<span>확인: ${n_file }</span>
 	<div class="wrapper">
 		<div class="mainSearchWrapper">
 			<h3>공지사항 관리</h3>
@@ -90,12 +90,12 @@ tr > td {
 							<th style="width: 300px;" class="listTh">관리</th>
 						</tr>
 						<c:forEach items="${notices }" var="notice">
-							<tr>
+							<tr class="noticeListTr">
 								<td>
 									<input type="checkbox">
 								</td>
 								<td>
-									${notice.n_no }
+									<input name="n_no" value='<c:out value="${notice.n_no }"/>' >
 								</td>
 								<td>
 									${notice.n_wdate }
@@ -131,5 +131,19 @@ tr > td {
 			return false;
 		}
 	});
+	
+	// tr값 글 조회하기
+	$(".noticeListTr").on("click", function(){ 
+		var clickRow = $(this).closest('tr');
+		var	no = clickRow.find('td:eq(1)').find('input').val();
+		alert('내가 클릭한 행이 가리키는 글번호의 값: ' + no);
+		// 처음으로 get방식으로 넘겨보자. ajax타지말고, 
+		location.href='adminNoticeRead.do?n_no=' + no;
+		
+	});
+	
+	
+	
+	
 </script>
 </html>

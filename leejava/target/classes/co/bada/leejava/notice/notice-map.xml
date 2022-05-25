@@ -6,6 +6,7 @@
 <select id="noticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 
 	FROM NOTICE
+	ORDER BY N_NO
 </select>
 
 <!-- 개별 공지사항 조회 -->
@@ -21,7 +22,7 @@
 	VALUES( 
 		(SELECT MAX(N_NO)+1 FROM NOTICE),
 		#{n_writer},
-		#{n_wdate},
+		SYSDATE,
 		#{n_category},
 		#{n_title},
 		#{n_content},

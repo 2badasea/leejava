@@ -54,7 +54,7 @@ select {
 					</td>
 					<th style="width: 200px;">카테고리</th>
 					<td style="width: 200px"><select name="n_category" id="n_category">
-							<option selected="selected" value="">전체</option>
+							<option selected="selected" value="전체">전체</option>
 							<option value="긴급">긴급</option>
 							<option value="이벤트">이벤트</option>
 					</select></td>
@@ -122,7 +122,8 @@ select {
 			    // 코드보기, 확대해서보기, 도움말
 			    ['view', ['codeview','fullscreen', 'help']]
 			  ];
-
+		
+	  	// 객체형식으로 설정을 구성.
 		var setting = {
 	            height : 300,
 	            minHeight : null,
@@ -131,7 +132,7 @@ select {
 	            lang : 'ko-KR',
 	            toolbar : toolbar, // toolbar 설정은 위에서 해놓음. 
 	            callbacks : { //여기 부분이 이미지를 첨부하는 부분
-	            	// summernote에서 제공하는 콜백함수 중 하나. 
+	            	// summernote에서 제공하는 콜백함수 중 하나. onImageUpload
 	            	onImageUpload : function(files, editor, welEditable) {
 	            			for (var i = files.length - 1; i >= 0; i--) {
 	            					uploadSummernoteImageFile(files[i], this);
@@ -140,7 +141,7 @@ select {
 	            }
 	         };
 
-	        $('#summernote').summernote(setting);
+	    $('#summernote').summernote(setting);
 	  	
 	  	// 이미지업로드 콜백함수 정의
 	  	function uploadSummernoteImageFile(file, el) {

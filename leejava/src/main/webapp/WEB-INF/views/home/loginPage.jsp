@@ -102,7 +102,7 @@
             </div>
             <div class="inputEmail_upper">
                 <span id="emailLabel">Email</span>
-                <span id="joinLabel">Need an account? <a href="memberJoin.do" class="joinLink">Sign up</a></span>
+                <span id="joinLabel">Need an account? <a href="memberJoinTerms.do" class="joinLink">Sign up</a></span>
             </div>
             <form id="frm" action="login.do">
             <input type="email" placeholder="Input your Eamil Address" id="email" name="email">

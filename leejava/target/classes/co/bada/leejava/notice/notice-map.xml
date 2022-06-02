@@ -42,7 +42,6 @@
 			<if test="n_content != null">N_CONTENT = #{n_content},</if>			
 			<if test="n_file != null">N_FILE = #{n_file},</if>			
 			<if test="n_pfile != null">N_PFILE = #{n_pfile}</if>			
-			<if test="n_fixed != null">N_fixed = #{n_fixed}</if>			
 		</set>
 	WHERE N_NO = #{n_no}
 </update>
@@ -54,5 +53,13 @@
 	WHERE N_NO = #{n_no}
 </delete>
 
+<!-- 공지사항 수정 시 업로드 첨부파일 삭제 -->
+<update id="ajaxNoticeFileDelete" parameterType="co.bada.leejava.notice.NoticeVO">
+	UPDATE 
+		NOTICE 
+			SET N_FILE = '' 
+				,N_PFILE = '' 
+	WHERE N_NO = #{n_no}
+</update>
 
 </mapper>

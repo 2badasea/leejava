@@ -30,7 +30,6 @@ tr > td {
 </script>
 </head>
 <body>
-<span>확인: ${n_file }</span>
 	<div class="wrapper">
 		<div class="mainSearchWrapper">
 			<h3>공지사항 관리</h3>
@@ -103,7 +102,7 @@ tr > td {
 								<td>
 									${notice.n_category }
 								</td>
-								<td>
+								<td class="noticeListTitleTd">
 									${notice.n_title }
 								</td>
 								<td>
@@ -133,7 +132,7 @@ tr > td {
 	});
 	
 	// tr값 글 조회하기
-	$(".noticeListTr").on("click", function(){ 
+	$(".noticeListTitleTd").on("click", function(){ 
 		var clickRow = $(this).closest('tr');
 		var	no = clickRow.find('td:eq(1)').find('input').val();
 		alert('내가 클릭한 행이 가리키는 글번호의 값: ' + no);

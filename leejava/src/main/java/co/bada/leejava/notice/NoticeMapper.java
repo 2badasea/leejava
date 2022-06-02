@@ -14,4 +14,6 @@ public interface NoticeMapper {
 	int noticeUpdate(NoticeVO nvo); // 공지사항 수정
 
 	int noticeDelete(NoticeVO nvo); // 공지사항 삭제
+	
+	int ajaxNoticeFileDelete(NoticeVO nvo); // 공지사항 수정 시 첨부파일 삭제
 }

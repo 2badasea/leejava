@@ -266,8 +266,7 @@ td > input:not(#addressBtn)  {
 			alert("이메일 정규식 통과");
 		} else {
 			alert("입력하신 이메일 양식이 올바르지 않습니다.");
-			$('#email').val('');
-			$('#email').focus();
+			$('#email').val('').focus();
 			return false;
 		}
 		
@@ -283,8 +282,7 @@ td > input:not(#addressBtn)  {
 					$("#emailCheckBtn").val('Y'); // 버튼에 value값 추가 => 중복확인 거쳤는지 체크용
 				} else if( responseText == "NO"){
 					alert("중복된 이메일입니다.");
-					$("#email").val('');
-					$("#email").focus();
+					$("#email").val('').focus();
 				} else {
 					alert("이메일 인증 오류입니다. 관리자에게 문의하세요");
 				}
@@ -298,8 +296,7 @@ td > input:not(#addressBtn)  {
 		var regNickname = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{2,10}$/;
 		if( !regNickname.test(nickname)) {
 			alert("닉네임은 영문, 한글, 숫자 조합으로 2~10자리 입니다.");
-			$("#nickname").val('');
-			$("#nickname").focus();
+			$("#nickname").val('').focus();
 			return false;
 		}
 		$.ajax({
@@ -314,8 +311,7 @@ td > input:not(#addressBtn)  {
 					$("#nicknameCheckBtn").val('Y'); // 중복체크 했는지 체크용
 				} else {
 					alert("중복된 닉네임 입니다.");
-					$("#nickname").val('');
-					$("#nickname").focus();
+					$("#nickname").val('').focus();
 				}
 			}
 		})
@@ -387,10 +383,10 @@ td > input:not(#addressBtn)  {
 	var timer = null;
 	
 	function modalTimer(){
-	var display = $('#timer');
-	var leftSec = 180; // 유효시간 설정. 테스트를 위해 일단 10으로 설정. => 나중에 180초로 설정하기
-	startTimer(leftSec, display);
-}
+		var display = $('#timer'); // 남은시간 보여주는 곳
+		var leftSec = 180; // 유효시간 설정. 테스트를 위해 일단 10으로 설정. => 나중에 180초로 설정하기
+		startTimer(leftSec, display);
+	}
 
 	function startTimer(count, display){
 		var minutes, seconds;
@@ -405,7 +401,7 @@ td > input:not(#addressBtn)  {
 			
 			// 타이머 끝
 			if( --count < 0){
-				clearInterval(timer);
+				clearInterval(timer); // timer라는 식별자 이름을 가진 setInterval() 이벤트 종료시키기
 				alert('인증시간이 초과되었습니다. 재인증해주세요');
 				$('#container').css('display', 'none');
 				$('#backPhone').val('');
@@ -416,7 +412,7 @@ td > input:not(#addressBtn)  {
 	// 입력값이랑 비교하는 이벤트
 	$('#codeCheckBtn').on('click', function() {
 		var inputCode = $('#inputCode').val();  // codeCheckBtn value값에 인증코드 부여. 
-		var ajaxCode = $('#codeCheckBtn').val();
+		var ajaxCode = $('#codeCheckBtn').val(); 
 		
 		if( inputCode === ajaxCode ) {
 			alert('인증완료되었습니다.');
@@ -528,16 +524,11 @@ td > input:not(#addressBtn)  {
 			var dd = i>9 ? ''+i : '0'+i;
 			$('#day').append('<option value="' + dd + '">' + i + '일</option>');
 		}
-		
+		// default값으로 오늘 날짜 기준으로 selected 세팅.		
 		$('#year > option[value=' + year +  ']').attr('selected', 'true');
 		$('#month > option[value=' + month + ']').attr('selected', 'true');
 		$('#day > option[value=' + day + ']').attr('selected', 'true');
 	})
-	
-	
-	
-	
-	
 	
 </script>
 </html>

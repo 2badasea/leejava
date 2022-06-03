@@ -12,4 +12,5 @@ public interface MemberService {
 	boolean memberNicknameCheck(MemberVO mvo); // 닉네임 중복체크
 	int memberJointerms(MemberVO mvo);  	// 가입약관 넣기
 	String selectSalt(MemberVO mvo);		// 이메일 아이디를 통해서 salt값 조회
+	List<MemberVO> v_memberSelectList(); 	// 뷰에 있는 회원정보 리스트 가져오기. 회원목록 페이지
 }

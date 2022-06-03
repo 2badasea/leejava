@@ -48,4 +48,10 @@ public class NoticeServiceImpl implements NoticeService {
 		return map.ajaxNoticeFileDelete(nvo);
 	}
 
+	@Override
+	public int ajaxNoticeFixed(NoticeVO nvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxNoticeFixed(nvo);
+	}
+
 }

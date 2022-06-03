@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -341,6 +342,63 @@ public class NoticeController {
 		
 		return message;
 	}
+	
+	// 공지사항 개별 삭제  by ajax
+	@ResponseBody
+	@RequestMapping("/noticeDelete.do")
+	public String noticeDelete(Model model, HttpServletRequest request, NoticeVO nvo,
+			@RequestParam("n_no") int n_no) {
+		
+		System.out.println("삭제할 글 번호 왔니? : " +  n_no);
+		nvo.setN_no(n_no);
+		String message = null;
+		int n = noticeDao.noticeDelete(nvo);
+		if( n!= 0) {
+			System.out.println("게시글 삭제 성공 (controller) ");
+			message = "YES";
+		}
+		return message;
+	}
+	
+	// 공지사항 개별 고정 처리
+	@ResponseBody
+	@RequestMapping("/ajaxNoticeFixed.do")
+	public String ajaxNoticeFixed(Model model, HttpServletRequest request, NoticeVO nvo
+			, @RequestParam("n_no") int n_no, @RequestParam("n_fixed") String n_fixed ) {
+		
+		System.out.println("글번호: " + n_no + "수정할 고정 값: " + n_fixed);
+		
+		nvo.setN_fixed(n_fixed);
+		nvo.setN_no(n_no);
+		int n = noticeDao.ajaxNoticeFixed(nvo);
+		String message = null;
+		if( n != 0) {
+			System.out.println("수정 성공");
+			message = "YES";
+		}
+		
+		return message;
+	}
+	
+	// 공지사항 선택 삭제 
+	@ResponseBody
+	@RequestMapping("/ajaxNoticeSelectDelete.do")
+	public String ajaxNoticeSelectDelete(Model model, HttpServletRequest request
+			, NoticeVO nvo, @RequestParam("checkedArray[]") List<String> checkedArray ) {
+		
+		String message = null;
+		int n_no;
+		
+		for(String i : checkedArray) {
+			n_no = Integer.parseInt(i);
+			nvo.setN_no(n_no);
+			noticeDao.noticeDelete(nvo);
+			message = "YES";
+		}
+		return message; 
+	}
+	
+	
 	
 	
 	

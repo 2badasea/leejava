@@ -64,4 +64,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.selectSalt(mvo);  //
 	}
 
+	@Override
+	public List<MemberVO> v_memberSelectList() {
+		// TODO Auto-generated method stub
+		return map.v_memberSelectList();
+	}
+
 }

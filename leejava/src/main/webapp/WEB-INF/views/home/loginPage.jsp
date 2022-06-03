@@ -23,6 +23,7 @@
 	margin-top: 10%;
 	margin-left: 15%;
 	margin-bottom: 10%;
+	z-index: 1;
 }
 
 .inputEmail_upper {
@@ -54,10 +55,10 @@
 
 .inputPassword_upper {
 	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
 }
-
-.showLabel {
-	float: right;
+.showLabel{
 }
 
 .socialIcon {
@@ -91,10 +92,27 @@
 #forgotDiv {
 	margin-top: 20px;
 }
+#passwordEyeSlash{
+	display: none;
+}
+.forgotPasswordLink:hover, 
+#loginBtn:hover{
+	cursor: pointer;
+}
+/* 비밀번호 찾기 모달창  */
+
 </style>
 </head>
 <body>
 <input type="hidden" id="message" value="${message }">
+
+<!-- 비밀번호 찾기 모달창 생성 -->
+<div class="modal_overlay">
+		
+</div>
+<!-- 부트스트랩 모달창 부분 끝 -->
+
+
  <div class="loginWrapper">
         <div class="loginFrame">
             <div class="loginTitle">
@@ -109,8 +127,8 @@
             <div class="inputPassword_upper">
                 <span id="passwordLabel">Password</span>
                 <div class="showLabel">
-                    <i class="fa-solid fa-eye"></i>
-                    <span id="showComment">Show</span>
+                    <i class="fa-solid fa-eye" id="passwordEye"></i>
+                    <span id="showComment">비밀번호 보이기</span>
                 </div>
             </div>
             <input type="password" placeholder="Input your Password" id="password" name="password" >
@@ -126,7 +144,7 @@
             <div class="bottomBtn">
                 <button type="button" id="loginBtn">Log in</button>
                 <div align="center" id="forgotDiv">
-                    <a href="#" class="forgotPasswordLink">
+                    <a class="forgotPasswordLink" id="forgotPasswordBtn" data-toggle="modal" data-target="#myModal">
                         <h4>Forgot password?</h4>
                     </a>
                 </div>
@@ -135,6 +153,23 @@
     </div>
 </body>
 <script>
+	// 모달창 닫기 클릭
+	$("#modal_close").on("click", function(){
+		$(".modal_container").css("display", "none");
+	})
+
+	// 비밀번호 분실 클릭
+	$("#forgotPasswordBtn").on("click", function(){
+// 		$(".loginWrapper").css("display", "none");
+		$(".modal_container").css("display", "block");
+	});
+
+	// 눈알 모양 클릭하면 비밀번호 그대로 보이도록 하기  id값: passwordEye / passwordEyeSlash
+	$(".showLabel").on("click", function(){
+		$("#password").prop("type", "text");
+		$("#passwordEye").css("display", "none");
+		$("#showComment").html('<i class="fa-solid fa-eye-slash" id="passwordEyeSlah"></i>');
+	})
 	
 	// enterkey로 로그인 기능 정의
 	$('#password').on('keypress', function(e) {

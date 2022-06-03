@@ -7,6 +7,12 @@
 	FROM MEMBER
 </select>
 
+<!-- 관리자 회원목록, 뷰로 가져오기 -->
+<select id="v_memberSelectList" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * 
+	FROM V_MEMBERLIST
+</select>
+
 <!-- 원래 이메일 중복여부와 로그인 용도를 위해 선언했지만, 단순히 정보만 조회하는 것으로, 이메일 여부와 -->
 <select id="memberSelect" parameterType="co.bada.leejava.member.MemberVO"
 resultType="co.bada.leejava.member.MemberVO">

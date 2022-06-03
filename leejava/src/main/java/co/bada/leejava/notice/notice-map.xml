@@ -55,10 +55,16 @@
 
 <!-- 공지사항 수정 시 업로드 첨부파일 삭제 -->
 <update id="ajaxNoticeFileDelete" parameterType="co.bada.leejava.notice.NoticeVO">
-	UPDATE 
-		NOTICE 
-			SET N_FILE = '' 
-				,N_PFILE = '' 
+	UPDATE NOTICE 
+		SET N_FILE = '' 
+			,N_PFILE = '' 
+	WHERE N_NO = #{n_no}
+</update>
+
+<!-- 공지사항 고정상태 수정 -->
+<update id="ajaxNoticeFixed" parameterType="co.bada.leejava.notice.NoticeVO">
+	UPDATE NOTICE 
+		SET N_FIXED = #{n_fixed} 
 	WHERE N_NO = #{n_no}
 </update>
 

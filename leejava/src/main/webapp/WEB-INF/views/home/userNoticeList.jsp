@@ -8,6 +8,22 @@
 <title>공지사항 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
+#noticeNumber {
+	width: 50px;
+	border: none;
+	text-align: center;
+	
+}
+.mainSearchWrapper {
+	margin-left: 15%;
+	margin-top : 20%;
+}
+.noticeListTitleTd:hover{
+	cursor: pointer;
+}
+.noticeListTr:hover {
+	background-color: #FFE6EB;
+}
 </style>
 </head>
 <body>
@@ -20,7 +36,7 @@
 					<!--체크박스 공간,  글번호, 작성날짜, 카테고리, 제목, 상단 고정, 관리( 수정, 삭제, 고정or고정취소)  -->
 					<table border="1">
 						<tr>
-							<th style="width: 30px;" class="listTh">글번호</th>
+							<th style="width: 50px;" class="listTh">글번호</th>
 							<th style="width: 150px;" class="listTh">카테고리</th>
 							<th style="width: 400px;" class="listTh">제목</th>
 							<th style="width: 100px;" class="listTh">작성일</th>
@@ -29,10 +45,9 @@
 						</tr>
 						<c:forEach items="${notices }" var="notice">
 							<tr class="noticeListTr">
-								<td><input name="n_no"
-									value='<c:out value="${notice.n_no }"/>'></td>
+								<td>${notice.n_no }</td>
 								<td>${notice.n_category }</td>
-								<td class="noticeListTitleTd">${notice.n_title }</td>
+								<td class="noticeListTitleTd" onclick="userNoticeRead(${notice.n_no})">${notice.n_title }</td>
 								<td>${notice.n_wdate }</td>
 								<td>${notice.n_writer }</td>
 								<td>${notice.n_hit }</td>
@@ -45,6 +60,12 @@
 	</div>
 </body>
 <script>
+	// 글제목 클릭 시 공지사항 조회할 수 있도록 하기
+	function userNoticeRead(no) {
+		console.log("글번호 확인: " + no);
+		location.href='userNoticeRead.do?n_no=' + no;
+	}	
+	
 	
 </script>
 </html>

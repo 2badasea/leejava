@@ -362,5 +362,18 @@ public class HomeController {
 		return "home/userNoticeList";
 	}
 	
+	// 사용자뷰 공지사항 조회
+	@RequestMapping("/userNoticeRead.do")
+	public String userNoticeRead(Model model, HttpServletRequest request
+			, NoticeVO nvo, @RequestParam("n_no") int n_no) {
+		
+		System.out.println("view단에서 넘어온 조회할 글 번호: " + n_no);
+		nvo.setN_no(n_no);
+		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
+		
+		
+		return "home/userNoticeRead";
+	}
+	
 	
 }

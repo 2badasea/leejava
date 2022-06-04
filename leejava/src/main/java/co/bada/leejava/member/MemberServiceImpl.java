@@ -70,4 +70,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.v_memberSelectList();
 	}
 
+	@Override
+	public int ajaxNewPasswordUpdate(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxNewPasswordUpdate(mvo);
+	}
+
 }

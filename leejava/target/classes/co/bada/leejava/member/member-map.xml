@@ -73,4 +73,12 @@ resultType="co.bada.leejava.member.MemberVO">
 		)
 </insert>
 
+<!-- 새로운 비밀번호로 업데이트하는 구문 -->
+<update id="ajaxNewPasswordUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_SALT = #{m_salt}, 
+			M_PASSWORD = #{m_password} 
+	WHERE M_EMAIL = #{m_email}
+</update>
+
 </mapper>

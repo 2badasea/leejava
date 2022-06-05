@@ -81,4 +81,6 @@ resultType="co.bada.leejava.member.MemberVO">
 	WHERE M_EMAIL = #{m_email}
 </update>
 
+
+
 </mapper>

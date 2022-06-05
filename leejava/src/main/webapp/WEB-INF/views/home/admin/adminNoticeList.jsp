@@ -32,7 +32,21 @@ tr > td {
 	margin-right: 10px;
 	margin-bottom: 10px;
 }
-
+#noticeNumber {
+	width: 50px;
+	border: none;
+	text-align: center;
+	
+}
+.noticeListTitleTd:hover{
+	cursor: pointer;
+}
+.noticeListTr:hover {
+	background-color: #F0FFF0;
+}
+.noticeListTitleTd {
+	text-overflow: ellipsis;
+}
 </style>
 <script>
 	
@@ -103,7 +117,7 @@ tr > td {
 									<input type="checkbox" class="subCheckBtn" data-value="${notice.n_no }">
 								</td>
 								<td>
-									<input name="n_no" value='<c:out value="${notice.n_no }"/>' >
+									<input name="n_no" id="noticeNumber" value='<c:out value="${notice.n_no }"/>' >
 								</td>
 								<td>
 									${notice.n_wdate }
@@ -275,9 +289,7 @@ tr > td {
 		// 처음으로 get방식으로 넘겨보자. ajax타지말고, 
 		location.href='adminNoticeRead.do?n_no=' + no;
 	});
-	
-	
-	
-	
+</script>
+<script>
 </script>
 </html>

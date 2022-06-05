@@ -54,4 +54,10 @@ public class NoticeServiceImpl implements NoticeService {
 		return map.ajaxNoticeFixed(nvo);
 	}
 
+	@Override
+	public int noticeHitUpdate(NoticeVO nvo) {
+		// TODO Auto-generated method stub
+		return map.noticeHitUpdate(nvo);
+	}
+
 }

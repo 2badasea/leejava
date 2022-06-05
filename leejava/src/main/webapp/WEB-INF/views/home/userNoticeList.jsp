@@ -22,7 +22,7 @@
 	cursor: pointer;
 }
 .noticeListTr:hover {
-	background-color: #FFE6EB;
+	background-color: #F0FFF0;
 }
 </style>
 </head>
@@ -45,9 +45,11 @@
 						</tr>
 						<c:forEach items="${notices }" var="notice">
 							<tr class="noticeListTr">
-								<td>${notice.n_no }</td>
+								<td>${notice.n_no }
+									<input class="noticeFixedTd" type="hidden" value="${notice.n_fixed }">
+								</td>
 								<td>${notice.n_category }</td>
-								<td class="noticeListTitleTd" onclick="userNoticeRead(${notice.n_no})">${notice.n_title }</td>
+								<td class="noticeListTitleTd" onclick="userNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</td>
 								<td>${notice.n_wdate }</td>
 								<td>${notice.n_writer }</td>
 								<td>${notice.n_hit }</td>
@@ -61,11 +63,22 @@
 </body>
 <script>
 	// 글제목 클릭 시 공지사항 조회할 수 있도록 하기
-	function userNoticeRead(no) {
+	function userNoticeRead(no, hit) {
 		console.log("글번호 확인: " + no);
-		location.href='userNoticeRead.do?n_no=' + no;
+		console.log("조회수 확인: " + hit);
+		location.href='userNoticeRead.do?n_no=' + no + '&n_hit='+hit;
 	}	
 	
+</script>
+<script>
+	$(document).ready(function(){
+		// 고정값이 T인 것은 문서가 로드되자마자 해당 tr행이 색깔을 다르게 표기한다.
+		if( $('.noticeFixedTd').val() === "T"){
+			$("input[value='T']").parent().parent().css('background',
+			'#FFE6EB');
+		}
 	
+		
+	})
 </script>
 </html>

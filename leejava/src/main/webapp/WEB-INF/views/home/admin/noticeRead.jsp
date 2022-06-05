@@ -28,9 +28,6 @@
 	border: none;
 	text-align: center;
 }
-table { 
-	
-}
 
 </style>
 </head>

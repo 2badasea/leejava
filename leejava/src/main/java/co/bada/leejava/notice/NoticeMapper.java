@@ -18,4 +18,6 @@ public interface NoticeMapper {
 	int ajaxNoticeFileDelete(NoticeVO nvo); // 공지사항 수정 시 첨부파일 삭제
 	
 	int ajaxNoticeFixed(NoticeVO nvo); // 공지사항 개별 고정처리
+	
+	int noticeHitUpdate(NoticeVO nvo); // 공지사항 클릭 => 조회수 증가 업데이트
 }

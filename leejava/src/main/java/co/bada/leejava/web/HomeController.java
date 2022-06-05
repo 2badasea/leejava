@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -291,29 +293,32 @@ public class HomeController {
 		
 		
 		/************** 이메일 인증 일단 보류**************/
-//		// 이메일 보내기. 주석 삭제하면 실제 이메일 날라감. ( 변수를 선언해서 이메일 전송에 필요로 한 데이터를 할당한다.) 
-//		String setFrom = "gnjqtpf1@naver.com";  // root-context.xml에 작성한 자신의 이메일 계정. 아이디랑 메일주소 모두 입력!
-//		String toMail = m_email;					// 수신받을 이메일. view로부터 받은 이메일 주소인 변수 email을 사용
-//		String title = "비밀번호 분실 인증 이메일 입니다.";  // 자신이 보낼 이메일 제목
-//		String content = 						// 자신이 보낼 이메일 내용
-//				"javastory를 이용해주셔서 감사합니다." +
-//				"<br><br>" +
-//				"인증번호는 " + checkNum + " 입니다." +
-//				"<br>" +
-//				"해당 인증번호를 인증번호 확인란에 입력해주세요.";
+		// 이메일 보내기. 주석 삭제하면 실제 이메일 날라감. ( 변수를 선언해서 이메일 전송에 필요로 한 데이터를 할당한다.) 
+		String setFrom = "gnjqtpf1@naver.com";  // root-context.xml에 작성한 자신의 이메일 계정. 아이디랑 메일주소 모두 입력!
+		String toMail = m_email;					// 수신받을 이메일. view로부터 받은 이메일 주소인 변수 email을 사용
+		String title = "비밀번호 분실 인증 이메일 입니다.";  // 자신이 보낼 이메일 제목
+		String content = 						// 자신이 보낼 이메일 내용
+				"javastory를 이용해주셔서 감사합니다." +
+		"<br><br>" +
+				"인증번호는 " + checkNum + " 입니다." +
+				"<br>" +
+				"해당 인증번호를 인증번호 확인란에 입력해주세요.";
 		
-//		try  {
-//			MimeMessage message = mailSender.createMimeMessage();
-//			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-//			helper.setFrom(setFrom);
-//			helper.setTo(toMail);
-//			helper.setSubject(title);
-//			helper.setText(content, true);
-//			mailSender.send(message);
-//			
-//		} catch (Exception e ) {
-//			e.printStackTrace();
-//		}
+		System.out.println("실제 시작하는 부분. try시작 부분");
+		try  {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+			System.out.println("여기는? 111 ");
+			helper.setFrom(setFrom);
+			helper.setTo(toMail);
+			helper.setSubject(title);
+			helper.setText(content, true);
+			System.out.println("여기는? 222 ");
+			mailSender.send(message);
+			System.out.println("여기는? 333 ");
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
 
 		// 생성한 인증번호 변수를 view로 반환. 생성한 인증번호의 경우 int 타입. ajax를 통한 요청으로 인해 view로 다시 반환할 때
 		// 데이터 타입은 String만 가능.
@@ -365,12 +370,26 @@ public class HomeController {
 	// 사용자뷰 공지사항 조회
 	@RequestMapping("/userNoticeRead.do")
 	public String userNoticeRead(Model model, HttpServletRequest request
-			, NoticeVO nvo, @RequestParam("n_no") int n_no) {
+			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam("n_hit") int n_hit ){
 		
 		System.out.println("view단에서 넘어온 조회할 글 번호: " + n_no);
-		nvo.setN_no(n_no);
-		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
+		System.out.println("view단에서 넘어온 조회수 확인: " + n_hit);
 		
+		// 공지사항 클릭하면 조히수도 올리도록 한다. update
+		n_hit += 1;
+		System.out.println("업데이트할 조회수 값은 얼마? " + n_hit);
+		nvo.setN_hit(n_hit);
+		nvo.setN_no(n_no);
+		int n = noticeDao.noticeHitUpdate(nvo);
+		if( n != 0) {
+			System.out.println("조회수 업뎃 성공");
+		} else {
+			System.out.println("조회수업뎃 실패");
+		}
+		
+		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
+		// 조회수 count되게 만들어야 함 클릭했을 때, 
+		// 현재 조회수 count를 가져가야 하나? 
 		
 		return "home/userNoticeRead";
 	}

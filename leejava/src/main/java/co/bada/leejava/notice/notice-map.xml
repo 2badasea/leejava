@@ -6,7 +6,7 @@
 <select id="noticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 
 	FROM NOTICE
-	ORDER BY N_NO
+	ORDER BY N_FIXED DESC, N_NO DESC
 </select>
 
 <!-- 개별 공지사항 조회 -->
@@ -65,6 +65,12 @@
 <update id="ajaxNoticeFixed" parameterType="co.bada.leejava.notice.NoticeVO">
 	UPDATE NOTICE 
 		SET N_FIXED = #{n_fixed} 
+	WHERE N_NO = #{n_no}
+</update>
+
+<update id="noticeHitUpdate" parameterType="co.bada.leejava.notice.NoticeVO">
+	UPDATE NOTICE 
+		SET N_HIT = #{n_hit} 
 	WHERE N_NO = #{n_no}
 </update>
 

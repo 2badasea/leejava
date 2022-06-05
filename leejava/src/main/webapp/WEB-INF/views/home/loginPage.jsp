@@ -410,7 +410,7 @@
 	$("#modalCloseBtn").on("click", function(){
 		$(".modal_container").css("display", "none");
 		$("#inputEmail").val('');
-// 		location.reload();
+		location.reload();
 		$("body").css("overflow", "auto");
 		
 	})

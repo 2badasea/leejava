@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.board.BoardMapper">
+	
+	
+<!-- 자유게시판 게시글들을 모두 불러온다. -->
+<select id="boardSelectList" resultType="co.bada.leejava.board.BoardVO">
+	SELECT * FROM BOARD
+</select>
+	
+<select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
+	SELECT * FROM BOARD WHERE B_NO = #{b_no}
+</select>
+
+<delete id="deleteBoard" parameterType="co.bada.leejava.board.BoardVO">
+	delete from board where b_no = #{b_no}
+</delete>
+
+<insert id="insertBoard" parameterType="co.bada.leejava.board.BoardVO">
+	insert 
+		into board 
+		values(
+			board_seq.nextval,
+			#{b_category},
+			#{b_title}, 
+			#{b_content},
+			sysdate,
+			#{b_writer},
+			#{b_hit},
+			#{b_like}
+		)
+</insert>
+
+<!-- 조회수 올리기 -->
+<update id="updateHitCount" parameterType="co.bada.leejava.board.BoardVO">		
+	UPDATE BOARD SET 
+				B_HIT = B_HIT + 1	
+			WHERE B_NO = #{b_no}	
+	</update>
+	
+<select id="getBoardListCnt" resultType="int">
+	SELECT	count(*) as listCnt		
+	FROM board
+</select>
+
+
+
+</mapper>

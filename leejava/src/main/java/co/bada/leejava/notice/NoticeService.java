@@ -19,5 +19,7 @@ public interface NoticeService {
 	int ajaxNoticeFixed(NoticeVO nvo); // 공지사항 개별 고정처리
 	
 	int noticeHitUpdate(NoticeVO nvo); // 공지사항 클릭 => 조회수 증가 업데이트
+	
+	List<NoticeVO> mainNoticeSelectList(); // 메인화면에 노출시킬 6가지. 
 
 }

@@ -76,4 +76,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.ajaxNewPasswordUpdate(mvo);
 	}
 
+	@Override
+	public MemberVO memberMyInfoList(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberMyInfoList(mvo);
+	}
+
 }

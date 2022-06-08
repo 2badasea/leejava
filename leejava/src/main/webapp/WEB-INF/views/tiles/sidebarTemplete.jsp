@@ -77,6 +77,9 @@ a {
 			<c:if test="${not empty session_user }">
 				<div class="sidebar_afterLogin">
 					<span>${session_user}님 오늘도 빡코딩!</span><br>
+					<c:if test="${session_user != null and session_nickname != '관리자' }">
+						<button type="button" id="myInfoBtn">My Info</button>
+					</c:if>
 					<button type="button" id="logoutBtn">로그아웃</button>
 				</div>
 			</c:if>
@@ -126,6 +129,12 @@ a {
 	$("#sidebar_memberJoinBtn").on("click", function(){
 		alert("회원가입 페이지로 이동하겠습니다.");
 		location.href='memberJoinTerms.do';
+	})
+	
+	// 개인정보 변경하는 공간으로 이동
+	$("#myInfoBtn").on("click", function(){ 
+		alert("개인정보 조호히하는 공간으로 이동"); 
+		location.href='userMyInfo.do';
 	})
 	
 	

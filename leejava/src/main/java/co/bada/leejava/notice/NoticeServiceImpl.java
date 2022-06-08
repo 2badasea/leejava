@@ -60,4 +60,10 @@ public class NoticeServiceImpl implements NoticeService {
 		return map.noticeHitUpdate(nvo);
 	}
 
+	@Override
+	public List<NoticeVO> mainNoticeSelectList() {
+		// TODO Auto-generated method stub
+		return map.mainNoticeSelectList();
+	}
+
 }

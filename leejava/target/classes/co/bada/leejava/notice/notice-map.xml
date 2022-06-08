@@ -9,6 +9,16 @@
 	ORDER BY N_FIXED DESC, N_NO DESC
 </select>
 
+<!-- 메인페이지에 노출시킬 공지사항 시간순 6가지 -->
+<select id="mainNoticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
+	SELECT * 
+	FROM 
+		( SELECT * 
+			FROM NOTICE 
+			ORDER BY N_WDATE DESC, N_NO DESC) 
+	WHERE ROWNUM BETWEEN 1 AND 6
+</select>
+
 <!-- 개별 공지사항 조회 -->
 <select id="noticeSelect" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 

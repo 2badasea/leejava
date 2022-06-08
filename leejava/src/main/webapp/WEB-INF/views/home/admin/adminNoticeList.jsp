@@ -114,7 +114,7 @@ tr > td {
 						<c:forEach items="${notices }" var="notice">
 							<tr class="noticeListTr">
 								<td>
-									<input type="checkbox" class="subCheckBtn" data-value="${notice.n_no }">
+									<input type="checkbox" class="subCheckBtn" data-value="${notice.n_no }" value="${notice.n_fixed }">
 								</td>
 								<td>
 									<input name="n_no" id="noticeNumber" value='<c:out value="${notice.n_no }"/>' >
@@ -291,5 +291,14 @@ tr > td {
 	});
 </script>
 <script>
+	// data-fixed 
+	$(document).ready(function(){
+// 		alert( $(".subCheckBtn").attr("data-fixed") );
+		
+		if ( $(".subCheckBtn").val() === "T" ) {
+			$("input[value='T']").parent().parent().css("backgroundColor", "#FFF0F5");		
+		}
+	})
+	
 </script>
 </html>

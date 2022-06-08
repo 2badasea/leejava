@@ -380,8 +380,7 @@
             <div class="inputPassword_upper">
                 <span id="passwordLabel">Password</span>
                 <div class="showLabel">
-                    <i class="fa-solid fa-eye" id="passwordEye"></i>
-                    <span id="showComment">비밀번호 보이기</span>
+                    <span id="showComment">&lt;비밀번호 보이기&gt;</span>
                 </div>
             </div>
             <input type="password" placeholder="Input your Password" id="password" name="password" >
@@ -420,13 +419,19 @@
 		$(".modal_container").css("display", "block");
 		$("body").css("overflow", "hidden");
 	});
-
-	// 눈알 모양 클릭하면 비밀번호 그대로 보이도록 하기  id값: passwordEye / passwordEyeSlash
-	$(".showLabel").on("click", function(){
-		$("#password").prop("type", "text");
-		$("#passwordEye").css("display", "none");
-		$("#showComment").html('<i class="fa-solid fa-eye-slash" id="passwordEyeSlah"></i>');
+	
+	// 비밀번호 입력란 text타입으로 보이게 설정
+	$("#showComment").on("click", function(){
+		if( $("#password").attr("type") === 'password' ) {
+			$("#password").attr("type", "text");
+	     	$("#showComment").text('비밀번호 가리기');
+		} else {
+			$("#password").attr("type", "password");
+	     	$("#showComment").text('비밀번호 보이기');
+		}
 	})
+
+	
 	
 	// enterkey로 로그인 기능 정의
 	$('#password').on('keypress', function(e) {

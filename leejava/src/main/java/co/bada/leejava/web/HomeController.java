@@ -41,9 +41,8 @@ public class HomeController {
 	NoticeService noticeDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
+	
+	// 홈으로 이동
 	@RequestMapping(value = "/home.do", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
@@ -54,6 +53,8 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		model.addAttribute("notices", noticeDao.mainNoticeSelectList());
+		
 		
 		return "home/home"; 
 		
@@ -370,7 +371,7 @@ public class HomeController {
 	// 사용자뷰 공지사항 조회
 	@RequestMapping("/userNoticeRead.do")
 	public String userNoticeRead(Model model, HttpServletRequest request
-			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam("n_hit") int n_hit ){
+			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam(value= "n_hit", required = false) int n_hit ){
 		
 		System.out.println("view단에서 넘어온 조회할 글 번호: " + n_no);
 		System.out.println("view단에서 넘어온 조회수 확인: " + n_hit);

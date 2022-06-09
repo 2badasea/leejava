@@ -2,8 +2,10 @@ package co.bada.leejava.board;
 
 import java.util.List;
 
+import co.bada.leejava.Pagination;
+
 public interface BoardMapper {
-	List<BoardVO> boardSelectList(); // 게시글 전체를 불러온다.
+	List<BoardVO> getBoardList(Pagination pagination); // 게시글 전체를 불러온다.
 	BoardVO boardSelect(BoardVO bvo);  // 특정 게시글 하나만 조회한다.
 	int deleteBoard(BoardVO bvo);  // 자유게시판 게시글 삭제 
 	int updateBoard(BoardVO bvo);  // 자유게시판 게시글 수정

@@ -34,8 +34,6 @@
 </head>
 <body>
 <h1>Hello ${session_nickname }!!</h1>
-<button id="boardInsertBtn">데이터 삽입 실험</button>
-
 <!-- flex박스를 활용해서 메인 페이지에 공지사항 게시글 5개 정도를 노출시킨다. more누르면 이동. -->
 <div class="wrapper">
 	<div class="bannerBox">

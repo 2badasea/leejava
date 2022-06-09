@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonObject;
 
+import co.bada.leejava.Search;
 import co.bada.leejava.notice.NoticeService;
 import co.bada.leejava.notice.NoticeVO;
 
@@ -42,13 +43,37 @@ public class NoticeController {
     @Resource(name = "noticeUploadPath")
     private String noticeUploadPath; 
 	
-	// 관리자 공지사항 페이지로 이동
+    
+    
+	// 관리자 공지사항 페이지로 이동. 검색요소로는 작성자(n_writer), 카테고리(n_category), 제목, 내용
 	@RequestMapping("/adminNoticeList.do")
-	public String adminNoticeList(Model model, HttpServletRequest request,HttpSession session) { 
+	public String adminNoticeList(Model model, @RequestParam(required = false, defaultValue = "1") int page 
+				,@RequestParam(required = false, defaultValue = "1") int range
+				,@RequestParam(required = false, defaultValue = "전체") String n_category 
+				,@RequestParam(required = false) String n_title
+				,@RequestParam(required = false) String n_content 
+				,@RequestParam(required = false) String n_writer
+				,Search svo) throws Exception { 
 		
-		// 페이지 이동했을 때 공지사항 리스트가 출력되어야 함. 
+		model.addAttribute("search", svo);
+		svo.setN_category(n_category);
+		svo.setN_title(n_title);
+		svo.setN_content(n_content);
+		svo.setN_writer(n_writer);
+		
+		int listCnt = 
+		
+		
+		
 		model.addAttribute("notices", noticeDao.noticeSelectList());
 		return "home/admin/adminNoticeList";
+	
+	
+
+		
+		
+		
+		
 	}
 	
 	// 공지사항 작성폼 이동

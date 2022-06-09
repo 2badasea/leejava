@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import co.bada.leejava.Search;
+
 // noticeDao 라는 이름으로 IOC 컨테이너에 등록된다. 
 // 컨트롤러에서 의존성 주입 가능. autowired하면 관련된 설정이 따라온다. 
 @Repository("noticeDao")
@@ -64,6 +66,18 @@ public class NoticeServiceImpl implements NoticeService {
 	public List<NoticeVO> mainNoticeSelectList() {
 		// TODO Auto-generated method stub
 		return map.mainNoticeSelectList();
+	}
+
+	@Override
+	public int getNoticeListCnt(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.getNoticeListCnt(svo);
+	}
+
+	@Override
+	public List<NoticeVO> noticeSearchSelect(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.noticeSearchSelect(svo);
 	}
 
 }

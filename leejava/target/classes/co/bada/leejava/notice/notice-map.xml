@@ -9,6 +9,37 @@
 	ORDER BY N_FIXED DESC, N_NO DESC
 </select>
 
+<!-- 전체 게시글 갯수를 조회하는 쿼리 => 페이징 처리를 하는  데 사용된다.-->
+<select id="getNoticeListCnt" resultType="int">
+	SELECT COUNT(*)
+	FROM NOTICE
+	<!-- 검색 요소로는 제목, 카테고리, 작성자, 내용으로 구성된다.  -->
+	<trim prefix="where" prefixOverrides="and | or">
+		<if test="n_title !='' ">AND N_TITLE LIKE '%'||#{n_title}||'%'</if>
+		<if test="n_category !='전체' ">AND N_CATEGORY LIKE '%'||#{n_category}||'%'</if>
+		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
+		<if test="n_content !='' ">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
+	</trim>
+</select>
+
+<select id="noticeSearchSelect" resultType="co.bada.leejava.notice.NoticeVO">
+	select * 
+	from ( select rownum rn, A.* 
+	from ( select * 
+	from notice
+	<trim prefix="where" prefixOverrides="and | or">
+		<if test="n_title != '' ">and n_title like '%'||#{n_title}||'%'</if>
+		<if test="n_category !='전체' ">and n_category like '%'||#{n_category}||'%'</if>
+		<if test="n_writer !='' ">and n_writer like '%'||#{n_writer}||'%'</if>
+		<if test="n_content !='' ">and n_content like '%'||#{n_content}'%'</if>
+	</trim>
+	order by n_fixed, n_no desc
+	) A
+	)
+	where rn between #{start} and #{end}
+</select>
+
+
 <!-- 메인페이지에 노출시킬 공지사항 시간순 6가지 -->
 <select id="mainNoticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 

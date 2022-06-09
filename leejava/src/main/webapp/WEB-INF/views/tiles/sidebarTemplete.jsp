@@ -11,8 +11,6 @@
 .sidebar {
 	background-color: #05AA6D;
 	min-height: 100vh; 
-	
-	
 }
 .sideWrap {
 	padding: 20px;
@@ -46,13 +44,11 @@
 	padding-left: 20px;
 	display: none;
 }
-li, ul {
+.sidebar_menu > li, ul {
 	margin-top: 20px;
-	color: white;
 }
-a {
+.sidebar_menu > a {
 	text-decoration: none;
-	color: white;
 }
 </style>
 </head>
@@ -94,11 +90,11 @@ a {
 				</c:if>
 				<li><a href="quizlet.do">퀴즐렛 학습하기</a></li>
 				<ul id="subMenu">커뮤니티
+					<li><a href="boardList.do" class="sideMenu">자유게시판</a></li>
 					<li><a href="#" class="sideMenu">QNA</a></li>
 					<li><a href="#" class="sideMenu">정보/팁</a></li>
 					<li><a href="#" class="sideMenu">읽을거리</a></li>
 					<li><a href="#" class="sideMenu">스터디/정기모임</a></li>
-					<li><a href="#" class="sideMenu">포럼/행사</a></li>
 					<li><a href="#" class="sideMenu">책/인강 리뷰</a></li>
 				</ul>
 				<li><a href="userNoticeList.do">공지사항</a></li>

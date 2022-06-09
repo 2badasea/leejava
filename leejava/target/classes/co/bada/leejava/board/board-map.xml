@@ -4,8 +4,10 @@
 	
 	
 <!-- 자유게시판 게시글들을 모두 불러온다. -->
-<select id="boardSelectList" resultType="co.bada.leejava.board.BoardVO">
-	SELECT * FROM BOARD
+<select id="getBoardList" resultType="co.bada.leejava.board.BoardVO">
+	SELECT * FROM (
+           SELECT b.*,ROW_NUMBER() OVER(ORDER BY b_no DESC) AS num FROM board b
+        ) WHERE num between 1 and 10;
 </select>
 	
 <select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
@@ -39,8 +41,8 @@
 	</update>
 	
 <select id="getBoardListCnt" resultType="int">
-	SELECT	count(*) as listCnt		
-	FROM board
+	SELECT	COUNT(*) AS listCnt		
+	FROM BOARD
 </select>
 
 

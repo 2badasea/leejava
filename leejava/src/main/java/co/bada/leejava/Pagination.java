@@ -2,6 +2,10 @@ package co.bada.leejava;
 
 import lombok.Data;
 
+/*
+ * 해당 클래스는 사용하지 않을 생각. mysql에 최적화되어 있다. 
+ */
+
 @Data
 public class Pagination {
 	private int listSize = 10;   // 초기값으로 목록개수를 10으로 셋팅. 한 페이지당 보여줄 게시글 갯수

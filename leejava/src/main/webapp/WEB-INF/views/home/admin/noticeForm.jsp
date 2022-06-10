@@ -54,7 +54,7 @@ select {
 					</td>
 					<th style="width: 200px;">카테고리</th>
 					<td style="width: 200px"><select name="n_category" id="n_category">
-							<option selected="selected" value="전체">전체</option>
+							<option selected="selected" value="all">전체</option>
 							<option value="긴급">긴급</option>
 							<option value="이벤트">이벤트</option>
 					</select></td>
@@ -87,6 +87,13 @@ select {
 		if( noticeTitle === null) {
 			alert("제목을 입력하세요");
 			$("#n_title").focus(); 
+			return false;
+		}
+		// 글내용도 not null로 해줘야 한다. 원활한 페이징 처리를 위해서.
+		var noticeContent = $("#summernote").val();
+		if( noticeContent === ""){
+			alert("빈 내용은 공지사항 등록이 불가능합니다.");
+			$("#summernote").focus();
 			return false;
 		}
 		

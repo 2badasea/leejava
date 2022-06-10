@@ -26,7 +26,7 @@ public class MemberController {
 		return "home/admin/adminMemberList";
 	}
 	
-	// 유저 개인정보 조회하는 곳으로 이동
+	// 유저 개인정보 조회하는 곳으로 이동 => 프로필 사진이랑 모두 추가해야 함. 
 	@RequestMapping("/userMyInfo.do")
 	public String userMyInfo(Model model, HttpServletRequest request,
 			MemberVO mvo, HttpSession session) { 

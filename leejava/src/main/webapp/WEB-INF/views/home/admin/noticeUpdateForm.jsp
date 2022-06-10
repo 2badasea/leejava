@@ -57,7 +57,7 @@ select {
 					<th style="width: 200px;">카테고리</th>
 					<td style="width: 200px">
 						<select name="n_category" id="n_category">
-							<option value="전체" id="categoryAll">전체</option>
+							<option value="all" id="categoryAll">전체</option>
 							<option value="긴급" id="categoryEmergency">긴급</option>
 							<option value="이벤트" id="categoryEvent">이벤트</option>
 						</select>
@@ -95,6 +95,13 @@ select {
 		if( noticeTitle === null) {
 			alert("제목을 입력하세요");
 			$("#n_title").focus(); 
+			return false;
+		}
+		// 글을 등록할 때와 마찬가지로 빈 내용은 등록이 불가능하게 한다.
+		var noticeContent = $("#summernote").val();
+		if( noticeContent === ""){ 
+			alert("빈 내용은 공지사항 등록이 불가능합니다."); 
+			$("#summernote").focus(); 
 			return false;
 		}
 		

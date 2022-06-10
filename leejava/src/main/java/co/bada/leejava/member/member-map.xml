@@ -82,7 +82,7 @@ resultType="co.bada.leejava.member.MemberVO">
 </update>
 
 <!-- 회원 개인 정보 조회 ( member테이블 + joinTerms 테이블 조인시킴. 나중에 정보 더 추가될 수도 있음. -->
-<select id="memberMyInfoList">
+<select id="memberMyInfoList" resultType="co.bada.leejava.member.MemberVO">
 	SELECT  * 
 		FROM MEMBER M INNER JOIN JOINTERMS  J
 		ON M.M_EMAIL = J.M_EMAIL

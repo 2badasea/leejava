@@ -2,10 +2,12 @@ package co.bada.leejava;
 
 import java.util.Date;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 // 사실상 여기에 모둔 vo객체 변수들을 저장해도 무방.
-@Data
+@Getter
+@Setter
 public class Search extends Paging {
 	
 	// 공지사항 notice

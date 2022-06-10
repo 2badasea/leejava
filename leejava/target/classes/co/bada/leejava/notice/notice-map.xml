@@ -16,27 +16,28 @@
 	<!-- 검색 요소로는 제목, 카테고리, 작성자, 내용으로 구성된다.  -->
 	<trim prefix="where" prefixOverrides="and | or">
 		<if test="n_title !='' ">AND N_TITLE LIKE '%'||#{n_title}||'%'</if>
-		<if test="n_category !='전체' ">AND N_CATEGORY LIKE '%'||#{n_category}||'%'</if>
-		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
+		<if test="n_category !='all' ">AND N_CATEGORY LIKE '%'||#{n_category}||'%'</if>
 		<if test="n_content !='' ">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
+		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
 	</trim>
 </select>
 
 <select id="noticeSearchSelect" resultType="co.bada.leejava.notice.NoticeVO">
-	select * 
-	from ( select rownum rn, A.* 
-	from ( select * 
-	from notice
+	SELECT * 
+	FROM ( SELECT ROWNUM RN, A.* 
+	FROM ( SELECT * 
+	FROM NOTICE
 	<trim prefix="where" prefixOverrides="and | or">
-		<if test="n_title != '' ">and n_title like '%'||#{n_title}||'%'</if>
-		<if test="n_category !='전체' ">and n_category like '%'||#{n_category}||'%'</if>
-		<if test="n_writer !='' ">and n_writer like '%'||#{n_writer}||'%'</if>
-		<if test="n_content !='' ">and n_content like '%'||#{n_content}'%'</if>
+		<if test="n_title != '' ">AND N_TITLE LIKE '%'||#{n_title}||'%'</if>
+		<if test="n_category !='all' ">AND N_CATEGORY like '%'||#{n_category}||'%'</if>
+		<if test="n_content !='' ">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
+		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
 	</trim>
-	order by n_fixed, n_no desc
+	ORDER BY N_FIXED DESC, N_NO DESC	
 	) A
 	)
-	where rn between #{start} and #{end}
+	WHERE RN BETWEEN #{start} AND #{end} 
+		<!-- start, end는 paging클래스에서 쿼리문을 위해 선언됐던 것 -->
 </select>
 
 

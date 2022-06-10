@@ -127,7 +127,7 @@
 		location.href='memberJoinTerms.do';
 	})
 	
-	// 개인정보 변경하는 공간으로 이동
+	// 개인정보 조회하는 공간으로 이동
 	$("#myInfoBtn").on("click", function(){ 
 		alert("개인정보 조호히하는 공간으로 이동"); 
 		location.href='userMyInfo.do';

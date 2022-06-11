@@ -46,7 +46,7 @@ resultType="co.bada.leejava.member.MemberVO">
 
 <!-- 회원탈퇴의 경우 상태만 변경하고, 스케줄러나 프로지서를 통해 일주일 뒤에 완전 삭제가능한지 체크 -->
 <delete id="memberDelete" parameterType="co.bada.leejava.member.MemberVO">
-	DELETE FROM MEMBER WHERE M_EMAIL = #{m_email}
+	UPDATE MEMBER SET M_STATUS = 'WITHDRAWL' WHERE M_EMAIL = #{m_email}
 </delete>
 
 <select id="memberEmailCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">

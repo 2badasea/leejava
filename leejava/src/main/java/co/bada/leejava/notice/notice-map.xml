@@ -17,7 +17,7 @@
 	<trim prefix="where" prefixOverrides="and | or">
 		<if test="n_title !='' ">AND N_TITLE LIKE '%'||#{n_title}||'%'</if>
 		<if test="n_category !='all' ">AND N_CATEGORY LIKE '%'||#{n_category}||'%'</if>
-		<if test="n_content !='' ">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
+		<if test="n_content !=''">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
 		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
 	</trim>
 </select>
@@ -30,7 +30,7 @@
 	<trim prefix="where" prefixOverrides="and | or">
 		<if test="n_title != '' ">AND N_TITLE LIKE '%'||#{n_title}||'%'</if>
 		<if test="n_category !='all' ">AND N_CATEGORY like '%'||#{n_category}||'%'</if>
-		<if test="n_content !='' ">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
+		<if test="n_content !=''">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
 		<if test="n_writer !='' ">AND N_WRITER LIKE '%'||#{n_writer}||'%'</if>
 	</trim>
 	ORDER BY N_FIXED DESC, N_NO DESC	
@@ -38,6 +38,7 @@
 	)
 	WHERE RN BETWEEN #{start} AND #{end} 
 		<!-- start, end는 paging클래스에서 쿼리문을 위해 선언됐던 것 -->
+		<!-- 내용이 ull인경우 조회가 되장ㄶㅇㅁ.  -->
 </select>
 
 

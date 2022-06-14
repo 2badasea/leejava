@@ -196,7 +196,7 @@ public class NoticeController {
 		FileCopyUtils.copy(fileData, target);
 		return savedName;
 	}
-
+	// logger.info 메서드를 통해 로그기록 봐야 한다.
 	// 첨부파일 다운로드 로직 구현하기
 	@RequestMapping("/noticeFileDownload.do")
 	public void noticeFileDownload(Model model, HttpServletRequest request, HttpServletResponse response)

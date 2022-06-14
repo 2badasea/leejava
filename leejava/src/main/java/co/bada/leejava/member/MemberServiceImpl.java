@@ -82,4 +82,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.memberMyInfoList(mvo);
 	}
 
+	@Override
+	public int ajaxNicknameUpdate(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxNicknameUpdate(mvo);
+	}
+
 }

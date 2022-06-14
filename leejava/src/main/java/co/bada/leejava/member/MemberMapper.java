@@ -15,4 +15,5 @@ public interface MemberMapper {
 	List<MemberVO> v_memberSelectList(); 	// 뷰에 있는 회원정보 리스트 가져오기. 회원목록 페이지
 	int ajaxNewPasswordUpdate(MemberVO mvo);  // 새로운 비밀번호 변경 => salt값, 다이제스트암호값 업데이트
 	MemberVO memberMyInfoList(MemberVO mvo); // 단순 개인정보랑 약관동의 여부 모두 체크. 
+	int ajaxNicknameUpdate(MemberVO mvo); // 개인정보 페이지 => 닉네임 변경 신청
 }

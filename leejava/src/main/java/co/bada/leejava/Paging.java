@@ -47,7 +47,7 @@ public class Paging {
 			this.next = false;
 		}
 	}
-
+	//페이징 ㅓ리를 해야 ㅎ마 
 	public boolean isPrev() {
 		return prev;
 	}

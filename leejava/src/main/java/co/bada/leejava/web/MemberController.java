@@ -1,10 +1,13 @@
 package co.bada.leejava.web;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -12,15 +15,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
+import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 public class MemberController {
@@ -51,14 +63,51 @@ public class MemberController {
 		return "home/userMyInfo";
 	}
 	   
-	// 개인정보 페이지 프로필 이미지 사진 변경
-	@PostMapping("/ajaxProfileUpdate.do")
-	public void ajaxProfileUpdate(MultipartFile[] uploadFile) {
+	// 개인정보 페이지 프로필 이미지 사진 변경.
+	// 서버에서 뷰로 반환되는 정보가 한글일 경우 데이터가 깨질 수 있어서 produces속성을 추가하여 뷰로 전해줄 데이터를 utf8로 인코딩 해주는 작업을 한다. 
+	@PostMapping(value = "/ajaxProfileUpdate.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<AttachImageVO>> ajaxProfileUpdate(MultipartFile[] uploadFile) {
 			// MultipartFile[] => 여러 파일을 받을 때 사용. 이렇게 해놓고 한 개만 업로드 해도 상관없다. 
 			// 그릐고 for문으로 돌리면 된다. 나도 [] 형태로 수정.  
 		
 		// 나중에 log4j 설정하면 sysout은 사용하지 말 것. 
 		System.out.println("ajaxProfileUpdate.do POST......");
+		
+		/* 이미지 파일 체크 */ 
+		for(MultipartFile multipartFile : uploadFile) {
+				
+			// 전달받은 파일을 File객체로 만들어주고 File 참조 변수에 대입 
+			File checkfile = new File(multipartFile.getOriginalFilename());
+			// MIME TYPE을 저장할 String타입의 type변수를 선언하고  null로 초기화
+			String type = null;
+			// Files의 probeContenttype()메서드를 호출하여 반환하는 MIME TYPE 데이터를 type변수에 대입
+			// probeContentType은 파라미터로 전달받은 파일의 MIME TYPE을 문자열로 반환해주는 메서드.
+			// 파라미터로는 Path()객체를 전달받아야 한다. => MIME TYPE 호가인 대상이자 File 객체인
+			// checkfile을 Path 객체로 만들어 주어야 하고, 이를 위해 File클래스의 toPath()메서드를 사용
+			try {
+				type = Files.probeContentType(checkfile.toPath());
+				System.out.println("MIME TYPE: " + type);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// 반환되는 MIME TYPE에 대한 정보가 image로 시작하는지 판단한다. 
+			if( !type.startsWith("image")) {
+				// 이 부분이 실행되었다는 것은 image가 아니라는 것. -> 메서드를 끝내도록 할 것이다. 
+				// 전달받은 파일이 image가 아니기 때문에 파일에 대한 정보를 뷰에 전달해줄 필요는 없다. 
+				// 하지만 명령이 잘못되었단 것을 알려주기 위해 response의 상태코드(status)를 400으로 반환
+				// 전달 해줄 파일의 정보는 없지만, 반환타입이 ResponseEntity<List<AttachImageVO>> 이기에 
+				// ResponseEntity 객체에 첨부해줄 값이 null인 List<AttachImageVO> 타입의 참조 변수를 선언
+				List<AttachImageVO> list = null; 
+				// 상태코드가 400인 ResponseEntity 객체를 인스턴스화 하여 이를 반환해주는 코드를 작성. 
+				return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+					// view단에 가서 ajax속성으로 error와 콜백함수 추가.
+			}
+			
+			
+		}
+		
 		// 업로드할 프로필 사진을 저장할 경로 설정
 		String uploadFolder = "C:\\leejava\\profile"; 
 		
@@ -68,11 +117,13 @@ public class MemberController {
 		Date date = new Date();  
 		// sdf가 가지고 있는 format()메서드를 사용 => 인스턴스를 생성할 때 어떤 형식으로 날짜 정보를 제공할지 설정해놓음
 		String str = sdf.format(date); 
+		System.out.println("경로구분자로 가공되기 전 str의 값: " + str);
 		// 현재 str변수에는 날짜 사이에 '-'문자열 데이터가 저장되어 있음. replace()로 교체
 		// File클래스에서 실행되는 환경에 따라 그에 맞는 경로 구분자를 반환하는 정적(static) 변수인
 		// separator가 존재. => '-' 문자열을 String클래스의 replace() 메서드를 이용하여
 		// File.separator로 변경해준다.  / 경로구분자를 말한다. 
 		String profilePath = str.replace("-", File.separator);
+		System.out.println("'-'을 경로구분자로 변환 후 str의 값: " + profilePath);
 		// File타입의 uploadPath 변수를 통하여 우리가 원하는 경로에 날짜별로 디렉토리를 생성하는 객체를 생성한다.
 		File uploadPath = new File(uploadFolder,profilePath);
 		
@@ -88,50 +139,74 @@ public class MemberController {
 			uploadPath.mkdirs();
 		}
 		
+		// 이미지 정보 담는 객체
+		List<AttachImageVO> list = new ArrayList();
+		
 		// 실제 파일을 폴더에 저장하기 위해서 transperTo() 메서드를 사용한다. 
 		// 사용방법은 전달받은 파일인 MultipartFile 객체에 저장하고자 하는 위치를 지정한
 		// File객체를 파라미터로 하여 transperTo() 메서드를 호출하면 된다. 
 		// MultipartFile.transferTo(File detination); 대충 이런 형태 
 		
-		// 향상된 for문
+		// 본격적으로 업로드한 파일에 대해 다루기 시작. 
+		// 향상된 for문 // 첨부파는 이미지가 여러 개일 경우=> for문으 동시에 업로드 처리한다.
 		for(MultipartFile multipartFile : uploadFile) {
+			
+			// 이미지 정보 객체 
+			AttachImageVO avo = new AttachImageVO(); 
 			// 파일 이름
 			String uploadFileName = multipartFile.getOriginalFilename();
-			
+			// setter 메서드를 사용하여 각 정보를 avo 객체에 저장
+			avo.setFileName(uploadFileName);
+			avo.setUploadPath(profilePath);
 			// UUID 적용이 된 파일이름으로 변경
 			String uuid = UUID.randomUUID().toString();
-			
+			// avo객채ㅔ에 uuid도 저장
+			avo.setUuid(uuid);
 			uploadFileName = uuid + "_" + uploadFileName;
-			
 			// 파일 위치, 파일 이름을 합친 File 객체 
 			File saveFile = new File(uploadPath, uploadFileName);
-			
-			
-			
 			// 실제 파일 저장이 일어나는 곳.
 			try {
+				// transperTo()의 경우 IOException, IllegalStateException을 일으킬 가능성이 있어서 
+				// 이클립에서 try-catch 문을 사용하라는 경고 문이 뜬다. 
 				multipartFile.transferTo(saveFile);
+				
+				/* 썸네일 이미지 생성(ImageIO) */
 				// ImageIO를 통해 썸네일 이미지를 생성하기 위해 원본 파일과 썸네일 파일 객체가 필요
 				// 썸네일 파일 객체는 원본 파일과 구분하기 위해 앞에 's_'를 붙이고 생성함.
-				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
+//				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
+//				System.out.println("파일 객체 조회: " + thumbnailFile);
 				// 원본 이미지 파일을 ImageIO의 read() 메서드를 호출하여 BufferedImage 타입으로
 				// 변경해준 뒤 BufferedImage 타입의 참조 변수를 선언하여 해당 변수에 대입해준다. 
 				// (bo_image 변수는 Buffered original image라는 의미로 작성=> 원하는 변수명 사용해도 된다) 
-				BufferedImage bo_image = ImageIO.read(saveFile); 
+//				BufferedImage bo_image = ImageIO.read(saveFile); 
+//				System.out.println("bo_image의 정체: " + bo_image);
+				
+				
+				// 높이와 너비에 대해 비율을 하드코딩 해서 맞춰줄 경우, 특정 이미지의 경우 보기가 불편하게 변경될 수 있음.
+				// 그래서 전체적으로 동일한 비율로 썸네일 이미지를 생성하기 위해 다음과 같이 코드를 작성한다. 
+				// ratio가 double타입이기 때문에 나눈 값이 double타입이된다. 파라미터로 부여할 형은 int형이기 때문에 형변환
+				/* 비율 */
+//				double ratio = 3; 
+				/* 높이 널이 */ 
+//				int width = (int) (bo_image.getWidth() / ratio);
+//				int height = (int) (bo_image.getHeight() / ratio); 
+				
 				// BufferedImage 생성자 사용 => 썸네일 이미지인 BuffereImage 객체를 생성해주고
 				// 참조 변수에 대입한다. => 일종의 크기를 지정하여 흰색 도화지를 만드는 과정이다. 
 				// 사용한 BufferedImage 생성자는 매개변수로  넓이, 높이,'생성될 이미지 타입'을 작성하면 된다. 
-				BufferedImage bt_image = new BufferedImage(300, 500, BufferedImage.TYPE_3BYTE_BGR);
+//				BufferedImage bt_image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+//				System.out.println("bt_image 조회: " + bt_image);
 				// 썸네일 BufferedImage 객체(bt_image)에서 createGraphics() 메서드 호출을 통해
 				// Graphic2D 객체를 생성 해준 후 Graphic2D 타입의 참조 변수에 대입한다.
 				// ( 앞서 만든 도화지에 그림을 그릴 수 있도록 하는 과정 ) 
 				// 썸네일 BufferedImage 객체에 그림을 그리기 위해 Graphic2D 객체를 생성한다. 
 				// Graphic2D 메서드를 통해 조작을 하게 되면 그 결과가 썸네일 BufferedImage 객체에 적용이 된다. 
-				Graphics2D graphic = bt_image.createGraphics(); 
-				
+//				Graphics2D graphic = bt_image.createGraphics(); 
+//				System.out.println("graphic 이름 확인: " + graphic);
 				// drawImage 메서드를 호출하면 원본 이미지를 썸네일 BufferedImage에 지정한 크기로 변경하여
 				// 왼쪽 상단 "0,0" 좌표부터 그려준다. (마찬가지로 도화지에 이미지를 그리는 과정이라고 생각하면 된다) .
-				graphic.drawImage(bo_image, 0, 0, 300, 500, null); 
+//				graphic.drawImage(bo_image, 0, 0, width, height, null); 
 				// 첫 번째 인자는 그려놓고자 하는 이미지
 				// 2, 3 번째 인자는 그림을 어느 좌표부터 그릴 것인지에 대한 x값과 y값이다. 
 				// 4, 5 번째 인자 값은 첫 번째 인자로 작성한 이미지의 '넓이'와 '높이' 
@@ -140,22 +215,50 @@ public class MemberController {
 				// 이미지를 업데이트 시키는 역할을 한다. 일반적인 경우 null을 전달하면 된다. 
 				
 				//제작한 썸네일 이미지를 이제 파일로 만들어준다. ImageIO의 write() 메소드를 호출하여 파일로 저장. 
-				ImageIO.write(bt_image, "jpg", thumbnailFile);
-				// 첫 번째 인자는 파일로 저장할 이미지. 우리가 만든 썸네일 이미지를 인자로전달한다. 
+//				ImageIO.write(bt_image, "jpg", thumbnailFile);
+				// 첫 번째 인자는 파일로 저장할 이미지. 우리가 만든 썸네일 이미지를 인자로 전달한다. 
 				// 두 번째 인자는 어떠한 이미지 형식으로 저장할 것인지 String타입으로 작성한다. 
 				// 세 번째 인자는 우리가 앞서 썸네일 이미지가 저장될 경로와 이름으로 생성된 File객체(thumbnailFile) 객체를 부여
 				
 				// 복잡해 보이지만 전체적인 과정은 java내에서 크기를 지정한 이미지를 만들고, 그 이미지에 맞게 원본 이미지를
 				// 그려 놓은 다음 해당 이미지를 파일로 저장한 것이다. 
+//				System.out.println("성공");
 				
 				
-				System.out.println("성공");
+				/* 방법 2 썸네일 라이브러리를 pom.xml에 추가하여 활용하는 방식*/
+				// 두 방법 중 하나를 주석처리해서 사용. 
+				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
+				
+				BufferedImage bo_image = ImageIO.read(saveFile);
+				
+					// 비율
+					double ratio = 3; 
+					// 높이 넓이
+					int width = (int) (bo_image.getWidth() / ratio);
+					int height = (int) (bo_image.getHeight() / ratio); 
+					
+				
+				Thumbnails.of(saveFile).size(width, height).toFile(thumbnailFile);
+				// ImageIO를 통한 코드 작성보다 훨씬 간단히 생성 가능. thumbnailator 라이브러리는 이미지 생성에
+				// 세부적 설정을 할 수 있는 메서드들을 제공. 
+				
+				
 			} catch (Exception e) {
 				System.out.println("실패");
 				e.printStackTrace();
 			}
+			// 이미지 정보가 저장된 AttachImageVO객체를 List의 요소로 추가해준다. 
+			// 뷰로부터 전달받은 만큼 AttachImageVO 객체가 생성되어 각 정보를 저장한 후 해당 객체가
+			// List의 요소로 추가되게 된다. 
+			list.add(avo);
 			
 		}
+		
+		// ResponseEntity 참조 변수를 선언하고 생성자로 초기화한다. 
+		// Http의 body에 추가될 데이터는 List<AttachImageVO> 이고, 상태코드가 OK(200)인 ResponseEntity객체가 생성된다. 
+		ResponseEntity<List<AttachImageVO>> result = new ResponseEntity<List<AttachImageVO>>(list, HttpStatus.OK);
+		
+		return result;
 		
 //		// 향상된 for문으로 하는 방식
 //		for(MultipartFile multipartFile : uploadFile) { 
@@ -174,6 +277,40 @@ public class MemberController {
 		
 		
 		
+	} // url매핑 끝 부분. 
+	
+	// 업로드 이미지 출력 구현 부분을 위한 메서드. by 김밤파
+	// ResponseEntity 객체를 통해 body에 byte[]배열을 보내야 하기 때문에 다음과 같은 반환타입으로 작성.
+	// 파라미터의 경우, '파일 경로' + '파일 이름'을 전달받아야 하기 때문에 String타입의 fileName변수를 파라미터로 부여
+	// url 경로를 통해 변수와 변수 값을 부여할 수 있도록 GetMapping 어노테이션을 사용. 
+	@GetMapping("/display.do")
+	public ResponseEntity<byte[]> getImage(String fileName){
+		System.out.println("fileName의 값: " +fileName);
+		File file = new File("c:\\leejava\\profile" + fileName); 
+		System.out.println("File객체의 값: " + file);
+		
+		ResponseEntity<byte[]> result = null;
+		try {
+			// 대상 이미지 파일의 MIME TYPE을 얻기 위해 이전 포스팅에서 사용한 Files 클래스의 
+			//proveContentType() 메서드를 사용하낟. => 해당 메서드의 경우 IOExeption을 일으킬 가능성이 큰 메서드이기에
+			// try catch문을 작성해준다. 
+			// ResponseEntity에 Response의 header와 관련된 설정의 객체를 추가해주기 위해서 
+			// HttpHeaders를 인스턴스화 한 후 참조 변수를 선언하여 대입한다.
+			HttpHeaders header = new HttpHeaders();
+			// header의 'Content-type' 속성 값에 이미지 파이 MIME TYPE을 추가해주기 위해서 HttpHeader클래스에 있는 add()메서드 사용2
+			// add() 메서드의 첫 번째 파라미터에는 Response header의 '속성명', 두 번째 파라미터에는 해당 '속성명'에 부여할 값(value)를 삽입한다. 
+			header.add("Content-type", Files.probeContentType(file.toPath()));
+			// 대상 이미지 파일, header객체, 상태 코드를 인자 값으로 부여한 생성자를 통해 ResponseEntity 객체를 생성하여
+			// 앞서 선언한 ReponseEntity 참조 변수에  대입한다. 
+			// 첫 번째 파라미터는 출력시킬 대상 이미지 데이터 파일이라고 말했는데, FilesCopyUils.copyToByteArray(file)코드를 작성함.
+			// FileCoyUtils 클래스는 파일과 stream 복사에 사용할 수 있는 메서드를 제공하는 클래스다. 
+			// 해당 클래스 중에서 copyToByteArray() 메서드는 파라미터로 부여한는 File객체 즉, 대상 파일을 복사하여
+			// Byte배열로 변환해주는 클래스다.   // 추가 설명은 메모 80번. 
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return result; 
 	}
 	
 	// 개인정보 페이지에서 닉네임 변경 신청
@@ -187,8 +324,16 @@ public class MemberController {
 		System.out.println("ajax를 통해 들어온 새로운 닉네임: " + m_nickname);
 		System.out.println("ajax로 넘어온 전역변수 사용자 이메일: " + m_email );
 		
-		String responseText = "압도적 감사!";
-		
+		mvo.setM_email(m_email);
+		mvo.setM_nickname(m_nickname);
+		int n = memberDao.ajaxNicknameUpdate(mvo);
+		System.out.println("n상태값: " + n);
+		String responseText = "";
+		if( n != 0) {
+			responseText = "YES";
+		} else {	
+			responseText = "NO";
+		}
 		return responseText;
 	}
 	

@@ -33,6 +33,6 @@ public class Search extends Paging {
 	private int b_hit; // 조회수
 	private int b_like;  // 좋아요 수
 	
-	
+	// 여기에다가 자유게시판 영역에 들어갈 vo변수들을 선언해야 함.
 	
 }

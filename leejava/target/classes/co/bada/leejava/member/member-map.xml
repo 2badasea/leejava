@@ -21,8 +21,8 @@ resultType="co.bada.leejava.member.MemberVO">
 			AND M_PASSWORD = #{m_password}
 		</if>
 </select>
-
 <!-- 이메일 아이디를 통해 salt값을 조회 -->
+<!--  logger.Info 릃호출해서 봐야한다 -->
 <select id="selectSalt" parameterType="co.bada.leejava.member.MemberVO" resultType="string">
 	SELECT M_SALT 
 	FROM MEMBER 
@@ -72,7 +72,6 @@ resultType="co.bada.leejava.member.MemberVO">
 		#{m_promotion}
 		)
 </insert>
-
 <!-- 새로운 비밀번호로 업데이트하는 구문 -->
 <update id="ajaxNewPasswordUpdate" parameterType="co.bada.leejava.member.MemberVO">
 	UPDATE MEMBER 
@@ -88,6 +87,13 @@ resultType="co.bada.leejava.member.MemberVO">
 		ON M.M_EMAIL = J.M_EMAIL
 		WHERE M.M_EMAIL = #{m_email}
 </select>
+
+<!-- 개인정보 페이지 닉네임 변경 신청 -->
+<update id="ajaxNicknameUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_NICKNAME = #{m_nickname} 
+	WHERE M_EMAIL = #{m_email}
+</update>
 
 
 

@@ -16,5 +16,5 @@ public class AttachImageVO {
 	private String fileName;
 	 
 	// 이미지 정보가 누구의 이미지에 관한 정보인지 
-	private String m_emailProfile;
+	private String m_email;
 }

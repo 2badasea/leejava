@@ -57,7 +57,7 @@
 	<div class="sideWrap">
 		<div class="sidebar_logo" align="center">
 				<a href="home.do">
-				<img src="resources/image/루피.jpeg" class="sidebar_logo_image">
+				<img src="resources/image/loopy.jpeg" class="sidebar_logo_image">
 				<div class="sidebarSiteName">
 					<span style="font-size: 20px;">LEEJAVA</span>
 				</a>

@@ -166,9 +166,20 @@ label {
 	// 프로필 이미지 업로드를 위한 스크립트 작성문. => 나중에 테스트 하고 불필요한 console.log나 alert() 지우기
 	$("input[type='file']").on('change', function(e){ 
 		
+		// 메모 108. 이미지가 등록될 때 파일이 이미 존재를 한다면 삭제를 처리한 후 서버에 이미지 업로드 요청을 수행하도록 한다. 
+			// 기존 이미지 파일이 저장되었을 때 삭제 요청 => 업로드가 앞서 이루어졌는지 어떻게 판단? => 
+			// 미리 보기 태그가 존재하는지를 통해서 판단가능. if문을 활용하여 이미지 태그의 존재 유무에 따라 deleteFile()
+			// 메서드를 호출하도록 한다. 
+		/* 이미지 존재시 삭제 */
+		if( $(".imgDeleteBtn").length > 0){ 
+			deleteFile();
+		}
+			
 		// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
 		let formData = new FormData();
-		let fileInput = $("input[name='m_profilefile']"); // label태그에서선택한 요소를 가져온 것 
+		let fileInput = $("input[name='m_profilefile']"); // label태그에서 선택한 요소를 가져온 것 
+		// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileLIst객체 형태로 files속성에 저장된다. 
+			// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조하면 된다( .files 형태로 호출)
 		let fileList = fileInput[0].files; 
 		let fileObj = fileList[0];
 		
@@ -201,19 +212,18 @@ label {
 	    	type : 'POST',
 	    	dataType : 'json',  // 서버로부터 반환받을 데이터타입
 	    	success: function(result){
+	    		console.log("서버로부터 돌아온 ajax 통신 result값: " + result);
 	    		console.log(result);
+	    		showUploadImage(result);
 	    	},
 	    	error: function(result){
 	    		alert("이미지 파일이 아닙니다.");
 	    	}
 		});	
-		
-		console.log("우선은 파일을 선태갛자마자 일단 pc에 저장");
-		console.log("그리고 최종 등록을 누르면 => db에 저장되는 방식으로 할 것.");
 	})
 	
 	// 업로드할 이미지 파일의 형식과 용량이 알맞은지 체크. 만약 아니라면 경고창과 함께 onchage이벤트에서 벗어나도록
-	let regex = new RegExp("(.*?)\.(jpg|png|jpeg)$");
+	let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
 	let maxSize = 1048576; //1MB
 	
 	function fileCheck(fileName, fileSize){ 
@@ -261,15 +271,8 @@ label {
 				m_email : m_email
 			},
 			success: function(responseText){
-				if( responseText === "YES"){
-					alert("정상적으로 변경되었습니다.");
-					console.log("변경 성공");
-					location.reload();
-				} else {
-					alert("변경에 실패했습니다.");
-					console.log("변경실패"	);
-					location.reload();
-				}
+				alert(responseText);
+				location.reload();
 			},
 			error: function(responseText){
 				console.log("통신에러");
@@ -279,8 +282,82 @@ label {
 		})
 	})
 	
+	// 프로필 이미지 출력 메서드 => ajax success속성의 콜백함수에서 호출된다. 
+	function showUploadImage(uploadResultArr){
+		// success콜백함수가 실행됐다는 건 업로드 이미지 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
+			// 가능성이 낮지만 혹여나 데이터를 전달받지 못 했을 경우를 가정하여 데이터를 검증하는 코드를 추가
+		/* 전달받은 데이터 검증*/ 
+		if(!uploadResultArr || uploadResultArr.length == 0){ return }; 
+		
+		let uploadResult = $("#uploadResult");
+		// 서버에서 뷰로 반환 => List타입의 데이터를 전송. 뷰에서는 해당 데이터를 배열 형태로 전달받는다. 
+			// 현재 한 개의 이미지 파일만 처리를 하기 때문에 데이터에쉽게 접근할 수 있도록 변수 obj를 선언하여 서버로부터
+			// 전달받은 배여 ㄹ데이터의 첫 번째 요소로 초기화
+		let obj = uploadResultArr[0];
+		let str = "";
+		// str변수에 추가되어야 할 태그 코드들을 문자열 값 형태로 추가해주기 전 한 가지 변수를 하나 더 추가 => 
+			// 이미지 출력을 요청하는 url매핑 메서드("/display")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
+// 		let fileCallPath = obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName;
+		// 위에 코드처럼 설정하는 경우, browser에서  '\' 때문에 경롤를 찾지 못한다. 이미치 출력 url을 
+			// 테스트할 대 파라미터 값의 구분자로서 '/'를 사용해야 정상적으로 출력이 되었다. 그래서 \를 /로 변경!
+// 		let fileCallPath = encodeURIComponent(obj.uploadPath.replace(/\\/g,'/') + "/s_" + obj.uuid + "_" + obj.fileName);
+			// 대상 String 문자열 중 모든 '\'를 '/'로 변경해준다는 의미. 자바스크립트에서는 replaceAll과 
+				// 같은 메서드가 없기 때문에 replace메서드의 인자 값으로 정규표현식을 사용하여 
+				// 치환 대상 모든 문자를 지정할 수 있다. 
+				// 그리고 UTF-8로 인코딩을 자동응로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
+				// 덧붙여서, encodeURIComponent() 메서든느 '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
+				// 사용 안 해도 해당 URI로 동작이 된다. 
+		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			
+		// str 변수에 추가되어야 할 태그 코드인 문자열 값들을 저장해준다. 한 번에 값들을 다 넣어도 상관은 없음. 
+		str += "<div id='result_card'>";
+		str += "<img src='display.do?fileName=" + fileCallPath + "'>";
+		// 삭제할 파일의 경로에 대한 데이터가 담긴 'fileCallPath'를 data속성을 통해 심어둔다.  
+		str += "<div class='imgDeleteBtn' data-file='"+ fileCallPath +"'>x</div>";
+		// 메모110~119 참조. 프로필 이이지 등록 시점에 이미지 정보<input>태그가 추가되도록 작업. 
+		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+		str += "</div>";
+		// 마지막으로 태그 코드가 담긴 문자열(str)값을 uploadResult 태그에 append() 명령 혹은 
+			// html() 메서드를 호출하여 추가해준다. 
+		uploadResult.append(str); 
+			
+	}
 	
+	/* 이미지 삭제 버튼 동작 */ 
+	// 스크립트에 의해 동적으로 추가되는 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
+	$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
+		deleteFile();
+	})	
 	
+	/* 업로드 이미지 파일 삭제 메서드 */
+	function deleteFile(){
+		// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터 대입. 
+			// 나머지 하나는 이미지 파일 업로드 시 출력되는 미리 보기 이미지를 감싸고 있는 result_card<div>태그
+		let targetFile = $(".imgDeleteBtn").data("file");
+		let targetDiv = $("#result_card");
+		// 메모 105. 파일 삭제를 요청하는 ajax 코드를 작성한다.
+		$.ajax({
+			url: "deleteFile.do",
+			data : {
+				fileName : targetFile
+			},
+			dataType : "text",
+			type: "POST",
+			success : function(result){
+				console.log(result);
+				// 파일 삭제를 성공한 경우 미리 보기 이미지를 삭제해주고, 파일<input> 태그를 초기화 해준다. 
+				targetDiv.remove();
+				$("input[type='file']").val("");
+			},
+			error: function(result){
+				console.log(result);
+				alert("파일을 삭제하지 못 하였습니다.");
+			}
+		})
+	
+	}
 	
 	
 </script>

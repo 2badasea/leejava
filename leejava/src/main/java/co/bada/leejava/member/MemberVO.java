@@ -1,5 +1,8 @@
 package co.bada.leejava.member;
 
+import java.util.List;
+
+import co.bada.leejava.AttachImageVO;
 import lombok.Data;
 
 @Data
@@ -18,4 +21,7 @@ public class MemberVO {
 	// 가입약관 동의여부
 	private String m_privacy; // 개인정보 유효기간
 	private String m_promotion; // 프로모션 수신 여부
+	
+	/* 이미지 정보 	*/
+	private List<AttachImageVO> imageList; 
 }

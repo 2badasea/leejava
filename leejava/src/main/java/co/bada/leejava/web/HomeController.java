@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.CoolSMS;
 import co.bada.leejava.SHA256Util;
 import co.bada.leejava.member.MemberService;
@@ -200,7 +201,7 @@ public class HomeController {
 	
 	// 회원가입 요청 
 	@RequestMapping("/memberJoin.do")
-	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model) {
+	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model, AttachImageVO ivo) {
 		
 		// 일단 모든 넘어온 값들 확인ㄱㄱ
 		System.out.println("Eamil 값: " + request.getParameter("email"));
@@ -266,6 +267,19 @@ public class HomeController {
 				System.out.println("가입약관 오류");
 			} else {
 				System.out.println("가입약관 정상 반영");
+			}
+		}
+		// 회원가입이 성공 => 프로필 이미지 테이블에도 행 추가
+		if(n ==1) { 
+			ivo.setM_email(m_email);
+			ivo.setFileName("");
+			ivo.setUploadPath("");
+			ivo.setUuid("");
+			int o = memberDao.profileInsert(ivo);
+			if( o == 1) { 
+				System.out.println("프로필 테이블 정상 추가");
+			} else {
+				System.out.println("프로필 테이블 실패");
 			}
 		}
 		

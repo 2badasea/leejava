@@ -95,6 +95,47 @@ resultType="co.bada.leejava.member.MemberVO">
 	WHERE M_EMAIL = #{m_email}
 </update>
 
+<insert id="profileInsert" parameterType="co.bada.leejava.AttachImageVO">
+	INSERT INTO PROFILE_IMAGE(M_EMAIL, UPLOADPATH, FILENAME, UUID) 
+	VALUES( #{m_email}, #{uploadPath}, #{fileName}, #{uuid} )
+</insert>
+
+<update id="ajaxImageEnroll" parameterType="co.bada.leejava.AttachImageVO">
+	<!-- 하나라도 null값일 경우가 없음. uploadpath, filename, uuid, m_email이 넘어옴 -->
+	UPDATE PROFILE_IMAGE 
+		SET UPLOADPATH = #{uploadPath}
+			,FILENAME = #{fileName}
+			,UUID = #{uuid} 
+	WHERE M_EMAIL = #{m_email} 
+</update>
+
+<select id="getAttachList" resultType="co.bada.leejava.AttachImageVO">
+	SELECT * 
+		FROM PROFILE_IMAGE 
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- 프로필 이미지 기존 정보 있는지 조회 -->
+<select id="profileImageCheck" resultType="boolean">
+	SELECT 
+		CASE WHEN COUNT(*) = 0 THEN 'TRUE'  ELSE 'FALSE' END 
+	FROM PROFILE_IMAGE 
+	WHERE M_EMAIL =  #{m_email} 
+</select>
+
+<!-- 프로필 이미지 신규 등록 -->
+<insert id="insertProfileImage" parameterType="co.bada.leejava.AttachImageVO">
+	INSERT INTO PROFILE_IMAGE VALUES(#{m_email}, #{fileName}, #{uploadPath}, #{uuid} )
+</insert>
+
+<!-- 프로필 이미지 업데이트 -->
+<update id="updateProfileImage" parameterType="co.bada.leejava.AttachImageVO">
+	UPDATE PROFILE_IMAGE 
+		SET FILENAME = #{fileName}
+			,UPLOADPATH = #{uploadPath}
+			,UUID = #{uuid}
+	WHERE M_EMAIL = #{m_email} 
+</update>
 
 
 </mapper>

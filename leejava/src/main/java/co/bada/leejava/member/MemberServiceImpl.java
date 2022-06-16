@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import co.bada.leejava.AttachImageVO;
+
 @Repository("memberDao")
 public class MemberServiceImpl implements MemberService {
 	@Autowired
@@ -86,6 +88,42 @@ public class MemberServiceImpl implements MemberService {
 	public int ajaxNicknameUpdate(MemberVO mvo) {
 		// TODO Auto-generated method stub
 		return map.ajaxNicknameUpdate(mvo);
+	}
+
+	@Override
+	public int ajaxImageEnroll(AttachImageVO ivo) {
+		// TODO Auto-generated method stub
+		return map.ajaxImageEnroll(ivo);
+	}
+
+	@Override
+	public int profileInsert(AttachImageVO ivo) {
+		// TODO Auto-generated method stub
+		return map.profileInsert(ivo);
+	}
+
+	@Override
+	public List<AttachImageVO> getAttachList(String m_email) {
+		// TODO Auto-generated method stub
+		return map.getAttachList(m_email);
+	}
+
+	@Override
+	public boolean profileImageCheck(AttachImageVO ivo) {
+		// TODO Auto-generated method stub
+		return map.profileImageCheck(ivo);
+	}
+
+	@Override
+	public int insertProfileImage(AttachImageVO ivo) {
+		// TODO Auto-generated method stub
+		return map.insertProfileImage(ivo);
+	}
+
+	@Override
+	public int updateProfileImage(AttachImageVO ivo) {
+		// TODO Auto-generated method stub
+		return map.updateProfileImage(ivo);
 	}
 
 }

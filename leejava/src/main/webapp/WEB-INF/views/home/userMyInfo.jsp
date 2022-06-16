@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,9 +21,6 @@
 }
 #myInfo_introText {
 	border: none;
-}
-.myInfo_profile_image > img {
-	border: 30px;
 }
 label {
 	cursor: pointer;
@@ -70,24 +67,29 @@ label {
 		<div class="myInfoDetail">
 			<!--세 영역으로 나눈다. 프로필사진영역, 개인정보 상세 -->
 			<div class="myInfoDetail_left">
-				<div class="myInfo_profile_image">
-					<img src="#" style="width: 200px;  height:200px;">
-					<br>
-					<form action="ajaxProfileImgUpdate.do" method="post" enctype="multipart/form-data">
-						<!--form요소로 전달할, 프로필 변경에 필요한 파라미터 1. 사용자 이메일 2. 이미지 파일  -->
-						<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
-						<label for="m_profilefile">이미지 선택</label>
-						<div id='uploadResult'>
-<!-- 							<div id="result_card"> -->
-<!-- 								<div class="imgDeleteBtn">x</div> -->
-<!-- 								<img src="resources/image/loopy.jpeg"> -->
-<!-- 							</div> -->
-						</div>
-						<br>
-						<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
-						<br>
-						<button type="submit" id="profileUpdateBtn">프로필 이미지 변경</button>
-					</form>				
+				<div class="form_section">
+					<!-- 여기다가 이미지를 보여준다 -->
+           			<div class="form_section_title">
+            			<label>프로필 이미지</label>
+                    </div>
+                    <div class="form_section_content">
+						<form id='frm' action="ajaxProfileImgUpdate.do" method="post" enctype="multipart/form-data">
+							<!--form요소로 전달할, 프로필 변경에 필요한 파라미터 1. 사용자 이메일 2. 이미지 파일  -->
+							<div id='uploadResult'>
+	<!-- 								여기에 ajax success을 통해 추가될 동적 태그들이 추가된다. -->
+	<!-- 							<div id="result_card"> -->
+	<!-- 								<div class="imgDeleteBtn">x</div> -->
+	<!-- 								<img src="resources/image/loopy.jpeg"> -->
+	<!-- 							</div> -->
+							</div>
+							<br>
+							<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
+							<label for="m_profilefile">이미지 선택</label>
+							<br>
+							<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
+							<br>
+						</form>	
+					</div>			
 				</div>
 				<div class="myInfo_intro">
 					<!--이메일아이디, 자기소개(간단한 자신에 대한 소개글. 다른 사람들에게 보여짐)-->
@@ -160,7 +162,42 @@ label {
 	</div>
 </body>
 <script>
-	const m_email = $("#m_email").val();
+	$(document).ready(function(){
+		console.log("페이지 로딩 확인");
+		
+	// 프로필 이미지 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
+	var $frm = $("#frm");
+	$frm.on("submit", function(e){
+		e.preventDefault();
+		// ajax로 전해줄 데이터 4개 (m_email, uuid, uploadPath, fileName) 정의
+		var m_email = $("#m_email").val();
+		var uuid = $("input[name='imageList[0].uuid']").val();
+		var fileName = $("input[name='imageList[0].fileName']").val();
+		var uploadPath = $("input[name='imageList[0].uploadPath']").val();
+		console.log("ajax로 전해줄 값: " + m_email + " : " + uuid + " : " + fileName + " : " +uploadPath);
+		// ajax 호출 
+		$.ajax({
+			url: $frm.attr("action"),
+			type: "POST",
+			data: {
+				m_email : m_email,
+				uuid : uuid,
+				fileName : fileName,
+				uploadPath : uploadPath
+			},
+			success: function(result){
+				if( result === "Y"){
+					console.log("ajax success!");
+					alert("프로필 이미지 업데이트!");
+					location.reload();
+				} else {
+					console.log("에러");
+					
+				}
+				
+			}
+		})
+	})
 
 	// kimvampa // 첨부파일 이미지 업로드 다시 확인
 	// 프로필 이미지 업로드를 위한 스크립트 작성문. => 나중에 테스트 하고 불필요한 console.log나 alert() 지우기
@@ -237,50 +274,6 @@ label {
 		}
 		return true;
 	}
-
-	// 다시 처음부터 생각을 해보자 -> 사소한 거 하나하나 모달창으로 하려면 코드가 복잡해진ㄷ. 
-	$('#nicknameUpdateBtn').on("click", function(){
-		// 닉네임의 경우, 해당 사이트에서 그렇게 중요한 정보는 아니다. => 간단하게 기존 input창 가리고 새로운 input창 활성화 시키자
-		// 새로운 input창과, 새로운 button창 생성해서, 여기서 입력값 받고 ajax를 통해 날릴 수 있또록ㄱㄱ
-		// nicknameUpdateBtn m_nickname
-		var check = confirm("do you wanna update nickname? ");
-		if(check) {
-			$("#nicknameUpdateBtn").css("display", "none");
-			$("#m_nickname").css("display", "none");
-			// 그리고 숨겨진 창을 활성화 시킨다
-			$(".hiddenNickname").css("display", "block");
-			$("#nicknameTh").text('새로운 닉네임');
-		} else {
-			location.reload();
-		}
-	});
-	
-	// 새로운 닉네임 입력하고 ajax로 보낸다.
-	// id 각각 input => newNickname  button =>  newNicknameBtn
-	$("#newNicknameUpdateBtn").on("click", function(){
-		console.log("nickname update start");
-		var m_nickname = $("#newNickname").val();
-		console.log("입력한 닉네임 값: " + m_nickname);
-		console.log("const로 전역으로 선언된 이메일 값: " + m_email); 
-		
-		// ajax시작. => 이메일이랑 닉네임 정보 보내고 업데이트 한다. 
-		$.ajax({
-			url: "ajaxNicknameUpdate.do",
-			data: {
-				m_nickname : m_nickname,
-				m_email : m_email
-			},
-			success: function(responseText){
-				alert(responseText);
-				location.reload();
-			},
-			error: function(responseText){
-				console.log("통신에러");
-				alert("명령을 수행하는 중 오류 발생");
-				location.reload();
-			}
-		})
-	})
 	
 	// 프로필 이미지 출력 메서드 => ajax success속성의 콜백함수에서 호출된다. 
 	function showUploadImage(uploadResultArr){
@@ -289,10 +282,11 @@ label {
 		/* 전달받은 데이터 검증*/ 
 		if(!uploadResultArr || uploadResultArr.length == 0){ return }; 
 		
+		// 이미지가 들어갈 공간 div태그
 		let uploadResult = $("#uploadResult");
-		// 서버에서 뷰로 반환 => List타입의 데이터를 전송. 뷰에서는 해당 데이터를 배열 형태로 전달받는다. 
+		// 서버에서 뷰로 반환 => List타입의 데이터를 전송. 뷰에서는 해당 데이터를 배열객체 형태로 전달받는다.(dataType이 json이었음) 
 			// 현재 한 개의 이미지 파일만 처리를 하기 때문에 데이터에쉽게 접근할 수 있도록 변수 obj를 선언하여 서버로부터
-			// 전달받은 배여 ㄹ데이터의 첫 번째 요소로 초기화
+			// 전달받은 배열 데이터의 첫 번째 요소로 초기화
 		let obj = uploadResultArr[0];
 		let str = "";
 		// str변수에 추가되어야 할 태그 코드들을 문자열 값 형태로 추가해주기 전 한 가지 변수를 하나 더 추가 => 
@@ -318,22 +312,27 @@ label {
 		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
 		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
 		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+		// 추가적으로 등록하는 버튼도 동적으로 추가해준다. 
+		str += "<br><button type='submit' id='profileUpdateBtn'>프로필 등록</button>";
 		str += "</div>";
 		// 마지막으로 태그 코드가 담긴 문자열(str)값을 uploadResult 태그에 append() 명령 혹은 
 			// html() 메서드를 호출하여 추가해준다. 
 		uploadResult.append(str); 
+		// 선택한 이미지를 화면에 출력함과 동시에, 기본 이미지는 지운다. 
+		$("#basic_result_card").hide();
 			
 	}
 	
 	/* 이미지 삭제 버튼 동작 */ 
-	// 스크립트에 의해 동적으로 추가되는 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
+	// 스크립트에 의해 동적으로 추가된 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
 	$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
 		deleteFile();
+		$("#basic_result_card").show();
 	})	
 	
 	/* 업로드 이미지 파일 삭제 메서드 */
 	function deleteFile(){
-		// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터 대입. 
+		// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터('fileCallPath' ) 대입. 
 			// 나머지 하나는 이미지 파일 업로드 시 출력되는 미리 보기 이미지를 감싸고 있는 result_card<div>태그
 		let targetFile = $(".imgDeleteBtn").data("file");
 		let targetDiv = $("#result_card");
@@ -358,12 +357,99 @@ label {
 		})
 	
 	}
+		
+	/* 이미지 정보 호출 */ 
+	let m_email = '<c:out value="${member.m_email}"/>';
+	let uploadResult = $("#uploadResult");
+	// 서버로부터 이미지 정보 요청을 위해서 getJSON메서드를 작성. get방식으로 요청 및 응답하는
+		// 서버로부터 JSON으로 인코딩 된 데이터를 전달받기 위해 사용되는 메서드. 
+		// 사용방법은 get.JSON(url[,data][,success]) 
+		// url: 서버에 요청할 get방식의 url, data: 서버에 요청을 할 때 전달할 데이터
+		// success: 성공적으로 서버로부터 데이터를 전달받았을 때 실행할 콜백함수. 
+	$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
+		console.log("getJSON 성공?");
+		// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
+		console.log("데이터 길이: " + arr.length);
+		if(arr.length === 0){
+			// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
+			console.log("이미지가 없음");
+			let str = "";
+			str += "<div id='basic_result_card'>";
+			str += "<img src='resources/img/cuteloopy.jpeg'>";
+			str += "</div>";
+			uploadResult.html(str); 
+			return; 
+		}
+		// 반대로 이미지가 있을 경우.
+		// 메모 138. 콜백함수 구현부에 먼저 두 가지 변수를 추가 
+		let str = "";
+		let obj = arr[0]; 
+		console.log("obj의 값: " + obj);
+		console.log(obj)
+		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+		console.log("fildCallPath 값:" + fileCallPath);
+// 		fileCallPath = decodeURIComponent(fileCallPath); // 확인용 추가 
+// 		console.log("디코딩한 fileCAllPath 값: " + fileCallPath); // 확인용 추가 
+// 		fileCallPath = fileCallPath.replace(/\\/g,'/');
+// 		console.log("문자 수정 한 fileCallPath 값: " + fileCallPath);
+		
+		// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
+		str += "<div id='basic_result_card'";
+		str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename'" + obj.fileName + "'";
+		str += ">";
+		str += "<img src='/display.do?fileName=" + fileCallPath  +"'>";
+		str += "</div>";
+		// html()메서드를 사용해서 str변수에 저장된 값들이 uploadResult태그 내부에 추가되도록 해준다. 
+		uploadResult.html(str);
+		
+	}) // get.JSON 메서드 영역
 	
-	
+	})
 </script>
 <script>
-	$(function() {
-		console.log("페이지 로딩됨 확인")	;
+	//다시 처음부터 생각을 해보자 -> 사소한 거 하나하나 모달창으로 하려면 코드가 복잡해진ㄷ. 
+	$('#nicknameUpdateBtn').on("click", function(){
+		// 닉네임의 경우, 해당 사이트에서 그렇게 중요한 정보는 아니다. => 간단하게 기존 input창 가리고 새로운 input창 활성화 시키자
+		// 새로운 input창과, 새로운 button창 생성해서, 여기서 입력값 받고 ajax를 통해 날릴 수 있또록ㄱㄱ
+		// nicknameUpdateBtn m_nickname
+		var check = confirm("do you wanna update nickname? ");
+		if(check) {
+			$("#nicknameUpdateBtn").css("display", "none");
+			$("#m_nickname").css("display", "none");
+			// 그리고 숨겨진 창을 활성화 시킨다
+			$(".hiddenNickname").css("display", "block");
+			$("#nicknameTh").text('새로운 닉네임');
+		} else {
+			location.reload();
+		}
+	});
+	
+	// 새로운 닉네임 입력하고 ajax로 보낸다.
+	// id 각각 input => newNickname  button =>  newNicknameBtn
+	$("#newNicknameUpdateBtn").on("click", function(){
+		console.log("nickname update start");
+		var m_nickname = $("#newNickname").val();
+		var m_email = $("#m_email").val();
+		console.log("입력한 닉네임 값: " + m_nickname);
+		console.log("const로 전역으로 선언된 이메일 값: " + m_email); 
+		
+		// ajax시작. => 이메일이랑 닉네임 정보 보내고 업데이트 한다. 
+		$.ajax({
+			url: "ajaxNicknameUpdate.do",
+			data: {
+				m_nickname : m_nickname,
+				m_email : m_email
+			},
+			success: function(responseText){
+				alert(responseText);
+				location.reload();
+			},
+			error: function(responseText){
+				console.log("통신에러");
+				alert("명령을 수행하는 중 오류 발생");
+				location.reload();
+			}
+		})
 	})
 </script>
 </html>

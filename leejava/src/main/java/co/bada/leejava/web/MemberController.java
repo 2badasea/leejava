@@ -260,8 +260,7 @@ public class MemberController {
 		// ResponseEntity 참조 변수를 선언하고 생성자로 초기화한다. 
 			// Http의 body에 추가될 데이터는 List<AttachImageVO> 이고, 상태코드가 OK(200)인 ResponseEntity객체가 생성된다. 
 		ResponseEntity<List<AttachImageVO>> result = new ResponseEntity<List<AttachImageVO>>(list, HttpStatus.OK);
-		
-		return result;
+			return result;
 		
 //		// 향상된 for문으로 하는 방식
 //		for(MultipartFile multipartFile : uploadFile) { 
@@ -277,8 +276,6 @@ public class MemberController {
 //			System.out.println("파일 타입 : " + uploadFile[i].getContentType());
 //			System.out.println("파일 크기 : " + uploadFile[i].getSize());
 //		}
-		
-		
 		
 	} // url매핑 끝 부분. 
 	
@@ -321,6 +318,7 @@ public class MemberController {
 	@PostMapping("/deleteFile.do")
 	public ResponseEntity<String> deleteFile(String fileName){
 		// logger.info 구현하면 => 수정하기 
+		// 이때 넘어온 fileName은 view에서 넘어온 fileCallPath 데이터(경로 + uuid + 파일이름)
 		System.out.println("deleteFile : " + fileName);
 		
 		File file = null;
@@ -331,7 +329,7 @@ public class MemberController {
 			file = new File("c:\\leejava\\profile\\" + URLDecoder.decode(fileName, "UTF-8"));
 			// delete()메서드를 호출하여 해당 파일을 삭제하도록 코드를 작성한다.
 			file.delete();
-			// 메모 96.원본파일 삭제. 
+			// 메모 96.원본파일 삭제. 썸네일 이미지를 의미하는 's_'만 지워주면 원본파일명이고, 둘은 같은 위치에 있다. 
 			String originFileName = file.getAbsolutePath().replace("s_", "");
 			System.out.println("originFileName : " + originFileName);
 			// 본 파일을 대상으로 하는 File객체를 생성 후 이를 기존에 선언하고 사용하였던 file참조변수가 참조하도록 함.
@@ -347,6 +345,62 @@ public class MemberController {
 		// try문이 예외가 발생하지 않은 것은 정상적으로 삭제 작업을 수행했다는 것이기 때문에 성공 코드와 함께 성공과 
 			// 관련된 문자열을 뷰로 전송해주도록 return문을 작성한다. 
 		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
+	
+	/* 이미지 정보 반환 */ 
+	// 반환해주는 데이터가 json형식이 되도록 지정해주기 위해 @GetMapper 어노테이션에 produces속성을 추가
+	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
+		System.out.println("m_email 값 확인: " +  m_email);
+		
+		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
+		
+	}
+	
+	// 실제 프로필 이미지 DB등록 ajax  (다음엔 반환타입이 ResponseEntity인 메서드로 사용해볼 것.) 
+	@ResponseBody
+	@RequestMapping("/ajaxProfileImgUpdate.do")
+	public String ajaxProfileImgUpdate(HttpServletRequest request, MemberVO mvo, AttachImageVO ivo) {
+		System.out.println("서버로 일단 왔니?");
+		// 전달받은 데이터 확인  m_email, uuid, uploadPath, fileName 
+		System.out.println("날라온 이메일: " + request.getParameter("m_email"));
+		System.out.println("날라온 uuid: " + request.getParameter("uuid"));
+		System.out.println("날라온 uploadPath: " + request.getParameter("uploadPath"));
+		System.out.println("날라온 fileName: " + request.getParameter("fileName"));
+		
+		String m_email = request.getParameter("m_email");
+		String uuid = request.getParameter("uuid");
+		String uploadPath = request.getParameter("uploadPath");
+		String fileName = request.getParameter("fileName");
+		
+		// 이제 DB에 insert. 그전에 select해서 이미 존재한다면 update문으로 정보를 변경한다. 
+		// 조회하는 쿼리  profileImageCheck
+		ivo.setM_email(m_email);
+		ivo.setFileName(fileName);
+		ivo.setUploadPath(uploadPath);
+		ivo.setUuid(uuid);
+		String result = null;
+		
+		boolean b = memberDao.profileImageCheck(ivo);
+		if(b) {
+			System.out.println("기존 정보 없음");
+			// insert 구문. 
+			int m = memberDao.insertProfileImage(ivo);
+			if( m == 1) {
+				System.out.println("프로필 이미지 insert 성공");
+				result = "Y";
+			} 
+		} else {
+			System.out.println("기존 정보 있음");
+			// update 구문
+			int n = memberDao.updateProfileImage(ivo);
+			if( n == 1) {
+				System.out.println("프로필 업데이트 성공");
+				result = "Y";
+			}
+		}
+		// 프로필 신규추가나 업데이트가 성공했으면 Y값을 가짐
+		return result;
 	}
 	
 	// 개인정보 페이지에서 닉네임 변경 신청 
@@ -385,5 +439,7 @@ public class MemberController {
 		
 		return responseText;
 	}
+	
+	
 	
 }

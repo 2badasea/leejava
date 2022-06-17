@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -77,7 +78,6 @@ public class MemberController {
 		
 		/* 이미지 파일 체크 */ 
 		for(MultipartFile multipartFile : uploadFile) {
-				
 			// 전달받은 파일을 File객체로 만들어주고 File 참조 변수에 대입 
 			File checkfile = new File(multipartFile.getOriginalFilename());
 			// MIME TYPE을 저장할 String타입의 type변수를 선언하고  null로 초기화
@@ -159,13 +159,16 @@ public class MemberController {
 			// 파일 이름
 			String uploadFileName = multipartFile.getOriginalFilename();
 			// setter 메서드를 사용하여 각 정보를 avo 객체에 저장
-			avo.setFileName(uploadFileName);
-			avo.setUploadPath(profilePath);
+			avo.setFileName(uploadFileName);  // 파일 원본명
+			System.out.println("avo객체에 담은 uploadFilename: " + uploadFileName);
+			avo.setUploadPath(profilePath); // 날짜별 디렉토리까지 구분되어 있는 경로
+			System.out.println("avo객체에 담은 profilePath: " + profilePath);
 			// UUID 적용이 된 파일이름으로 변경
 			String uuid = UUID.randomUUID().toString();
 			// avo객채ㅔ에 uuid도 저장
 			avo.setUuid(uuid);
-			uploadFileName = uuid + "_" + uploadFileName;
+			System.out.println("avgo객체에 담은 uuid명 : " + uuid);
+			uploadFileName = uuid + "_" + uploadFileName; // uuid+"_"+원본파일 => 물리파일명 생성
 			// 파일 위치, 파일 이름을 합친 File 객체 
 			File saveFile = new File(uploadPath, uploadFileName);
 			// 실제 파일 저장이 일어나는 곳.
@@ -230,6 +233,7 @@ public class MemberController {
 				
 				/* 방법 2 썸네일 라이브러리를 pom.xml에 추가하여 활용하는 방식*/
 				// 두 방법 중 하나를 주석처리해서 사용. 
+					// 썸네일 파일의 이름은 uuid+"_"+원본파일명 형태의 물리파일명에서 앞에 "s_"를 붙였다. 
 				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
 				
 				BufferedImage bo_image = ImageIO.read(saveFile);
@@ -240,12 +244,10 @@ public class MemberController {
 					int width = (int) (bo_image.getWidth() / ratio);
 					int height = (int) (bo_image.getHeight() / ratio); 
 					
-				
+				// 위에 설정한대로 실질적으로 썸네일 파일이 생성되는 메서드
 				Thumbnails.of(saveFile).size(width, height).toFile(thumbnailFile);
 				// ImageIO를 통한 코드 작성보다 훨씬 간단히 생성 가능. thumbnailator 라이브러리는 이미지 생성에
 				// 세부적 설정을 할 수 있는 메서드들을 제공. 
-				
-				
 			} catch (Exception e) {
 				System.out.println("실패");
 				e.printStackTrace();
@@ -279,6 +281,8 @@ public class MemberController {
 		
 	} // url매핑 끝 부분. 
 	
+	
+	
 	// 업로드 이미지 출력 구현 부분을 위한 메서드. by 김밤파
 		// ResponseEntity 객체를 통해 body에 byte[]배열을 보내야 하기 때문에 다음과 같은 반환타입으로 작성.
 		// 파라미터의 경우, '파일 경로' + '파일 이름'을 전달받아야 하기 때문에 String타입의 fileName변수를 파라미터로 부여
@@ -288,7 +292,6 @@ public class MemberController {
 		System.out.println("fileName의 값: " +fileName);
 		File file = new File("c:\\leejava\\profile\\" + fileName); 
 		System.out.println("File객체의 값: " + file);
-		
 		ResponseEntity<byte[]> result = null;
 		try {
 			// 대상 이미지 파일의 MIME TYPE을 얻기 위해 이전 포스팅에서 사용한 Files 클래스의 
@@ -351,10 +354,9 @@ public class MemberController {
 	// 반환해주는 데이터가 json형식이 되도록 지정해주기 위해 @GetMapper 어노테이션에 produces속성을 추가
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
+		
 		System.out.println("m_email 값 확인: " +  m_email);
-		
 		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
-		
 	}
 	
 	// 실제 프로필 이미지 DB등록 ajax  (다음엔 반환타입이 ResponseEntity인 메서드로 사용해볼 것.) 
@@ -380,7 +382,6 @@ public class MemberController {
 		ivo.setUploadPath(uploadPath);
 		ivo.setUuid(uuid);
 		String result = null;
-		
 		boolean b = memberDao.profileImageCheck(ivo);
 		if(b) {
 			System.out.println("기존 정보 없음");

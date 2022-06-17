@@ -290,7 +290,7 @@ label {
 		let obj = uploadResultArr[0];
 		let str = "";
 		// str변수에 추가되어야 할 태그 코드들을 문자열 값 형태로 추가해주기 전 한 가지 변수를 하나 더 추가 => 
-			// 이미지 출력을 요청하는 url매핑 메서드("/display")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
+			// 이미지 출력을 요청하는 url매핑 메서드("/display.do")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
 // 		let fileCallPath = obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName;
 		// 위에 코드처럼 설정하는 경우, browser에서  '\' 때문에 경롤를 찾지 못한다. 이미치 출력 url을 
 			// 테스트할 대 파라미터 값의 구분자로서 '/'를 사용해야 정상적으로 출력이 되었다. 그래서 \를 /로 변경!
@@ -298,11 +298,11 @@ label {
 			// 대상 String 문자열 중 모든 '\'를 '/'로 변경해준다는 의미. 자바스크립트에서는 replaceAll과 
 				// 같은 메서드가 없기 때문에 replace메서드의 인자 값으로 정규표현식을 사용하여 
 				// 치환 대상 모든 문자를 지정할 수 있다. 
-				// 그리고 UTF-8로 인코딩을 자동응로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
+				// 그리고 UTF-8로 인코딩을 자동으로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
 				// 덧붙여서, encodeURIComponent() 메서든느 '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
 				// 사용 안 해도 해당 URI로 동작이 된다. 
 		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-			
+		console.log("display.do로 보내는 view창에서의 fileCallPath값 : " + fileCallPath);
 		// str 변수에 추가되어야 할 태그 코드인 문자열 값들을 저장해준다. 한 번에 값들을 다 넣어도 상관은 없음. 
 		str += "<div id='result_card'>";
 		str += "<img src='display.do?fileName=" + fileCallPath + "'>";
@@ -380,7 +380,7 @@ label {
 			uploadResult.html(str); 
 			return; 
 		}
-		// 반대로 이미지가 있을 경우.
+		// 반대로 이미지가 있을 경우. 
 		// 메모 138. 콜백함수 구현부에 먼저 두 가지 변수를 추가 
 		let str = "";
 		let obj = arr[0]; 
@@ -392,7 +392,7 @@ label {
 // 		console.log("디코딩한 fileCAllPath 값: " + fileCallPath); // 확인용 추가 
 // 		fileCallPath = fileCallPath.replace(/\\/g,'/');
 // 		console.log("문자 수정 한 fileCallPath 값: " + fileCallPath);
-		
+		console.log("기존 이미지가 존재하는 경우, display.do로 보내는 fileCallPath값: " + fileCallPath);
 		// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
 		str += "<div id='basic_result_card'";
 		str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename'" + obj.fileName + "'";

@@ -30,7 +30,7 @@ label {
 }
 <!-- 업로드한 이미지 공간을 위한 스타일 by kimvampa -->
 #result_card img{
-	max-width: 100%;
+ 	max-width: 100%; 
     height: auto;
     display: block;
     padding: 5px;
@@ -59,6 +59,9 @@ label {
 .hiddenNickname {
 	display: none;
 } 
+.myInfoDetail_right{
+	margin-left: 100px;
+}
 </style>
 </head>
 <body>
@@ -150,8 +153,8 @@ label {
 				        <label for="m_promotion_yes">미동의</label>
 				        <input type="radio" id="m_promotion_no" value="NO">
 				    </div>
-					<button>비밀번호 변경</button>
-					<button>회원탈퇴</button>
+					<button id="passwordUpdateBtn">비밀번호 변경</button>
+					<button id="memberLeaveBtn">회원탈퇴</button>
 				</div>			
 			</div>
 				
@@ -165,11 +168,13 @@ label {
 	$(document).ready(function(){
 		console.log("페이지 로딩 확인");
 		
-	// 프로필 이미지 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
+	// 프로필 이미지 DB 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
 	var $frm = $("#frm");
 	$frm.on("submit", function(e){
+		// button 눌렀을 때 기본 이벤트인 submit() 차단. ajax로 처리하기 위함.
 		e.preventDefault();
 		// ajax로 전해줄 데이터 4개 (m_email, uuid, uploadPath, fileName) 정의
+		// m_email을 제외하 나머지 3개는 프로필 이미지를 선택했을 때 동적으로 추가되는 태그요소들의 value 값.
 		var m_email = $("#m_email").val();
 		var uuid = $("input[name='imageList[0].uuid']").val();
 		var fileName = $("input[name='imageList[0].fileName']").val();
@@ -177,7 +182,7 @@ label {
 		console.log("ajax로 전해줄 값: " + m_email + " : " + uuid + " : " + fileName + " : " +uploadPath);
 		// ajax 호출 
 		$.ajax({
-			url: $frm.attr("action"),
+			url: $frm.attr("action"),  // ajaxProfileImgUpdate.do
 			type: "POST",
 			data: {
 				m_email : m_email,
@@ -213,15 +218,17 @@ label {
 		}
 			
 		// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
+			// 화면 전환 없이 FromData객체에 담아서 ajax로 보내는 방식.
 		let formData = new FormData();
 		let fileInput = $("input[name='m_profilefile']"); // label태그에서 선택한 요소를 가져온 것 
-		// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileLIst객체 형태로 files속성에 저장된다. 
-			// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조하면 된다( .files 형태로 호출)
+		// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileList객체 형태로 files속성에 저장된다. 
+			// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조(호출)하면 된다( .files 형태로 호출)
 		let fileList = fileInput[0].files; 
 		let fileObj = fileList[0];
 		
 		console.log('fileList : ' + fileList);
 		// fileList가 배열형태의 객체이기 때문에 index를 통해 접근 => fileobj의 정체는 File객체다.
+			// 그리고 내가 선택한 파일을 가리킨다.
 		console.log('fileObj: ' +  fileObj);
 		
 		// File객체에 담긴 데이터가 정말 <input>태그를 통해 선택한 파일의 데이터가 맞는지 확인. 
@@ -233,13 +240,13 @@ label {
 			return false;
 		}
 		// 기존의 key가 있는 상태에서 동일한 key로 데이터를 추가하면 기존 값을 덮어쓰지 않고 기존 값 집합의 끝에 
-		// 새로운 값을 추가한다. (서버에서는 배열 타입으로 데이터를 전달받기 때문);
+			// 새로운 값을 추가한다. (서버에서는 배열 타입으로 데이터를 전달받기 때문);
 		formData.append("uploadFile", fileObj);
-		// 데이터에 파일객체를 넣어주었다 => ajax를 통해서 여러 개일 경우 개별적으로 이미지 업로드 되도록.
-		// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
-// 		for(let i = 0; i < fileList.length; i++){
-// 			formData.append("uploadFile", fileList[i]);
-// 		}
+			// 데이터에 파일객체를 넣어주었다 => ajax를 통해서 여러 개일 경우 개별적으로 이미지 업로드 되도록.
+			// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
+			// 		for(let i = 0; i < fileList.length; i++){
+			// 			formData.append("uploadFile", fileList[i]);
+			// 		}
 		// 첨부파일 서버전송 by ajax
 		$.ajax({
 			url: 'ajaxProfileUpdate.do',
@@ -375,7 +382,7 @@ label {
 			console.log("이미지가 없음");
 			let str = "";
 			str += "<div id='basic_result_card'>";
-			str += "<img src='resources/img/cuteloopy.jpeg'>";
+			str += "<img src='resources/img/ㅗㅗ cuteloopy.jpeg'>";
 			str += "</div>";
 			uploadResult.html(str); 
 			return; 

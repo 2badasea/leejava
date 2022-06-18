@@ -42,11 +42,10 @@ public class HomeController {
 	NoticeService noticeDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
 	// 홈으로 이동
 	@RequestMapping(value = "/home.do", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
+//		logger.info("==========Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date(); 
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
@@ -57,7 +56,7 @@ public class HomeController {
 		model.addAttribute("notices", noticeDao.mainNoticeSelectList());
 		
 		
-		return "home/home"; 
+		return "home/member/home"; 
 		
 		// private int memberInsert(memberVO mvo)
 	}
@@ -66,7 +65,7 @@ public class HomeController {
 	// 로그인 창으로 이동
 	@RequestMapping("/loginPage.do")
 	public String loginPage(Model model) {
-		return "home/loginPage";
+		return "home/member/loginPage";
 	}
 	
 	// 로그인 처리
@@ -76,8 +75,7 @@ public class HomeController {
 		
 		String email = request.getParameter("email");
 		String formPassword = request.getParameter("password");
-		System.out.println("확인 Email: " + email + " Password: " + formPassword);
-		
+		logger.info("===============확인 Email: " + email + " Password: " + formPassword);
 		
 		mvo.setM_email(email);
 		String m_salt = memberDao.selectSalt(mvo);
@@ -91,7 +89,7 @@ public class HomeController {
 				String nickname = mvo.getM_nickname(); // nickname을 가져옴. 사이트에서 사용할 수 있는
 				session.setAttribute("session_user", email);
 				session.setAttribute("session_nickname", nickname);
-				System.out.println("세션에 담은 값: " + email + ", " + nickname);
+				logger.info("===============세션에 담은 값: " + email + ", " + nickname);
 				responseText = "YES";
 			}else {
 				// salt값은 있는데, 암호화한 비밀번호가 틀리 경우 
@@ -110,7 +108,7 @@ public class HomeController {
 	public String logout(Model model, HttpSession session) {
 		
 		String sessionValue =(String)session.getAttribute("session_user");
-		System.out.println("없애버릴 세션값: " + sessionValue );
+		logger.info("==========없애버릴 세션값: " + sessionValue );
 		
 		session.invalidate();
 		
@@ -120,7 +118,7 @@ public class HomeController {
 	// 회원 가입 약관 동의 페이지 이동
 	@RequestMapping("/memberJoinTerms.do")
 	public String memberJoinTerms(Model model) {
-		return "home/memberJoinTerms";
+		return "home/member/memberJoinTerms";
 	}
 	
 	// 회원가입 양식으로 이동
@@ -129,14 +127,14 @@ public class HomeController {
 		
 		String privacy = request.getParameter("privateTerms");
 		String promotion = request.getParameter("promotionTerms");
-		System.out.println("개인정보 유효기간 선택사항 확인: " + privacy );
-		System.out.println("프로모션 수신 여부 선택사항 확인: " + promotion);
+		logger.info("===========개인정보 유효기간 선택사항 확인: " + privacy );
+		logger.info("===========프로모션 수신 여부 선택사항 확인: " + promotion);
 		
 		// 값이 Y든 NULL이든 그 상태로 DB에 넣으면 된다.
 		model.addAttribute("privacy", privacy);
 		model.addAttribute("promotion", promotion);
 		
-		return "home/memberJoinForm";
+		return "home/member/memberJoinForm";
 	}
 	
 	// 회원가입 이메일 Ajax 중복 체크
@@ -145,7 +143,7 @@ public class HomeController {
 	public String ajaxEmailCheck(Model model, HttpServletRequest request, MemberVO mvo) {
 		
 		String email = request.getParameter("email");
-		System.out.println("ajax로 넘어온 이메일 값: " + email);
+		logger.info("===========ajax로 넘어온 이메일 값: " + email);
 		String responseText = null;
 		
 		mvo.setM_email(email);
@@ -158,7 +156,7 @@ public class HomeController {
 			// 중복 이메일 존재 => 사용불가
 			responseText = "NO";
 		}
-		System.out.println("컨트롤러, 이메일 존재여부 체크 값 NO여야 함" + responseText);
+		logger.info("===========컨트롤러, 이메일 존재여부 체크 값 NO여야 함" + responseText);
 		return responseText;
 	}
 	
@@ -168,7 +166,7 @@ public class HomeController {
 	public String ajaxNicknameCheck(HttpServletRequest request, MemberVO mvo) {
 		
 		String nickname = request.getParameter("nickname");
-		System.out.println("ajax로 넘어온 닉네임 값: " + nickname);
+		logger.info("===========ajax로 넘어온 닉네임 값: " + nickname);
 		
 		mvo.setM_nickname(nickname);
 		String responseText = null;
@@ -187,11 +185,11 @@ public class HomeController {
 	public String ajaxCoolSMS(HttpServletRequest request) {
 		
 		String sendPhone = request.getParameter("inputPhone");
-		System.out.println("ajax로 넘어온 번호: " + sendPhone);
+		logger.info("===========ajax로 넘어온 번호: " + sendPhone);
 		
 		// 6자리 생성 => 10을 곱하면 최소 1자리수. 
 		int randomNumber = (int)(Math.random()*(999999-100000+1)) +100000;
-		System.out.println("인증번호 값 확인: " + randomNumber);
+		logger.info("===========인증번호 값 확인: " + randomNumber);
 		
 		CoolSMS coolSms = new CoolSMS();
 		coolSms.certifiedPhone(sendPhone, randomNumber);
@@ -204,14 +202,14 @@ public class HomeController {
 	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model, AttachImageVO ivo) {
 		
 		// 일단 모든 넘어온 값들 확인ㄱㄱ
-		System.out.println("Eamil 값: " + request.getParameter("email"));
-		System.out.println("nickname 값: " + request.getParameter("nickname"));
-		System.out.println("password 값: " + request.getParameter("password"));
-		System.out.println("phone 값: " + request.getParameter("phone"));
-		System.out.println("address 값: " + request.getParameter("address"));
-		System.out.println("birthdate 값: " + request.getParameter("birthdate"));
-		System.out.println("privacy 값: " + request.getParameter("privacy"));
-		System.out.println("promotion 값: " + request.getParameter("promotion"));
+		logger.info("===========Eamil 값: " + request.getParameter("email"));
+		logger.info("===========nickname 값: " + request.getParameter("nickname"));
+		logger.info("===========password 값: " + request.getParameter("password"));
+		logger.info("===========phone 값: " + request.getParameter("phone"));
+		logger.info("===========address 값: " + request.getParameter("address"));
+		logger.info("===========birthdate 값: " + request.getParameter("birthdate"));
+		logger.info("===========privacy 값: " + request.getParameter("privacy"));
+		logger.info("===========promotion 값: " + request.getParameter("promotion"));
 		
 		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한 : USER) 
 		String m_email = request.getParameter("email");
@@ -231,9 +229,9 @@ public class HomeController {
 		/* 패스워드 암호화 부분 */
 		// salt 생성. salt값도 db에 들어간다.
 		String m_salt = SHA256Util.generateSalt();
-		System.out.println("salt 값 조회: " + m_salt);
+		logger.info("===========salt 값 조회: " + m_salt);
 		String m_password = SHA256Util.getEncrypt(password, m_salt);
-		System.out.println("암호화된 m_password : " + m_password);
+		logger.info("===========암호화된 m_password : " + m_password);
 		
 		
 		mvo.setM_email(m_email);
@@ -253,10 +251,10 @@ public class HomeController {
 		
 		int n = memberDao.memberInsert(mvo);
 		if( n == 0) {
-			System.out.println("회원가입 실패");
+			logger.info("===========회원가입 실패");
 			message = "회원가입이 실패했습니다. 관리자에게 문의해주세요";
 		} else {
-			System.out.println("회원가입 성공");
+			logger.info("===========회원가입 성공");
 			message = "회원가입이 성공했습니다. 로그인 해주세요";
 		}
 		
@@ -264,9 +262,9 @@ public class HomeController {
 			// 회원가입이 성공적으로 됐다면, 이것도 추가.
 			int m = memberDao.memberJointerms(mvo);
 			if(m == 0) {
-				System.out.println("가입약관 오류");
+				logger.info("===========가입약관 오류");
 			} else {
-				System.out.println("가입약관 정상 반영");
+				logger.info("===========가입약관 정상 반영");
 			}
 		}
 		// 회원가입이 성공 => 프로필 이미지 테이블에도 행 추가
@@ -277,14 +275,14 @@ public class HomeController {
 			ivo.setUuid("");
 			int o = memberDao.profileInsert(ivo);
 			if( o == 1) { 
-				System.out.println("프로필 테이블 정상 추가");
+				logger.info("===========프로필 테이블 정상 추가");
 			} else {
-				System.out.println("프로필 테이블 실패");
+				logger.info("===========프로필 테이블 실패");
 			}
 		}
 		
 		model.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
-		return "home/loginPage";
+		return "home/member/loginPage";
 	}
 	
 	// 관리자 페이지로 이동 
@@ -300,11 +298,11 @@ public class HomeController {
 	public String ajaxEmailCheckForgotPassword(HttpServletRequest request, 
 			Model model, @RequestParam("inputEmail") String m_email) throws Exception {
 		
-		System.out.println("ajax로 입력한 이메일 넘어왔니? " + m_email);
+		logger.info("===========ajax로 입력한 이메일 넘어왔니? " + m_email);
 		// 인증번호(난수) 생성
 		Random random = new Random();
 		int checkNum = random.nextInt(8888) + 1111; // 1111~9999 범위의 숫자를 얻기 위함.
-		System.out.println("인증번호" + checkNum); // 콘솔창에 인증번호 나오는지 확인.
+		logger.info("===========인증번호" + checkNum); // 콘솔창에 인증번호 나오는지 확인.
 		
 		
 		/************** 이메일 인증 일단 보류**************/
@@ -319,18 +317,18 @@ public class HomeController {
 				"<br>" +
 				"해당 인증번호를 인증번호 확인란에 입력해주세요.";
 		
-		System.out.println("실제 시작하는 부분. try시작 부분");
+		logger.info("===========실제 시작하는 부분. try시작 부분");
 		try  {
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-			System.out.println("여기는? 111 ");
+			logger.info("===========여기는? 111 ");
 			helper.setFrom(setFrom);
 			helper.setTo(toMail);
 			helper.setSubject(title);
 			helper.setText(content, true);
-			System.out.println("여기는? 222 ");
+			logger.info("===========여기는? 222 ");
 			mailSender.send(message);
-			System.out.println("여기는? 333 ");
+			logger.info("===========여기는? 333 ");
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}
@@ -338,7 +336,7 @@ public class HomeController {
 		// 생성한 인증번호 변수를 view로 반환. 생성한 인증번호의 경우 int 타입. ajax를 통한 요청으로 인해 view로 다시 반환할 때
 		// 데이터 타입은 String만 가능.
 		String responseCode = Integer.toString(checkNum); // return타입도 void에서 String으로 수정. 테스트는 끝났으니깐.
-		System.out.println("컨트롤러에서 넘어가는 인증코드 : " + responseCode);
+		logger.info("===========컨트롤러에서 넘어가는 인증코드 : " + responseCode);
 		return responseCode; // ajax를 요청한 view페이지로 num데이터(인증번호)를 전달한다. => 해당 view의 ajax구문으로 ㄱㄱ
 	}
 	
@@ -348,13 +346,13 @@ public class HomeController {
 	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, 
 			MemberVO mvo, @RequestParam("m_email") String m_email, @RequestParam("m_password") String password) {
 		
-		System.out.println("ajax로 넘어온 이메일이랑 새로운 비밀번호 조회: " +  m_email + " : " + password);
+		logger.info("===========ajax로 넘어온 이메일이랑 새로운 비밀번호 조회: " +  m_email + " : " + password);
 		
 		// 새로운 salt값과 다이제스트 암호 생성
 		String m_salt = SHA256Util.generateSalt();
-		System.out.println("새로운 salt 값 조회: " + m_salt);
+		logger.info("===========새로운 salt 값 조회: " + m_salt);
 		String m_password = SHA256Util.getEncrypt(password, m_salt);
-		System.out.println("새로운 암호화된 m_password : " + m_password);
+		logger.info("===========새로운 암호화된 m_password : " + m_password);
 		
 		// mapper를 통해 새로운 비밀번호를 DB에 update시킨다.
 		mvo.setM_email(m_email);
@@ -363,51 +361,15 @@ public class HomeController {
 		int n = memberDao.ajaxNewPasswordUpdate(mvo);
 		String responseText = "NO";
 		if( n != 0) {
-			System.out.println("새로운 비밀번호 변경 성공");
+			logger.info("===========새로운 비밀번호 변경 성공");
 			responseText = "YES";
 		} else {
-			System.out.println("비밀번호 변경 실패");
+			logger.info("===========비밀번호 변경 실패");
 		}
 		return responseText;
 	}
 	
-	// 사용자뷰 공지사항으로 이동
-	@RequestMapping("/userNoticeList.do")
-	public String userNoticeList(Model model, HttpServletRequest request
-			,NoticeVO nvo) {
-		
-		// 공지사항 리스트 목록 전체를 날려보낸다.
-		model.addAttribute("notices", noticeDao.noticeSelectList());
-		
-		return "home/userNoticeList";
-	}
 	
-	// 사용자뷰 공지사항 조회
-	@RequestMapping("/userNoticeRead.do")
-	public String userNoticeRead(Model model, HttpServletRequest request
-			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam(value= "n_hit", required = false) int n_hit ){
-		
-		System.out.println("view단에서 넘어온 조회할 글 번호: " + n_no);
-		System.out.println("view단에서 넘어온 조회수 확인: " + n_hit);
-		
-		// 공지사항 클릭하면 조히수도 올리도록 한다. update
-		n_hit += 1;
-		System.out.println("업데이트할 조회수 값은 얼마? " + n_hit);
-		nvo.setN_hit(n_hit);
-		nvo.setN_no(n_no);
-		int n = noticeDao.noticeHitUpdate(nvo);
-		if( n != 0) {
-			System.out.println("조회수 업뎃 성공");
-		} else {
-			System.out.println("조회수업뎃 실패");
-		}
-		
-		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
-		// 조회수 count되게 만들어야 함 클릭했을 때, 
-		// 현재 조회수 count를 가져가야 하나? 
-		
-		return "home/userNoticeRead";
-	}
 	
 	
 }

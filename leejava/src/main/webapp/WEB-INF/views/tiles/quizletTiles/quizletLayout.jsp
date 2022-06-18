@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title><tiles:getAsString name="title" /></title>
+<title><tiles:insertAttribute name="atitle" /></title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 * {
@@ -17,20 +17,13 @@
 .wrapper {
 	width: 100%;
 	height: 100%;
-	display: flex;
-}
-.sideWrapper {
-	width: 12%;
-}
-.mainWrapper {
-	width: 85%;
 }
 .headerWrapper {
 	height: 5%;
 	background-color: #FFF0F0	;
 }
 .bodyWrapper{
-	min-height: 700px; 
+	min-height: 800px; 
 }
 .footerWrapper{
 	background-color: #FFF0F0;
@@ -40,20 +33,15 @@
 </head>
 <body>
 	<div class="wrapper">
-		<div class="sideWrapper">
-			<tiles:insertAttribute name="left" />
-		</div>
-		<div class="mainWrapper">
 			<div class="headerWrapper">
-				<tiles:insertAttribute name="header" />
+				<tiles:insertAttribute name="qheader" />
 			</div>
 			<div class="bodyWrapper">
-				<tiles:insertAttribute name="body" />
+				<tiles:insertAttribute name="qbody" />
 			</div>
 			<div class="footerWrapper">
-				<tiles:insertAttribute name="foot" />
+				<tiles:insertAttribute name="qfoot" />
 			</div>
-		</div>
 	</div>
 </body>
 </html>

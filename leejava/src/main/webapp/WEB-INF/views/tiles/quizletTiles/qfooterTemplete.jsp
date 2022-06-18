@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +8,6 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
-퀴즐렛 바디 영역
-
+footer 영역
 </body>
 </html>

@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +37,8 @@ import co.bada.leejava.notice.NoticeVO;
 public class NoticeController {
 	@Autowired
 	NoticeService noticeDao;
+	
+	private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
 
 	// summernote image upload 경로 bean 등록 root-context.xml에 등록했음.
 	@Resource(name = "summernoteImageUploadPath")
@@ -76,9 +80,6 @@ public class NoticeController {
 		model.addAttribute("notice", list); // 기존의 공지사항 리스트 대신
 		
 		return "home/admin/adminNoticeList";
-
-		
-		
 	}
 
 	// 공지사항 작성폼 이동
@@ -123,14 +124,14 @@ public class NoticeController {
 			jsonObject.addProperty("url", fileRoot + savedFileName); // contextroot + resources + 저장할 내부 폴더명
 //			jsonObject.addProperty("url", summernoteImageUploadPath + savedFileName); // contextroot + resources + 저장할 내부 폴더명
 			jsonObject.addProperty("responseCode", "success");
-			System.out.println("targetFile의 정체: " + targetFile);
+			logger.info("===============targetFile의 정체: " + targetFile);
 		} catch (IOException e) {
 			FileUtils.deleteQuietly(targetFile); // 실패했을 경우 저장된 파일 삭제
 			jsonObject.addProperty("responseCode", "error");
 			e.printStackTrace();
 		}
 		String responseData = jsonObject.toString();
-		System.out.println("responseData 확인: " + responseData);
+		logger.info("===============responseData 확인: " + responseData);
 		return responseData;
 	}
 
@@ -139,19 +140,19 @@ public class NoticeController {
 	public String noticeRegister(Model model, HttpSession session, HttpServletRequest request,
 			HttpServletResponse response, NoticeVO nvo, @RequestParam("filename") MultipartFile file) throws Exception {
 		// vo객체에 실어야 하는 것: 작성자, 카테고리, 제목, 내용, 첨부파일명, 물리파일명, 조회수, 고정여부
-		System.out.println("제목 들어왔니? " + request.getParameter("n_title"));
-		System.out.println("카테고리 들어왔니? " + request.getParameter("n_category"));
-		System.out.println("내용 들어왔니? : " + request.getParameter("n_content"));
-		System.out.println("@requestparam 첨부파일 이름이랑 같니? " + file);
+		logger.info("===============제목 들어왔니? " + request.getParameter("n_title"));
+		logger.info("===============카테고리 들어왔니? " + request.getParameter("n_category"));
+		logger.info("===============내용 들어왔니? : " + request.getParameter("n_content"));
+		logger.info("===============@requestparam 첨부파일 이름이랑 같니? " + file);
 
 		// 첨부파일 업로드 작업
 		String n_file = file.getOriginalFilename(); // 원본파일명
-		System.out.println("첨부파일 이름 확인: " + n_file);
+		logger.info("===============첨부파일 이름 확인: " + n_file);
 		String n_pfile = null; // 중복 가공된 파일. 실제 물리파일.
 		if (n_file != "") { // 첨부한 게 없다면 pfilename컬럼에 값이 안 들어가도록.
 			n_pfile = uploadFile(n_file, file.getBytes(), request); // 첨부파일명 랜덤생성하는 메소드. 밑에 정의되어 있음.
 		}
-		System.out.println("물리파일명 확인: " + n_pfile);
+		logger.info("===============물리파일명 확인: " + n_pfile);
 
 		String n_writer = (String) session.getAttribute("session_nickname");
 		String n_category = request.getParameter("n_category");
@@ -171,9 +172,9 @@ public class NoticeController {
 		nvo.setN_fixed(n_fixed);
 		int n = noticeDao.noticeInsert(nvo);
 		if (n != 0) {
-			System.out.println("공지사항 등록 성공~");
+			logger.info("===============공지사항 등록 성공~");
 		} else {
-			System.out.println("설마 ㅋㅋ?");
+			logger.info("===============설마 ㅋㅋ?");
 		}
 		// 이건 테스트용. 일반 resolver경로가 아닌 redirect를 하더라도 model값이 넘어가는지.
 		model.addAttribute("n_file", n_file);
@@ -205,11 +206,11 @@ public class NoticeController {
 		String SAVE_PATH = noticeUploadPath;
 		String filename = request.getParameter("filename"); // noticeRead.jsp에서 get방식으로 보낸 name속성값이 filename임.
 		String encodingFilename = ""; // 원본명으로 다운받기 위함.
-		System.out.println("1. filename: " + filename);
+		logger.info("===============1. filename: " + filename);
 		String realFilename = ""; // 실제 경로와 물리적 파일이름이 매핑될 곳
 
 		String pfilename = request.getParameter("pfilename"); // noticeRead.jsp에서 get방식으로 보냄
-		System.out.println("pfilename 확인 : " + pfilename);
+		logger.info("===============pfilename 확인 : " + pfilename);
 
 		try {
 			String browser = request.getHeader("User-Agent");
@@ -220,14 +221,14 @@ public class NoticeController {
 				encodingFilename = new String(filename.getBytes("UTF-8"), "ISO-8859-1");
 			}
 		} catch (UnsupportedEncodingException ex) {
-			System.out.println("UnsupportedEncodingException");
+			logger.info("===============UnsupportedEncodingException");
 		}
 		realFilename = SAVE_PATH + pfilename;
-		System.out.println("3. realfilename: " + realFilename);
+		logger.info("===============3. realfilename: " + realFilename);
 		File file = new File(realFilename); // 해당 경로의 물리파일을 대상으로 파일객체 생성
 		if (!file.exists()) {
 			// 해당 대상 파일이 정상적으로 존재하는 경우
-			System.out.println("존재유무 확인 ~=================");
+			logger.info("===============존재유무 확인 ~=================");
 			return;
 		}
 		// 파일명 지정
@@ -253,20 +254,20 @@ public class NoticeController {
 			fis.close();
 			os.close();
 		} catch (Exception e) {
-			System.out.println("FileNotFoundException : " + e);
+			logger.info("===============FileNotFoundException : " + e);
 		}
 	}
 	// 관리자 공지사항 조회
 	@RequestMapping("/adminNoticeRead.do")
 	public String adminNoticeRead(Model model, @RequestParam("n_no") int n_no, NoticeVO nvo) {
 
-		System.out.println("글번호 값 들어왔니? : " + n_no);
+		logger.info("===============글번호 값 들어왔니? : " + n_no);
 		nvo.setN_no(n_no);
 		nvo = noticeDao.noticeSelect(nvo);
 		if (nvo != null) {
-			System.out.println("글조회 성공~");
+			logger.info("===============글조회 성공~");
 		} else {
-			System.out.println("글조회 실패;;");
+			logger.info("===============글조회 실패;;");
 			return "redirect:adminNoticeList.do";
 		}
 		model.addAttribute("notice", nvo);
@@ -278,13 +279,13 @@ public class NoticeController {
 	public String noticeFormUpdate(Model model, HttpServletRequest request, NoticeVO nvo,
 			@RequestParam("n_no") int n_no) {
 
-		System.out.println("글번호 들어왔니?" + n_no);
+		logger.info("===============글번호 들어왔니?" + n_no);
 		nvo.setN_no(n_no);
 		nvo = noticeDao.noticeSelect(nvo);
 		if (nvo != null) {
-			System.out.println("성공여부 판단 후 삭제.");
+			logger.info("===============성공여부 판단 후 삭제.");
 		} else {
-			System.out.println("글번호 조회 실패");
+			logger.info("===============글번호 조회 실패");
 			return "redirect:adminNoticeList.do";
 		}
 		model.addAttribute("notice", nvo);
@@ -303,24 +304,24 @@ public class NoticeController {
 		String n_category = request.getParameter("n_category");
 		String n_content = request.getParameter("n_content");
 
-		System.out.println("수정할 제목 들어왔니? " + n_title);
-		System.out.println("수정할 카테고리 값 들어왔니? " + n_category);
-		System.out.println("수정할 내용은 들어왔니? " + n_content);
-		System.out.println("@requestparam 첨부파일 이름이랑 같니? " + file);
+		logger.info("===============수정할 제목 들어왔니? " + n_title);
+		logger.info("===============수정할 카테고리 값 들어왔니? " + n_category);
+		logger.info("===============수정할 내용은 들어왔니? " + n_content);
+		logger.info("===============@requestparam 첨부파일 이름이랑 같니? " + file);
 
 		// 새로운 첨부파일 업로드 작업하기
 		// 첨부파일 업로드 작업.
 		// form에서 값이 넘어왔을 때만 vo객체에 담는다.
 		if (file != null) {
 			String n_file = file.getOriginalFilename(); // 원본파일명
-			System.out.println("첨부파일 원본명 최종 확인: " + n_file);
+			logger.info("===============첨부파일 원본명 최종 확인: " + n_file);
 			// 중복 가공된 파일. 실제 물리파일.
 			String n_pfile = null;
 			// 업로드한 파일이 없다면 물리파일명 안 만들도록. 업로드한 파일이 있으면 물리파일 생성
 			if (n_file != "") {
 				// 원본명을 바탕으로 물리명을 생성하는 작업. 구현 메서드는 위쪽에 구현되어 있음.
 				n_pfile = uploadFile(n_file, file.getBytes(), request);
-				System.out.println("물리파일명 확인: " + n_pfile);
+				logger.info("===============물리파일명 확인: " + n_pfile);
 				// 업로드한 파일과 물리적으로 가공된 파일이 존재하면 vo객체에 담는다.
 				nvo.setN_file(n_file);
 				nvo.setN_pfile(n_pfile);
@@ -333,15 +334,15 @@ public class NoticeController {
 		nvo.setN_content(n_content);
 		// mapper문에서 where조건으로 글번호가 들어와야 한다. 이것도 vo객체에 담아야 했음.
 		int n_no = Integer.parseInt(request.getParameter("n_no"));
-		System.out.println("글번호는 제대로 날아온 거니? " + n_no);
+		logger.info("===============글번호는 제대로 날아온 거니? " + n_no);
 		// 마지막으로 글 번호까지 담는다.
 		nvo.setN_no(n_no);
 
 		int n = noticeDao.noticeUpdate(nvo);
 		if (n != 0) {
-			System.out.println("업데이트 성공");
+			logger.info("===============업데이트 성공");
 		} else {
-			System.out.println("업데이트 실패");
+			logger.info("===============업데이트 실패");
 		}
 
 		return "redirect:adminNoticeList.do";
@@ -353,17 +354,17 @@ public class NoticeController {
 	public String ajaxNoticeFileDelete(Model model, HttpServletRequest request, NoticeVO nvo,
 			@RequestParam("n_no") int n_no) {
 
-		System.out.println("request로도 넘어왔나? " + request.getParameter("n_no"));
-		System.out.println("글번호 값 넘어왔니?" + n_no);
+		logger.info("===============request로도 넘어왔나? " + request.getParameter("n_no"));
+		logger.info("===============글번호 값 넘어왔니?" + n_no);
 		nvo.setN_no(n_no);
 
 		int n = noticeDao.ajaxNoticeFileDelete(nvo);
 		String message = null;
 		if (n != 0) {
-			System.out.println("삭제 성공");
+			logger.info("===============삭제 성공");
 			message = "YES";
 		} else {
-			System.out.println("삭제 실패");
+			logger.info("===============삭제 실패");
 			message = "NO";
 		}
 
@@ -375,12 +376,12 @@ public class NoticeController {
 	@RequestMapping("/noticeDelete.do")
 	public String noticeDelete(Model model, HttpServletRequest request, NoticeVO nvo, @RequestParam("n_no") int n_no) {
 
-		System.out.println("삭제할 글 번호 왔니? : " + n_no);
+		logger.info("===============삭제할 글 번호 왔니? : " + n_no);
 		nvo.setN_no(n_no);
 		String message = null;
 		int n = noticeDao.noticeDelete(nvo);
 		if (n != 0) {
-			System.out.println("게시글 삭제 성공 (controller) ");
+			logger.info("===============게시글 삭제 성공 (controller) ");
 			message = "YES";
 		}
 		return message;
@@ -392,14 +393,14 @@ public class NoticeController {
 	public String ajaxNoticeFixed(Model model, HttpServletRequest request, NoticeVO nvo, @RequestParam("n_no") int n_no,
 			@RequestParam("n_fixed") String n_fixed) {
 
-		System.out.println("글번호: " + n_no + "수정할 고정 값: " + n_fixed);
+		logger.info("===============글번호: " + n_no + "수정할 고정 값: " + n_fixed);
 
 		nvo.setN_fixed(n_fixed);
 		nvo.setN_no(n_no);
 		int n = noticeDao.ajaxNoticeFixed(nvo);
 		String message = null;
 		if (n != 0) {
-			System.out.println("수정 성공");
+			logger.info("===============수정 성공");
 			message = "YES";
 		}
 

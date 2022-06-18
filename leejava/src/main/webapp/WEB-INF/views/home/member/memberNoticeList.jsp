@@ -49,7 +49,7 @@
 									<input class="noticeFixedTd" type="hidden" value="${notice.n_fixed }">
 								</td>
 								<td>${notice.n_category }</td>
-								<td class="noticeListTitleTd" onclick="userNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</td>
+								<td class="noticeListTitleTd" onclick="memberNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</td>
 								<td>${notice.n_wdate }</td>
 								<td>${notice.n_writer }</td>
 								<td>${notice.n_hit }</td>
@@ -63,10 +63,10 @@
 </body>
 <script>
 	// 글제목 클릭 시 공지사항 조회할 수 있도록 하기
-	function userNoticeRead(no, hit) {
+	function memberNoticeRead(no, hit) {
 		console.log("글번호 확인: " + no);
 		console.log("조회수 확인: " + hit);
-		location.href='userNoticeRead.do?n_no=' + no + '&n_hit='+hit;
+		location.href='memberNoticeRead.do?n_no=' + no + '&n_hit='+hit;
 	}	
 	
 </script>

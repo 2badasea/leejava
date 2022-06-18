@@ -97,7 +97,7 @@
 					<li><a href="#" class="sideMenu">스터디/정기모임</a></li>
 					<li><a href="#" class="sideMenu">책/인강 리뷰</a></li>
 				</ul>
-				<li><a href="userNoticeList.do">공지사항</a></li>
+				<li><a href="memberNoticeList.do">공지사항</a></li>
 			</ul>
 		</div>
 	</div>
@@ -130,7 +130,7 @@
 	// 개인정보 조회하는 공간으로 이동
 	$("#myInfoBtn").on("click", function(){ 
 		alert("개인정보 조호히하는 공간으로 이동"); 
-		location.href='userMyInfo.do';
+		location.href='memberMyInfo.do';
 	})
 	
 	

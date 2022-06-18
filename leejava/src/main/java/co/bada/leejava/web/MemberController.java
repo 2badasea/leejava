@@ -15,8 +15,9 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,16 +32,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
+import co.bada.leejava.notice.NoticeService;
+import co.bada.leejava.notice.NoticeVO;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 public class MemberController {
 	@Autowired
 	MemberService memberDao;
+	@Autowired
+	NoticeService noticeDao;
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
 	// 관리자 회원리스트 페이지 이동
 	@RequestMapping("/adminMemberList.do")
@@ -53,8 +59,8 @@ public class MemberController {
 	}
 	
 	// 유저 개인정보 조회하는 곳으로 이동 => 프로필 사진이랑 모두 추가해야 함. 
-	@RequestMapping("/userMyInfo.do")
-	public String userMyInfo(Model model, HttpServletRequest request,
+	@RequestMapping("/memberMyInfo.do")
+	public String memberMyInfo(Model model, HttpServletRequest request,
 			MemberVO mvo, HttpSession session) { 
 		
 		// 접속한 회원의 개인정보를 뿌려줘야 한다. 
@@ -63,10 +69,10 @@ public class MemberController {
 		mvo.setM_email(m_email);
 		mvo = memberDao.memberMyInfoList(mvo);
 		model.addAttribute("member", mvo);
-		return "home/userMyInfo";
+		return "home/member/memberMyInfo";
 	}
 	   
-	// 개인정보 페이지 프로필 이미지 사진 변경.
+	// 개인정보 페이지 프로필 이미지 사진 변경을 클릭하여 이미지를 선택했을 대 발생하는 url
 	// 서버에서 뷰로 반환되는 정보가 한글일 경우 데이터가 깨질 수 있어서 produces속성을 추가하여 뷰로 전해줄 데이터를 utf8로 인코딩 해주는 작업을 한다. 
 	@PostMapping(value = "/ajaxProfileUpdate.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> ajaxProfileUpdate(MultipartFile[] uploadFile) {
@@ -74,7 +80,7 @@ public class MemberController {
 			// 그릐고 for문으로 돌리면 된다. 나도 [] 형태로 수정.  
 		
 		// 나중에 log4j 설정하면 sysout은 사용하지 말 것. 
-		System.out.println("ajaxProfileUpdate.do POST......");
+		logger.info("===============ajaxProfileUpdate.do POST......");
 		
 		/* 이미지 파일 체크 */ 
 		for(MultipartFile multipartFile : uploadFile) {
@@ -88,7 +94,7 @@ public class MemberController {
 				// checkfile을 Path 객체로 만들어 주어야 하고, 이를 위해 File클래스의 toPath()메서드를 사용
 			try {
 				type = Files.probeContentType(checkfile.toPath());
-				System.out.println("MIME TYPE: " + type);
+				logger.info("===============MIME TYPE(Files.probeContentType()의 결과) : " + type);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -119,19 +125,19 @@ public class MemberController {
 		Date date = new Date();  
 		// sdf가 가지고 있는 format()메서드를 사용 => 인스턴스를 생성할 때 어떤 형식으로 날짜 정보를 제공할지 설정해놓음
 		String str = sdf.format(date); 
-		System.out.println("경로구분자로 가공되기 전 str의 값: " + str);
+		logger.info("===============경로구분자로 가공되기 전 str의 값: " + str);
 		// 현재 str변수에는 날짜 사이에 '-'문자열 데이터가 저장되어 있음. replace()로 교체
 		// File클래스에서 실행되는 환경에 따라 그에 맞는 경로 구분자를 반환하는 정적(static) 변수인
 		// separator가 존재. => '-' 문자열을 String클래스의 replace() 메서드를 이용하여
 		// File.separator로 변경해준다.  / 경로구분자를 말한다. 
 		String profilePath = str.replace("-", File.separator);
-		System.out.println("'-'을 경로구분자로 변환 후 str의 값: " + profilePath);
+		logger.info("==============='-'을 경로구분자로 변환 후 str의 값: " + profilePath);
 		// File타입의 uploadPath 변수를 통하여 우리가 원하는 경로에 날짜별로 디렉토리를 생성하는 객체를 생성한다.
 		File uploadPath = new File(uploadFolder,profilePath);
 		
 		// 그럼 폴더를 생성한다. 폴더를 생성하는 메서드로 mkdir()과 mkdirs() 메서드가 존재하는데,
 		// 후자의 경우 여러 개의 폴더를 생성한다. => 우리는 mkdirs()메서드를 사용한다. 
-		System.out.println("kim vam pa 쩐다...");
+		logger.info("===============kim vam pa 쩐다...");
 		// 날짜 정보가 담긴 디렉토리를 생성한다. 
 		
 		// 요청이 있을 때마다 새로운 폴더를 생성하는 것을 방지하기 위함 => File객체에서 제공하는 exist()메서드. 
@@ -160,14 +166,14 @@ public class MemberController {
 			String uploadFileName = multipartFile.getOriginalFilename();
 			// setter 메서드를 사용하여 각 정보를 avo 객체에 저장
 			avo.setFileName(uploadFileName);  // 파일 원본명
-			System.out.println("avo객체에 담은 uploadFilename: " + uploadFileName);
+			logger.info("===============avo객체에 담은 uploadFilename: " + uploadFileName);
 			avo.setUploadPath(profilePath); // 날짜별 디렉토리까지 구분되어 있는 경로
-			System.out.println("avo객체에 담은 profilePath: " + profilePath);
+			logger.info("===============avo객체에 담은 profilePath: " + profilePath);
 			// UUID 적용이 된 파일이름으로 변경
 			String uuid = UUID.randomUUID().toString();
 			// avo객채ㅔ에 uuid도 저장
 			avo.setUuid(uuid);
-			System.out.println("avgo객체에 담은 uuid명 : " + uuid);
+			logger.info("===============avgo객체에 담은 uuid명 : " + uuid);
 			uploadFileName = uuid + "_" + uploadFileName; // uuid+"_"+원본파일 => 물리파일명 생성
 			// 파일 위치, 파일 이름을 합친 File 객체 
 			File saveFile = new File(uploadPath, uploadFileName);
@@ -181,12 +187,12 @@ public class MemberController {
 				// ImageIO를 통해 썸네일 이미지를 생성하기 위해 원본 파일과 썸네일 파일 객체가 필요
 				// 썸네일 파일 객체는 원본 파일과 구분하기 위해 앞에 's_'를 붙이고 생성함.
 //				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
-//				System.out.println("파일 객체 조회: " + thumbnailFile);
+//				logger.info("===============파일 객체 조회: " + thumbnailFile);
 				// 원본 이미지 파일을 ImageIO의 read() 메서드를 호출하여 BufferedImage 타입으로
 					// 변경해준 뒤 BufferedImage 타입의 참조 변수를 선언하여 해당 변수에 대입해준다. 
 					// (bo_image 변수는 Buffered original image라는 의미로 작성=> 원하는 변수명 사용해도 된다) 
 //				BufferedImage bo_image = ImageIO.read(saveFile); 
-//				System.out.println("bo_image의 정체: " + bo_image);
+//				logger.info("===============bo_image의 정체: " + bo_image);
 				
 				
 				// 높이와 너비에 대해 비율을 하드코딩 해서 맞춰줄 경우, 특정 이미지의 경우 보기가 불편하게 변경될 수 있음.
@@ -203,14 +209,14 @@ public class MemberController {
 					// 참조 변수에 대입한다. => 일종의 크기를 지정하여 흰색 도화지를 만드는 과정이다. 
 					// 사용한 BufferedImage 생성자는 매개변수로  넓이, 높이,'생성될 이미지 타입'을 작성하면 된다. 
 //				BufferedImage bt_image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-//				System.out.println("bt_image 조회: " + bt_image);
+//				logger.info("===============bt_image 조회: " + bt_image);
 				// 썸네일 BufferedImage 객체(bt_image)에서 createGraphics() 메서드 호출을 통해
 					// Graphic2D 객체를 생성 해준 후 Graphic2D 타입의 참조 변수에 대입한다.
 					// ( 앞서 만든 도화지에 그림을 그릴 수 있도록 하는 과정 ) 
 					// 썸네일 BufferedImage 객체에 그림을 그리기 위해 Graphic2D 객체를 생성한다. 
 					// Graphic2D 메서드를 통해 조작을 하게 되면 그 결과가 썸네일 BufferedImage 객체에 적용이 된다. 
 //				Graphics2D graphic = bt_image.createGraphics(); 
-//				System.out.println("graphic 이름 확인: " + graphic);
+//				logger.info("===============graphic 이름 확인: " + graphic);
 				// drawImage 메서드를 호출하면 원본 이미지를 썸네일 BufferedImage에 지정한 크기로 변경하여
 					// 왼쪽 상단 "0,0" 좌표부터 그려준다. (마찬가지로 도화지에 이미지를 그리는 과정이라고 생각하면 된다) .
 //				graphic.drawImage(bo_image, 0, 0, width, height, null); 
@@ -228,7 +234,7 @@ public class MemberController {
 				
 				// 복잡해 보이지만 전체적인 과정은 java내에서 크기를 지정한 이미지를 만들고, 그 이미지에 맞게 원본 이미지를
 				// 그려 놓은 다음 해당 이미지를 파일로 저장한 것이다. 
-//				System.out.println("성공");
+//				logger.info("===============성공");
 				
 				
 				/* 방법 2 썸네일 라이브러리를 pom.xml에 추가하여 활용하는 방식*/
@@ -249,7 +255,7 @@ public class MemberController {
 				// ImageIO를 통한 코드 작성보다 훨씬 간단히 생성 가능. thumbnailator 라이브러리는 이미지 생성에
 				// 세부적 설정을 할 수 있는 메서드들을 제공. 
 			} catch (Exception e) {
-				System.out.println("실패");
+				logger.info("===============실패");
 				e.printStackTrace();
 			}
 			// 이미지 정보가 저장된 AttachImageVO객체를 List의 요소로 추가해준다. 
@@ -266,17 +272,17 @@ public class MemberController {
 		
 //		// 향상된 for문으로 하는 방식
 //		for(MultipartFile multipartFile : uploadFile) { 
-//			System.out.println("ajaxProfileUpdate.do POST......");
-//			System.out.println("파일 이름 : " + multipartFile.getOriginalFilename());
-//			System.out.println("파일 타입 : " + multipartFile.getContentType());
-//			System.out.println("파일 크기 : " + multipartFile.getSize());
+//			logger.info("===============ajaxProfileUpdate.do POST......");
+//			logger.info("===============파일 이름 : " + multipartFile.getOriginalFilename());
+//			logger.info("===============파일 타입 : " + multipartFile.getContentType());
+//			logger.info("===============파일 크기 : " + multipartFile.getSize());
 //		}
 //		// 기본 for문을 이용한 방식
 //		for(int i = 0; i< uploadFile.length; i++) {
-//			System.out.println("ajaxProfileUpdate.do POST......");
-//			System.out.println("파일 이름 : " + uploadFile[i].getOriginalFilename());
-//			System.out.println("파일 타입 : " + uploadFile[i].getContentType());
-//			System.out.println("파일 크기 : " + uploadFile[i].getSize());
+//			logger.info("===============ajaxProfileUpdate.do POST......");
+//			logger.info("===============파일 이름 : " + uploadFile[i].getOriginalFilename());
+//			logger.info("===============파일 타입 : " + uploadFile[i].getContentType());
+//			logger.info("===============파일 크기 : " + uploadFile[i].getSize());
 //		}
 		
 	} // url매핑 끝 부분. 
@@ -289,9 +295,9 @@ public class MemberController {
 		// url 경로를 통해 변수와 변수 값을 부여할 수 있도록 GetMapping 어노테이션을 사용. 
 	@GetMapping("/display.do")
 	public ResponseEntity<byte[]> getImage(String fileName){
-		System.out.println("fileName의 값: " +fileName);
+		logger.info("===============fileName의 값: " +fileName);
 		File file = new File("c:\\leejava\\profile\\" + fileName); 
-		System.out.println("File객체의 값: " + file);
+		logger.info("===============File객체의 값: " + file);
 		ResponseEntity<byte[]> result = null;
 		try {
 			// 대상 이미지 파일의 MIME TYPE을 얻기 위해 이전 포스팅에서 사용한 Files 클래스의 
@@ -322,7 +328,7 @@ public class MemberController {
 	public ResponseEntity<String> deleteFile(String fileName){
 		// logger.info 구현하면 => 수정하기 
 		// 이때 넘어온 fileName은 view에서 넘어온 fileCallPath 데이터(경로 + uuid + 파일이름)
-		System.out.println("deleteFile : " + fileName);
+		logger.info("===============deleteFile : " + fileName);
 		
 		File file = null;
 		
@@ -334,7 +340,7 @@ public class MemberController {
 			file.delete();
 			// 메모 96.원본파일 삭제. 썸네일 이미지를 의미하는 's_'만 지워주면 원본파일명이고, 둘은 같은 위치에 있다. 
 			String originFileName = file.getAbsolutePath().replace("s_", "");
-			System.out.println("originFileName : " + originFileName);
+			logger.info("===============originFileName : " + originFileName);
 			// 본 파일을 대상으로 하는 File객체를 생성 후 이를 기존에 선언하고 사용하였던 file참조변수가 참조하도록 함.
 				// 썸네일 이미지 삭제와 동일하게 원본 파일 이미지를 삭제하도록 delete()메서드를 호출
 			file = new File(originFileName);
@@ -355,7 +361,7 @@ public class MemberController {
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
 		
-		System.out.println("m_email 값 확인: " +  m_email);
+		logger.info("===============m_email 값 확인: " +  m_email);
 		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
 	}
 	
@@ -363,12 +369,11 @@ public class MemberController {
 	@ResponseBody
 	@RequestMapping("/ajaxProfileImgUpdate.do")
 	public String ajaxProfileImgUpdate(HttpServletRequest request, MemberVO mvo, AttachImageVO ivo) {
-		System.out.println("서버로 일단 왔니?");
 		// 전달받은 데이터 확인  m_email, uuid, uploadPath, fileName 
-		System.out.println("날라온 이메일: " + request.getParameter("m_email"));
-		System.out.println("날라온 uuid: " + request.getParameter("uuid"));
-		System.out.println("날라온 uploadPath: " + request.getParameter("uploadPath"));
-		System.out.println("날라온 fileName: " + request.getParameter("fileName"));
+		logger.info("===============날라온 이메일: " + request.getParameter("m_email"));
+		logger.info("===============날라온 uuid: " + request.getParameter("uuid"));
+		logger.info("===============날라온 uploadPath: " + request.getParameter("uploadPath"));
+		logger.info("===============날라온 fileName: " + request.getParameter("fileName"));
 		
 		String m_email = request.getParameter("m_email");
 		String uuid = request.getParameter("uuid");
@@ -384,19 +389,19 @@ public class MemberController {
 		String result = null;
 		boolean b = memberDao.profileImageCheck(ivo);
 		if(b) {
-			System.out.println("기존 정보 없음");
+			logger.info("===============기존 정보 없음");
 			// insert 구문. 
 			int m = memberDao.insertProfileImage(ivo);
 			if( m == 1) {
-				System.out.println("프로필 이미지 insert 성공");
+				logger.info("===============프로필 이미지 insert 성공");
 				result = "Y";
 			} 
 		} else {
-			System.out.println("기존 정보 있음");
+			logger.info("===============기존 정보 있음");
 			// update 구문
 			int n = memberDao.updateProfileImage(ivo);
 			if( n == 1) {
-				System.out.println("프로필 업데이트 성공");
+				logger.info("===============프로필 업데이트 성공");
 				result = "Y";
 			}
 		}
@@ -414,8 +419,8 @@ public class MemberController {
 			,@RequestParam("m_email") String m_email ) {
 		
 		// 닉네임이랑 회원의 이메일을 가져와야 한다. 
-		System.out.println("ajax를 통해 들어온 새로운 닉네임: " + m_nickname);
-		System.out.println("ajax로 넘어온 전역변수 사용자 이메일: " + m_email );
+		logger.info("===============ajax를 통해 들어온 새로운 닉네임: " + m_nickname);
+		logger.info("===============ajax로 넘어온 전역변수 사용자 이메일: " + m_email );
 		
 		// mvo객체에 담아서 중복체크를 먼저 한 다음에 중복이 아닐 때 처리해준다. 
 		mvo.setM_nickname(m_nickname);
@@ -423,22 +428,60 @@ public class MemberController {
 		String responseText = null;
 		boolean b = memberDao.memberNicknameCheck(mvo);
 		if(b) { 
-			System.out.println("중복된 닉네임 없음");
+			logger.info("===============중복된 닉네임 없음");
 			mvo.setM_email(m_email);
 			int n = memberDao.ajaxNicknameUpdate(mvo);
 			if(n !=0) {
-				System.out.println("닉네임 변경 성공");
+				logger.info("===============닉네임 변경 성공");
 				responseText = "업데이트 성공";
 			} else {
-				System.out.println("닉네임 변경 실패");
+				logger.info("===============닉네임 변경 실패");
 				responseText ="닉네임 변경 실패. 관리자에게 문의"; 
 			}
 		} else {
-			System.out.println("중복된 이메일 존재");
+			logger.info("===============중복된 이메일 존재");
 			responseText ="already the nickname is exist...!";
 		}
 		
 		return responseText;
+	}
+	
+	// 사용자뷰 공지사항으로 이동
+	@RequestMapping("/memberNoticeList.do")
+	public String memberNoticeList(Model model, HttpServletRequest request
+			,NoticeVO nvo) {
+		
+		// 공지사항 리스트 목록 전체를 날려보낸다.
+		model.addAttribute("notices", noticeDao.noticeSelectList());
+		
+		return "home/member/memberNoticeList";
+	}
+	
+	// 사용자뷰 공지사항 조회
+	@RequestMapping("/memberNoticeRead.do")
+	public String memberNoticeRead(Model model, HttpServletRequest request
+			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam(value= "n_hit", required = false) int n_hit ){
+		
+		logger.info("===========view단에서 넘어온 조회할 글 번호: " + n_no);
+		logger.info("===========view단에서 넘어온 조회수 확인: " + n_hit);
+		
+		// 공지사항 클릭하면 조히수도 올리도록 한다. update
+		n_hit += 1;
+		logger.info("===========업데이트할 조회수 값은 얼마? " + n_hit);
+		nvo.setN_hit(n_hit);
+		nvo.setN_no(n_no);
+		int n = noticeDao.noticeHitUpdate(nvo);
+		if( n != 0) {
+			logger.info("===========조회수 업뎃 성공");
+		} else {
+			logger.info("===========조회수업뎃 실패");
+		}
+		
+		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
+		// 조회수 count되게 만들어야 함 클릭했을 때, 
+		// 현재 조회수 count를 가져가야 하나? 
+		
+		return "home/member/memberNoticeRead";
 	}
 	
 	

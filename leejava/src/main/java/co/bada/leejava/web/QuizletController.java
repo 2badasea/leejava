@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class QuizletController {
 	
-	
 	// 퀴즐렛 학습 페이지 이동
 	@RequestMapping("/quizlet.do")
 	public String quizlet(HttpServletRequest request, Model model) {

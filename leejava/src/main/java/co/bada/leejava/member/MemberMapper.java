@@ -30,5 +30,7 @@ public interface MemberMapper {
 	int insertProfileImage(AttachImageVO ivo);
 	// 프로필 이미지 정보 업데이트
 	int updateProfileImage(AttachImageVO ivo); 
+	// 개인정보동의, 프로모션 동의여부 업데이트 
+	int ajaxJoinTermsUpdate(MemberVO mvo); 
 	
 }

@@ -211,7 +211,7 @@ public class HomeController {
 		logger.info("===========privacy 값: " + request.getParameter("privacy"));
 		logger.info("===========promotion 값: " + request.getParameter("promotion"));
 		
-		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한 : USER) 
+		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한/상태 : USER) , m_into
 		String m_email = request.getParameter("email");
 		String m_nickname = request.getParameter("nickname");
 		String password = request.getParameter("password");
@@ -223,6 +223,7 @@ public class HomeController {
 		String m_status = "USER";
 		String m_privacy = request.getParameter("privacy");
 		String m_promotion = request.getParameter("promotion");
+		String m_intro = "";
 		
 		
 		
@@ -243,6 +244,7 @@ public class HomeController {
 		mvo.setM_joinpath(m_joinpath);
 		mvo.setM_status(m_status);
 		mvo.setM_salt(m_salt);  // salt값도 db컬럼에 담는다.
+		mvo.setM_intro(m_intro);
 		
 		mvo.setM_privacy(m_privacy);
 		mvo.setM_promotion(m_promotion);
@@ -367,6 +369,30 @@ public class HomeController {
 			logger.info("===========비밀번호 변경 실패");
 		}
 		return responseText;
+	}
+	
+	// 연락처 조회 by memberMyInfo.jsp 회원탈퇴 부분
+	@ResponseBody
+	@RequestMapping("ajaxPhoneSelect.do")
+	public String ajaxPhoneSelect(MemberVO mvo, HttpServletRequest request
+			,@RequestParam("m_email") String m_email
+			,@RequestParam("m_phone") String m_phone) {
+		
+		logger.info("======================= ajax로 넘어온 이메일: " + m_email);
+		logger.info("======================= ajax로 넘어온 연락처: " + m_phone);
+		
+		mvo.setM_email(m_email);
+		mvo.setM_phone(m_phone);
+		mvo = memberDao.memberSelect(mvo);
+		String result = null;
+		if(mvo != null) {
+			result = "OK";
+			logger.info("=============== 연락처 조회 성공");
+		} else {
+			result = "NO";
+			logger.info("================연락처 조회 실패");
+		}
+		return result;
 	}
 	
 	

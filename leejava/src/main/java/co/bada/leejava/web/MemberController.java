@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -74,6 +75,7 @@ public class MemberController {
 	   
 	// 개인정보 페이지 프로필 이미지 사진 변경을 클릭하여 이미지를 선택했을 대 발생하는 url
 	// 서버에서 뷰로 반환되는 정보가 한글일 경우 데이터가 깨질 수 있어서 produces속성을 추가하여 뷰로 전해줄 데이터를 utf8로 인코딩 해주는 작업을 한다. 
+	// ajax호출의 경우 1. @ResponseBody 어노테이션을 사용하거나, 리턴타입이 ResponseEntity객체를 보내는 경우 두 가지 존재.
 	@PostMapping(value = "/ajaxProfileUpdate.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> ajaxProfileUpdate(MultipartFile[] uploadFile) {
 			// MultipartFile[] => 여러 파일을 받을 때 사용. 이렇게 해놓고 한 개만 업로드 해도 상관없다. 
@@ -119,7 +121,7 @@ public class MemberController {
 		// 업로드할 프로필 사진을 저장할 경로 설정
 		String uploadFolder = "C:\\leejava\\profile"; 
 		
-		// 'yyyy-MM-dd' 형태로 날짜 정보를 얻기 위함. 
+		// 'yyyy-MM-dd' 형태로 날짜 정보를 얻기 위함. 날짜별로 디렉토리를 구성하기 위함. 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		// 날짜 정보를 얻을 수 있는 객체 생성 => java.util.Date 패키지에 속한다. 
 		Date date = new Date();  
@@ -127,7 +129,7 @@ public class MemberController {
 		String str = sdf.format(date); 
 		logger.info("===============경로구분자로 가공되기 전 str의 값: " + str);
 		// 현재 str변수에는 날짜 사이에 '-'문자열 데이터가 저장되어 있음. replace()로 교체
-		// File클래스에서 실행되는 환경에 따라 그에 맞는 경로 구분자를 반환하는 정적(static) 변수인
+		// File클래스에서 실행되는 운영체제 환경에 따라 그에 맞는 경로 구분자를 반환하는 정적(static) 변수인
 		// separator가 존재. => '-' 문자열을 String클래스의 replace() 메서드를 이용하여
 		// File.separator로 변경해준다.  / 경로구분자를 말한다. 
 		String profilePath = str.replace("-", File.separator);
@@ -136,27 +138,28 @@ public class MemberController {
 		File uploadPath = new File(uploadFolder,profilePath);
 		
 		// 그럼 폴더를 생성한다. 폴더를 생성하는 메서드로 mkdir()과 mkdirs() 메서드가 존재하는데,
-		// 후자의 경우 여러 개의 폴더를 생성한다. => 우리는 mkdirs()메서드를 사용한다. 
+			// 후자의 경우 여러 개의 폴더를 생성한다. => 전자의 경우 선행하는 디렉토리가 없으면 만들어지지 않는다.  
 		logger.info("===============kim vam pa 쩐다...");
 		// 날짜 정보가 담긴 디렉토리를 생성한다. 
 		
 		// 요청이 있을 때마다 새로운 폴더를 생성하는 것을 방지하기 위함 => File객체에서 제공하는 exist()메서드. 
 		if(uploadPath.exists() == false) {
 			// 요청이 있는 날짜 기준으로 폴더가 생성되었다. 
-			// File.separator() 메서드를 통해 경로구분자(\) 기준으로 디렉토리 생성됨.
-			// mkdir() / mkdirs()메서드 차이 => notion에 정리
+				// File.separator() 메서드를 통해 경로구분자(\) 기준으로 디렉토리 생성됨.
+				// mkdir() / mkdirs()메서드 차이 => notion에 정리
 			uploadPath.mkdirs();
 		}
 		
 		// 이미지 정보 담는 객체. 위에 타입체크용 for문 내에서도 한번 선언했음.
+			// 나중에 return타입으로 ResponseEntity로, 이미지 정보가 담긴 list와, HttpStatus 상태값을 담아서 보낸다.
 		List<AttachImageVO> list = new ArrayList();
 		
 		// 실제 파일을 폴더에 저장하기 위해서 transperTo() 메서드를 사용한다. 
 		// 사용방법은 전달받은 파일인 MultipartFile 객체에 저장하고자 하는 위치를 지정한
-		// File객체를 파라미터로 하여 transperTo() 메서드를 호출하면 된다. 
+		// File객체를 파라미터로 하여 transperTo() 메서드를 호출하면 된다.  
 		// MultipartFile.transferTo(File detination); 대충 이런 형태 
 		
-		// 본격적으로 업로드한 파일에 대해 다루기 시작. 
+		// 본격적으로 업로드한 파일에 대해 다루기 시작. 앞서 있었던 향상된 for문의 경우는 해당 이미지 파일의 유효성 검사용.
 		// 향상된 for문 // 첨부파는 이미지가 여러 개일 경우=> for문으 동시에 업로드 처리한다.
 		for(MultipartFile multipartFile : uploadFile) {
 			
@@ -185,12 +188,13 @@ public class MemberController {
 				
 				/* 썸네일 이미지 생성(ImageIO) */
 				// ImageIO를 통해 썸네일 이미지를 생성하기 위해 원본 파일과 썸네일 파일 객체가 필요
-				// 썸네일 파일 객체는 원본 파일과 구분하기 위해 앞에 's_'를 붙이고 생성함.
+					// 썸네일 파일 객체는 원본 파일과 구분하기 위해 앞에 's_'를 붙이고 생성함.
 //				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
 //				logger.info("===============파일 객체 조회: " + thumbnailFile);
 				// 원본 이미지 파일을 ImageIO의 read() 메서드를 호출하여 BufferedImage 타입으로
 					// 변경해준 뒤 BufferedImage 타입의 참조 변수를 선언하여 해당 변수에 대입해준다. 
 					// (bo_image 변수는 Buffered original image라는 의미로 작성=> 원하는 변수명 사용해도 된다) 
+					// 조작하기 전 대기실에 둔다고 생각하면 된다. BufferedImage타입의 경우.
 //				BufferedImage bo_image = ImageIO.read(saveFile); 
 //				logger.info("===============bo_image의 정체: " + bo_image);
 				
@@ -205,7 +209,7 @@ public class MemberController {
 //				int width = (int) (bo_image.getWidth() / ratio);
 //				int height = (int) (bo_image.getHeight() / ratio); 
 				
-				// BufferedImage 생성자 사용 => 썸네일 이미지인 BuffereImage 객체를 생성해주고
+				// BufferedImage 생성자 사용 => 썸네일 이미지를 담을 BuffereImage 객체를 생성해주고
 					// 참조 변수에 대입한다. => 일종의 크기를 지정하여 흰색 도화지를 만드는 과정이다. 
 					// 사용한 BufferedImage 생성자는 매개변수로  넓이, 높이,'생성될 이미지 타입'을 작성하면 된다. 
 //				BufferedImage bt_image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
@@ -242,6 +246,7 @@ public class MemberController {
 					// 썸네일 파일의 이름은 uuid+"_"+원본파일명 형태의 물리파일명에서 앞에 "s_"를 붙였다. 
 				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
 				
+				// 마찬가지로 BufferImage 공간에 싣는다.
 				BufferedImage bo_image = ImageIO.read(saveFile);
 				
 					// 비율
@@ -327,18 +332,19 @@ public class MemberController {
 	@PostMapping("/deleteFile.do")
 	public ResponseEntity<String> deleteFile(String fileName){
 		// logger.info 구현하면 => 수정하기 
-		// 이때 넘어온 fileName은 view에서 넘어온 fileCallPath 데이터(경로 + uuid + 파일이름)
-		logger.info("===============deleteFile : " + fileName);
-		
+		// 이때 넘어온 fileName은 view에서 넘어온 fileCallPath 데이터(경로 + "s_"+  uuid + 파일이름)
+		logger.info("===============view에서 넘어온 삭제할 deleteFile : " + fileName);
+		logger.info("================ decocde 실행 직전============");
 		File file = null;
 		
 		// 사용할 URLDecoder.decode(), File.delete() 두 개 모두 예외를 발생시킬 가능성이 큰 메서드. 
 		try {
 			// 메모 95. 삭제할 파일을 대상으로 하는 File클래스를 인스턴스화 하여 앞서 선언한 file참조변수가 참조하도로 한다. 
 			file = new File("c:\\leejava\\profile\\" + URLDecoder.decode(fileName, "UTF-8"));
+			logger.info("========================URLDecoder.decode(fileName, 'UTF-8') 결과 : " +file);
 			// delete()메서드를 호출하여 해당 파일을 삭제하도록 코드를 작성한다.
 			file.delete();
-			// 메모 96.원본파일 삭제. 썸네일 이미지를 의미하는 's_'만 지워주면 원본파일명이고, 둘은 같은 위치에 있다. 
+			// 메모 96. 물리파일도 삭제. 썸네일 이미지를 의미하는 's_'만 지워주면 물리파일명이고, 둘은 같은 경로에 있다. 
 			String originFileName = file.getAbsolutePath().replace("s_", "");
 			logger.info("===============originFileName : " + originFileName);
 			// 본 파일을 대상으로 하는 File객체를 생성 후 이를 기존에 선언하고 사용하였던 file참조변수가 참조하도록 함.
@@ -349,6 +355,7 @@ public class MemberController {
 		} catch(Exception e) {
 			// 예외가 발생 => 파일 삭제 요청을 정상적으로 처리하지 못 함 => 실패를 알리는 상태 return
 			e.printStackTrace();
+			// 그러면 ajax콜백함수의 data값이 "fail" 값을 가진다. 
 			return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
 		} 
 		// try문이 예외가 발생하지 않은 것은 정상적으로 삭제 작업을 수행했다는 것이기 때문에 성공 코드와 함께 성공과 
@@ -361,7 +368,10 @@ public class MemberController {
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
 		
-		logger.info("===============m_email 값 확인: " +  m_email);
+		logger.info("===============DB로 조회할 m_email 값 확인: " +  m_email);
+		// memberDao.getAttachImage() mapper를 통해 얻은정보를 json형태로 뷰에 반화한다. 
+			// DB에 저장된 상태값에 따라 이미지가 출력될 수도 있고 안 될 수도 있다.
+		logger.info("============= DB에서 반환받은 정보: " + memberDao.getAttachList(m_email));
 		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
 	}
 	
@@ -378,6 +388,9 @@ public class MemberController {
 		String m_email = request.getParameter("m_email");
 		String uuid = request.getParameter("uuid");
 		String uploadPath = request.getParameter("uploadPath");
+		// "\"를  "/"형태로 치환해서 DB로 들어가게 해보자.
+		uploadPath = uploadPath.replace("\\", "/");
+		logger.info("============== '\'를 '/'로 수정해서 DB에 넣을 uploadPath 정보: " + uploadPath);
 		String fileName = request.getParameter("fileName");
 		
 		// 이제 DB에 insert. 그전에 select해서 이미 존재한다면 update문으로 정보를 변경한다. 
@@ -482,6 +495,58 @@ public class MemberController {
 		// 현재 조회수 count를 가져가야 하나? 
 		
 		return "home/member/memberNoticeRead";
+	}
+	
+	// memberMyInfo 자기소개 수정  resonseEntity로 해보기 
+	@RequestMapping("/ajaxMyIntroUpdate.do")
+	public ResponseEntity<String> ajaxMyIntroUpdate(MemberVO mvo, HttpServletRequest request
+			,@RequestParam(value = "m_email" , required = false) String m_email
+			,@RequestParam(value = "m_intro", required = false) String m_intro){
+		
+		logger.info("================ajax로 넘어온 m_email값: " + m_email);
+		logger.info("================ajax로 넘어온 m_intro값: " + m_intro);
+		
+		mvo.setM_intro(m_intro);
+		mvo.setM_email(m_email);
+		
+		String message = null;
+		int n = memberDao.memberUpdate(mvo);
+		if(n == 1) { 
+			message = "Update Success";
+			logger.info("=====================업데이트 성공");
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "Updae failure...";
+			logger.info("=====================업데이트 실패");
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+	}
+	
+	// memberMyInfo 프로모션 동의여부 수정 
+	@ResponseBody
+	@RequestMapping("/ajaxJoinTermsUpdate.do")
+	public String ajaxPromotionUpdate(MemberVO mvo, HttpServletRequest request
+			,@RequestParam(value = "m_email", required = false) String m_email
+			,@RequestParam(value = "m_privacy", required = false) String m_privacy
+			,@RequestParam(value = "m_promotion", required = false) String m_promotion) {
+		
+		logger.info("================ ajax로 날아온 m_email값: " + m_email);
+		logger.info("================ ajax로 날아온 m_promotion값: " + m_promotion);
+		logger.info("================ ajax로 날아온 m_privacy: " + m_privacy);
+		
+		mvo.setM_privacy(m_privacy);
+		mvo.setM_email(m_email);
+		mvo.setM_promotion(m_promotion);
+		String message = null;
+		int n = memberDao.ajaxJoinTermsUpdate(mvo);
+		if( n ==1) {
+			message ="Update Success!!";
+			logger.info("======================업데이트 성공");
+		} else {
+			message = "Update Failure!!";
+			logger.info("=====================업데이트 실패");
+		}
+		return message;
 	}
 	
 	

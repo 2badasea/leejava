@@ -126,4 +126,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.updateProfileImage(ivo);
 	}
 
+	@Override
+	public int ajaxJoinTermsUpdate(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxJoinTermsUpdate(mvo);
+	}
+
 }

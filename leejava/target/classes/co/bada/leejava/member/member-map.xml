@@ -20,6 +20,9 @@ resultType="co.bada.leejava.member.MemberVO">
 		<if test="m_password !=null">
 			AND M_PASSWORD = #{m_password}
 		</if>
+		<if test="m_phone !=null">
+			AND M_PHONE = #{m_phone}
+		</if>
 </select>
 <!-- 이메일 아이디를 통해 salt값을 조회 -->
 <!--  logger.Info 릃호출해서 봐야한다 -->
@@ -33,15 +36,20 @@ resultType="co.bada.leejava.member.MemberVO">
 <insert id="memberInsert" parameterType="co.bada.leejava.member.MemberVO">
 	INSERT INTO MEMBER VALUES(
 		#{m_email}, #{m_nickname}, #{m_password}, sysdate, 
-		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate}, #{m_salt})
+		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate}, #{m_salt}, #{m_intro})
 </insert>
 
+<!-- 멤버 정보 업데이트 할 때, 오라클에서 제공하는 nvl함수를 이용하여 값이 날라온 것들을 대상으로만 정보가 변경될 수 있도록 -->
 <update id="memberUpdate" parameterType="co.bada.leejava.member.MemberVO">
 	UPDATE MEMBER SET 
-		M_NICKNAME = #{m_nickname}, 
-		M_PASSWORD = #{m_password}, 
-		M_PHONE = #{m_phone}, 
-		M_ADDRESS = #{m_address} 
+		M_NICKNAME = NVL( #{m_nickname}, M_NICKNAME), 
+		M_PASSWORD = NVL( #{m_password}, M_PASSWORD),  
+		M_PHONE = 	 NVL( #{m_phone}   , M_PHONE ),
+		M_ADDRESS =  NVL( #{m_address} , M_ADDRESS),
+		M_STATUS =   NVL( #{m_status}  , M_STATUS), 
+		M_SALT =     NVL( #{m_salt}    , M_SALT),
+		M_INTRO =    NVL( #{m_intro}   , M_INTRO)
+	WHERE M_EMAIL = #{m_email}
 </update>
 
 <!-- 회원탈퇴의 경우 상태만 변경하고, 스케줄러나 프로지서를 통해 일주일 뒤에 완전 삭제가능한지 체크 -->
@@ -135,6 +143,14 @@ resultType="co.bada.leejava.member.MemberVO">
 			,UPLOADPATH = #{uploadPath}
 			,UUID = #{uuid}
 	WHERE M_EMAIL = #{m_email} 
+</update>
+
+<!-- 개인장보 동의 여부, 프로모션 동의 여부 업데이트 by memberMyInfo -->
+<update id="ajaxJoinTermsUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE JOINTERMS SET
+		M_PRIVACY = NVL(#{m_privacy}, M_PRIVACY),
+		M_PROMOTION = NVL(#{m_promotion}, M_PROMOTION)
+	WHERE M_EMAIL = #{m_email}
 </update>
 
 

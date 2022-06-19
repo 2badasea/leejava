@@ -100,7 +100,6 @@ td > input:not(#addressBtn)  {
 
 <!-- 인증번호 modal창 뿐 -->
 <div id="container">
-   
     <div class="modal">
         <h3 align="center">연락처 인증</h3>
         <br>
@@ -110,9 +109,7 @@ td > input:not(#addressBtn)  {
 		<span style="color: red; size: 15px;" id="timer">00 : 05</span>
 		<br>
         <button type="button" id="modalCloseBtn">닫기</button>
-       
     </div>
-   
     <div class="modal_layer"></div>
 </div>
 <!--  모달창 끝 -->

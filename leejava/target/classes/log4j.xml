@@ -34,11 +34,11 @@
 		<level value="info" />
 	</logger>
 	
-	<!-- log4jdb 설정 부부  -->
-<!-- 	<logger name="jdbc.sqlonly" additivity="false"> -->
-<!-- 		<level value="info" /> -->
-<!-- 		<appender-ref ref="console" /> -->
-<!-- 	</logger> -->
+	<!-- log4jdbc 설정 부부  -->
+	<logger name="jdbc.sqlonly" additivity="false">
+		<level value="info" />
+		<appender-ref ref="console" />
+	</logger>
 <!-- 	<logger name="jdbc.sqltiming" additivity="false"> -->
 <!-- 		<level value="warn" /> -->
 <!-- 		<appender-ref ref="console" /> -->
@@ -53,10 +53,10 @@
 <!-- 		<appender-ref ref="console" /> -->
 <!-- 	</logger> -->
 
-<!-- 	<logger name="jdbc.resultsettable" additivity="false"> -->
-<!-- 		<level value="info" /> -->
-<!-- 		<appender-ref ref="console" /> -->
-<!-- 	</logger> -->
+	<logger name="jdbc.resultsettable" additivity="false">
+		<level value="info" />
+		<appender-ref ref="console" />
+	</logger>
 
 	<!-- Root Logger -->
 	<root>

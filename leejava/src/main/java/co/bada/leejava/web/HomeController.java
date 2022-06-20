@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,7 +251,6 @@ public class HomeController {
 		mvo.setM_promotion(m_promotion);
 		
 		String message = null;
-		
 		int n = memberDao.memberInsert(mvo);
 		if( n == 0) {
 			logger.info("===========회원가입 실패");
@@ -376,26 +376,37 @@ public class HomeController {
 	@RequestMapping("ajaxPhoneSelect.do")
 	public String ajaxPhoneSelect(MemberVO mvo, HttpServletRequest request
 			,@RequestParam("m_email") String m_email
-			,@RequestParam("m_phone") String m_phone) {
+			,@RequestParam("m_phone") String m_phone
+			,@RequestParam("m_password") String m_password) {
 		
 		logger.info("======================= ajax로 넘어온 이메일: " + m_email);
 		logger.info("======================= ajax로 넘어온 연락처: " + m_phone);
+		logger.info("======================= ajax로 넘어온 비밀번호: " + m_password);
 		
 		mvo.setM_email(m_email);
-		mvo.setM_phone(m_phone);
-		mvo = memberDao.memberSelect(mvo);
 		String result = null;
-		if(mvo != null) {
-			result = "OK";
-			logger.info("=============== 연락처 조회 성공");
-		} else {
-			result = "NO";
-			logger.info("================연락처 조회 실패");
+		String m_salt = memberDao.selectSalt(mvo);
+		if( m_salt != null) {
+			// m_salt값과 입력한 패스워드값을 getEncrypt( ) 메소드의 인자로 넘겨서 넘어오는 다이제스트값과 db상의 m_password비교. 
+			m_password = SHA256Util.getEncrypt(m_password, m_salt);
+			mvo.setM_password(m_password);
+			mvo.setM_phone(m_phone);
+			mvo = memberDao.memberSelect(mvo);  // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
+			if(mvo != null) {
+				result = "YES";
+				logger.info("======================사용자 정보 조회 성공");
+			}else {
+				// salt값은 있는데, 암호화한 비밀번호가 틀리 경우 
+				result = "Passowrd is not correct";
+				logger.info("=====================입력한 비밀번호가 틀림");
+			}
+		}else { 
+			// m_salt값을 조회할 수 없었던 경우.
+			result = "Password Error...";
+			logger.info("======================== m_salt값 조회 실패");
 		}
 		return result;
 	}
-	
-	
 	
 	
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.totolist.TodoMapper">
+
+<!-- todoinsert -->
+<insert id="todoInsert" parameterType="co.bada.leejava.totolist.TodoVO">
+	INSERT INTO TODOLIST VALUES(
+		 #{m_email}
+		,#{todo_no}
+		,#{todo_content}
+		,#{todo_status}
+		)
+</insert>
+
+<!-- todolist  업데이트 이번에도 nvl함수 적용하기 -->
+<update id="todoUpdate" parameterType="co.bada.leejava.totolist.TodoVO">
+	UPDATE TODOLIST SET
+		TODO_CONTENT = NVL(#{todo_content}, TODO_CONTENT),
+		TODO_STATUS = NVL( #{todo_status}, TODO_STATUS)
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<delete id="todoDelete" parameterType="co.bada.leejava.totolist.TodoVO">
+	DELETE 
+		FROM TODOLIST 
+	WHERE M_EMAIL = #{m_email} 
+	AND TODO_NO = #{todo_no}
+</delete>
+
+<select id="todoSelect" resultType="co.bada.leejava.totolist.TodoVO">
+	SELECT * FROM TODOLIST WHERE M_EMAIL = #{m_email}
+</select>
+
+</mapper>

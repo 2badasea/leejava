@@ -549,6 +549,32 @@ public class MemberController {
 		return message;
 	}
 	
+	// 회원탈퇴 처리 => m_status값만 변경. 
+	@RequestMapping("/ajaxMemberLeave.do")
+	public ResponseEntity<String> ajaxMemberLeave(HttpServletRequest request
+			,@RequestParam("m_email") String m_email
+			,@RequestParam("m_status") String m_status
+			,MemberVO mvo) {
+		
+		logger.info("=================== ajax 넘어온 이메일: " + m_email); 
+		logger.info("================== ajax로 넘어온 상태값: " + m_status);
+		
+		String result = null;
+		mvo.setM_email(m_email);
+		mvo.setM_status(m_status);
+		// map.xml에 모두 정의해놓음. 
+		int n = memberDao.memberUpdate(mvo);
+		if(n == 1) {
+			result = "YES";
+			logger.info("===============업데이트 성공");
+			return new ResponseEntity<String>(result, HttpStatus.OK);
+		} else {
+			result = "NO";
+			logger.info("================ 업데이트 실패");
+			return new ResponseEntity<String>(result, HttpStatus.NOT_MODIFIED);
+		}
+	}
+	
 	
 	
 }

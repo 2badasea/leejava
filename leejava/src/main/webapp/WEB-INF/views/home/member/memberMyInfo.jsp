@@ -90,11 +90,11 @@ label {
 }
 <!-- 모달창 관련 style 부분 --> 
 #container {
-  display: none;
   position:relative;
   width:100%;
   height:100%;
   z-index:1;
+  display: none;
 }
 #container h2 {
   margin:0;
@@ -136,8 +136,10 @@ label {
 			<span style="color: red; size: 15px;" id="timer">00 : 05</span>
 		</div>
 		<div class="inputPhoneBox" style="display: block;">
-			<input type="text" id="inputPhone">
-			<button type="button" id="inputPhoneCheckBtn" class="button">연락처 확인</button>
+			<input type="text" id="inputPhone" placeholder="연락처를 입력하세요">
+			<br>
+			<input type="password" id="inputPassword" placeholder="비밀번호를 입력하세요">
+			<button type="button" id="inputPhoneCheckBtn" class="button">인증번호 받기!</button>
 			<br>
 		</div>
 		<br>
@@ -155,28 +157,121 @@ label {
 		$("#container").css("display", "none");  // hide()와 display:none의 차이?
 	})
 	// 연락처 입력. => ajax로 회원정보와 일치하는지 조회. 맞으면, 인증코드 받는 화면으로 전환
+		// 그런데, 이미 개인정보창에 연락처 정보가 나오는데... 비밀번호 확인을 다시 해야 할까 
 	$("#inputPhoneCheckBtn").on("click", function(){
 		var m_email = $("#m_email").val(); 
+		var m_password = $("#inputPassword").val();
 		var m_phone = $("#inputPhone").val(); 
-		console.log("입력한 값 확인: " + m_email + ", " + m_phone);
-		// ajax 호출
+		console.log("입력한 값 확인: " + m_email + ", " + m_phone + ", " + m_password);
+		// ajax 호출 비밀번호를 다시 입력하게 해서 조회? 
 		$.ajax({
 			url: "ajaxPhoneSelect.do",
 			data: {
 				m_email : m_email,
-				m_phone : m_phone
+				m_phone : m_phone,
+				m_password: m_password
 			},
 			type: "POST",
 			dataType: "text",
 			success: function(result){
-				alert(result);
-				console.log(result);
-				// 연락처 조회 성공 => 입력한 연락처를 통해서 coolsms클래스의 인증코드를 호출하고, 화면전환? 
+				if(result === "YES") {
+					alert(result);
+					console.log(result);
+					// 이벤트를 호출하는 방식으로 진행해보자. 입력한 비밀번호값만 넘기고.
+					phoneCodeCheck(m_phone);
+					
+				} else {
+					console.log(result);
+					alert("다시 입력해주세요");
+					$("#inputPassword").val('');
+					$("#inputPhone").val('').focus();
+				}
+				// 연락처 조회 성공 => 입력한 연락처를 통해서 coolsms클래스의 인증코드를 호출하고, 화면전환?
 			}
-			
-			
 		})
-		
+	})
+	
+	function phoneCodeCheck(m_phone){
+		console.log("정의한 이벤트로 phone이 왔나? : " + m_phone); 
+		$.ajax({
+			type: "POST",
+			url: "ajaxCoolSMS.do",
+			data: {
+				inputPhone : m_phone
+			},
+			success: function(result){
+				console.log("인증번호: " + result);
+				$(".inputPhoneBox").css("display", "none");
+				$(".codeCheckbox").css("display", "block");
+				$("#codeCheckBtn").val(result); 
+				modalTimer();
+			}
+		})
+	}
+	
+	// 타이머 구현. 
+	var timer = null;
+	
+	function modalTimer(){
+		var display = $("#timer");  // 남은시간 보여주는 <span> 영역
+		var leftSec = 180; // 유효시간 설정. 180초. 
+		startTimer(leftSec, display);
+	}
+	
+	function startTimer(count, display){
+		var minutes;
+		var seconds;
+		timer = setInterval(function(){
+			minutes = parseInt(count/60, 10);
+			seconds = parseInt(count%60, 10); 
+			
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds; 
+			
+			display.html(minutes + " : " + seconds);
+			
+			// 타이머끝
+			if(--count <0){
+				clearInterval(timer);
+				alert("인증시간이 초과되었습니다. 재인증해주세요");
+				location.reload();
+			}
+		},1000)
+	}
+	
+	// 입력값이랑 비교하는 이벤트.  
+	$("#codeCheckBtn").on("click", function(){
+		var inputCode = $("#inputCode").val(); 
+		// 생성된 인증번호를 <button>의 value속성의 값으로 넣었었음.
+		var realCode = $("#codeCheckBtn").val();
+		if(inputCode === realCode){
+			alert("인증완료되었습니다.");
+			$("#container").css("display", "none"); // 인증이 완료되면 => 회원탈퇴 처리ㅇㅇ. 
+			// ajax로 탈퇴대기상태로 m_status변경하고, 로그아웃 & 세션없애버리기 
+			var m_email = $("#m_email").val();
+			var m_status = "LEAVING";
+			$.ajax({
+				url: "ajaxMemberLeave.do",
+				type: "POST",
+				data:{
+					m_email : m_email,
+					m_status : m_status
+				},
+				success: function(result){
+					if(result === "YES"){
+						console.log("업데이트 성공");
+						location.href='logout.do';
+					} else {
+						console.log("업데이트 실패");
+						alert("탈퇴 처리에 실패하였습니다.");
+						location.reload();
+					}
+				}
+			})
+		} else {
+			alert("인증번호가 틀렸습니다.");
+			$("#inputCode").val('').focus();
+		}
 	})
 	
 </script>
@@ -214,7 +309,7 @@ label {
 					<!--이메일아이디, 자기소개(간단한 자신에 대한 소개글. 다른 사람들에게 보여짐)-->
 					<!--  버튼으로선택할 수 있도로 해야 한다. => 체크해하면 안 보임 -->
 					<label for="m_email">이메일</label>
-					<input type="text" value="${member.m_email }" id="m_email" readonly="readonly">
+					<input type="text" value="${member.m_email }"	 readonly="readonly">
 					<br><br>
 					<div>
 						<h5>자기소개 말고 다른 거 생각해보기</h5>
@@ -301,11 +396,19 @@ label {
 	function memberLeave(event, email){
 		event.preventDefault();
 		console.log("이메일 확인: " + email);
+		var memberLeaveCheck = confirm("정말 떠나시겠습니까");
+		if(memberLeaveCheck){
+			$("#container").css("display", "block");
+		} else {
+			return false;
+		}
 	}
 </script>
 <script>
 	$(document).ready(function(){
 		console.log("페이지 로딩 확인");
+		
+		$("#container").css("display", "none");
 		
 	/*페이지 로딩되자마자 프로모션 동의 여부와 개인정보 제공여부 DB값에 따른 체크상태 출력*/
 	// 아래는 개인정보 제공 여부 

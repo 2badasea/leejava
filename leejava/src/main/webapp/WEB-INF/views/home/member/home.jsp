@@ -73,13 +73,13 @@
 	function userNoticeRead(no, hit) {
 		console.log("글번호 확인: " + no);
 		console.log("조회수 확인: " + hit);
+		//간단하게 쿼리스트링 방식으로 url을 매피한다. => 글번호를통해서 조회하고, 조회수는 1올라감. 
 		location.href='userNoticeRead.do?n_no=' + no + '&n_hit='+hit;
 	}	
 	
-	// 데이터 삽입 호출
-	$("#boardInsertBtn").on("click" , function(){
-		location.href='boardTestInsert.do'; 
-	})
+	// 로그인 한 뒤에 todolist볼 수 있도록 출력해야 함. => todolist를 사이드에 둘지, 화면상에 둘지 고민할 것.
+	
+	
 </script>
 <script>
 </script>

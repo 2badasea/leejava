@@ -165,10 +165,23 @@
 	top: 100px;
 	left: 30px;
 }
+#showComment:hover{
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
 <input type="hidden" id="message" value="${message }">
+<script>
+	$(document).ready(function(){
+		var message = $('#message').val();
+		if( message != ""){
+			console.log("가입완료 메시지 출력되나? " + message);
+			alert(message);
+		}
+	})
+</script>
+
 
 <!-- 비밀번호 찾기 모달창 생성 -->
 <div class="modal_container">
@@ -200,9 +213,10 @@
 	</div>
 	
 	<div class="modal_layer"></div>
-</div>
+</div>  
+<!-- 비밀번호 찾기 모달창 끝  -->
 <script>
-	// 비밀번호 찾기 모달창 스크립트 작성 => 다 작성 후 밑으로 보내기
+	// 비밀번호 찾기 모달창 관련 스크립트 작성 => 다 작성 후 밑으로 보내기
 	$("#emailSendBtn").on("click", function(){
 		// 버튼 클릭하자마자 이메일 정규식이랑 null값인지 아닌지 먼저 확인 후에 진행하기
 		// 이메일 정규식 체크 ( 혹시나 해서 올바르게 작성했느지 체크하기 위함)
@@ -210,7 +224,7 @@
 		console.log("입력한 메일 확인: " + inputEmail);
 		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		if(inputEmail !== "" && regEmail.test(inputEmail) ){
-				// ajax로 일단 해당 계정이 존재하는지 체크한다.
+				// ajax로 일단 해당 계정이 존재하는지 체크한다. => 따로 이벤트로 정의했다. 코드가 길어질까봐
 				if( emailExistCheck(inputEmail) === "YES" ){
 					alert("이메일을 전송했습니다.");
 					$("#inputEmail").attr("readonly", "readonly");
@@ -238,7 +252,7 @@
 		$.ajax({
 			url: 'ajaxEmailCheck.do',
 			type: "POST",
-			async: false,  // success문보다 밑에 console창이 먼저 실행되는 문제 해결
+			async: false,  // success문보다 밑에 console창이 먼저 실행되는 문제 해결 console창 추가
 			data: {
 				email : inputEmail
 			},
@@ -304,13 +318,13 @@
 		var message = "";
 		if( regPassword.test(newPassword) ){
 			message = "사용가능한 비밀번호 입니다."
+			// 비밀번호 입력칸 밑의 <span>요소에 해당 message가 출력되도록 한다. keyup()이벤트가 발생할 때마다.
 			$("#passwordRegMessage").text(message);
 			$("#passwordRegMessage").css("color", "#05AA6D");
 		} else {
 			message = "영문, 숫자, 특수문자 최소 1개씩 포함한 8~15자리 이상이어야 합니다.";
 			$("#passwordRegMessage").text(message);
 			$("#passwordRegMessage").css("color", "tomato"); 
-			
 		}
 	})
 	
@@ -410,18 +424,20 @@
 		$(".modal_container").css("display", "none");
 		$("#inputEmail").val('');
 		location.reload();
-		$("body").css("overflow", "auto");
+		$("body").css("overflow", "auto"); // auto의 경우 => 넘치는 컨텐츠의 경우 자동으로 스크롤바가 생긴다.
 		
 	})
 
 	// 비밀번호 분실 클릭
 	$("#forgotPasswordBtn").on("click", function(){
 		$(".modal_container").css("display", "block");
-		$("body").css("overflow", "hidden");
+		$("body").css("overflow", "hidden"); // 있으면 넘치는 컨텐츠 영역에 대해서 숨기게 된다.
 	});
 	
 	// 비밀번호 입력란 text타입으로 보이게 설정
-	$("#showComment").on("click", function(){
+	$("#showComment").on("click", function(e){
+		e.preventDefault();
+		
 		if( $("#password").attr("type") === 'password' ) {
 			$("#password").attr("type", "text");
 	     	$("#showComment").text('비밀번호 가리기');
@@ -471,12 +487,5 @@
 		})
 	})
 </script>
-<script>
-	$(document).ready(function(){
-		var message = $('#message').val();
-		if( message != ""){
-			alert(message);
-		}
-	})
-</script>
+
 </html>

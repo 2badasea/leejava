@@ -49,13 +49,18 @@ public class NoticeController {
 
 	// 관리자 공지사항 페이지로 이동. 검색요소로는 작성자(n_writer), 카테고리(n_category), 제목, 내용
 	@RequestMapping("/adminNoticeList.do")
-	public String adminNoticeList(Model model,
-			@RequestParam(required = false, defaultValue = "1") int page,
-			@RequestParam(required = false, defaultValue = "1") int range,
-			@RequestParam(required = false, defaultValue = "all") String n_category,
-			@RequestParam(required = false) String n_title, @RequestParam(required = false) String n_content,
-			@RequestParam(required = false) String n_writer, Search svo) throws Exception {
-
+	public String adminNoticeList(Model model
+			,@RequestParam(required = false, defaultValue = "1") int page
+			,@RequestParam(required = false, defaultValue = "1") int range
+			// 아래 4개는 검색 search용으로 사용되는  매개변수다. 뷰단에서 해당 값들에 대한 데이터가 넘어옴.
+			,@RequestParam(required = false, defaultValue = "all") String n_category
+			,@RequestParam(required = false) String n_title 
+			,@RequestParam(required = false) String n_content
+			,@RequestParam(required = false) String n_writer
+			,Search svo
+		) throws Exception {
+		
+		// 이건 해당 url로 호출되었을 때, svo객체를 view단에 주어, view단에서 페이징처리나 검색처리에 활용하기 위함이다. 
 		model.addAttribute("search", svo);
 		svo.setN_category(n_category);
 		svo.setN_title(n_title);
@@ -67,6 +72,7 @@ public class NoticeController {
 
 		// Search클래스의 객체 svo 자체가 부모클래스 Paging을 extends하고 있기 때문에 svo로 접근가능.
 		// 현재 페이지, 현재 속한 페이지 범위, 총 게시글 갯수를 인자로 가진다.
+			// 디폴트값은 page = 1, range =1 이다. 
 		svo.pageinfo(page, range, listCnt);
 
 		List<NoticeVO> list = noticeDao.noticeSearchSelect(svo);
@@ -94,6 +100,8 @@ public class NoticeController {
 	@RequestMapping(value = "/ajaxUploadSummernoteImageFile.do", produces = "application/json; charset=utf8")
 	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
 			HttpServletRequest request) {
+		// 호출한 view로 데이터를 String타입으로 보내야 하는데, json타입으로 변환하여 보내기 위해 JsonObject객체 생성했다. 
+			// json객체로 스크립트문에 반환하면, 스크립트 단에어서 데이터를 다루기 편하다. 전달된 데이터에 (.) 참조연산자를 통해 접근 가능. 
 		JsonObject jsonObject = new JsonObject();
 
 		/*
@@ -197,18 +205,21 @@ public class NoticeController {
 		FileCopyUtils.copy(fileData, target);
 		return savedName;
 	}
+	
 	// logger.info 메서드를 통해 로그기록 봐야 한다.
 	// 첨부파일 다운로드 로직 구현하기
 	@RequestMapping("/noticeFileDownload.do")
 	public void noticeFileDownload(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
+		// root-context.xml에 <bean>으로 정의해놓은 경로가 있음. 등록했던 <bean>의 id값이 "noticeUploadPath"을 컨트롤러 상단에 @autowired 
 		String SAVE_PATH = noticeUploadPath;
+		// 원본파일명
 		String filename = request.getParameter("filename"); // noticeRead.jsp에서 get방식으로 보낸 name속성값이 filename임.
 		String encodingFilename = ""; // 원본명으로 다운받기 위함.
 		logger.info("===============1. filename: " + filename);
 		String realFilename = ""; // 실제 경로와 물리적 파일이름이 매핑될 곳
-
+		// 실제 bean에 등록했던 경로에 존재하는, uuid가 적용된 물리적 파일
 		String pfilename = request.getParameter("pfilename"); // noticeRead.jsp에서 get방식으로 보냄
 		logger.info("===============pfilename 확인 : " + pfilename);
 
@@ -223,11 +234,12 @@ public class NoticeController {
 		} catch (UnsupportedEncodingException ex) {
 			logger.info("===============UnsupportedEncodingException");
 		}
+		// 경로+물리파일명 => 해당 데이터정보를 통해 File객체를 생성하여, 입출력스트림을 생성하여 다운로드를 구현한다. 
 		realFilename = SAVE_PATH + pfilename;
 		logger.info("===============3. realfilename: " + realFilename);
 		File file = new File(realFilename); // 해당 경로의 물리파일을 대상으로 파일객체 생성
 		if (!file.exists()) {
-			// 해당 대상 파일이 정상적으로 존재하는 경우
+			// 해당 대상 파일이 정상적으로 존재하지 않으면 return된다. 
 			logger.info("===============존재유무 확인 ~=================");
 			return;
 		}
@@ -235,7 +247,7 @@ public class NoticeController {
 		response.setContentType("application/octer-stream");
 		response.setHeader("Content-Transfer-Encoding", "binary;");
 		response.setHeader("Content-Disposition", "attachmeent; filename=\"" + encodingFilename + "\"");
-
+		
 		try {
 			// response객체(응답 객체)가 요청한 파일을 클라이언트에게 전달해주기 위한 출력스트림 생성
 			OutputStream os = response.getOutputStream();
@@ -310,8 +322,7 @@ public class NoticeController {
 		logger.info("===============@requestparam 첨부파일 이름이랑 같니? " + file);
 
 		// 새로운 첨부파일 업로드 작업하기
-		// 첨부파일 업로드 작업.
-		// form에서 값이 넘어왔을 때만 vo객체에 담는다.
+			// form에서 값이 넘어왔을 때만 vo객체에 담는다.
 		if (file != null) {
 			String n_file = file.getOriginalFilename(); // 원본파일명
 			logger.info("===============첨부파일 원본명 최종 확인: " + n_file);
@@ -367,16 +378,16 @@ public class NoticeController {
 			logger.info("===============삭제 실패");
 			message = "NO";
 		}
-
 		return message;
 	}
 
 	// 공지사항 개별 삭제 by ajax
 	@ResponseBody
 	@RequestMapping("/noticeDelete.do")
-	public String noticeDelete(Model model, HttpServletRequest request, NoticeVO nvo, @RequestParam("n_no") int n_no) {
+	public String noticeDelete(Model model, HttpServletRequest request, NoticeVO nvo
+			, @RequestParam("n_no") int n_no) {
 
-		logger.info("===============삭제할 글 번호 왔니? : " + n_no);
+		logger.info("===============개별 삭제할 글 번호 왔니? : " + n_no);
 		nvo.setN_no(n_no);
 		String message = null;
 		int n = noticeDao.noticeDelete(nvo);
@@ -390,8 +401,9 @@ public class NoticeController {
 	// 공지사항 개별 고정 처리
 	@ResponseBody
 	@RequestMapping("/ajaxNoticeFixed.do")
-	public String ajaxNoticeFixed(Model model, HttpServletRequest request, NoticeVO nvo, @RequestParam("n_no") int n_no,
-			@RequestParam("n_fixed") String n_fixed) {
+	public String ajaxNoticeFixed(Model model, HttpServletRequest request, NoticeVO nvo
+			, @RequestParam("n_no") int n_no
+			,@RequestParam("n_fixed") String n_fixed) {
 
 		logger.info("===============글번호: " + n_no + "수정할 고정 값: " + n_fixed);
 
@@ -410,12 +422,15 @@ public class NoticeController {
 	// 공지사항 선택 삭제
 	@ResponseBody
 	@RequestMapping("/ajaxNoticeSelectDelete.do")
-	public String ajaxNoticeSelectDelete(Model model, HttpServletRequest request, NoticeVO nvo,
-			@RequestParam("checkedArray[]") List<String> checkedArray) {
-
+	public String ajaxNoticeSelectDelete(Model model, HttpServletRequest request, NoticeVO nvo
+			// ajax를 통해서 받은 배열형태의 데이터 => List형 자료구조에 담는다. 그리고 각 데이터는 String타입. 
+			,@RequestParam("checkedArray[]") List<String> checkedArray) {
+		logger.info("==============삭제할 글번호(data-value) 값들이 담긴 List형 배열 checkArray : " + checkedArray);
+		
 		String message = null;
 		int n_no;
-
+		
+		// 향상된(forEach)for문 => 해당 배열에 담겨있는 요소 수만큼 루핑을 반복한다.
 		for (String i : checkedArray) {
 			n_no = Integer.parseInt(i);
 			nvo.setN_no(n_no);

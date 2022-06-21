@@ -38,6 +38,7 @@
 	
 	<!-- navermail설정 혹시나 구글 설정이 안 되는 경우 네이버 활용. -->
 	<!-- 마찬가지로 잘 되는지 체크하고 비밀번호 부분은 지우자 -->
+	<!-- bean으로 등록한  id이름으로 autowired 어노테이션으로 주입이 가능하다.  -->
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
 	 <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
 	 <property name="port" value="465"/> <!-- 메이서버 포트번호 -->

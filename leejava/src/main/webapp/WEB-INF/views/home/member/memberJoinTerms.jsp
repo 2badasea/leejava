@@ -131,13 +131,12 @@
 	    
 	    if ($(".required1").is(":checked") && $(".required2").is(":checked")) {
 	    	alert("필수항목 확인 완료. \n회원가입 화면으로 이동하겠습니다.");
+	    	// form태그를 submit하면 action속성에 명시한 url로 form내부의 name속성값들이 넘어간다.
 	    	frm.submit();
 	    } else {
 	        alert("필수항목은 반드시 체크해주셔야 합니다.");
 	        return false;
 	    }
-	    
-	    
 	   
 	})
 </script>

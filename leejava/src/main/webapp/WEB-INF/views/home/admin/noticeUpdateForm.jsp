@@ -104,19 +104,21 @@ select {
 			$("#summernote").focus(); 
 			return false;
 		}
-		
 		$("#frm").submit();
-		
 	})
 	
 	// 첨부파일 변경 버튼
 	$("#changeFileBtn").on("click", function(){ 
+		// DB에 저장되어 있는 첨부파일 원본명.
 		var fileCheck = $("#fileCheck").val();
 		alert("파일이름 확인: " + fileCheck);
 		
 		if( fileCheck == ''){ 
+			// value값이 없는 경우 => 즉, 첨부파일이 없는 게시글의 경우  첨부파일을 업로드하여 게시글을 수정시키기 위함.
+				// 동적으로 요소를 추가한다.
 			$("#changeFileBtn").closest('td').html('<input type="file" name="filename" id="n_file">');
 		} else { 
+			// fileCheck가 null이 아니라는 건, 해당 게시글에 업로드한 첨부파일이 존재한다는 뜻. 
 			 var check = confirm("기존에 업로드한 파일은 삭제하시겠어요?");
 			 if(check){ 
 				 // ajax로 기존의 해당 게시글 첨부파일 삭제해버리기

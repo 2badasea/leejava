@@ -83,6 +83,7 @@ public class HomeController {
 		String responseText = null;
 		if( m_salt != null) {
 			// m_salt값과 입력한 패스워드값을 getEncrypt( ) 메소드의 인자로 넘겨서 넘어오는 다이제스트값과 db상의 m_password비교. 
+				// salt값은 정해져 있다. 그래서 전달하는 정보가 같다면 해당 salt값을 통한 다이제스트 값도 동일하다.
 			String m_password = SHA256Util.getEncrypt(formPassword, m_salt);
 			mvo.setM_password(m_password);
 			mvo = memberDao.memberSelect(mvo);  // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
@@ -90,7 +91,7 @@ public class HomeController {
 				String nickname = mvo.getM_nickname(); // nickname을 가져옴. 사이트에서 사용할 수 있는
 				session.setAttribute("session_user", email);
 				session.setAttribute("session_nickname", nickname);
-				logger.info("===============세션에 담은 값: " + email + ", " + nickname);
+				logger.info("===============세션에 담은 이메일: " + email + ", 그리고 닉네임" + nickname);
 				responseText = "YES";
 			}else {
 				// salt값은 있는데, 암호화한 비밀번호가 틀리 경우 
@@ -149,15 +150,16 @@ public class HomeController {
 		
 		mvo.setM_email(email);
 		
+		// count값이 0이면 true를 반환 
 		boolean b = memberDao.memberEmailCheck(mvo);
 		if(b) {
-			// 입력한 이메일이 존재하지 않음 => 사용가능한 이메일
+			// 입력한 이메일이 중복으로 존재하지 않음 => 사용가능한 이메일
 			responseText = "YES";	
 		} else {
 			// 중복 이메일 존재 => 사용불가
 			responseText = "NO";
 		}
-		logger.info("===========컨트롤러, 이메일 존재여부 체크 값 NO여야 함" + responseText);
+		logger.info("===========컨트롤러, 이메일 존재여부 체크 값 YES 여야 함" + responseText);
 		return responseText;
 	}
 	
@@ -193,6 +195,7 @@ public class HomeController {
 		logger.info("===========인증번호 값 확인: " + randomNumber);
 		
 		CoolSMS coolSms = new CoolSMS();
+		// 해당 클래스에 존재하는 certifiedPhone()으로 매개변수를 전달하면 해당 클래스에서 실행하게 된다. 
 		coolSms.certifiedPhone(sendPhone, randomNumber);
 		
 		return Integer.toString(randomNumber);
@@ -209,8 +212,8 @@ public class HomeController {
 		logger.info("===========phone 값: " + request.getParameter("phone"));
 		logger.info("===========address 값: " + request.getParameter("address"));
 		logger.info("===========birthdate 값: " + request.getParameter("birthdate"));
-		logger.info("===========privacy 값: " + request.getParameter("privacy"));
-		logger.info("===========promotion 값: " + request.getParameter("promotion"));
+		logger.info("===========privacy 값: " + request.getParameter("m_privacy"));
+		logger.info("===========promotion 값: " + request.getParameter("m_promotion"));
 		
 		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한/상태 : USER) , m_into
 		String m_email = request.getParameter("email");
@@ -269,19 +272,6 @@ public class HomeController {
 				logger.info("===========가입약관 정상 반영");
 			}
 		}
-		// 회원가입이 성공 => 프로필 이미지 테이블에도 행 추가
-		if(n ==1) { 
-			ivo.setM_email(m_email);
-			ivo.setFileName("");
-			ivo.setUploadPath("");
-			ivo.setUuid("");
-			int o = memberDao.profileInsert(ivo);
-			if( o == 1) { 
-				logger.info("===========프로필 테이블 정상 추가");
-			} else {
-				logger.info("===========프로필 테이블 실패");
-			}
-		}
 		
 		model.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
 		return "home/member/loginPage";
@@ -321,18 +311,18 @@ public class HomeController {
 		
 		logger.info("===========실제 시작하는 부분. try시작 부분");
 		try  {
-			MimeMessage message = mailSender.createMimeMessage();
+			// 이메일을 보낼 수 있는 객체 생성 
+			MimeMessage message = mailSender.createMimeMessage(); 
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-			logger.info("===========여기는? 111 ");
 			helper.setFrom(setFrom);
 			helper.setTo(toMail);
 			helper.setSubject(title);
 			helper.setText(content, true);
-			logger.info("===========여기는? 222 ");
 			mailSender.send(message);
-			logger.info("===========여기는? 333 ");
+			logger.info("============메일 전송 완료==========");
 		} catch (Exception e ) {
 			e.printStackTrace();
+			logger.info("============== 메일 전송 실패============");
 		}
 
 		// 생성한 인증번호 변수를 view로 반환. 생성한 인증번호의 경우 int 타입. ajax를 통한 요청으로 인해 view로 다시 반환할 때
@@ -345,8 +335,9 @@ public class HomeController {
 	// ajax로 새로운 비밀번호로 업데이트 시키기
 	@ResponseBody
 	@RequestMapping("/ajaxNewPasswordUpdate.do")
-	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, 
-			MemberVO mvo, @RequestParam("m_email") String m_email, @RequestParam("m_password") String password) {
+	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, MemberVO mvo
+			,@RequestParam("m_email") String m_email
+			,@RequestParam("m_password") String password) {
 		
 		logger.info("===========ajax로 넘어온 이메일이랑 새로운 비밀번호 조회: " +  m_email + " : " + password);
 		

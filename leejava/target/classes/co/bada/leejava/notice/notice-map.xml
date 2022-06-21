@@ -96,7 +96,7 @@
 	WHERE N_NO = #{n_no}
 </delete>
 
-<!-- 공지사항 수정 시 업로드 첨부파일 삭제 -->
+<!-- 공지사항 수정 시 업로드 첨부파일 삭제 => DB의 값을 null로  변경한다. -->
 <update id="ajaxNoticeFileDelete" parameterType="co.bada.leejava.notice.NoticeVO">
 	UPDATE NOTICE 
 		SET N_FILE = '' 

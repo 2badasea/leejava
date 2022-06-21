@@ -188,8 +188,9 @@ td > input:not(#addressBtn)  {
 					</tr>
 				</table>
 				<br>
-				<input type="hidden" id="privacy" name="privacy" value="${privacy }">
-				<input type="hidden" id="promotion" name="promotion" value="${promotion }">
+				<!--  jointerms 뷰에 있던 값들이 컨트롤러를 경유하여 가입페이지로 넘어왔다. -->
+				<input type="hidden" id="privacy" name="m_privacy" value="${privacy }">
+				<input type="hidden" id="promotion" name="m_promotion" value="${promotion }">
 			</form>
 			<button type="button" id="joinBtn" class="button">가입 완료</button>
 		</div>
@@ -198,7 +199,7 @@ td > input:not(#addressBtn)  {
 
 </body>
 <script>
-	// 회원 가입 버튼 
+	/*  회원 가입 버튼 => 모든 입력요소의 유효성 체크여부를 점검한다.   */
 	$('#joinBtn').on('click', function() {
 		// 1. 이메일 중복체크 여부 검사
 		if( $('#emailCheckBtn').val() != 'Y'){
@@ -242,7 +243,7 @@ td > input:not(#addressBtn)  {
 		var sendBirthdate = $('#year').val() + $('#month').val() + $('#day').val();
 		$('#birthdate').val(sendBirthdate);
 		
-		// 
+		// 폼 요소의 유효성 검사들이 모두 끝나면 action속성의 속성값 url( memberJoin.do )로 전송하기
 		$('#frm').submit();
 	
 	})
@@ -267,6 +268,7 @@ td > input:not(#addressBtn)  {
 			return false;
 		}
 		
+		// 입력한 이메일이 정규식을 통과했다면 => 해당 이메일 데이터로 중복이 존재하는지 체크한다. 
 		$.ajax({
 			type:"POST",
 			url: "ajaxEmailCheck.do",
@@ -367,6 +369,7 @@ td > input:not(#addressBtn)  {
 				console.log("인증번호: " + number);
 				$('#container').css('display', 'block');
 				modalTimer();
+				// 인증번호 입력값과 실제 인증번호를 비교하기 위해 해당 <button>태그의 value속성에 값을 담아둠
 				$('#codeCheckBtn').val(number);
 			},
 			error : function(text){
@@ -408,13 +411,13 @@ td > input:not(#addressBtn)  {
 	
 	// 입력값이랑 비교하는 이벤트
 	$('#codeCheckBtn').on('click', function() {
-		var inputCode = $('#inputCode').val();  // codeCheckBtn value값에 인증코드 부여. 
-		var ajaxCode = $('#codeCheckBtn').val(); 
+		var inputCode = $('#inputCode').val();  
+		var ajaxCode = $('#codeCheckBtn').val(); // 이전에 인증코드를 받아왔을 때, codeCheckBtn value값에 인증코드 부여.  
 		
 		if( inputCode === ajaxCode ) {
 			alert('인증완료되었습니다.');
 			$('#container').css('display', 'none');
-			$('#phoneCheckBtn').val('Y');
+			$('#phoneCheckBtn').val('Y');  // 회원가입 폼 유효성 체크 여부로 'Y'값 삽입
 			$('#phoneCheckBtn').css('display', 'none');
 			$('#backPhone').attr('readonly', true);
 			var phone = $('#frontPhone').val() + $('#backPhone').val();
@@ -500,6 +503,7 @@ td > input:not(#addressBtn)  {
 <script>
 	// 생년월일 코드 문서가 모두 출력되면 스크립트문이 실행되도록. 
 	$(document).ready(function(){
+		
 		var now = new Date(); // new 연산자를 통해 Date() 생성자함수로 현재 날짜 정보를 가지고 있는 객체 생성
 		var year = now.getFullYear();
 		var month = ( now.getMonth() + 1) > 9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);

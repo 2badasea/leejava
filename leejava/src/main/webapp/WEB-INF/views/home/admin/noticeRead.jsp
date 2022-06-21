@@ -56,7 +56,8 @@
 				</tr>
 				<tr>
 					<td class="notice_file">첨부파일</td>
-					<td class="notice_filename" colspan="3"><a href="noticeFileDownload.do?filename=${notice.n_file }&pfilename=${notice.n_pfile }">${notice.n_file }</a>
+					<td class="notice_filename" colspan="3">
+						<a href="noticeFileDownload.do?filename=${notice.n_file }&pfilename=${notice.n_pfile }">${notice.n_file }</a>
 					</td>
 				</tr>
 			</table>

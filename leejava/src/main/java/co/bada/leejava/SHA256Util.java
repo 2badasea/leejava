@@ -59,7 +59,6 @@ public class SHA256Util {
 			// byte 값을 Hex 값으로 바꾸기. 2자리 Hex String으로 변환시킴. Hex 문자열은 16진수 2자리로 이루어진 문자열
 			sb.append(String.format("%02x", salt[i]));
 		}
-		
 		return sb.toString();
 	}
 	

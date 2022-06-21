@@ -25,7 +25,7 @@ public class CoolSMS {
 		map.put("text", message); 		// 문자 내용 입력 
 		map.put("app_version", "test app 1.2"); 
 		
-		// 실제 인증번호를 보내는 부분
+		// 실제 인증번호를 보내는 부분 => 주석을 지우면 실제로 보내진다.
 //		try {
 //			JSONObject obj = (JSONObject)coolsms.send(map);
 //			System.out.println("obj값: " + obj.toString());

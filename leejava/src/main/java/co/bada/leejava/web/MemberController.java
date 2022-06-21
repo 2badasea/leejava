@@ -49,12 +49,12 @@ public class MemberController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
-	// 관리자 회원리스트 페이지 이동
+	// 관리자화면  회원리스트 정보 페이지 이동
 	@RequestMapping("/adminMemberList.do")
 	public String adminMemberList(Model model, HttpServletRequest request
 			, MemberVO mvo) {
 		
-		// v_memberlist(회원 정보 일부) 정보 가지고 페이지로 이동
+		// v_memberlist(회원 정보 일부) 정보 가지고 페이지로 이동  ( view생성하는 거 연습삼아서 최소한의 정보만 호출 ) 
 		model.addAttribute("members", memberDao.v_memberSelectList());
 		return "home/admin/adminMemberList";
 	}

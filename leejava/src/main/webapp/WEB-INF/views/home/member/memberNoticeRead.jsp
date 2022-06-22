@@ -90,8 +90,8 @@
 	// 이전 페이지로 돌아가는 버튼
 	$("#noticeReadFormBackBtn").on("click", function(){
 		console.log('뒤로가기 버튼 클릭');
-// 		history.back(); 반영이 잘 안 되는 것 같다.
-		location.href="userNoticeList.do";
+		history.back(); 
+// 		location.href="userNoticeList.do";
 	})
 	
 	// 첨부파일 아이콘 클릭해도 첨부파일 다운로드 되도록

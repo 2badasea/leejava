@@ -29,7 +29,7 @@
 	<definition name="home/quizlet/*" extends="quizlet-tiles">
 		<!--  return구문에서 */* 형태로 끝나는 것들은 body섹션으로 모두 들어간다. -->
 		<put-attribute name="qbody" value="/WEB-INF/views/home/quizlet/{1}.jsp" />
-		<put-attribute name="atitle" value="퀴즐렛 페이지" />
+		<put-attribute name="qtitle" value="퀴즐렛 페이지" />
 	</definition>
 	
 	

@@ -20,6 +20,7 @@ public class Paging {
 	private boolean next; // 다음 페이지. 다음 페이지 여부
 	
 	// SQL쿼리에 쓸 start, end 
+		// 최종적으로 페이지에 데이터를 출력할때, rownum기준으로 몇 번~ 몇 번의 게시글이 출력된다. rownum의 값임.
 	private int start; //  
 	private int end; // 
 	
@@ -40,13 +41,16 @@ public class Paging {
 		// SQL쿼리에 쓸 start, end 라고 명시되어 있음. 
 			// sql쿼리 결과에서 rownum as rn인, 즉 몇 개의 row데이터(행)을 보여줄 것인지. 
 			// 이때 start, end는 주어진 page내에서 글번호의 시작과 끝값을 의미한다. (rownum)  
+			// range * rangesize() 와ㅇ 유사하다. 
 		this.end = page * listSize;
 		// getEnd() => this.end()값. this.end() 값을 기준으로 this.start를 구한다. 
+			// startPage()와 유사하다 =>  page * 
 		this.start = getEnd() - listSize + 1;  // getEnd()는 getter/setter메서드의 리턴값
 		
 		// range가 1,즉 1~10페이지가 범위로 구성된 상태에선 이전버튼이 존재하지 않는다. 
 		this.prev = range == 1 ? false : true;// 이전 버튼 상태
 		this.next = endPage > pageCnt ? false : true;// 다음 버튼 상태
+		// pageInfo()메서드로 계산된 endPage()값보다 실제 page수가 적을 경우, 실제페이지 값을 대입한다. 
 		if (this.endPage > this.pageCnt) {
 			// pageInfo()의 결과로, 실제 페이지 갯수(pageCnt)보다 endPage(10,20,30,...)이 더 크면 
 				// 실제 페이지갯수를 endPage값에 대입시킨다. 

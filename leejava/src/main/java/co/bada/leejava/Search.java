@@ -22,7 +22,6 @@ public class Search extends Paging {
 	private int n_hit;			// 조회수
 	private String n_fixed;		// 게시글 상단 고정여부
 	
-	
 	// 자유게시판 board
 	private int b_no;  /// primary key. 일련번호.  시퀀스 board_seq 의 대상이다.
 	private String b_category;   // 카테고리

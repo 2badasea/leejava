@@ -53,7 +53,7 @@ tr > td {
 </script>
 </head>
 <script>
-	// 해당 뷰가 호출되어 로드되자마자 검색 항목들을 모두 초기화 시킨다. 
+	// 전체 HTML문서가 로드되자마자 항목들을 모두 초기화 시킨다. 
 	$(document).ready(function(){
 		// 검색창의 항목들 초기화 시킴
 		$("#clearbtn").on("click", function() {
@@ -108,8 +108,7 @@ tr > td {
 			<br>
 			<hr>
 			<br>
-			
-			<!----------------실질적인 공지사항 리스트들의 목록 ------------------->
+			<!--실질적인 공지사항 리스트들의 목록 -->
 			<div class="noticeListWrapper">
 				<h3>공지사항 리스트</h3>
 				<c:choose>
@@ -183,7 +182,7 @@ tr > td {
 													, '${pagination.rangeSize}', '${pagination.listSize}'
 													, '${search.n_title}', '${search.n_category}'
 													, '${search.n_content}' , '${search.n_writer}')">
-								이전</a>
+													이전</a>
 								</li>
 							</c:if>
 							<c:forEach begin="${pagination.startPage}"
@@ -191,21 +190,13 @@ tr > td {
 								<li
 									class="page-item <c:out value="${pagination.page == NoticeNo ? 'active' : ''}"/> ">
 									<a class="page-link" href="#"
-									onClick="fn_pagination('${NoticeNo}', '${pagination.range}'
-													, '${pagination.rangeSize}', '${pagination.listSize}'
-													,'${search.n_title}', '${search.n_category}'
-													,'${search.n_content}' , '${search.n_writer}')">
-								${NoticeNo}</a>
+									onClick="fn_pagination('${NoticeNo}', '${pagination.range}', '${pagination.rangeSize}', '${pagination.listSize}','${search.n_title}', '${search.n_category}', '${search.n_content}' , '${search.n_writer}')">
+										${NoticeNo} </a>
 								</li>
 							</c:forEach>
 							<c:if test="${pagination.next}">
 								<li class="page-item"><a class="page-link" href="#"
-									onClick="fn_next('${pagination.page}', '${pagination.range}'
-													,'${pagination.rangeSize}', '${pagination.listSize}' 
-													,'${search.n_title}', '${search.n_category}'
-													,'${search.content}' , '${search.n_writer}')">
-								다음</a>
-								</li>
+									onClick="fn_next('${pagination.page}', '${pagination.range}', '${pagination.rangeSize}', '${pagination.listSize}' ,'${search.n_title}', '${search.n_category}', '${search.content}' , '${search.n_writer}')">다음</a></li>
 							</c:if>
 						</ul>
 					</div>
@@ -273,7 +264,6 @@ tr > td {
 	}
 	
 	// 해당 구문은 동적으로 element가 생겼을 때 function을 사용할 수 있도록 해주는 구문이다. 
-		// 검색 버튼을 누르면 각가의 값들을 쿼리스트링 형식으로 명시한 url에 요청한다. 
 	$(document).on('click', '#btnSearch', function(e) {
 		e.preventDefault();
 		var url = "adminNoticeList.do";
@@ -292,15 +282,12 @@ tr > td {
 		// 삭제할 대상들을 담을 배열 생성
 		var checkedArray = [];
 		if(deleteCheck){
-			// class속성값이 'subCheckBtn'인 요소들을 대상으로 :checked인 상태인 요소들을 $.each()반복문으로 돌려버린다.
 			$(".subCheckBtn:checked").each(function(){
 				// checked했던 것들을 모두 배열에 담아버린다.
-					// 반복문으로 checked인 상태인 요소들의 data-value속성값을 하나하나 배열에 push한다. 
-					// 각 checkbox마다 data-value속성값으로 ${notice.n_no} 값을 삽입시켜놓았다.
 				checkedArray.push($(this).attr("data-value")); 	
 			})	
 		}
-		console.log("담은 것(체크했던 checkbox들 갯수 체크: " + checkedArray.length);
+		console.log("담은 것 개수체크: " + checkedArray.length);
 		// ajax 처리를 한다.
 		$.ajax({
 			url: "ajaxNoticeSelectDelete.do",
@@ -390,7 +377,7 @@ tr > td {
 	$(".subCheckBtn").on("click", function(){
 		console.log("서브 버튼 클릭");
 		// 서브 버튼 클릭 => 클릭했을 때, checked상태가 false라면 allcehck또 false로. 
-			// 문제 해결=> .subCheckBtn이 한 개가 아니므로 this를 통해 이벤트를 호출시킨 객체를 지정했어야 한다.
+		// 문제 해결=> .subCheckBtn이 한 개가 아니므로 this를 통해 이벤트를 호출시킨 객체를 지정했어야 한다.
 		if( !$(this).is(":checked") ){
 			$("#allCheckBtn").prop("checked", false);
 		}
@@ -412,7 +399,7 @@ tr > td {
 		var clickRow = $(this).closest('tr');
 		var	no = clickRow.find('td:eq(1)').find('input').val();
 		alert('내가 클릭한 행이 가리키는 글번호의 값: ' + no);
-		// 처음으로 get방식으로 쿼리스트링 형식으로 url을 호출해보자  넘겨보자. ajax타지말고, 
+		// 처음으로 get방식으로 넘겨보자. ajax타지말고, 
 		location.href='adminNoticeRead.do?n_no=' + no;
 	});
 </script>

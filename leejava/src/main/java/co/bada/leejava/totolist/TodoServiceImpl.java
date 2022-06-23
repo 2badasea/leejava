@@ -1,5 +1,7 @@
 package co.bada.leejava.totolist;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -9,9 +11,9 @@ public class TodoServiceImpl implements TodoService {
 	TodoMapper map;
 
 	@Override
-	public int todoInsert(TodoVO tvo) {
+	public int todoInsertSeq(TodoVO tvo) {
 		// TODO Auto-generated method stub
-		return map.todoInsert(tvo);
+		return map.todoInsertSeq(tvo);
 	}
 
 	@Override
@@ -30,5 +32,23 @@ public class TodoServiceImpl implements TodoService {
 	public TodoVO todoSelect(TodoVO tvo) {
 		// TODO Auto-generated method stub
 		return map.todoSelect(tvo);
+	}
+
+	@Override
+	public int todoInsertMin(TodoVO tvo) {
+		// TODO Auto-generated method stub
+		return map.todoInsertMin(tvo);
+	}
+
+	@Override
+	public List<TodoVO> todoSelectList(TodoVO tvo) {
+		// TODO Auto-generated method stub
+		return map.todoSelectList(tvo);
+	}
+
+	@Override
+	public boolean todoInsert(TodoVO tvo) {
+		// TODO Auto-generated method stub
+		return map.todoInsert(tvo);
 	}
 }

@@ -2,14 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.totolist.TodoMapper">
 
-<!-- todoinsert -->
-<insert id="todoInsert" parameterType="co.bada.leejava.totolist.TodoVO">
+<!--  boolean타입으로 먼저 첫 데이터인지 아닌지 판단 후에 아래의 togoInsertSeq, todoInsertMin을 할지 판단한다. -->
+<select id="todoInsert" parameterType="co.bada.leejava.totolist.TodoVO" resultType="boolean">
+	SELECT 
+		CASE WHEN COUNT(*) = 0 THEN 'TRUE' ELSE 'FALSE' END 
+	FROM TODOLIST
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- todoinsert  기존에 데이터가 없는 경우, 시퀀스를 통해서 자동으로 삽입. -->
+<insert id="todoInsertSeq" parameterType="co.bada.leejava.totolist.TodoVO">
 	INSERT INTO TODOLIST VALUES(
 		 #{m_email}
-		,#{todo_no}
+		, TODOLIST_SEQ.NEXTVAL
 		,#{todo_content}
-		,#{todo_status}
+		,''
 		)
+</insert>
+
+<!-- 기존에 데이터가있는 경우에, 비어있는 no값을 채우면서 insert를 한다.  -->
+<insert id="todoInsertMin" parameterType="co.bada.leejava.totolist.TodoVO">
+	INSERT INTO TODOLIST VALUES(
+		 #{m_email}
+		,( SELECT MIN(TODO_NO +1)
+			FROM TODOLIST
+			WHERE (TODO_NO+1) NOT IN ( SELECT TODO_NO FROM TODOLIST) )
+		,#{todo_content}
+		,''
+	)
+	
+	
 </insert>
 
 <!-- todolist  업데이트 이번에도 nvl함수 적용하기 -->
@@ -27,6 +49,7 @@
 	AND TODO_NO = #{todo_no}
 </delete>
 
+<!--기존에  todolist가 존재하는지 여부를 판단한다.  -->
 <select id="todoSelect" resultType="co.bada.leejava.totolist.TodoVO">
 	SELECT * FROM TODOLIST WHERE M_EMAIL = #{m_email}
 </select>

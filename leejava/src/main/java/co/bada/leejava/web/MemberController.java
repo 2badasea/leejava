@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +37,8 @@ import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.notice.NoticeService;
 import co.bada.leejava.notice.NoticeVO;
+import co.bada.leejava.totolist.TodoService;
+import co.bada.leejava.totolist.TodoVO;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
@@ -46,6 +47,8 @@ public class MemberController {
 	MemberService memberDao;
 	@Autowired
 	NoticeService noticeDao;
+	@Autowired
+	TodoService todoDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
@@ -423,7 +426,8 @@ public class MemberController {
 	}
 	
 	// 개인정보 페이지에서 닉네임 변경 신청 
-	// view단의 ajax문에서 error가 지속적으로 난 원인 => ajax는 @ResponseBody 어노테이션 사용해야 함. 
+		// view단의 ajax문에서 error가 지속적으로 난 원인 => ajax는 @ResponseBody 어노테이션 사용해야 함. 
+		// 그리고 produces속성의 값으로 밑에처럼 명시한 이유는 => 서버에서 view로 응답할 때 한글의 경우 인식을 못 하기 때문이다.
 	@ResponseBody
 	@RequestMapping(value = "/ajaxNicknameUpdate.do", produces = "application/text; charset=UTF-8")
 	public String ajaxNicknameUpdate(Model model, HttpServletRequest request
@@ -576,5 +580,61 @@ public class MemberController {
 	}
 	
 	
+	// todolist ajaxInsert 요청 by sidebarTemplate.jsp 
+		// return으로 데이터 반환할 때, no값이랑 todo_content값 넘기기. 
+	@RequestMapping(value = "/ajaxInsert.do" , produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<TodoVO>> ajaxInsert(TodoVO tvo
+			,@RequestParam("m_email") String m_email
+			,@RequestParam("todo_content") String todo_content){
+		
+		List<TodoVO> list = new ArrayList<>();
+		logger.info("=========================  m_email확인: " + m_email);
+		logger.info("========================= todo_content확인: " + todo_content);
+		
+		// vo객체에 담아서 우선 기존에 데이터가 존재하는지 체크후에 서로 다른  insert를 행한다.
+		tvo.setM_email(m_email);
+		boolean b = todoDao.todoInsert(tvo);
+		logger.info("===============   BOOLEAN 타입으로 조회 => 기존에 데이터가 0(null)이라면 b값은 true, 존재했다면 falae =>  "  + b);
+		int todo_no;
+		if(!b) {  // 기존에 데이터가 존재하는 경우. todoInsertMin 호출  => min값으로 넣는다.
+			tvo.setTodo_content(todo_content);  // 
+			int n = todoDao.todoInsertMin(tvo);
+			logger.info("============================분명 이까지 오지않았을 것이다.");
+			if(n != 0) {
+				logger.info("=================== todoInserMin 성공");
+				todo_no = tvo.getTodo_no();   
+				logger.info("=============================== todo_no값 확인: " + todo_no);
+				list.add(tvo);
+				logger.info("반환할 list 조회: " + list);
+				ResponseEntity<List<TodoVO>> result = new ResponseEntity<List<TodoVO>>(list, HttpStatus.OK);
+				// 이때 return문은 json형태로 반환될 것이다.
+				return result;
+			}else {
+				logger.info("=================== todoInserMin 실패");
+				return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+			}
+			
+		}else {   // tvo객체가 null인 경우 => 새로운 TodoVO 타입의 tvo객체를 생성해서 이번엔 todoInsertSeq작업.
+			// 첫 데이터가 삽입되는 경우 => seq에 따라 들어간다. 
+			logger.info("============================= else 문에도 안 왔을 것이다. ");
+			TodoVO tvo2 = new TodoVO();
+			tvo2.setM_email(m_email);
+			tvo2.setTodo_content(todo_content);
+			int m = todoDao.todoInsertSeq(tvo2);
+			if(m != 0) {
+				logger.info("=================== todoInserSeq 성공");
+				todo_no = tvo2.getTodo_no();
+				logger.info("=============================== todo_no값 확인: " + todo_no);
+				list.add(tvo2);
+				logger.info("반환할 list 조회: " + list);
+				ResponseEntity<List<TodoVO>> result = new ResponseEntity<List<TodoVO>>(list, HttpStatus.OK);
+				// 이때 return문은 json형태로 반환될 것이다.
+				return result;
+			}else {
+				logger.info("=================== todoInserSeq 실패");
+				return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+			}
+		}
+	}
 	
 }

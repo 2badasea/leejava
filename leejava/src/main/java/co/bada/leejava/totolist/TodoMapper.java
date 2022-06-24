@@ -18,4 +18,6 @@ public interface TodoMapper {
 	List<TodoVO> todoSelectList(TodoVO tvo);
 	// 그리고 boolean타입으로 데이터가 데이터 insert가 처음인지 아닌지 판단
 	boolean todoInsert(TodoVO tvo);
+	// 기존에 데이터가 존재하는 경우, 다음에 들어갈 todo_no값을 먼저 조회. view단에 넘기기 위한 용이다. 
+	int nextTodo_no(TodoVO tvo);  // 이메일을 tvo객체에 담아서 번호를 조회한다.
 }

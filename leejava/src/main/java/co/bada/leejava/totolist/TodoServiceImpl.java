@@ -51,4 +51,10 @@ public class TodoServiceImpl implements TodoService {
 		// TODO Auto-generated method stub
 		return map.todoInsert(tvo);
 	}
+
+	@Override
+	public int nextTodo_no(TodoVO tvo) {
+		// TODO Auto-generated method stub
+		return map.nextTodo_no(tvo);
+	}
 }

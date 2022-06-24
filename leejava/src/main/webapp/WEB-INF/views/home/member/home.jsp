@@ -48,7 +48,7 @@
 					<tr>
 						<td>
 							<span style="float: left;">공지사항</span>
-							<a href='userNoticeList.do' id="noticeA"><span style="float: right;">&lt;more&gt;</span></a>
+							<a href='memberNoticeList.do' id="noticeA"><span style="float: right;">&lt;more&gt;</span></a>
 						</td>
 					</tr>
 				</thead>

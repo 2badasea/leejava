@@ -10,11 +10,12 @@
 	WHERE M_EMAIL = #{m_email}
 </select>
 
-<!-- todoinsert  기존에 데이터가 없는 경우, 시퀀스를 통해서 자동으로 삽입. -->
+<!-- todoinsert  기존에 데이터가 없는 경우, 시퀀스를 통해서 자동으로 삽입. 시퀀스가 들어가면 1이 안 들어간다. -->
 <insert id="todoInsertSeq" parameterType="co.bada.leejava.totolist.TodoVO">
+	<!-- 기존에 데이터가 없는 경우엔 1이 들어간다. => tvo객체에 1을 담았음. -->
 	INSERT INTO TODOLIST VALUES(
 		 #{m_email}
-		, TODOLIST_SEQ.NEXTVAL
+		, #{todo_no}  
 		,#{todo_content}
 		,''
 		)
@@ -24,15 +25,18 @@
 <insert id="todoInsertMin" parameterType="co.bada.leejava.totolist.TodoVO">
 	INSERT INTO TODOLIST VALUES(
 		 #{m_email}
-		,( SELECT MIN(TODO_NO +1)
-			FROM TODOLIST
-			WHERE (TODO_NO+1) NOT IN ( SELECT TODO_NO FROM TODOLIST) )
+		,#{todo_no}
 		,#{todo_content}
 		,''
 	)
-	
-	
 </insert>
+
+<!-- 기존에 데이터가 존재하는 경우 다음에 삽입될 no값을 구한다. -->
+<select id="nextTodo_no" parameterType="co.bada.leejava.totolist.TodoVO" resultType="int">
+	SELECT MIN(TODO_NO +1)
+	FROM TODOLIST
+	WHERE (TODO_NO+1) NOT IN ( SELECT TODO_NO FROM TODOLIST WHERE M_EMAIL = #{m_email}) 
+</select>
 
 <!-- todolist  업데이트 이번에도 nvl함수 적용하기 -->
 <update id="todoUpdate" parameterType="co.bada.leejava.totolist.TodoVO">
@@ -40,9 +44,11 @@
 		TODO_CONTENT = NVL(#{todo_content}, TODO_CONTENT),
 		TODO_STATUS = NVL( #{todo_status}, TODO_STATUS)
 	WHERE M_EMAIL = #{m_email}
+	AND TODO_NO = #{todo_no}
 </update>
 
 <delete id="todoDelete" parameterType="co.bada.leejava.totolist.TodoVO">
+<!-- email이랑 todo_no값 둘 다 기준으로 삭제해야 한다.  -->
 	DELETE 
 		FROM TODOLIST 
 	WHERE M_EMAIL = #{m_email} 
@@ -51,6 +57,11 @@
 
 <!--기존에  todolist가 존재하는지 여부를 판단한다.  -->
 <select id="todoSelect" resultType="co.bada.leejava.totolist.TodoVO">
+	SELECT * FROM TODOLIST WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- 회원별로(m_email별로) todolist 목록 전체를 조회한다. 얘는 List타입으로 받는다. -->
+<select id="todoSelectList" resultType="co.bada.leejava.totolist.TodoVO">
 	SELECT * FROM TODOLIST WHERE M_EMAIL = #{m_email}
 </select>
 

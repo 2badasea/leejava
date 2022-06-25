@@ -19,7 +19,6 @@
 	</definition>
 	
 	<!-- 퀴즐렛 layout  header, body, footer 영역으로 구성할 생각-->
-	<!-- 생각하는 경로:  home/qizlet/quizletHome 부분이 메인 -->
 	<definition name="quizlet-tiles" template="/WEB-INF/views/tiles/quizletTiles/quizletLayout.jsp">
 		<put-attribute name="qheader" value="/WEB-INF/views/tiles/quizletTiles/qheaderTemplete.jsp" />
 		<put-attribute name="qbody" value="" />
@@ -36,9 +35,9 @@
 	
 	<!-- admin layout  -->
 	<definition name="admin-tiles" template="/WEB-INF/views/tiles/adminTiles/adminLayout.jsp">
-		<put-attribute name="atitle" value="Java story Admin" />
 		<put-attribute name="aheader" value="/WEB-INF/views/tiles/adminTiles/adminHeader.jsp" />
 		<put-attribute name="asidebar" value="/WEB-INF/views/tiles/adminTiles/adminSidebar.jsp" />
+		<put-attribute name="atitle" value="Java story Admin" />
 		<put-attribute name="abody" value="" />
 		<put-attribute name="afooter" value="/WEB-INF/views/tiles/adminTiles/adminFooter.jsp" />
 	</definition>

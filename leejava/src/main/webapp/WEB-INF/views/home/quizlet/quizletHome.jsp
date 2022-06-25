@@ -9,7 +9,10 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
-퀴즐렛 바디 영역
+<!-- 여기서 공사를 시작해야 한다. -->
+<div align="center">
+	<h2>일단 뭐라도 출력됐으면 좋겠다</h2>
+</div>
 
 </body>
 </html>

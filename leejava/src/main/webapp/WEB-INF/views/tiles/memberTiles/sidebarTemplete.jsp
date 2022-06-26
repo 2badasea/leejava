@@ -183,7 +183,7 @@
 				<c:if test="${session_user == \"bada\"}">
 					<li><a href="adminPage.do" class="sideMenu">관리자 화면</a></li>
 				</c:if>
-				<li><a href="quizlet.do">퀴즐렛 학습하기</a></li>
+				<li><a href="quizcard.do">퀴즐렛 학습하기</a></li>
 				<ul id="subMenu">커뮤니티
 					<li><a href="boardList.do" class="sideMenu">자유게시판</a></li>
 					<li><a href="#" class="sideMenu">QNA</a></li>

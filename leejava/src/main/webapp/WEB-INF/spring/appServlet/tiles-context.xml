@@ -19,15 +19,15 @@
 	</definition>
 	
 	<!-- 퀴즐렛 layout  header, body, footer 영역으로 구성할 생각-->
-	<definition name="quizlet-tiles" template="/WEB-INF/views/tiles/quizletTiles/quizletLayout.jsp">
-		<put-attribute name="qheader" value="/WEB-INF/views/tiles/quizletTiles/qheaderTemplete.jsp" />
+	<definition name="quizcard-tiles" template="/WEB-INF/views/tiles/quizcardTiles/quizcardLayout.jsp">
+		<put-attribute name="qheader" value="/WEB-INF/views/tiles/quizcardTiles/qheaderTemplete.jsp" />
 		<put-attribute name="qbody" value="" />
-		<put-attribute name="qfoot" value="/WEB-INF/views/tiles/quizletTiles/qfooterTemplete.jsp" />
+		<put-attribute name="qfoot" value="/WEB-INF/views/tiles/quizcardTiles/qfooterTemplete.jsp" />
 	</definition>
 	
-	<definition name="home/quizlet/*" extends="quizlet-tiles">
+	<definition name="home/quizcard/*" extends="quizcard-tiles">
 		<!--  return구문에서 */* 형태로 끝나는 것들은 body섹션으로 모두 들어간다. -->
-		<put-attribute name="qbody" value="/WEB-INF/views/home/quizlet/{1}.jsp" />
+		<put-attribute name="qbody" value="/WEB-INF/views/home/quizcard/{1}.jsp" />
 		<put-attribute name="qtitle" value="퀴즐렛 페이지" />
 	</definition>
 	

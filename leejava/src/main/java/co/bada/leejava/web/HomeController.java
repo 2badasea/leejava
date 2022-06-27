@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.tiles.request.Request;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,13 @@ public class HomeController {
 	
 	// 로그인 창으로 이동
 	@RequestMapping("/loginPage.do")
-	public String loginPage(Model model) {
+	public String loginPage(Model model, HttpServletRequest request) {
+		logger.info("어디 페이지에서 로그인 요청이 날라왔는지 확인하는 request.getHeader('referer')" + request.getHeader("Referer"));
+		// 로그인 요청이 온 페이지의 URI를 받아서, login입력창의 input요소에 부여한다.
+			// 로그인이 성공하면 해당 uri정보가 담긴 태그의 value값을 받아서 location.href로 넘긴다. 
+		String referer = request.getHeader("Referer");
+		model.addAttribute("url", referer);
+//		return "redirect:" + referer;
 		return "home/member/loginPage";
 	}
 	
@@ -73,6 +80,7 @@ public class HomeController {
 	@ResponseBody
 	@RequestMapping("/login.do")
 	public String login(Model model, MemberVO mvo, HttpSession session, HttpServletRequest request) {
+		
 		
 		String email = request.getParameter("email");
 		String formPassword = request.getParameter("password");

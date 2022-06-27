@@ -52,99 +52,98 @@
 }
 /* 모달창 관련 스타일 속성 들어가는 공간.  */
 #todoUl {
-            list-style: none;
-            padding-left: 0px;
-        }
+    list-style: none;
+    padding-left: 0px;
+}
+.todo_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none; 
+    z-index: 1;
+}
 
-        .todo_modal_container {
-            position: fixed;
-            top: 0px;
-            bottom: 0px;
-            width: 100%;
-            height: 100vh;
-            display: none; 
-            z-index: 1;
-        }
+.todo_modal_content {
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+    width: 500px;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
 
-        .todo_modal_content {
-            position: absolute;
-            bottom: 10%;
-            right: 10%;
-            width: 500px;
-            height: auto;
-            z-index: 3;
-            background-color: white;
-            border: 0.5px solid #05AA6D;
-            border-radius: 30px;
-            padding: 20px;
+}
 
-        }
-
-        .todo_modal_layer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            background-color: transparent;
-            transition: 2s;
-        }
-
-
-        .todo_modal_footer,
-        .todo_modal_body {
-            border-top: 0.2px solid #05AA6D;
-        }
-
-        .todo_modal_footer {
-            display: flex;
-            justify-content: end;
-        }
+.todo_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: transparent;
+    transition: 2s;
+}
 
 
-        #todoInput {
-            bottom: 5px;
-        }
+.todo_modal_footer,
+.todo_modal_body {
+    border-top: 0.2px solid #05AA6D;
+}
 
-        .todo_inputBox {
-            bottom: 10px;
-        } 
-        #todoInput,
-        .todoInputList{
-        	width: 400px;
-        	height: 30px;
-        	font-size: 15px;
-        }
-        #modalOpen{
-        	width: 70px;
-        	height: 70px;
-        	background-color: #82F0F0;
-        	color: black;
-        }
-        #modalOpen:hover{
-        	cursor: pointer;
-        }
-        .todoDeleteBtn{
-        	margin-left: 10px;
-        	width: 20px;
-        	height: 20px;
-        }
-        .inputCheck{
-        	margin-right: 10px;
-        	height: 20px;
-        	width: 20px;
-        }
-        #todoBoxCloseBtn{
-        	margin-top: 10px;
-        	margin-right: 30px;
-        	width: 60px;
-        	height: 40px;
-        	background-color: #05AA6D;
-        	border-radius: 30px;
-        	color: white;
-        }
-        #todoUl li{
-        	margin-bottom: 7px;
-        }  
+.todo_modal_footer {
+    display: flex;
+    justify-content: end;
+}
+
+
+#todoInput {
+    bottom: 5px;
+}
+
+.todo_inputBox {
+    bottom: 10px;
+} 
+#todoInput,
+.todoInputList{
+	width: 400px;
+	height: 30px;
+	font-size: 15px;
+}
+#modalOpen{
+	width: 70px;
+	height: 70px;
+	background-color: #82F0F0;
+	color: black;
+}
+#modalOpen:hover{
+	cursor: pointer;
+}
+.todoDeleteBtn{
+	margin-left: 10px;
+	width: 20px;
+	height: 20px;
+}
+.inputCheck{
+	margin-right: 10px;
+	height: 20px;
+	width: 20px;
+}
+#todoBoxCloseBtn{
+	margin-top: 10px;
+	margin-right: 30px;
+	width: 60px;
+	height: 40px;
+	background-color: #05AA6D;
+	border-radius: 30px;
+	color: white;
+}
+#todoUl li{
+	margin-bottom: 7px;
+}  
 </style>
 </head>
 <body>
@@ -200,7 +199,7 @@
 			<button id="modalOpen">todolist</button>
 		</c:if>
 		
-		<!-- ㅡ--------- modaㅣ들어가는 공간------------ -->
+		<!-- ㅡ----------------  modaㅣ들어가는 공간 		----------------------- -->
 		 <!--모달창 연습 공간-->
     <div class="todo_modal_container">
         <div class="todo_modal_content">

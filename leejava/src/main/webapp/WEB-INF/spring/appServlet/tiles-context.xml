@@ -18,6 +18,9 @@
 		<put-attribute name="title" value="메인페이지 테스트" />
 	</definition>
 	
+	
+	
+	
 	<!-- 퀴즐렛 layout  header, body, footer 영역으로 구성할 생각-->
 	<definition name="quizcard-tiles" template="/WEB-INF/views/tiles/quizcardTiles/quizcardLayout.jsp">
 		<put-attribute name="qheader" value="/WEB-INF/views/tiles/quizcardTiles/qheaderTemplete.jsp" />

@@ -195,6 +195,7 @@
 			<div class="inputEmailBox">
 				<label for="inputEmail" id="inputEmailLabel">이메일 입력</label>
 				<input type="text" id="inputEmail" name="inputEmail" placeholder="이메일을 입력해주세요">
+				<input type="hidden" id="login_url" value="${url }">
 				<button id="emailSendBtn">인증번호 전송</button>
 				<input type="text" id="inputCheckNum" placeholder="인증코드 입력">
 				<button id="sendInputCheckNum">확인</button>
@@ -462,7 +463,8 @@
 
 		var email = $("#email").val();
 		var password = $("#password").val();
-
+		var url = $("#login_url").val();
+		console.log("url확인: " + url);
 		if (email == "" || password == "") {
 			alert("아이디 또는 비밀번호를 제대로 입력하세용");
 		}
@@ -481,7 +483,7 @@
 
 				} else {
 					alert("로그인 성공");
-					location.href = "home.do";
+					location.href = url; // request.getHeader()값으로 url명시. 
 				}
 			}
 		})

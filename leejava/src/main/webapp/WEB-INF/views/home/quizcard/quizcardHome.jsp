@@ -7,11 +7,14 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<style>
+</style>
 </head>
 <body>
-<!-- 여기서 공사를 시작해야 한다. -->
-<div align="center">
-	<h2>일단 뭐라도 출력됐으면 좋겠다</h2>
+<!-- 일단 메인 페이지에선 게시판 부터 생성해놓자. 그리고 modal창은 header.jsp에서 생성하는 게 나을까? --> 
+<div class="quizcardWrapper">
+	
+	<!-- 우선 게시판부터 생성하자 -->
 </div>
 
 </body>

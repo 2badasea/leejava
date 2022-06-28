@@ -74,6 +74,11 @@
      #category_direct {
          width: 120px;
      }
+     #quizcard_set_intro{
+     	resize: none;
+     	width: 300px;
+     	height: 150px;
+     }
 </style>
 </head>
 <body>
@@ -134,13 +139,17 @@
 	                </select>
 	                    <input type="text" style="display: none;" id="category_direct" name="">
 	                <br>
+	                <span>퀴즈카드 소개(설명)</span>
+	                <br>
+	                <textarea rows="" cols="" id="quizcard_set_intro" name="quizcard_set_intro"></textarea>
+	                <br>
 	                <!--여기는 readio박스-->
 	                <span>공개여부</span>
 	                <br>
 	                <label for="public">공개</label>
-                   	 	<input type="radio" name="category_status" value="public" id="public">
+                   	 	<input type="radio" name="quizcard_set_status" value="public" id="public">
                     <label for="private">비공개</label>
-                    	<input type="radio" name="category_status" value="private" id="private">
+                    	<input type="radio" name="quizcard_set_status" value="private" id="private">
             	</form> <!--------------- form------------- -->
             </div>
             <br>
@@ -156,7 +165,7 @@
 		// 여기서 기본적인 form값들 유효성 체크하고, frm.submit() 이벤트 호출하기
 	function createNew(){
 		// 세트명, 카테고리, 공개여부, 
-		// name속성 있는 값들 확인   id) session_user,  quizcard_set_name, quizcard_category_first , name) category_status
+		// name속성 있는 값들 확인   id) session_user,  quizcard_set_name, quizcard_category_first , name) quizcard_set_status
 		var m_email = $("#session_user").val();
 		console.log("m_email 확인: " + m_email);
 		console.log("세트이름 확인: " + $("#quizcard_set_name").val());
@@ -164,7 +173,9 @@
 			 $("#quizcard_category_first").removeAttr('name');
 			 $("#category_direct").attr('name','quizcard_category_first');
 		}
-		console.log("radio값 확인: " + $("input[name='category_status']").val() );
+		console.log("radio값 확인: " + $("input[name='quizcard_set_status']").val() );
+		var introValue = $("#quizcard_set_intro").val();
+		console.log("intro값: " + introValue);
 		
 		$("#frm").submit();
 	}

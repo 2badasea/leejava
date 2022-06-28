@@ -2,5 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.quizcard.QuizcardMapper">
 
+	<insert id="quizcardSetCreate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD VALUES(
+			SET_NO_SEQ.NEXTVAL,   <!-- 시퀀스 적용. -->
+			#{m_email},
+			#{quizcard_set_name},
+			TO_CHAR( SYSDATE, 'YYYY-MM-DD  HH:MI:SS'),
+			TO_CHAR( SYSDATE, 'YYYY-MM-DD  HH:MI:SS'),
+			0,
+			#{quizcard_set_status},
+			#{quizcard_set_intro},
+			0
+		)
+	</insert>
+	
+	<select id="quizcardSetNoGet" resultType="int">
+		SELECT LAST_NUMBER
+			FROM USER_SEQUENCES
+		WHERE SEQUENCE_NAME = 'SET_NO_SEQ'
+	</select>
+	
+	<insert id="quizcardCategory" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		insert into quizcard_category values(
+			1,
+			#{quizcard_set_no},
+			#{quizcard_category_name}
+		)
+	</insert>
 
 </mapper>

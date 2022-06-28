@@ -7,4 +7,22 @@ import org.springframework.stereotype.Repository;
 public class QuizcardServiceImpl implements QuizcardService {
 	@Autowired
 	QuizcardMapper map;
+
+	@Override
+	public int quizcardSetCreate(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardSetCreate(qvo);
+	}
+
+	@Override
+	public int quizcardSetNoGet() {
+		// TODO Auto-generated method stub
+		return map.quizcardSetNoGet();
+	}
+
+	@Override
+	public int quizcardCategory(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardCategory(qvo);
+	}
 }

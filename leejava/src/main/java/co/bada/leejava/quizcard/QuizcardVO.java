@@ -20,7 +20,7 @@ public class QuizcardVO {
 	
 	// Quizcard_category 테이블
 		// quizcard 테이블의 quizcard_set_no
-	private int quizcard_category_no;			// 퀴즈카드 카테고리 번호.
+//	private int quizcard_category_no;			// 퀴즈카드 카테고리 번호.
 	private String quizcard_category_name;
 	
 	// Quizcard_Question 테이블

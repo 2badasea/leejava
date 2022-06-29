@@ -9,6 +9,6 @@
 <title>관리자 페이지 입니다.</title>
 </head>
 <body>
-어드민 페이지 잘 뜨는지 확인
+
 </body>
 </html>

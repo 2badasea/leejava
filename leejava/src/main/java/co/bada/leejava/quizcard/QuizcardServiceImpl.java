@@ -25,4 +25,16 @@ public class QuizcardServiceImpl implements QuizcardService {
 		// TODO Auto-generated method stub
 		return map.quizcardCategory(qvo);
 	}
+
+	@Override
+	public QuizcardVO quizcardSelect(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardSelect(qvo);
+	}
+
+	@Override
+	public int firstQuestionInsert(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.firstQuestionInsert(qvo);
+	}
 }

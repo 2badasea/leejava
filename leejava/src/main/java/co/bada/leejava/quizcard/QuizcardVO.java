@@ -16,6 +16,7 @@ public class QuizcardVO {
 	private String quizcard_set_status;			// 퀴즈카드, 상태( 접근권한) 
 	private String quizcard_set_intro;			// 퀴즈카드 소개(설명) 
 	private int quizcard_set_hit;				// 퀴즈카드 조회수
+	private String quizcard_type;				// 퀴즈카드 유형(box, 주관식, 객관식)
 	
 	
 	// Quizcard_category 테이블
@@ -30,7 +31,6 @@ public class QuizcardVO {
 	private String quizcard_question_name; // 문제(명) 
 	private String quizcard_question_hint; // 힌트
 	private String quizcard_quesiton_answer;  // 답
-	
 	
 	// Quizcard_Reply  문제세트별 댓글이나 후기 남기는 테이블
 		// quizcard_set_no 가 외래키로서 필드값에 담는다.

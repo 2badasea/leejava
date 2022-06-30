@@ -45,7 +45,7 @@
            bottom: 0px;
            width: 100%;
            height: 100vh;
-           display: none;
+           display: none; 
            z-index: 1;
      }
 
@@ -61,11 +61,11 @@
          border-radius: 30px;
          padding: 20px;
      }
-
+	
      .quizcard_modal_layer {
          position: relative;
          width: 100%;
-         height: 100%;
+		 height: 100%; 
          z-index: 2;
          background-color: transparent;
          transition: 2s;
@@ -139,6 +139,13 @@
 	                </select>
 	                    <input type="text" style="display: none;" id="category_direct" name="">
 	                <br>
+	                <span>문제 유형 선택</span>
+	                <select id="quizcard_type" name="quizcard_type">
+	                	<option value="BOX" selected="selected">박스형</option>
+	                	<option value="SHORT">주관식</option>
+	                	<option value="SELECT">객관식</option>
+	                </select>
+	                <br>
 	                <span>퀴즈카드 소개(설명)</span>
 	                <br>
 	                <textarea rows="" cols="" id="quizcard_set_intro" name="quizcard_set_intro"></textarea>
@@ -180,6 +187,7 @@
 		$("#frm").submit();
 	}
 	
+	// modal창 <input> 간헐적으로 포커싱이 안 되는 에러
 	$("#quizcard_set_name").on("click", function(){
 		console.log( $(this) );
 		$(this).focus();

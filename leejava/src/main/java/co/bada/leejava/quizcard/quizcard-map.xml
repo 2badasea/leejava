@@ -12,7 +12,8 @@
 			0,
 			#{quizcard_set_status},
 			#{quizcard_set_intro},
-			0
+			0,
+			#{quizcard_type}
 		)
 	</insert>
 	
@@ -27,6 +28,27 @@
 			1,
 			#{quizcard_set_no},
 			#{quizcard_category_name}
+		)
+	</insert>
+	
+	<select id="quizcardSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT Q.QUIZCARD_SET_NO, Q.QUIZCARD_SET_NAME, Q.QUIZCARD_SET_CDATE, 
+				Q.QUIZCARD_SET_UDATE, Q.QUIZCARD_SET_STATUS, Q.QUIZCARD_SET_INTRO,
+				 Q.QUIZCARD_TYPE ,C.QUIZCARD_CATEGORY 
+		FROM QUIZCARD Q INNER JOIN QUIZCARD_CATEGORY C 
+		ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		WHERE Q.QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!--  -->
+	<insert id="firstQuestionInsert" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_QUESTION VALUES(
+			TO_NUMBER( #{quizcard_set_no}||'0'||1 ),
+			1,
+			#{quizcard_set_no},
+			'문제를 입력하세요',
+			'힌트를 입력하세요',
+			'답안을 입력하세요'
 		)
 	</insert>
 

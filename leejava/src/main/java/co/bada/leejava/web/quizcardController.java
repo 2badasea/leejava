@@ -17,7 +17,6 @@ public class quizcardController {
 	@Autowired
 	QuizcardService quizcardDao;
 	
-	
 	private static final Logger logger = LoggerFactory.getLogger(quizcardController.class);
 	
 	// 퀴즐렛 학습 페이지 이동
@@ -37,17 +36,21 @@ public class quizcardController {
 		logger.info("세트 카테고리 값: " + request.getParameter("quizcard_category_first"));
 		logger.info("세트 공개여부 값: " + request.getParameter("quizcard_set_status"));
 		logger.info("intro 값: " + request.getParameter("quizcard_set_intro"));
+		logger.info("문제 유형 값: " + request.getParameter("quizcard_type"));
 		
 		String m_email = request.getParameter("m_email");
 		String quizcard_set_name = request.getParameter("quizcard_set_name");
 		String quizcard_category_name = request.getParameter("quizcard_category_first");
 		String quizcard_set_status = request.getParameter("quizcard_set_status");
 		String quizcard_set_intro = request.getParameter("quizcard_set_intro");
+		String quizcard_type = request.getParameter("quizcard_type");
 		
 		qvo.setM_email(m_email);
 		qvo.setQuizcard_set_name(quizcard_set_name);
 		qvo.setQuizcard_set_intro(quizcard_set_intro);
 		qvo.setQuizcard_set_status(quizcard_set_status);
+		qvo.setQuizcard_type(quizcard_type);
+		
 		int n = quizcardDao.quizcardSetCreate(qvo);
 		if( n ==1) {
 			logger.info("quizcard 테이블 데이터 정상 삽입" );
@@ -57,22 +60,51 @@ public class quizcardController {
 			qvo.setQuizcard_set_no(quizcard_set_no);
 			logger.info("==========카테고리 이름 조회: " + quizcard_category_name);
 			qvo.setQuizcard_category_name(quizcard_category_name);
+			// quizcard_category 테이블도 생성한다.  
 			int m = quizcardDao.quizcardCategory(qvo);
 			if(m ==1) {
 				logger.info("========= 카테고리 테이블도 생성 완료");
 			}else {
 				logger.info("============= 카테고리 생성 오류");
 			}
+			// quizcard_question 테이블도 삽ㅇ입해보자
+			qvo.setQuizcard_set_no(quizcard_set_no);
+			int o = quizcardDao.firstQuestionInsert(qvo);
+			if( o ==1) {
+				logger.info("=============== Question table도 Insert 성공");
+			} else {
+				logger.info("=============== Question table FAIL~~~~~~~~~~ ");
+			}
 		} else {
 			logger.info("=============== quizcard 세트 생성 오류");
 		}
-		// 카테고리 테이블의 데이터를 위해서 set_no를 조회하여, 그걸로 다시 카테고리 테이블에 데이터 생성.
+		
+		// 카테고리 까지 생성 후 기본값으로 question 테이블의 데이터를 추가하자
 		
 		
-		
-		return "home/quizcard/quizcardQuestionForm";
+		// 위의 결과값을 토대로 => 조인문의 결과 데이터를 redirect로 던진다? 
+		return "home/quizcard/quizcardTemp";
 	}
 	
+	// 퀴즈카드 문제 생성 폼 이동
+	@RequestMapping(value = "/quizcardQuestionForm.do")
+	public String quizcardQuestionForm(Model model, HttpServletRequest request, QuizcardVO qvo) {
+		
+		// 막 생성된 
+		int quizcard_set_no = quizcardDao.quizcardSetNoGet() -1;
+		logger.info("======== 조회할 퀴즈카드 세트 번호: " + quizcard_set_no);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		qvo = quizcardDao.quizcardSelect(qvo);
+		logger.info("========== qvo객체 : " + qvo);
+		if( qvo != null) {
+			logger.info("=================== 조인문 데이터 조회 성공");
+			model.addAttribute("qvo",qvo);
+		} else {
+			logger.info("======= 조인문 실패: redircet로  quizletHome으로 이동");
+			return "redirect:quizcard.do";
+		}
+		return "home/quizcard/quizcardQuestionForm";
+	}
 	
 	
 	

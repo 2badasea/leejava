@@ -9,9 +9,10 @@ public class QuizcardVO {
 	// quizcard 테이블
 	private int quizcard_set_no;				// 퀴즈카드 세트번호
 	private String m_email;						// 작성자 이메일
+	private String m_nickname;					// 작성자 닉네임
 	private String quizcard_set_name;			// 퀴즈카드  세트이름
-	private String quizcard_set_wdate;			// 퀴즈카드 (최초)생성일
-	private String quizcard_set_update;			// 퀴즈카드 (최근)마지막 업데이트날 
+	private String quizcard_set_cdate;			// 퀴즈카드 (최초)생성일
+	private String quizcard_set_udate;			// 퀴즈카드 (최근)마지막 업데이트날 
 	private int quizcard_set_likeit;			// 퀴즈카드 추천수, 좋아요 수
 	private String quizcard_set_status;			// 퀴즈카드, 상태( 접근권한) 
 	private String quizcard_set_intro;			// 퀴즈카드 소개(설명) 
@@ -22,7 +23,7 @@ public class QuizcardVO {
 	// Quizcard_category 테이블
 		// quizcard 테이블의 quizcard_set_no
 //	private int quizcard_category_no;			// 퀴즈카드 카테고리 번호.
-	private String quizcard_category_name;
+	private String quizcard_category;
 	
 	// Quizcard_Question 테이블
 		// quizcard_set_no는 quizcard 테이블의 외래키로서 적용

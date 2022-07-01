@@ -27,7 +27,7 @@
 		insert into quizcard_category values(
 			1,
 			#{quizcard_set_no},
-			#{quizcard_category_name}
+			#{quizcard_category}
 		)
 	</insert>
 	
@@ -40,7 +40,7 @@
 		WHERE Q.QUIZCARD_SET_NO = #{quizcard_set_no}
 	</select>
 	
-	<!--  -->
+	<!--퀴즈카드 첫 생성 이후 기본 question테이블 값. -->
 	<insert id="firstQuestionInsert" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		INSERT INTO QUIZCARD_QUESTION VALUES(
 			TO_NUMBER( #{quizcard_set_no}||'0'||1 ),
@@ -51,5 +51,17 @@
 			'답안을 입력하세요'
 		)
 	</insert>
-
+	
+	<!-- 퀴즈카드 메인페이지 게시판에 보여줄 목록 -->
+	<select id="quizcardList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT  S.QUIZCARD_SET_NO,  S.QUIZCARD_SET_HIT, S.QUIZCARD_SET_LIKEIT, 
+				S.QUIZCARD_SET_CDATE, S.QUIZCARD_SET_UDATE, S.QUIZCARD_TYPE,
+				S.QUIZCARD_SET_NAME, M.M_NICKNAME, C.QUIZCARD_CATEGORY
+		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
+							ON  S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+						INNER JOIN MEMBER M
+							ON M.M_EMAIL = S.M_EMAIL
+		WHERE S.QUIZCARD_SET_STATUS = 'PUBLIC'				
+		ORDER BY S.QUIZCARD_SET_NO DESC
+	</select>
 </mapper>

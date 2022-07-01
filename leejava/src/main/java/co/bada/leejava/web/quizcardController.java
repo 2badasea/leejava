@@ -1,5 +1,8 @@
 package co.bada.leejava.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -23,7 +26,11 @@ public class quizcardController {
 	@RequestMapping("/quizcard.do")
 	public String quizcard(HttpServletRequest request, Model model) {
 		
-		logger.info("================ 일단 컨트롤러는 찾아 오니?====");
+		// 여기로 올 때 현재 생성되어 있는 퀴즐렛 quizcard들이 목록으로 출력되도록 한다.
+		model.addAttribute("quizcardList", quizcardDao.quizcardList());
+		List<QuizcardVO> list = new ArrayList<>();
+		list = quizcardDao.quizcardList();
+		logger.info("메인페이지에 넘어갈 퀴즈카드 리스트: " + list);
 		return "home/quizcard/quizcardHome";
 	}
 	
@@ -31,7 +38,7 @@ public class quizcardController {
 	@RequestMapping("/createQuizcardSet.do")
 	public  String createQuizcardSet(Model model, HttpServletRequest request, QuizcardVO qvo) {
 		// view단에서 넘어온 값들 확인
-		logger.info("세션 유저" + request.getParameter("m_email"));
+		logger.info("세션 닉네임" + request.getParameter("m_email"));
 		logger.info("세트 이름" + request.getParameter("quizcard_set_name"));
 		logger.info("세트 카테고리 값: " + request.getParameter("quizcard_category_first"));
 		logger.info("세트 공개여부 값: " + request.getParameter("quizcard_set_status"));
@@ -40,7 +47,7 @@ public class quizcardController {
 		
 		String m_email = request.getParameter("m_email");
 		String quizcard_set_name = request.getParameter("quizcard_set_name");
-		String quizcard_category_name = request.getParameter("quizcard_category_first");
+		String quizcard_category = request.getParameter("quizcard_category_first");
 		String quizcard_set_status = request.getParameter("quizcard_set_status");
 		String quizcard_set_intro = request.getParameter("quizcard_set_intro");
 		String quizcard_type = request.getParameter("quizcard_type");
@@ -58,8 +65,8 @@ public class quizcardController {
 			int quizcard_set_no = quizcardDao.quizcardSetNoGet() - 1; 	
 			logger.info("================= setNo는 정상적으로 조회됐는지??? "  + quizcard_set_no);
 			qvo.setQuizcard_set_no(quizcard_set_no);
-			logger.info("==========카테고리 이름 조회: " + quizcard_category_name);
-			qvo.setQuizcard_category_name(quizcard_category_name);
+			logger.info("==========카테고리 이름 조회: " + quizcard_category);
+			qvo.setQuizcard_category(quizcard_category);
 			// quizcard_category 테이블도 생성한다.  
 			int m = quizcardDao.quizcardCategory(qvo);
 			if(m ==1) {
@@ -80,7 +87,6 @@ public class quizcardController {
 		}
 		
 		// 카테고리 까지 생성 후 기본값으로 question 테이블의 데이터를 추가하자
-		
 		
 		// 위의 결과값을 토대로 => 조인문의 결과 데이터를 redirect로 던진다? 
 		return "home/quizcard/quizcardTemp";

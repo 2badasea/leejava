@@ -79,6 +79,23 @@
      	width: 300px;
      	height: 150px;
      }
+     .archiveBox{
+     	border: 1px solid black;
+     	width: 500px;
+     	height: 300px;
+     	background-color: #E8F5FF;
+     	color: black;
+      	display: none; 
+     	z-index: 2;
+     	margin-top: 40px;
+     	position: absolute;
+     }
+     .archiveBox a{
+     	color: black;
+     }
+     .archiveHeader{
+     	padding: 10px;
+     }
 </style>
 </head>
 <body>
@@ -88,12 +105,23 @@
 		<a href="quizcard.do"><span>퀴즈카드 메인</span></a>
 		<input type="hidden" id="session_user" value="${session_user }">
 	</div>
-	<div class="centerHeader">
-		<nav>
+	<div class="centerHeader" style="display: flex;">
 			<!-- 여기에 실질적인 메뉴들 삽입 -->
-			<a><span>아카이브↓</span></a> <!-- 클릭하면 드랍다운 메뉴 또는 말풍선으로 보여주기 -->
+			<a class="archiveBtn">아카이브↓</a>
+			<div class="archiveBox">
+				<div class="archiveHeader">
+					<!-- 각각의 메뉴들에 대해서 클릭하면 ajax로 데이터를 추출해서 밑의 archiveBody에 붙인다. -->
+					<a onclick="ajaxStudyingCard('${session_user }')" id="studyingMenu">학습중인 세트</a>
+					<a onclick="ajaxBookmarkCard('${session_user }')" id="bookmarkMenu">즐겨찾기</a>
+					<a onclick="ajaxMyQuizcard('${session_user }')" id="selfMenu">내가 만든</a>
+					<a>스크랩 문제</a>
+				</div>	
+				<hr>
+				<div class="archiveBody">
+					
+				</div>
+			</div>	
 			<a onclick="createNewQuizcard('${session_user}');"><span>새로 만들기</span></a>
-		</nav>
 	</div>
 	<div class="rightHeader">
 		<nav>
@@ -122,11 +150,13 @@
 	                <label for="quizcard_set_name">세트 이름</label>
 	                <input type="text" id="quizcard_set_name" name="quizcard_set_name">
 	                <input type="hidden" id="session_user" value="${session_user}" name="m_email">
+	                <input type="hidden" id="session_nickname" value="${session_nickname}" name="m_nickname">
 	                <!--카테고리 3개 생성-->
 	                <br>
 	                <!--   is(":selected") 요소만 선발하기-->
 	                <span>카테고리 선택</span>
 	                <select id="quizcard_category_first" name="quizcard_category_first">
+	                    <option value="All">모두 선택</option>
 	                    <option value="Java">Java</option>
 	                    <option value="Javascript">Javascript</option>
 	                    <option value="HTML&CSS">HTML&CSS</option>
@@ -168,6 +198,29 @@
     </div>
 </body>
 <script>
+
+	// 내가 만든 세트 조회하기 
+	function ajaxMyQuizcard(m_email){
+		console.log("m_email값 확인: " + m_email);
+	}
+	
+	// 아카이브 메뉴 클릭 => div박스 보여주기
+	$(".archiveBtn").on("click", function(){
+		$(".archiveBox").toggle();
+		$("#studyingMenu").focus();
+	})
+	
+	$(".archiveBox").on("focusout", function(){
+		console.log("포커스 아웃 발생");
+		$(".archiveBox").css("display", "none");
+	})
+	
+	$(".archiveHeader > a").on("focus", function(){
+		console.log("포커스 발생");
+		$(e.target).css("color", "white");
+	})
+	
+	
 	// 퀴즈 set 생성 이벤트 
 		// 여기서 기본적인 form값들 유효성 체크하고, frm.submit() 이벤트 호출하기
 	function createNew(){

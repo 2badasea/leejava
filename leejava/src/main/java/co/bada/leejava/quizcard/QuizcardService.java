@@ -1,5 +1,7 @@
 package co.bada.leejava.quizcard;
 
+import java.util.List;
+
 public interface QuizcardService {
 	
 	//	quizcard_set_ 생성 
@@ -12,4 +14,6 @@ public interface QuizcardService {
 	QuizcardVO quizcardSelect(QuizcardVO qvo);
 	// 첫 기본 quizcard_question 데이터
 	int firstQuestionInsert(QuizcardVO qvo);
+	// 퀴즈카드 메인페이지 게시판 출력할 데이터
+	List<QuizcardVO> quizcardList();
 }

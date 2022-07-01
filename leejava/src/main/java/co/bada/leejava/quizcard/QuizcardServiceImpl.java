@@ -1,5 +1,7 @@
 package co.bada.leejava.quizcard;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -36,5 +38,11 @@ public class QuizcardServiceImpl implements QuizcardService {
 	public int firstQuestionInsert(QuizcardVO qvo) {
 		// TODO Auto-generated method stub
 		return map.firstQuestionInsert(qvo);
+	}
+
+	@Override
+	public List<QuizcardVO> quizcardList() {
+		// TODO Auto-generated method stub
+		return map.quizcardList();
 	}
 }

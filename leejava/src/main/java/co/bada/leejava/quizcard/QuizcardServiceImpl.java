@@ -45,4 +45,29 @@ public class QuizcardServiceImpl implements QuizcardService {
 		// TODO Auto-generated method stub
 		return map.quizcardList();
 	}
+
+	@Override
+	public QuizcardVO ajaxMyQuizcard(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxMyQuizcard(qvo);
+	}
+
+	@Override
+	public int quizcardQuestionCount(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardQuestionCount(qvo);
+	}
+
+	@Override
+	public int quizcardReplyCount(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardReplyCount(qvo);
+	}
+
+	@Override
+	public QuizcardVO quizcardBeforeInfo(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardBeforeInfo(qvo);
+	}
+
 }

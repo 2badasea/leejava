@@ -7,8 +7,8 @@
 			SET_NO_SEQ.NEXTVAL,   <!-- 시퀀스 적용. -->
 			#{m_email},
 			#{quizcard_set_name},
-			TO_CHAR( SYSDATE, 'YYYY-MM-DD  HH:MI:SS'),
-			TO_CHAR( SYSDATE, 'YYYY-MM-DD  HH:MI:SS'),
+			TO_CHAR( SYSDATE),
+			TO_CHAR( SYSDATE),
 			0,
 			#{quizcard_set_status},
 			#{quizcard_set_intro},
@@ -64,4 +64,42 @@
 		WHERE S.QUIZCARD_SET_STATUS = 'PUBLIC'				
 		ORDER BY S.QUIZCARD_SET_NO DESC
 	</select>
+	
+	<!-- 아카이브 박스 내가 생성한 세트 이름 조회 -->
+	<select id="ajaxMyQuizcard" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME,  S.QUIZCARD_SET_CDATE, 
+						S.QUIZCARD_SET_UDATE, C.QUIZCARD_CATEGORY
+		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
+			ON S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		WHERE M_EMAIL = #{m_email}
+	</select>
+	
+	<!-- 해당 퀴즈카드 set_no별로 총 문제 갯수 -->
+	<select id="quizcardQuestionCount" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="int">
+		SELECT COUNT(QUIZCARD_NO) 
+			FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 해당 퀴즈카드 set_no 기준 댃글 갯수 조회 -->
+	<select id="quizcardReplyCount" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="int">
+		SELECT COUNT(QUIZCARD_REPLY_NO) 
+			FROM QUIZCARD_REPLY 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 퀴즈카드 대기실에서 보여줄 모든 정보 -->
+	<select id="quizcardBeforeInfo" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		<!--  리턴타입은 ㅟ즈카드 vo객체다. -->
+		SELECT M.M_EMAIL, M.M_NICKNAME, S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME, S.QUIZCARD_SET_CDATE,
+		    	S.QUIZCARD_SET_UDATE, S.QUIZCARD_SET_LIKEIT, S.QUIZCARD_SET_STATUS, S.QUIZCARD_SET_INTRO, 
+		    	S.QUIZCARD_SET_HIT, S.QUIZCARD_TYPE,  C.QUIZCARD_CATEGORY
+		FROM QUIZCARD  S INNER JOIN QUIZCARD_CATEGORY C 
+							ON S.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
+		    			INNER JOIN MEMBER M
+							ON S.M_EMAIL = M.M_EMAIL
+		WHERE S.QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	
 </mapper>

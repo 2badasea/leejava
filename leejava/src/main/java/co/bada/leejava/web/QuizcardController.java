@@ -8,19 +8,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
 
 @Controller
-public class quizcardController {
+public class QuizcardController {
 	@Autowired
 	QuizcardService quizcardDao;
 	
-	private static final Logger logger = LoggerFactory.getLogger(quizcardController.class);
+	private static final Logger logger = LoggerFactory.getLogger(QuizcardController.class);
 	
 	// 퀴즐렛 학습 페이지 이동
 	@RequestMapping("/quizcard.do")
@@ -110,6 +115,52 @@ public class quizcardController {
 			return "redirect:quizcard.do";
 		}
 		return "home/quizcard/quizcardQuestionForm";
+	}
+	
+	// 내가 만든 세트 조회하기
+	@ResponseBody
+	@GetMapping(value= "/ajaxMyQuizcard.do", produces = MediaType.APPLICATION_JSON_VALUE )
+	public List<QuizcardVO> ajaxMyQuizcard(HttpServletRequest request, QuizcardVO qvo,
+				@RequestParam(value = "m_email") String m_email) {
+		logger.info("================ ajax로 넘어온 m_email값: " + m_email);
+		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
+		
+		qvo.setM_email(m_email);
+		qvo = quizcardDao.ajaxMyQuizcard(qvo);
+		logger.info("=============== qvo 결과 조회: " + qvo);
+		if( qvo !=null) {
+			list.add(qvo);
+			return list;
+		} else {
+			return null;
+		}
+	}
+	
+	// archiveBox => quizcardInfo 페이지 이동. 이동한 페이지에서 json으로 데이터를 받나? 그럴 필요 없음.
+	@RequestMapping(value = "/quizcardBefore.do" )
+	public String quizcardInfo(HttpServletRequest request, QuizcardVO qvo, Model model,
+			 @RequestParam("set_no") int quizcard_set_no,
+			 @RequestParam("m_email") String m_email) {
+		logger.info("=========== view단에서 넘어온 m_email : " + m_email);
+		logger.info("=========== ajax로 넘어온 데이터 세트번호: " + quizcard_set_no);
+		// 총 3개의 쿼리문 결과 보내기(조인문, 댓글갯수, 문제갯수)
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		// Quizcard_set_no별 문제갯수, 댓글갯수를 먼저 보내고,
+		int quizcardQuestionCount = quizcardDao.quizcardQuestionCount(qvo);
+		logger.info("============ 퀴즈카드 문제 갯수: " + quizcardQuestionCount );
+		int quizcardReplyCount = quizcardDao.quizcardReplyCount(qvo);
+		logger.info("=============퀴즈카드 댓글 갯수: " + quizcardReplyCount);
+		
+		model.addAttribute("quizcardQuestionCount", quizcardQuestionCount);
+		model.addAttribute("quizcardReplyCount", quizcardReplyCount);
+		
+		// 마지막으로 나머지 정보를 모두 보낸다.
+		qvo = quizcardDao.quizcardBeforeInfo(qvo);
+		logger.info("======= qvoInfo 값 조회: " + qvo);
+		model.addAttribute("qvo", qvo); 
+		
+		return "home/quizcard/quizcardBefore";
 	}
 	
 	

@@ -86,7 +86,7 @@
      	background-color: #E8F5FF;
      	color: black;
       	display: none; 
-     	z-index: 2;
+/*      	z-index: 2; */
      	margin-top: 40px;
      	position: absolute;
      }
@@ -95,6 +95,13 @@
      }
      .archiveHeader{
      	padding: 10px;
+     }
+     .archiveTable{
+     	border: 1px solid gray;
+     	width: 100%;
+     }
+     .archiveTr:hover{
+     	cursor: pointer;
      }
 </style>
 </head>
@@ -118,7 +125,7 @@
 				</div>	
 				<hr>
 				<div class="archiveBody">
-					
+					<!-- ajax 결괏값들이 들어갈 공간 -->
 				</div>
 			</div>	
 			<a onclick="createNewQuizcard('${session_user}');"><span>새로 만들기</span></a>
@@ -198,26 +205,72 @@
     </div>
 </body>
 <script>
+	// 회원이메일 
+	const m_email = $("#session_user").val();
+
+	// archiveBox 리스트 클릭 quizardInfo.jsp로 이동
+	$(document).on("click", ".archiveTr", function(){
+		var set_no = $(this).children().eq(0).text();
+		console.log("퀴즈카드 세트번호 확인: " + set_no);
+		// 화면이 전환되는데 굳이 ajax릃 호출할 필요강 없다. ajax는 페이지 내에서. 
+		location.href="quizcardBefore.do" + "?set_no=" + set_no + "&m_email=" +m_email ;
+	})
 
 	// 내가 만든 세트 조회하기 
 	function ajaxMyQuizcard(m_email){
-		console.log("m_email값 확인: " + m_email);
+		var m_email = m_email;
+		// ajax로 데이터를 요청해서 archiveBox의 body부분에 데이터를 노출시킨다. 
+			// 쿼리문 날려서 노출시킬 정보는 세트번호, 세트이름, 그리고 카테고리. 생성일
+			// 1. get요청으로 날려서. 2. json형태로 받아서 3. 해당 데이터를 반복문을 돌려 4. 화면에 노출시킨다.
+		
+		var tb = $("<table class='archiveTable' />");
+		$.ajax({
+			url: "ajaxMyQuizcard.do",
+			type: "GET",
+			data: {
+				m_email : m_email
+			},
+// 			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function(data){
+				console.log("ajax수신 성공");
+				console.log(data);
+				// 데이터가 성공적으로 json타입으로 온다면 반복분으로 출력
+					// 반환타입이 배열객체형식이다. 서버단에서 list에 담아서 보냈으니깐. 
+					// 반복문으로 인덱스로 돌아가며 출력시킨다.
+					//console.log(data[0].quizcard_set_no);
+				$.each(data, function(index, item){
+					var $quizcard_set_no = item.quizcard_set_no;
+					var $quizcard_set_name = item.quizcard_set_name;
+					var $quizcard_set_cdate = item.quizcard_set_cdate;
+					var $quizcard_set_udate = item.quizcard_set_udate;
+					var $quizcard_category = item.quizcard_category;
+					var tr = $("<tr class='archiveTr' />").append(
+						$("<td />").text($quizcard_set_no),
+						$("<td />").text($quizcard_set_name),
+						$("<td />").html($quizcard_set_cdate + "<br>" + $quizcard_set_udate),
+						$("<td />").text($quizcard_category)
+					);
+					tb.append(tr);
+				})
+				$(".archiveBody").append(tb);
+			},
+			error: function(data){
+				console.log("ajax에러 발생");
+			}
+		})
+		
+		
 	}
 	
 	// 아카이브 메뉴 클릭 => div박스 보여주기
 	$(".archiveBtn").on("click", function(){
 		$(".archiveBox").toggle();
-		$("#studyingMenu").focus();
 	})
 	
-	$(".archiveBox").on("focusout", function(){
-		console.log("포커스 아웃 발생");
-		$(".archiveBox").css("display", "none");
-	})
-	
-	$(".archiveHeader > a").on("focus", function(){
-		console.log("포커스 발생");
-		$(e.target).css("color", "white");
+	// 아카이브 메뉴 활성화된 상태에서, 외부로 포커스가 이동되면 사라지도록.
+	$(".archiveBox a").on("focus", function(){
+		$(this).css("color", "yellow");
 	})
 	
 	

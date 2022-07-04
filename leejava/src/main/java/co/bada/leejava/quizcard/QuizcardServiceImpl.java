@@ -70,4 +70,11 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.quizcardBeforeInfo(qvo);
 	}
 
+	@Override
+	public List<QuizcardVO> quizcardQuestionList(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardQuestionList(qvo);
+	}
+
+
 }

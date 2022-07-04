@@ -27,11 +27,11 @@ public class QuizcardVO {
 	
 	// Quizcard_Question 테이블
 		// quizcard_set_no는 quizcard 테이블의 외래키로서 적용
-	private String question_no;   // 세트번호 + 문제번호 => 인조키로서 기본키값을 가질 필드값.
+	private String quizcard_no;   // 세트번호 + 문제번호 => 인조키로서 기본키값을 가질 필드값.
 	private int quizcard_question_no; // 문제번호
 	private String quizcard_question_name; // 문제(명) 
 	private String quizcard_question_hint; // 힌트
-	private String quizcard_quesiton_answer;  // 답
+	private String quizcard_question_answer;  // 답
 	
 	// Quizcard_Reply  문제세트별 댓글이나 후기 남기는 테이블
 		// quizcard_set_no 가 외래키로서 필드값에 담는다.

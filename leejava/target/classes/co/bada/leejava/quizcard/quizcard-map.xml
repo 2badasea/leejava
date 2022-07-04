@@ -101,5 +101,11 @@
 		WHERE S.QUIZCARD_SET_NO = #{quizcard_set_no}
 	</select>
 	
+	<!-- 퀴즈카드 세트번호별 문제리스트. -->
+	<select id="quizcardQuestionList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+		FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
 	
 </mapper>

@@ -163,6 +163,34 @@ public class QuizcardController {
 		return "home/quizcard/quizcardBefore";
 	}
 	
+	// Quizcard, 문제 수정 페이지 이동
+	@RequestMapping(value = "updateQuizcard.do") 
+	public String updateQuizcard(Model model, HttpServletRequest request, QuizcardVO qvo,
+				@RequestParam("set_no") int quizcard_set_no,
+				@RequestParam("questionCount") int quizcardQuestionCount ) {
+		logger.info("=========== 쿼리스트링 quicard_set_no의 값: " + quizcard_set_no);
+		logger.info("=========== 쿼리스트링 quizcardQuestionCount의 값: " + quizcardQuestionCount);
+		// 넘어온 quizcard_set_no를 통해 DB에 있는 자료들을 model로 날린다. 문제 갯수, 퀴즈카드 정보, quizcard_question객체리스트.
+		List<QuizcardVO> questionList = new ArrayList<QuizcardVO>();
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+//		quizcardQuestionList 쿼리문의 리턴타입이 달라야 한다. 리턴타입이 파라미터가 있는 list타입이어야 한다. 
+		questionList = quizcardDao.quizcardQuestionList(qvo);
+		logger.info("============== questionList에 담긴 qvo객체들의 값: " + questionList);
+		// 이번에는 info정보에 해당하는 값을 넣는다. 기존에 등록해둔 quizcardSelect Dao를 통해서 값을 넘긴다.
+		qvo = quizcardDao.quizcardSelect(qvo);
+		logger.info("=============== qvo의 값: " + qvo);
+		
+		// 퀴즈카드 메인 정보
+		model.addAttribute("qvo", qvo);
+		// 퀴즈카드 문제박스
+		logger.info("=====================여기 22222222222 ");
+		// 문제갯수만큼 반복문으로 DB에 저장된 quesiton들을 출력시킨다.
+		model.addAttribute("questionCount", quizcardQuestionCount);
+		
+		return "home/quizcard/quizcardQuestionForm";
+	}
+	
 	
 	
 }

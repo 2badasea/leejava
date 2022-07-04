@@ -70,11 +70,31 @@
 			</tr>
 		</table><br>
 		<div class="tempBtn">
-			<button>학습하기</button>
+			<button id="quizcardStartBtn">학습하기</button>
+			<input type="hidden" id="dataInput" data-setno="${qvo.quizcard_set_no }" data-questioncount="${quizcardQuestionCount }">
 			<c:if test="${session_user eq qvo.m_email }">
-				<button>수정/단어추가하기</button>
+				<button id="updateQuizcardBtn">수정/단어추가하기</button>
 			</c:if>
 		</div>
 	</div>
 </body>
+<script>
+	$("#updateQuizcardBtn").on("click", function(){
+		// quizcard_set_no값과 해당 세트번호의 문제갯수를 날린다.
+			// 문제갯수의 경우 컨트롤러에서 또 쿼리문을 조회하긴 번거롭기 때문. 
+		// hidden타입의 input태그(id=dataInput)에 세트번호와 문제갯수를 부여함
+		var setNo = $("#dataInput").data("setno");
+		console.log("세트번호: " + setNo);
+		var questionCount = $("#dataInput").data("questioncount");
+		console.log("해당 세트의 문제 갯수: " + questionCount);
+		
+		var check = confirm("해당 퀴즈카드를 수정하시겠어요?");
+		if(check){
+			location.href="updateQuizcard.do?set_no="+setNo + "&questionCount=" + questionCount;
+		} else {
+			return false;
+		}
+		
+	})
+</script>
 </html>

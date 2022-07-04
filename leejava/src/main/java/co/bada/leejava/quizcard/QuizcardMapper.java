@@ -24,4 +24,6 @@ public interface QuizcardMapper {
 	int quizcardReplyCount(QuizcardVO qvo);
 	// 퀴즈카드 대기실에서 출력시킬 정보들
 	QuizcardVO quizcardBeforeInfo(QuizcardVO qvo);
+	// 퀴즈카드 세트번호별 문제, 힌트, 답 조회
+	List<QuizcardVO> quizcardQuestionList(QuizcardVO qvo); 
 }

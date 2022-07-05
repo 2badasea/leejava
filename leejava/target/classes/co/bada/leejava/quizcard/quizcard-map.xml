@@ -108,4 +108,27 @@
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
 	</select>
 	
+	<!-- 퀴즈카드 blur 이벤트에 의한 업데이트 -->
+	<update id="ajaxQuestionUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD_QUESTION 
+		SET 
+			QUIZCARD_QUESTION_NAME = NVL( #{quizcard_question_name}, QUIZCARD_QUESTION_NAME),
+			QUIZCARD_QUESTION_HINT = NVL( #{quizcard_question_hint }, QUIZCARD_QUESTION_HINT),
+			QUIZCARD_QUESTION_ANSWER = NVL( #{quizcard_question_answer}, QUIZCARD_QUESTION_ANSWER)
+		WHERE
+			QUIZCARD_SET_NO = #{quizcard_set_no}
+			and QUIZCARD_QUESTION_NO = ${quizcard_question_no}
+	</update>
+	
+	<insert id="ajaxQuestionNew" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_QUESTION VALUES(
+			#{quizcard_no},
+			#{quizcard_question_no},
+			#{quizcard_set_no},
+			#{quizcard_question_name},
+			#{quizcard_question_hint},
+			#{quizcard_question_answer}
+		)
+	</insert>
+	
 </mapper>

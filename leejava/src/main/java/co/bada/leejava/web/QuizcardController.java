@@ -177,6 +177,7 @@ public class QuizcardController {
 //		quizcardQuestionList 쿼리문의 리턴타입이 달라야 한다. 리턴타입이 파라미터가 있는 list타입이어야 한다. 
 		questionList = quizcardDao.quizcardQuestionList(qvo);
 		logger.info("============== questionList에 담긴 qvo객체들의 값: " + questionList);
+		
 		// 이번에는 info정보에 해당하는 값을 넣는다. 기존에 등록해둔 quizcardSelect Dao를 통해서 값을 넘긴다.
 		qvo = quizcardDao.quizcardSelect(qvo);
 		logger.info("=============== qvo의 값: " + qvo);
@@ -184,7 +185,7 @@ public class QuizcardController {
 		// 퀴즈카드 메인 정보
 		model.addAttribute("qvo", qvo);
 		// 퀴즈카드 문제박스
-		logger.info("=====================여기 22222222222 ");
+		model.addAttribute("questionList",questionList);
 		// 문제갯수만큼 반복문으로 DB에 저장된 quesiton들을 출력시킨다.
 		model.addAttribute("questionCount", quizcardQuestionCount);
 		

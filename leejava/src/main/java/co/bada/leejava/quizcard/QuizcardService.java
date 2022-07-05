@@ -26,4 +26,8 @@ public interface QuizcardService {
 	QuizcardVO quizcardBeforeInfo(QuizcardVO qvo);
 	// 퀴즈카드 세트번호별 문제, 힌트, 답 조회
 	List<QuizcardVO> quizcardQuestionList(QuizcardVO qvo); 
+	// 퀴즈카드 blur이벤트에 의한 자동업데이트
+	int ajaxQuestionUpdate(QuizcardVO qvo);
+	// 신규 퀴즈카드 추가( 수정 페이지) 
+	int ajaxQuestionNew(QuizcardVO qvo);
 }

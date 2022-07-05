@@ -106,6 +106,7 @@
 		SELECT * 
 		FROM QUIZCARD_QUESTION 
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY QUIZCARD_QUESTION_NO ASC
 	</select>
 	
 	<!-- 퀴즈카드 blur 이벤트에 의한 업데이트 -->
@@ -130,5 +131,12 @@
 			#{quizcard_question_answer}
 		)
 	</insert>
+	
+	<!-- 퀴즈카드 삭제 이벤트 -->
+	<delete id="ajaxQuestionDel" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE FROM QUIZCARD_QUESTION
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} 
+		AND QUIZCARD_QUESTION_NO = #{quizcard_question_no}
+	</delete>
 	
 </mapper>

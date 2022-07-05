@@ -184,7 +184,7 @@
 	                <br>
 	                <div class="questionFormFooter">
 	                    <button class="addQuestionBtn">퀴즈카드 추가</button>
-	                    <button class="deleteQuestionBtn">퀴즈카드 삭제</button>
+	                    <button class="deleteQuestionBtn" data-no="${list.quizcard_question_no }">퀴즈카드 삭제</button>
 	                </div>
 	            </div>
             </c:forEach>
@@ -253,7 +253,7 @@
             "<textarea name='quizcard_question_answer' class='quizcard_question_answer' cols='30' rows='10'>답안을 입력하세요</textarea></div></div><br>";
         str +=
             "<div class='questionFormFooter'><button class='addQuestionBtn'>퀴즈카드 추가</button>";
-        str += "<button class='deleteQuestionBtn'>퀴즈카드 삭제</button>";
+        str += "<button class='deleteQuestionBtn' data-no=''>퀴즈카드 삭제</button>";
         str += "</div></div>";
 
         $(".questionWrapper").append(str);
@@ -267,12 +267,12 @@
             console.log("index값: " + index);
             $(item).find('.questionNumber').val(index + 1 + " 번 문제");
             $(item).find('.questionFormBody').data("no", (index + 1));
+            $(item).find('.deleteQuestionBtn').data("no", (index+1));
         })
         
         // 카드추가 이벤트... 여기서 내가 따로 스크립트로 작성하나.. 그냥 db에 직접적으로 insert하나 똑같은 것 아닌가... 
         	// 어차피 기본값이기 때문. 새로 생긴 것에 대해선 별도로 update도 가능함. 일단 실험ㄱㄱ. 필요한 건, 문제번호와 set번호
         	// 그리고 인조키의 경우, 스크립트 단에서 생성해서 넘기는 게 나을 것 같다. 
-        	
         // 박스 전체 갯수나 새로 생성되는 퀴즈카드의 문제번호나 똑같다는 것을 활용. 
         var newQuestionNo = boxCount;
         console.log("새로 생성된 문제번호: " + newQuestionNo);
@@ -296,32 +296,52 @@
         		console.log(data);
         	}
         })
-        	
 		        
 	})
 	
 	
-	// 카드 삭제 이벤트.
-	$(document).on("click", ".deleteQuestionBtn", function(){
+	/************** 카드 삭제 이벤트. **************/
+	$(document).on("click", ".deleteQuestionBtn", function(e){
+		// 화면상에서 요소를 지운다.
 		$(this).closest('.questionForm').remove();
-
+		// 지워진 요소에
+		var qno = $(e.target).data("no");
+		console.log("qno의 값: " + qno);
+		console.log("quizcard_set_no의 값: " + quizcard_set_no);
+		// ajax 호출 => quizcard_set_no값,  qno(quizcard_question_no)값을 날려서 지운다. 
+		$.ajax({
+			url: "ajaxQuestionDel.do"
+			data: {
+				quizcard_question_no : qno,
+				quizcard_set_no : quizcard_set_no
+			},
+			success: function(data){
+				console.log(data);
+			},
+			error: function(data){
+				console.log(data);
+			}
+		})
+		
+		// ajax로 삭제 후 index넘버링을 다시 해주어야 한다. 중간의 값이 사라지는 경우도 있으니
+			// 화면 상에 노출되는 것분 아니라, DB상에서도  quizcard_no, quizcard_question_no
+		
+		
+		
         // 박스 갯수 조회
         // 동적으로 추가된 다음에 카드박스에 대한 count을 시작하고, 그 갯수만큼 반복문을 돌려 각각의 box에다가 index에 해당하는 value값을 부여한다. => class = "questionForm" 이 값을 기준.
         var boxCount = $(".questionForm").length;
         console.log("현재 남아있는 박스 총 갯수: " + boxCount);
 
-        //카드를 추가하거나 삭제할 때마다 카운팅을 해서 번호를 매긴다.
+        //카드를 추가하거나 삭제할 때마다 카운팅을 해서 번호를 매긴다. 
+        	// => 여기서 ajax로 날리면 안 되나. for문 반복으로.
         var $questionForms = $(".questionForm");
         $.each($questionForms, function (index, item) {
-            console.log("index값: " + index);
             $(item).find('.questionNumber').val(index + 1 + " 번째 문제");
             $(item).find('.questionFormBody').data("no", (index + 1));
         })
+        
 
-        // 그리고 삭제를 하다가 박스 갯수가 하나라면 카드추가 버튼을 살린다. 
-        if (boxCount === 1) {
-            $(".addQuestionBtn").css("display", "block");
-        }
 	})
 	
 	// 힌트 클릭.
@@ -342,6 +362,7 @@
 		if(questionCount >1){
 			$(".deleteQuestionBtn:first").css("display", "none");
 			$(".addQuestionBtn:first").css("display", "none");
+			$(".addQuestionBtn").not(".addQuestionBtn:last").css("display", "none");
 		}
 		
 		// DB에 저장된 quizcard_set_status값에 따라 미리 radio버튼에 체크를 준다.

@@ -30,4 +30,6 @@ public interface QuizcardMapper {
 	int ajaxQuestionUpdate(QuizcardVO qvo);
 	// 신규 퀴즈카드 추가( 수정 페이지) 
 	int ajaxQuestionNew(QuizcardVO qvo);
+	// 퀴즈카드 삭제 이벤트(수정 페이지)	
+	int ajaxQuestionDel(QuizcardVO qvo);
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,6 +86,30 @@ public class QuizcardRestController {
 		} else {
 			message = "Insert Fail";
 			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+		
+	}
+	
+	// 퀴즈카드 삭제 이벤트 
+	@DeleteMapping(value= "ajaxQuestionDel.do")
+	public ResponseEntity<String> ajaxQuestionDel(QuizcardVO qvo, 
+			@RequestParam("quizcard_question_no") int quizcard_question_no,
+			@RequestParam("quizcard_set_no") int quizcard_set_no){
+		
+		logger.info("========== 삭제할 문제번호: " + quizcard_question_no);
+		logger.info("========== 삭제대상 세트번호: " + quizcard_set_no);
+		
+		qvo.setQuizcard_question_no(quizcard_question_no);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		
+		int n = quizcardDao.ajaxQuestionDel(qvo);
+		String message = null;
+		if(n ==1) {
+			message = "Delete Success~";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message  = "Delete Fail";
+			return new ResponseEntity<String> (message, HttpStatus.NOT_IMPLEMENTED);
 		}
 		
 	}

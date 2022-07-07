@@ -9,13 +9,15 @@
 </head>
 <style>
 .adminSidemenu {
-	font-size: 15px;
+	font-size: 20px;
 }
 .sideWrap{
 	background-color: #05AA6D;
 	min-height: 100vh; 
  }
-
+li{
+	margin-top: 20px;
+}
 </style>
 <body>
 	<!-- 왼쪽 사이드바 -->
@@ -29,8 +31,11 @@
 			<li>
 				<a class="adminSidemenu" href='adminNoticeList.do'>공지사항 관리</a>
 			</li>
-				<li>
+			<li>
 				<a class="adminSidemenu" href='adminRepair.do' id="repairGo">사이트 유지보수 관리</a>
+			</li>
+			<li>
+				<a class="adminSidemenu" href="adminStudy.do" id="studyGo">테스트</a>
 			</li>
 		</ul>
 	</div>
@@ -42,6 +47,12 @@
 		e.preventDefault();
 		location.href="adminRepair.do";
 	})
+	
+	$("#studyGo").on("click", function(e){
+		e.preventDefault();
+		location.href="adminStudy.do";
+	})
+	
 	
 	
 	

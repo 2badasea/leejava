@@ -94,5 +94,11 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.ajaxQuestionDel(qvo);
 	}
 
+	@Override
+	public int ajaxUpdateQuestionNo(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxUpdateQuestionNo(qvo);
+	}
+
 
 }

@@ -32,4 +32,6 @@ public interface QuizcardMapper {
 	int ajaxQuestionNew(QuizcardVO qvo);
 	// 퀴즈카드 삭제 이벤트(수정 페이지)	
 	int ajaxQuestionDel(QuizcardVO qvo);
+	// 퀴즈카드 삭제 후 넘버링 작업 (수정 페이지)
+	int ajaxUpdateQuestionNo(QuizcardVO qvo);
 }

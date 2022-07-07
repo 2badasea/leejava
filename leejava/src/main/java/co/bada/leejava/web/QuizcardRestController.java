@@ -1,5 +1,9 @@
 package co.bada.leejava.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -9,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -91,7 +97,7 @@ public class QuizcardRestController {
 	}
 	
 	// 퀴즈카드 삭제 이벤트 
-	@DeleteMapping(value= "ajaxQuestionDel.do")
+	@PostMapping(value= "ajaxQuestionDel.do")
 	public ResponseEntity<String> ajaxQuestionDel(QuizcardVO qvo, 
 			@RequestParam("quizcard_question_no") int quizcard_question_no,
 			@RequestParam("quizcard_set_no") int quizcard_set_no){
@@ -112,6 +118,28 @@ public class QuizcardRestController {
 			return new ResponseEntity<String> (message, HttpStatus.NOT_IMPLEMENTED);
 		}
 		
+	}
+	
+	// 퀴즈카드 인덱스 정렬 업데이트
+	@PutMapping(value = "ajaxUpdateQuestionNo.do")
+		public void ajaxUpdateQuestionNo( @RequestBody List<Map<String, Object>> list, QuizcardVO qvo) {
+				
+		logger.info("넘어온 list값: " + list);
+		for(Map<String, Object> map : list) {
+			int question_no = (int) map.get("setQno");
+			int quizcard_set_no = (int) map.get("setNo");
+			String quizcard_no = (String) map.get("setQuizcardNo");
+			logger.info("문제번호: " + question_no +", 세트번호: " + quizcard_set_no + ", 넘버링: " + quizcard_no);
+			
+			qvo.setQuizcard_question_no(question_no);
+			qvo.setQuizcard_set_no(quizcard_set_no);
+			qvo.setQuizcard_no(quizcard_no);
+			int n = quizcardDao.ajaxUpdateQuestionNo(qvo);
+			if( n != 1) {
+				logger.info("오류남");
+			}
+		}
+		logger.info("완료");
 	}
 	
 	

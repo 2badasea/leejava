@@ -261,15 +261,6 @@
         var boxCount = $(".questionForm").length;
         console.log("현재 남아있는 박스 총 갯수: " + boxCount);
         
-        //카드를 추가하거나 삭제할 때마다 카운팅을 해서 번호를 매긴다. 그리고 data속성으로 문제번호도 남겨놓는다. crud를 위해서
-        var $questionForms = $(".questionForm");
-        $.each($questionForms, function (index, item) {
-            console.log("index값: " + index);
-            $(item).find('.questionNumber').val(index + 1 + " 번 문제");
-            $(item).find('.questionFormBody').data("no", (index + 1));
-            $(item).find('.deleteQuestionBtn').data("no", (index+1));
-        })
-        
         // 카드추가 이벤트... 여기서 내가 따로 스크립트로 작성하나.. 그냥 db에 직접적으로 insert하나 똑같은 것 아닌가... 
         	// 어차피 기본값이기 때문. 새로 생긴 것에 대해선 별도로 update도 가능함. 일단 실험ㄱㄱ. 필요한 건, 문제번호와 set번호
         	// 그리고 인조키의 경우, 스크립트 단에서 생성해서 넘기는 게 나을 것 같다. 
@@ -296,21 +287,38 @@
         		console.log(data);
         	}
         })
+        
+        //카드를 추가하거나 삭제할 때마다 카운팅을 해서 번호를 매긴다. 그리고 data속성으로 문제번호도 남겨놓는다. crud를 위해서
+        var $questionForms = $(".questionForm");
+        $.each($questionForms, function (index, item) {
+            console.log("index값: " + index);
+            $(item).find('.questionNumber').val(index + 1 + " 번 문제");
+            $(item).find('.questionFormBody').data("no", (index + 1));
+            $(item).find('.deleteQuestionBtn').data("no", (index+1));
+        })
+        
+        location.reload();
 		        
 	})
 	
 	
 	/************** 카드 삭제 이벤트. **************/
 	$(document).on("click", ".deleteQuestionBtn", function(e){
+		
+		var boxCount = $(".questionForm").length;
+        console.log("삭제되기 전 박스갯수(= 문제갯수): " + boxCount);
 		// 화면상에서 요소를 지운다.
 		$(this).closest('.questionForm').remove();
-		// 지워진 요소에
+		
+		
+        // 삭제할 문제 번호.
 		var qno = $(e.target).data("no");
-		console.log("qno의 값: " + qno);
+		console.log("삭제할 qno의 값: " + qno);
 		console.log("quizcard_set_no의 값: " + quizcard_set_no);
 		// ajax 호출 => quizcard_set_no값,  qno(quizcard_question_no)값을 날려서 지운다. 
 		$.ajax({
-			url: "ajaxQuestionDel.do"
+			url: "ajaxQuestionDel.do",
+			type: "POST",
 			data: {
 				quizcard_question_no : qno,
 				quizcard_set_no : quizcard_set_no
@@ -323,26 +331,53 @@
 			}
 		})
 		
-		// ajax로 삭제 후 index넘버링을 다시 해주어야 한다. 중간의 값이 사라지는 경우도 있으니
-			// 화면 상에 노출되는 것분 아니라, DB상에서도  quizcard_no, quizcard_question_no
+        // 삭제한 문제번호가 박스갯수와 같았다면, 즉, 마지막 행이었다면 불필요하게 반복문으로 다시 순번값을 정렬할 필요가 없다.
+        if(qno !== boxCount) {
+	        var $questionForms = $(".questionForm");
+	        $.each($questionForms, function (index, item) {
+	            $(item).find('.questionNumber').val(index + 1 + " 번째 문제");
+	            $(item).find('.questionFormBody').data("no", (index + 1));
+	            $(item).find('.deleteQuestionBtn').data("no", (index + 1));
+        	})
+        	questionUpdateFnc(qno, boxCount);
+        }  
+		// 삭제 이후, 마지막 카드 박스에는 "카드추가" 버튼이 활성화 되어야 함
+        $(".addQuestionBtn:last").css("display", "block");
+		location.reload();
 		
-		
-		
-        // 박스 갯수 조회
-        // 동적으로 추가된 다음에 카드박스에 대한 count을 시작하고, 그 갯수만큼 반복문을 돌려 각각의 box에다가 index에 해당하는 value값을 부여한다. => class = "questionForm" 이 값을 기준.
-        var boxCount = $(".questionForm").length;
-        console.log("현재 남아있는 박스 총 갯수: " + boxCount);
-
-        //카드를 추가하거나 삭제할 때마다 카운팅을 해서 번호를 매긴다. 
-        	// => 여기서 ajax로 날리면 안 되나. for문 반복으로.
-        var $questionForms = $(".questionForm");
-        $.each($questionForms, function (index, item) {
-            $(item).find('.questionNumber').val(index + 1 + " 번째 문제");
-            $(item).find('.questionFormBody').data("no", (index + 1));
-        })
-        
-
 	})
+       
+	function questionUpdateFnc( qno, count ){
+		// 삭제된 대상 +1이 업데이트 대상 문제번호, count는 업데이트 대상 숫자
+			// 반복문으로 객체에 담아서 컨트롤러에 넘긴다. 
+		var updateAry = [];
+		for(var i = qno; i<count; i++){
+			var updateObj = {};
+			updateObj["setQno"] = i;
+			updateObj.setNo = quizcard_set_no;
+			var preQno = i < 10 ? '0'+i : ''+ i;
+			var afterQno = quizcard_set_no + preQno;
+			updateObj.setQuizcardNo = afterQno;
+			updateAry.push(updateObj);
+		}
+		console.log("업데이트 목록 생성된 객체 확인:");
+		console.log(updateAry);
+		$.ajax({
+			type: "PUT",
+			url: "ajaxUpdateQuestionNo.do",
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(updateAry),
+			async : false,
+			success: function(data){
+				console.log("통신성공");
+			},
+			error: function(data){
+				console.log("통신실패");
+			}
+		})
+		
+	}
+	
 	
 	// 힌트 클릭.
 	$(document).on("click", '.hintCreateBtn', function () {

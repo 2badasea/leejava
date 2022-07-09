@@ -28,11 +28,17 @@ public interface QuizcardService {
 	List<QuizcardVO> quizcardQuestionList(QuizcardVO qvo); 
 	// 퀴즈카드 blur이벤트에 의한 자동업데이트
 	int ajaxQuestionUpdate(QuizcardVO qvo);
+	// 퀴즈카드 마지막 수정일 업데이트
+	int quizcardUdateChange(QuizcardVO qvo);
 	// 신규 퀴즈카드 추가( 수정 페이지) 
 	int ajaxQuestionNew(QuizcardVO qvo);
 	// 퀴즈카드 삭제 이벤트(수정 페이지)	
 	int ajaxQuestionDel(QuizcardVO qvo);
 	// 퀴즈카드 삭제 후 넘버링 작업 (수정 페이지)
 	int ajaxUpdateQuestionNo(QuizcardVO qvo);
+	// 퀴즈카드 클릭 시 조회수 증가
+	int quizcardHitUpdate(QuizcardVO qvo);
+	// 퀴즈카드 학습 시작. 문제 호출
+	QuizcardVO ajaxStudyStart(QuizcardVO qvo);
 	
 }

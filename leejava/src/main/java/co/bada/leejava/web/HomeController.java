@@ -71,6 +71,7 @@ public class HomeController {
 		// 로그인 요청이 온 페이지의 URI를 받아서, login입력창의 input요소에 부여한다.
 		// 로그인이 성공하면 해당 uri정보가 담긴 태그의 value값을 받아서 location.href로 넘긴다.
 		String referer = request.getHeader("Referer");
+		System.out.println("referer값:" + referer);
 		model.addAttribute("url", referer);
 //		return "redirect:" + referer;
 		return "home/member/loginPage";

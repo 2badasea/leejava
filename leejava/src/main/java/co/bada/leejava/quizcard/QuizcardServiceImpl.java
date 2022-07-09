@@ -100,5 +100,23 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.ajaxUpdateQuestionNo(qvo);
 	}
 
+	@Override
+	public int quizcardUdateChange(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardUdateChange(qvo);
+	}
+
+	@Override
+	public int quizcardHitUpdate(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardHitUpdate(qvo);
+	}
+
+	@Override
+	public QuizcardVO ajaxStudyStart(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxStudyStart(qvo);
+	}
+
 
 }

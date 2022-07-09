@@ -7,6 +7,47 @@
 <meta charset="UTF-8">
 <title>퀴즈카드 대기 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<style>
+	/* 퀴즈카드 학습모드 선택 모달창 */
+	        .studyType_modal_container {
+            position: fixed;
+            top: 0px;
+            bottom: 0px;
+            width: 100%;
+            height: 100vh;
+            display: none;
+            z-index: 1;
+        }
+
+        .studyType_modal_content {
+            position: absolute;
+            top: 30%;
+            left: 35%;
+            width: 400px;
+            height: auto;
+            z-index: 3;
+            background-color: teal;
+            color: white;
+            border: 0.5px solid #05AA6D;
+            border-radius: 30px;
+            padding: 20px;
+        }
+
+        .studyType_modal_layer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background-color: 	#bebebe;
+            opacity : 0.5;
+            transition: 2s;
+        }
+
+        fieldset {
+            border: 1px solid white;
+        }
+        /* 퀴즈카드 학습모드 선택 모달창============================ */
+</style>
 </head>
 <body>
 	<h2>${session_user }</h2>
@@ -77,8 +118,63 @@
 			</c:if>
 		</div>
 	</div>
+	
+	<!-- 퀴즈카드 학습모드 모달창 -->
+      <div class="studyType_modal_container">
+        <div class="studyType_modal_content">
+            <div class="studyType_modal_header">
+                <span id="modalHeader" data-setno="${qvo.quizcard_set_no }">선택한 세트번호: ${qvo.quizcard_set_no } </span>
+                <button id="studyTypeCloseBtn" style="float: right; width: 20px; height: 20px;">X</button>
+            </div>
+            <br>
+            <div class="studyType_modal_body">
+                <fieldset>
+                    <legend>학습방식</legend>
+                    <input type="radio" id="order" name="studyType" value="order" checked>
+                    <label for="order">순차형</label>
+                    <input type="radio" id="random" name="studyType" value="random">
+                    <label for="random">랜덤형</label>
+                </fieldset>
+            </div>
+            <br>
+            <div class="studyType_modal_footer">
+                <button id="studyStartBtn">학습시작!</button>
+            </div>
+        </div>
+        <div class="studyType_modal_layer"></div>
+    </div>
 </body>
 <script>
+	// 학습모드 선택 모달창 활성화
+	$("#quizcardStartBtn").on("click", function(){
+		$(".studyType_modal_container").css("display", "block");
+	})
+	
+	// 학습시작 버튼
+	$("#studyStartBtn").on('click', function(){
+		// 세트번호와 학습방식의 값을 날린다. 
+		var setNo = $("#modalHeader").data("setno");
+		var studyType = $("input[name='studyType']:checked").val();
+		console.log("선택한 세트번호: " + setNo);
+		console.log("선택한 학습모드: " + studyType);
+		// 두 값을 컨트롤러를 통해 페이지에 넘긴다. 그리고 해당 페이지에서 restController를 통해 작업!
+		location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
+	})
+	
+	
+	// 학습모드 선택 창닫기
+	$("#studyTypeCloseBtn").on("click", function(){
+		$(".studyType_modal_container").css("display", "none");
+	})
+	
+	// 모달창 외부영역 클릭 => 모달창 비활성화
+	$(document).on("click", ".studyType_modal_layer", function(e){
+		if( !$(e.target).hasClass("studyType_modal_content") ) {
+			$(".studyType_modal_container").css("display", "none");
+		}
+	})
+	
+	// 퀴즈카드 수정페이지 이동 ( by 생성자)
 	$("#updateQuizcardBtn").on("click", function(){
 		// quizcard_set_no값과 해당 세트번호의 문제갯수를 날린다.
 			// 문제갯수의 경우 컨트롤러에서 또 쿼리문을 조회하긴 번거롭기 때문. 

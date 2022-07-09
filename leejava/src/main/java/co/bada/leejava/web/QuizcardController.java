@@ -136,7 +136,7 @@ public class QuizcardController {
 		}
 	}
 	
-	// archiveBox => quizcardInfo 페이지 이동. 이동한 페이지에서 json으로 데이터를 받나? 그럴 필요 없음.
+	// archiveBox, 메인페이지 리스트 클릭 => quizcardInfo 페이지 이동. 
 	@RequestMapping(value = "/quizcardBefore.do" )
 	public String quizcardInfo(HttpServletRequest request, QuizcardVO qvo, Model model,
 			 @RequestParam("set_no") int quizcard_set_no,
@@ -146,6 +146,14 @@ public class QuizcardController {
 		// 총 3개의 쿼리문 결과 보내기(조인문, 댓글갯수, 문제갯수)
 		
 		qvo.setQuizcard_set_no(quizcard_set_no);
+		// 조회수 1 업데이트 ( 메인 페이지 리스트에서만 클릭 시 조회수가 올라가도록) 
+		String referer = request.getHeader("Referer");
+		logger.info("무슨 경로로 왔는지 체크" + referer);
+		String urjPath = "http://localhost:8000/leejava/quizcard.do";
+		if(referer.equals(urjPath)) {
+			logger.info("=====================================조회수 업뎃 성공");
+			quizcardDao.quizcardHitUpdate(qvo);
+		}
 		// Quizcard_set_no별 문제갯수, 댓글갯수를 먼저 보내고,
 		int quizcardQuestionCount = quizcardDao.quizcardQuestionCount(qvo);
 		logger.info("============ 퀴즈카드 문제 갯수: " + quizcardQuestionCount );
@@ -174,6 +182,7 @@ public class QuizcardController {
 		List<QuizcardVO> questionList = new ArrayList<QuizcardVO>();
 		
 		qvo.setQuizcard_set_no(quizcard_set_no);
+
 //		quizcardQuestionList 쿼리문의 리턴타입이 달라야 한다. 리턴타입이 파라미터가 있는 list타입이어야 한다. 
 		questionList = quizcardDao.quizcardQuestionList(qvo);
 		logger.info("============== questionList에 담긴 qvo객체들의 값: " + questionList);
@@ -192,6 +201,22 @@ public class QuizcardController {
 		return "home/quizcard/quizcardQuestionForm";
 	}
 	
+	// 퀴즈카드 학습 시작 페이지 이동
+	@RequestMapping("/studyStart.do")
+	public String studyStart(Model model, QuizcardVO qvo, 
+			@RequestParam(value = "setNo") int setNo,
+			@RequestParam(value = "studyType") String studyType) {
+		logger.info("============ 세트번호: " + setNo);
+		logger.info("============ 문제풀이 방식: " + studyType);
+		
+		// 해당 세트번호의 총 문제 갯수도 넘겨야 한다. => 문제리스트 배열의 크기를 생성하기 위함.
+		qvo.setQuizcard_set_no(setNo);
+		;
+		model.addAttribute("questionCount", quizcardDao.quizcardQuestionCount(qvo));
+		model.addAttribute("setNo", setNo);
+		model.addAttribute("studyType", studyType);
+		return "home/quizcard/studyStart";
+	}
 	
 	
 }

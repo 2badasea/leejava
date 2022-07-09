@@ -56,7 +56,8 @@
          width: 400px;
          height: auto;
          z-index: 3;
-         background-color: white;
+         background-color: teal;
+         color: white;
          border: 0.5px solid #05AA6D;
          border-radius: 30px;
          padding: 20px;
@@ -67,7 +68,8 @@
          width: 100%;
 		 height: 100%; 
          z-index: 2;
-         background-color: transparent;
+         background-color: #bebebe;
+         opacity : 0.5;
          transition: 2s;
      }
 
@@ -149,7 +151,7 @@
         <div class="quizcard_modal_content">
             <div class="quizcard_modal_header">
                 <span>New Quizcard </span>
-                <button id="quizcardCloseBtn" style="float: right;">X</button>
+                <button id="quizcardCloseBtn" style="float: right; width: 20px; height: 20px;">X</button>
             </div>
             <br>
             <div class="quizcard_modal_body">
@@ -256,11 +258,12 @@
 				$(".archiveBody").append(tb);
 			},
 			error: function(data){
-				console.log("ajax에러 발생");
+				var str = "<div style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
+				str += "<span>아직 생성한 퀴즈카드가 없습니다. </span></div>";
+		        $(".archiveBody").append(str);
+				console.log("아직 생성한 퀴즈카드가 없습니다.");
 			}
 		})
-		
-		
 	}
 	
 	// 아카이브 메뉴 클릭 => div박스 보여주기
@@ -268,11 +271,12 @@
 		$(".archiveBox").toggle();
 	})
 	
-	// 아카이브 메뉴 활성화된 상태에서, 외부로 포커스가 이동되면 사라지도록.
-	$(".archiveBox a").on("focus", function(){
-		$(this).css("color", "yellow");
+	// 아카이브 외부 영역
+	$(document).on("click", function(e){
+		if( $(e.target).closest(".archiveBox").length == 0  && !$(e.target).hasClass("archiveBtn")){
+			$(".archiveBox").css("display","none");
+		}
 	})
-	
 	
 	// 퀴즈 set 생성 이벤트 
 		// 여기서 기본적인 form값들 유효성 체크하고, frm.submit() 이벤트 호출하기
@@ -298,11 +302,6 @@
 		console.log( $(this) );
 		$(this).focus();
 	})
-
-    // 퀴즈카드 바깥 영역 클릭해도 창이 닫히도록
-    $(".quizcard_modal_layer").on("click", function () {
-        $("#quizcardCloseBtn").click();
-    })
     
     // 퀴즈카드 생성 취소 버튼
     $("#quizcardCloseBtn").on("click", function () {
@@ -311,9 +310,6 @@
         $(".quizcard_modal_container").css("display", "none");
     })
 	
-	$("input[type='radio']").on("change", function () {
-	    console.log($(this).val());
-	})
 	
 	// 카테고리 selectbox 직접입력 이벤트
 	$("#quizcard_category_first").on("change", function () {
@@ -347,8 +343,16 @@
 		if( $(".quizcard_modal_container").is(":visible") ){
 			$("#quizcard_set_name").focus();
 		}
-		
 	}
+	
+	// 새로만들기 외부 영역 클릭해도 모달창 비활성화 되도록
+	$(document).on("click", ".quizcard_modal_layer", function(e){
+		if( !$(e.target).hasClass("quizcard_modal_content")){
+			alert("퀴즈카드 생성을 취소합니다");
+	        $("#frm")[0].reset();
+			$(".quizcard_modal_container").css("display", "none");
+		}
+	})
 </script>
 
 </html>

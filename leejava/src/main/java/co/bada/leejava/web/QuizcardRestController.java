@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +58,9 @@ public class QuizcardRestController {
 		int n = quizcardDao.ajaxQuestionUpdate(qvo);
 		if(n == 1) {
 			result = "success";
+			// 업데이트가 성공하면 마지막 수정일도 변경되도록
+			qvo.setQuizcard_set_no(quizcard_set_no);
+			quizcardDao.quizcardUdateChange(qvo);
 		} else {
 			result = "fail";
 		}
@@ -141,6 +146,27 @@ public class QuizcardRestController {
 		}
 		logger.info("완료");
 	}
+	
+	// 퀴즈카드 문제 호출 
+	@GetMapping(value = "ajaxStudyStart.do" , produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<QuizcardVO> ajaxStudyStart( QuizcardVO qvo,
+				@RequestParam int quizcard_set_no, 
+				@RequestParam int quizcard_question_no){
+		
+		logger.info("ajax로 넘어온 set번호: " + quizcard_set_no);
+		logger.info("ajax로 넘어온 문제번호: " + quizcard_question_no);
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		qvo.setQuizcard_question_no(quizcard_question_no);
+		qvo = quizcardDao.ajaxStudyStart(qvo);
+		logger.info("qvo값 조회========================================: " + qvo);
+		if( qvo != null) {
+			return new ResponseEntity<QuizcardVO>(qvo, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<QuizcardVO>(qvo, HttpStatus.NOT_FOUND);
+		}
+	}
+	
 	
 	
 }

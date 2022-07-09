@@ -343,6 +343,9 @@
         }  
 		// 삭제 이후, 마지막 카드 박스에는 "카드추가" 버튼이 활성화 되어야 함
         $(".addQuestionBtn:last").css("display", "block");
+		if( boxCount === 1){
+			$(".addQuestionBtn:first").css("display", "block");
+		}
 		location.reload();
 		
 	})
@@ -392,11 +395,10 @@
 <script>
 	$(function(){
 		// 컨트롤러에서 넘긴 questionCount(문제수) 값이 2 이상이면 첫 번째 카드의 삭제와 추가버튼 비활시키도록
-		var questionCount = $(".questionCount").data("questioncount");
+		var questionCount = $(".questionForm").length;
 		console.log("문제수: " + questionCount);
 		if(questionCount >1){
 			$(".deleteQuestionBtn:first").css("display", "none");
-			$(".addQuestionBtn:first").css("display", "none");
 			$(".addQuestionBtn").not(".addQuestionBtn:last").css("display", "none");
 		}
 		

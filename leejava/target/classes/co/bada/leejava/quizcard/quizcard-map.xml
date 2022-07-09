@@ -121,6 +121,13 @@
 			and QUIZCARD_QUESTION_NO = ${quizcard_question_no}
 	</update>
 	
+	<!-- 퀴즈카드 업데이트 마지막 수정일 업데이트 -->
+	<update id="quizcardUdateChange" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+			SET QUIZCARD_SET_UDATE = SYSDATE 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
 	<insert id="ajaxQuestionNew" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		INSERT INTO QUIZCARD_QUESTION VALUES(
 			#{quizcard_no},
@@ -149,5 +156,18 @@
 				quizcard_set_no = #{quizcard_set_no}  and
 				quizcard_question_no = #{quizcard_question_no} + 1
 	</update>
+	
+	<!-- 메인페이지 퀴즈카드 클릭 시 조회수 증가 -->
+	<update id="quizcardHitUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD SET QUIZCARD_SET_HIT = QUIZCARD_SET_HIT + 1 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
+	<!-- 퀴즈카드 문제 출력 -->
+	<select id="ajaxStudyStart" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		AND QUIZCARD_QUESTION_NO = #{quizcard_question_no}
+	</select>
 	
 </mapper>

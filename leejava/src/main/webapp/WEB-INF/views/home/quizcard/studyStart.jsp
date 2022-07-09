@@ -54,6 +54,7 @@
 			contentType: "application/json; charset=utf-8",
 			success: function(data){
 				console.log("ajax 통신 성공");
+				// json타입으로 데이터가 넘어옴.
 				console.log(data);
 			}, 
 			error: function(data){

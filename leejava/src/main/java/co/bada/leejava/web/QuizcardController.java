@@ -159,7 +159,6 @@ public class QuizcardController {
 		logger.info("============ 퀴즈카드 문제 갯수: " + quizcardQuestionCount );
 		int quizcardReplyCount = quizcardDao.quizcardReplyCount(qvo);
 		logger.info("=============퀴즈카드 댓글 갯수: " + quizcardReplyCount);
-		
 		model.addAttribute("quizcardQuestionCount", quizcardQuestionCount);
 		model.addAttribute("quizcardReplyCount", quizcardReplyCount);
 		

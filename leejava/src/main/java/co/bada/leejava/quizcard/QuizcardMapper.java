@@ -40,4 +40,12 @@ public interface QuizcardMapper {
 	int quizcardHitUpdate(QuizcardVO qvo);
 	// 퀴즈카드 학습 시작. 문제 호출
 	QuizcardVO ajaxStudyStart(QuizcardVO qvo);
+	// 퀴즈카드 세트 정보 수정
+	int ajaxQuizInfoUpdate(QuizcardVO qvo);
+	// 퀴즈카드 틀린 문제 조회
+	QuizcardVO ajaxWrongQuestion(QuizcardVO qvo);
+	// 스크랩 중복 조회
+	boolean ajaxScrapSelect(QuizcardVO qvo);
+	// 스크랩 추가
+	int ajaxScrapAdd(QuizcardVO qvo);
 }

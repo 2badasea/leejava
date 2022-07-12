@@ -43,6 +43,9 @@ body{
 	background-color: #FFF0F0;
 	height: 70px;
 }
+.footerWrapper{
+	margin-top: 200px;
+}
 </style>
 </head>
 <body>

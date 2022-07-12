@@ -32,6 +32,7 @@ public class QuizcardVO {
 	private String quizcard_question_name; // 문제(명) 
 	private String quizcard_question_hint; // 힌트
 	private String quizcard_question_answer;  // 답
+	private int quizcard_index; 	// 인덱스(기본키)
 	
 	// Quizcard_Reply  문제세트별 댓글이나 후기 남기는 테이블
 		// quizcard_set_no 가 외래키로서 필드값에 담는다.

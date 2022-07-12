@@ -165,6 +165,79 @@ public class QuizcardRestController {
 		}
 	}
 	
+	// 퀴즈카드 단어추가/수정 페이지, info 수정
+	@PostMapping(value = "ajaxQuizInfoUpdate.do", produces = "application/text;charset=utf8")
+	public ResponseEntity<String> ajaxQuizInfoUpdate(QuizcardVO qvo, 
+				@RequestParam(value = "quizcard_set_no" ) int quizcard_set_no,
+				@RequestParam(value = "quizcard_set_name", required = false) String quizcard_set_name,
+				@RequestParam(value = "quizcard_set_intro", required = false) String quizcard_set_intro,
+				@RequestParam(value = "quizcard_type", required = false) String quizcard_type,
+				@RequestParam(value = "quizcard_set_status", required = false) String quizcard_set_status){
+		
+		
+		logger.info("===========세트번호: " + quizcard_set_no);
+		logger.info("===========세트이름: " + quizcard_set_name);
+		logger.info("============세트설명: " + quizcard_set_intro);
+		logger.info("============세트 status: " + quizcard_set_status);
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		qvo.setQuizcard_set_name(quizcard_set_name);
+		qvo.setQuizcard_set_intro(quizcard_set_intro);
+		qvo.setQuizcard_set_status(quizcard_set_status);
+		
+		int n = quizcardDao.ajaxQuizInfoUpdate(qvo);
+		if(n ==1) {
+			logger.info("수정 성공");
+			return new ResponseEntity<String>("Success!", HttpStatus.OK);
+		} else {
+			logger.info("수정 실패");
+			return new ResponseEntity<String>("Fail~", HttpStatus.NOT_MODIFIED);
+		}
+	}
 	
+	// 퀴즈카드 틀린 문제 호출(by quizcard_no ) 
+	@GetMapping(value = "ajaxWrongQuestion.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<QuizcardVO> ajaxWrongQuestion(QuizcardVO qvo, 
+				@RequestParam int quizcard_set_no,
+				@RequestParam String quizcard_no ){
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		qvo.setQuizcard_no(quizcard_no);
+		
+		qvo = quizcardDao.ajaxWrongQuestion(qvo);
+		if(qvo != null) {
+			return new ResponseEntity<QuizcardVO>(qvo, HttpStatus.OK);
+		} else {
+			qvo = null;
+			logger.info("============================ 호출 실패");
+			return new ResponseEntity<QuizcardVO>(qvo, HttpStatus.NOT_FOUND);
+		}
+	}
 	
+	// 퀴즈카드 스크랩 추가
+	@PostMapping(value = "ajaxScrapAdd.do")
+	public ResponseEntity<String> ajaxScrapAdd(QuizcardVO qvo, 
+				@RequestParam int quizcard_index,
+				@RequestParam String m_email){
+		
+		logger.info("인덱스값: " + quizcard_index + ", 이메일: "+ m_email);
+		qvo.setM_email(m_email);
+		qvo.setQuizcard_index(quizcard_index);
+		boolean b = quizcardDao.ajaxScrapSelect(qvo);
+		String message = null;
+		if(b) {  // count(*) 결과가 0 => 중복없음.
+			int n = quizcardDao.ajaxScrapAdd(qvo);
+			if(n == 1) {
+				message = "스크랩 추가 성공!!";
+				return new ResponseEntity<String>(message, HttpStatus.OK);
+			} else {
+				message = "FAIL";
+				return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+			}
+		} else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
+		}
+		
+	}
 }

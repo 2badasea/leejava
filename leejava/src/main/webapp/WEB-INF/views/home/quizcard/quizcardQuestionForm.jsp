@@ -7,14 +7,15 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
-	.wrapper {
-	    border: 1px solid tomato;
-	}
+ 	.wrapper { 
+ 	} 
 	
 	.questionInfoWrapper {
-	    width: 45%;
+	    width: 50%;
+	    padding: 15px;
 	    border: 0.5px solid;
-	    margin-left: 28%;
+	    margin-left: 25%;
+	    margin-top: 3%;
 	}
 	
 	.questionInfoHeader {
@@ -39,7 +40,6 @@
     }
 
     .hint {
-        /* 그리고  question과 answr의 공간을 안 잡도록 한다.*/
         z-index: 3;
         display: none;
         position: absolute;
@@ -97,6 +97,7 @@
         border-style: none;
     }
 
+	
     .addQuestionBtnFirst,
     .addQuestionBtn:hover {
         cursor: pointer;
@@ -108,6 +109,31 @@
     .questionForm {
         border: 1px solid teal;
         padding-left: 10%;
+        margin-top: 50px;
+    }
+    .updateEndBtn{
+    	display: block;
+    	margin: auto;
+   	   	width: 150px;
+        height: 50px;
+        border-radius: 20px;
+        border-style: none;
+    }
+    .updateEndBtn:hover{
+    	cursor: pointer;
+        background-color: teal;
+        color: white;
+        transition: 1s;
+    }
+    .questionNumber{
+    	margin-top: 5px;
+    	border-style: none;
+    	height: 20px;
+    	font-size: 20px;
+    }
+    #setName,
+    .quizcard_set_intro{
+    	border-style: none;
     }
 </style>
 </head>
@@ -116,10 +142,10 @@
         <div class="questionInfoWrapper">
             <div class="questionInfoHeader">
                 <!--세트번호, 카테고리, 생성일, 마지막 업데이트일-->
-                <h6 class="quizcardSetNo" data-quizcardsetno="${qvo.quizcard_set_no }">세트번호: ${qvo.quizcard_set_no }</h6>
-                <h6>카테고리: ${qvo.quizcard_category }</h6>
-                <h6>세트유형: ${qvo.quizcard_type }</h6>
-                <h6 class="questionCount" data-questioncount="${questionCount}">문제 수: ${questionCount} </h6>
+                <h5 class="quizcardSetNo" data-quizcardsetno="${qvo.quizcard_set_no }">세트번호: ${qvo.quizcard_set_no }</h5>
+                <h5>카테고리: ${qvo.quizcard_category }</h5>
+                <h5>세트유형: ${qvo.quizcard_type }</h5>
+                <h5 class="questionCount" data-questioncount="${questionCount}">문제 수: ${questionCount} </h5>
                 <div class="questionInfoDate" style="float: right;">
                     <h6>생성일: ${qvo.quizcard_set_cdate } </h6><br>
                     <h6>수정일: ${qvo.quizcard_set_udate }</h6>
@@ -127,17 +153,17 @@
             </div>
             <div class="questionInfoBody">
                 <!--세트이름, 세트설명-->
-                <label for="quizcard_set_name">세트 이름</label>
-                <input type="text" id="quizcard_set_name" name="quizcard_set_name" value="${qvo.quizcard_set_name}">
+                <label for="setName"><b>세트 이름</b></label>&nbsp;&nbsp;
+                <input type="text" id="setName" name="setName" value="${qvo.quizcard_set_name}">
                 <br>
-                <label for="quizcard_set_info">세트 설명</label>
-                <br>
-                <textarea name="quizcard_set_info" cols="30" rows="5"
+                <label for="quizcard_set_info"><b>세트 설명</b></label>
+                <br><br>
+                <textarea name="quizcard_set_info" cols="50" rows="7"
                     class="quizcard_set_intro">${qvo.quizcard_set_intro}</textarea>
             </div>
             <div class="questionInfoFooter">
                 <!--접근권한 조정, 일단 현 상태에서 만들기(update)-->
-                <span class="statusValue" data-statusvalue="${qvo.quizcard_set_status }">공개여부</span>
+                <span class="statusValue" data-statusvalue="${qvo.quizcard_set_status }"><b>공개여부</b></span>
                 <label for="statusPublic">전체공개</label>
                 <input type="radio" id="statusPublic" name="quizcard_set_status" value="PUBLIC">
                 <label for="statusPrivate">나만보기</label>
@@ -162,7 +188,7 @@
 	                <br>
 	                <div class="questionFormBody" data-no="${list.quizcard_question_no }">
 	                    <div class="question">
-	                        <input type="text" value="문제" readonly>
+	                    	<span>문제</span>
 	                        <br>
 	                        <textarea name="quizcard_question_name" class="quizcard_question_name" cols="30"
 	                            rows="10">${list.quizcard_question_name }</textarea>
@@ -176,7 +202,8 @@
 	                        <button class="hintCloseBtn">닫기</button>
 	                    </div>
 	                    <div class="answer">
-	                        <input type="text" value="답안" readonly><br>
+	                        <span>답안</span>
+	                        <br>
 	                        <textarea name="quizcard_question_answer" class="quizcard_question_answer" cols="30"
 	                            rows="10">${list.quizcard_question_answer }</textarea>
 	                    </div>
@@ -188,6 +215,8 @@
 	                </div>
 	            </div>
             </c:forEach>
+            <br><br>
+	        <button class="updateEndBtn">수정완료</button>
         </div>
 
 	</div>  <!--  메인 Wrapper -->
@@ -241,14 +270,14 @@
         str += "<div class='questionForm'><div class='questionFormHeader'>";
         str += " <input class='questionNumber' id='questionNumber'>";
         str +=
-            "</div><br><div class='questionFormBody'data-no=''><div class='question'><input type='test' value='문제' readonly>";
+            "</div><br><div class='questionFormBody'data-no=''><div class='question'><span>문제</span>";
         str += "<br><textarea name='quizcard_question_name' class='quizcard_question_name' cols='30' rows='10'>문제를 입력하세요</textarea></div>";
         str += "<button class='hintCreateBtn'>힌트추가</button>";
-        str += "<div class='hint'><input type='text' value='힌트' readonly><br>";
+        str += "<div class='hint'><span>힌트</span><br>";
         str +=
             "<textarea name='quizcard_question_hint' class='quizcard_question_hint' cols='30' rows='10'>힌트를 입력하세요</textarea>";
         str += "<button class='hintCloseBtn'>닫기</button></div>";
-        str += "<div class='answer'><input type='text' value='답안' readonly><br>";
+        str += "<div class='answer'><span>답안</span><br>";
         str +=
             "<textarea name='quizcard_question_answer' class='quizcard_question_answer' cols='30' rows='10'>답안을 입력하세요</textarea></div></div><br>";
         str +=
@@ -391,6 +420,51 @@
 	$(document).on("click", '.hintCloseBtn', function () {
 	    $(this).closest(".hint").css("display", "none");
 	})
+	
+	// 수정완료버튼 (이전 페이지로 돌아가기)
+	$(".updateEndBtn").on("click", function(){
+		console.log("수정완료 클릭");
+		history.back();
+	})
+	
+	// 세트이름 수정 =>
+	$(document).on("blur", "#setName, .quizcard_set_intro, input[name='quizcard_set_status']" ,function(){
+		var setName = $("#setName").val();
+		var	setIntro = $(".quizcard_set_intro").val();
+		console.log("세트 이름: " + setName);
+		console.log("세트 소개: " + setIntro);
+		console.log("const 전역변수 세트 번호: " + quizcard_set_no);
+		var setStatus = $("input[name='quizcard_set_status']:checked").val();
+		console.log("상태값: " + setStatus);
+		// 세트이름은  null이 되면 안 되도록 체크하기
+		if(setName == null){
+			alert("세트이름을 입력해주세요");
+			$("#setName").focus();
+		} else {
+			console.log("업데이트 ajax 호출");
+			$.ajax({
+				url: "ajaxQuizInfoUpdate.do",
+				method: "post",
+				data:{
+					quizcard_set_no : quizcard_set_no,
+					quizcard_set_name :  setName,
+					quizcard_set_intro : setIntro,
+					quizcard_set_status: setStatus
+				},
+				success: function(responseText){
+					console.log("ajax호출 성공");
+					console.log(responseText);
+				},
+				error: function(responseText){
+					console.log("ajax호출 실패");
+					console.log(responseText);
+				}
+				
+			})
+		}
+		
+	})
+	
 </script>
 <script>
 	$(function(){

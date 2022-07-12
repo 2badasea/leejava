@@ -48,7 +48,8 @@
 			#{quizcard_set_no},
 			'문제를 입력하세요',
 			'힌트를 입력하세요',
-			'답안을 입력하세요'
+			'답안을 입력하세요',
+			QUIZCARD_INDEX_SEQ.NEXTVAL
 		)
 	</insert>
 	
@@ -135,7 +136,8 @@
 			#{quizcard_set_no},
 			#{quizcard_question_name},
 			#{quizcard_question_hint},
-			#{quizcard_question_answer}
+			#{quizcard_question_answer},
+			QUIZCARD_INDEX_SEQ.NEXTVAL
 		)
 	</insert>
 	
@@ -163,11 +165,46 @@
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
 	</update>
 	
-	<!-- 퀴즈카드 문제 출력 -->
+	<!-- 퀴즈카드 문제 출력 by quizcard_question_no -->
 	<select id="ajaxStudyStart" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT * FROM QUIZCARD_QUESTION 
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
 		AND QUIZCARD_QUESTION_NO = #{quizcard_question_no}
 	</select>
+	
+	<!-- 퀴즈카드 문제 출력 by quizcard_no  -->
+	<select id="ajaxWrongQuestion" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		AND QUIZCARD_NO = #{quizcard_no}
+	</select>
+	
+	<update id="ajaxQuizInfoUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+			SET
+				QUIZCARD_SET_NAME = NVL(#{quizcard_set_name}, QUIZCARD_SET_NAME),
+				QUIZCARD_SET_INTRO = NVL(#{quizcard_set_intro}, QUIZCARD_SET_INTRO),
+				QUIZCARD_SET_STATUS = NVL(#{quizcard_set_status}, QUIZCARD_SET_STATUS),
+				QUIZCARD_TYPE = NVL(#{quizcard_type}, QUIZCARD_TYPE)
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
+	<select id="ajaxScrapSelect" resultType="boolean" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT CASE COUNT(*)  
+			WHEN 0  THEN 'TRUE'  ELSE 'FALSE' END 
+		FROM 
+			QUIZCARD_SCRAP 
+		WHERE 
+			M_EMAIL = #{m_email}  AND QUIZCARD_INDEX = #{quizcard_index}
+	</select>
+	
+	<insert id="ajaxScrapAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_SCRAP
+		VALUES(
+			#{m_email},
+			#{quizcard_index}
+			) 
+	</insert>
 	
 </mapper>

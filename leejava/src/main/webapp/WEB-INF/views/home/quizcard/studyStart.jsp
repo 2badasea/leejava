@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style type="text/css">
 .questionForm {
 	margin-top : 8%;
@@ -130,12 +131,24 @@ textarea {
 .wrongQuestionHint{
 	display: none;
 }
-.resultCloseBtn,
 .addScrapBtn{
 	float: right;
 	width: 100px;
 	margin-top: 15px;
 	margin-right: 20px;
+}
+.resultCloseBtn{
+	width: 100px;
+	margin-top: 15px;
+	margin-right: 20px;
+}
+.quizcard_modal_footer{
+	float: right;
+}
+#heart{
+	font-size: 25px;
+	color: tomato;
+	margin-left: 5px;
 }
 </style>
 </head>
@@ -186,9 +199,8 @@ textarea {
             <div class="quizcard_modal_header">
             	<span class="studyInfo"></span>
             	<br>
-                <span class="studyScore"></span>
-                <br>
-                <span class="studyTime"></span>
+                <span class="studyScore"></span>&nbsp;&nbsp;&nbsp;
+                &lt;<span class="studyTime"></span>&gt;
             </div>
             <div class="quizcard_modal_body">
             	<b>틀린 문제 리스트 (클릭하시면 해당 문제를 조회할 수 있습니다.)</b>
@@ -223,7 +235,15 @@ textarea {
             </div>
             <br>
             <div class="quizcard_modal_footer">
-                <button class="resultCloseBtn">학습종료</button>
+            	<div class="likeDiv">
+            		<a id="likeClickA" style="color: black;">
+	            	<label for="heart">좋아요</label>
+	            	<i id="heart" class="fa-solid fa-heart"></i>
+	            	</a>
+            	</div>
+            	<div>
+                	<button class="resultCloseBtn">학습종료</button>
+                </div>
             </div>
 
         </div>
@@ -231,6 +251,37 @@ textarea {
     </div>
 </body>
 <script>
+	// 좋아요 클릭
+	$("#likeClickA").on("click", function(){
+		var userEmail = $("#session_user").val();
+		var setNo = $("#questionInfo").data("setno");
+		console.log("이메일: " + userEmail + ", 세트번호: " + setNo);
+		$.ajax({
+			url: "ajaxLikeitAdd.do",
+			method: "POST",
+			data: {
+				m_email : userEmail,
+				quizcard_set_no : setNo
+			},
+			success: function(message){
+				console.log("호출 성공");
+				console.log(message);
+				if(message === "YES"){
+					alert("좋아요가 추가되었습니다.");
+				} else if (message === "EXIST"){
+					alert("이미 좋아요를 누른 세트입니다.");
+				} else {
+					alert("요청하신 처리가 실패하였습니다. 관리자에게 문의해주세요");
+				}
+			}, 
+			error: function(message){
+				console.log("호출 실패");
+				console.log(message);
+			}
+		})
+		
+	})
+
 	// 이벤트에 관한 이벤트들 정리 후 밑으로 보내기 
 	$(".openHint").on("click", function(){
 		console.log("힌트클릭");
@@ -517,6 +568,8 @@ textarea {
 				return false;
 			}
 		})
+		
+		// 퀴즈카드 좋아요 버튼 클릭. 
 		
 	})
 	

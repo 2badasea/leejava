@@ -193,9 +193,9 @@
 	                <span>공개여부</span>
 	                <br>
 	                <label for="public">공개</label>
-                   	 	<input type="radio" name="quizcard_set_status" value="public" id="public">
+                   	 	<input type="radio" name="quizcard_set_status" value="PUBLIC" id="public">
                     <label for="private">비공개</label>
-                    	<input type="radio" name="quizcard_set_status" value="private" id="private">
+                    	<input type="radio" name="quizcard_set_status" value="PRIVATE" id="private">
             	</form> <!--------------- form------------- -->
             </div>
             <br>

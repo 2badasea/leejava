@@ -92,8 +92,8 @@
                         		<td>${list.quizcard_type }</td>
                         		<td>${list.quizcard_set_name }</td>
                         		<td>
-                        			<h6>${list.quizcard_set_cdate }</h6>
-                        			<h6>${list.quizcard_set_udate }</h6>
+                        			<span>${list.quizcard_set_cdate }</span>
+                        			<span>/ ${list.quizcard_set_udate }</span>
                         		</td>
                         		<td>${list.m_nickname }</td>
                         		<td>${list.quizcard_set_hit }</td>

@@ -48,4 +48,18 @@ public interface QuizcardMapper {
 	boolean ajaxScrapSelect(QuizcardVO qvo);
 	// 스크랩 추가
 	int ajaxScrapAdd(QuizcardVO qvo);
+	// 퀴즈카드 Before페이지, 문제 리스트 출력
+	List<QuizcardVO> questionNameList(QuizcardVO qvo);
+	// 퀴즈카드 즐겨찾기 추가
+	int ajaxBookmarkAdd(QuizcardVO qvo);
+	// 퀴즈카드 즐겨찾기 취소
+	int ajaxBookmarkDelete(QuizcardVO qvo);
+	// 퀴즈카드 즐겨찾기 추가여부 조회
+	boolean ajaxBookmarkStatus(QuizcardVO qvo);
+	// 퀴즈카드 좋아요 조회
+	boolean ajaxLikeitCheck(QuizcardVO qvo);
+	// 퀴즈카드 좋아요 추가
+	int ajaxLikeitAdd(QuizcardVO qvo);
+	// 퀴즈카드 좋아요 수 +1 업데이트
+	int quizcardLikeitUpdate(QuizcardVO qvo);
 }

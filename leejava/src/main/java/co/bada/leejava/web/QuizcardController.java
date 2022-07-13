@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
@@ -99,22 +101,16 @@ public class QuizcardController {
 	
 	// 퀴즈카드 문제 생성 폼 이동
 	@RequestMapping(value = "/quizcardQuestionForm.do")
-	public String quizcardQuestionForm(Model model, HttpServletRequest request, QuizcardVO qvo) {
-		
+	public String quizcardQuestionForm(Model model, HttpServletRequest request, QuizcardVO qvo,
+				RedirectAttributes re, HttpSession session) {
+		// 생성자 이메일
+		String m_email = (String) session.getAttribute("session_user");
 		// 막 생성된 
 		int quizcard_set_no = quizcardDao.quizcardSetNoGet() -1;
 		logger.info("======== 조회할 퀴즈카드 세트 번호: " + quizcard_set_no);
-		qvo.setQuizcard_set_no(quizcard_set_no);
-		qvo = quizcardDao.quizcardSelect(qvo);
-		logger.info("========== qvo객체 : " + qvo);
-		if( qvo != null) {
-			logger.info("=================== 조인문 데이터 조회 성공");
-			model.addAttribute("qvo",qvo);
-		} else {
-			logger.info("======= 조인문 실패: redircet로  quizletHome으로 이동");
-			return "redirect:quizcard.do";
-		}
-		return "home/quizcard/quizcardQuestionForm";
+		re.addAttribute("m_email", m_email);
+		re.addAttribute("set_no", quizcard_set_no);
+		return "redirect:quizcardBefore.do";
 	}
 	
 	// 내가 만든 세트 조회하기

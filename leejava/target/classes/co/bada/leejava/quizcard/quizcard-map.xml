@@ -207,4 +207,66 @@
 			) 
 	</insert>
 	
+	<!-- 퀴즈카드 Before영역 문제이름만 List로 가져오기 -->
+	<select id="questionNameList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT QUIZCARD_QUESTION_NAME 
+		FROM 
+			QUIZCARD_QUESTION
+		WHERE 
+			QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY 
+			QUIZCARD_QUESTION_NO
+	</select>
+	
+	<!-- 퀴즈카드 북마크 추가 quizcard before 페이지 영역 -->
+	<insert id="ajaxBookmarkAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT 
+			INTO QUIZCARD_BOOKMARK 
+		VALUES(
+			#{m_email},
+			#{quizcard_set_no}
+		)
+	</insert>
+	
+	<!-- 퀴즈카드 북마크 취소 quizcard before.jsp  -->
+	<delete id="ajaxBookmarkDelete" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE FROM QUIZCARD_BOOKMARK
+		WHERE M_EMAIL = #{m_email} 
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</delete>
+	
+	<!-- 퀴즈카드 즐겨찾기 추가여부 조회 -->
+	<select id="ajaxBookmarkStatus" resultType="boolean">
+		SELECT CASE COUNT(*) 
+			 WHEN 0 THEN 'TRUE' ELSE 'FALSE' END
+		FROM QUIZCARD_BOOKMARK
+		WHERE M_EMAIL = #{m_email}
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 좋아요 중복여부 눌렀는지 체크 -->
+	<select id="ajaxLikeitCheck" resultType="boolean">
+		SELECT CASE COUNT(*)
+			WHEN 0 THEN 'TRUE' ELSE 'FALSE' END
+		FROM QUIZCARD_LIKEIT
+		WHERE M_EMAIL = #{m_email}
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 퀴즈카드 좋아요 클릭 => 테이블 추가. -->
+	<insert id="ajaxLikeitAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_LIKEIT 
+		VALUES (
+			 #{m_email},
+			 #{quizcard_set_no}
+			 )	
+	</insert>
+	
+	<!-- 퀴즈카드 좋아요 테이블에 행 추가 후 quizcard_set_likeit 값도 증가시키기 -->
+	<update id="quizcardLikeitUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+		SET
+			QUIZCARD_SET_LIKEIT = QUIZCARD_SET_LIKEIT + 1
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} 
+	</update>
 </mapper>

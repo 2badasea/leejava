@@ -1,5 +1,6 @@
 package co.bada.leejava.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
@@ -166,7 +169,7 @@ public class QuizcardRestController {
 	}
 	
 	// 퀴즈카드 단어추가/수정 페이지, info 수정
-	@PostMapping(value = "ajaxQuizInfoUpdate.do", produces = "application/text;charset=utf8")
+	@PostMapping(value = "ajaxQuizInfoUpdate.do")
 	public ResponseEntity<String> ajaxQuizInfoUpdate(QuizcardVO qvo, 
 				@RequestParam(value = "quizcard_set_no" ) int quizcard_set_no,
 				@RequestParam(value = "quizcard_set_name", required = false) String quizcard_set_name,
@@ -215,12 +218,10 @@ public class QuizcardRestController {
 	}
 	
 	// 퀴즈카드 스크랩 추가
-	@PostMapping(value = "ajaxScrapAdd.do")
+	@PostMapping(value = "ajaxScrapAdd.do" , produces = "application/text;charset=utf8")
 	public ResponseEntity<String> ajaxScrapAdd(QuizcardVO qvo, 
 				@RequestParam int quizcard_index,
 				@RequestParam String m_email){
-		
-		logger.info("인덱스값: " + quizcard_index + ", 이메일: "+ m_email);
 		qvo.setM_email(m_email);
 		qvo.setQuizcard_index(quizcard_index);
 		boolean b = quizcardDao.ajaxScrapSelect(qvo);
@@ -228,7 +229,7 @@ public class QuizcardRestController {
 		if(b) {  // count(*) 결과가 0 => 중복없음.
 			int n = quizcardDao.ajaxScrapAdd(qvo);
 			if(n == 1) {
-				message = "스크랩 추가 성공!!";
+				message = "스크랩 추가 성공!!!!";
 				return new ResponseEntity<String>(message, HttpStatus.OK);
 			} else {
 				message = "FAIL";
@@ -238,6 +239,101 @@ public class QuizcardRestController {
 			message = "NO";
 			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
 		}
+	}
+	
+	// 퀴즈카드 Before페이지 모든 문제 select 
+	@GetMapping(value = "questionNameList.do", produces = MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<List<QuizcardVO>> questionNameList(QuizcardVO qvo, 
+				@RequestParam int quizcard_set_no){
+		
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		List<QuizcardVO> list = new ArrayList<>();
+		list = quizcardDao.questionNameList(qvo);
+		if( list != null) {
+			return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.OK);
+		} else {
+			list = null;
+			return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	// 즐겨찾기 추가 (in Quizcard Before 페이지 )
+	@PostMapping(value = "ajaxBookmarkAdd.do", produces = "application/text;charset=utf8")
+	public String ajaxBookmarkAdd(QuizcardVO qvo, @RequestParam String m_email,
+				@RequestParam int quizcard_set_no) {
+		
+		qvo.setM_email(m_email);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		String responseText = null;
+		int n = quizcardDao.ajaxBookmarkAdd(qvo);
+		if(n == 1) {
+			responseText = "OK";
+		} else {
+			responseText  = "NO";
+		}
+		return responseText; 
+	}
+	
+	// 즐겨찾기 취소 (in Quizcard Before 페이지) 
+	@PostMapping(value = "ajaxBookmarkDelete.do", produces = "application/text;charset=utf8")
+	public String ajaxBookmarkDelete(QuizcardVO qvo, @RequestParam String m_email,
+				@RequestParam int quizcard_set_no) {
+		
+		String responseText = null;
+		qvo.setM_email(m_email);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		int n = quizcardDao.ajaxBookmarkDelete(qvo);
+		if(n == 1) {
+			responseText = "OK";
+		} else {
+			responseText = "NO";
+		}
+		return responseText;
+	}
+	
+	// 즐겨찾기 상태 조회 
+	@GetMapping(value = "ajaxBookmarkStatus.do", produces = "application/text;charset=utf8")
+	public String ajaxBookmarkStatus(QuizcardVO qvo, @RequestParam String m_email,
+				@RequestParam int quizcard_set_no) {
+		qvo.setM_email(m_email);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		String responseText =null;
+		
+		boolean b = quizcardDao.ajaxBookmarkStatus(qvo);
+		if(b) {
+			responseText = "NO";
+		}else {
+			responseText = "YES";
+		}
+		return responseText;
+	}
+	
+	// 좋아요 추가 ( 퀴즈카드 학습 결과 페이지) 
+	@PostMapping(value = "ajaxLikeitAdd.do", produces = "application/text;charset=utf8")
+	public ResponseEntity<String> ajaxLikeitAdd(QuizcardVO qvo, @RequestParam String m_email,
+				@RequestParam int quizcard_set_no){
+		System.out.println("이메일: " + m_email + ", 세트번호: " + quizcard_set_no);
+		
+		qvo.setM_email(m_email);
+		qvo.setQuizcard_set_no(quizcard_set_no);
+		String message = null;
+		boolean b = quizcardDao.ajaxLikeitCheck(qvo);
+		if(b) {
+			int n = quizcardDao.ajaxLikeitAdd(qvo);
+			if(n == 1) {
+				message = "YES";
+				int m = quizcardDao.quizcardLikeitUpdate(qvo);
+				if(m == 1) System.out.println("퀴즈카드_set_likeit도 성공");
+				return new ResponseEntity<String>(message, HttpStatus.OK);
+			} else {
+				message = "NO";
+				return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+			}
+		} else {
+			message = "EXIST";
+			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
+		}
 		
 	}
+	
 }

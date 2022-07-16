@@ -47,6 +47,16 @@ tr > td {
 .noticeListTitleTd {
 	text-overflow: ellipsis;
 }
+.pagination1{
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: center;	
+}
+.pagination > li{
+	list-style-type: none;
+	float: left;
+	padding: 5px;
+}
 </style>
 <script>
 	
@@ -174,7 +184,7 @@ tr > td {
 					</table>
 					<br><br>
 					<!-- 페이징 박스가 들어갈 곳 -->
-					<div id="paginationBox" class="pagination1" style="float: right;">
+					<div id="paginationBox" class="pagination1">
 						<ul class="pagination">
 							<c:if test="${pagination.prev}">
 								<li class="page-item"><a class="page-link" href="#"
@@ -271,6 +281,7 @@ tr > td {
 		url = url + "&n_category=" + $('#n_category').val();
 		url = url + "&n_content=" + $('#n_content').val();
 		url = url + "&n_writer=" + $('#n_writer').val();
+		console.log("전달되는 값들 목록: " + $('#n_title').val() + ", " + $('#n_category').val() +  ", " + $('#n_content').val() + ", " + $('#n_writer').val());
 		location.href = url;
 	});
 	
@@ -382,8 +393,6 @@ tr > td {
 			$("#allCheckBtn").prop("checked", false);
 		}
 	})
-	
-	
 
 	$("#noticeFormBtn").on("click", function(){
 		var check = confirm("공지사항을 등록하시겠어요?");

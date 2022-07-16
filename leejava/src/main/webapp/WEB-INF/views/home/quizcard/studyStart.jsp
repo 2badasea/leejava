@@ -253,7 +253,12 @@ textarea {
 <script>
 	// 좋아요 클릭
 	$("#likeClickA").on("click", function(){
+		// 좋아요 테이블의 구성컬럼이 m_email과 quizcard_set_no 이고, 두 개 다 외래키로 구성되어 잇다. 
 		var userEmail = $("#session_user").val();
+		if( userEmail === ""){  // null과 ""공백은 다르다. 전자는 데이터타입이 object로 분류되고, 후자는 string으로 분류된다.
+			alert("회원들만 이용할 수 있는 서비스 입니다.");
+			return false;
+		}
 		var setNo = $("#questionInfo").data("setno");
 		console.log("이메일: " + userEmail + ", 세트번호: " + setNo);
 		$.ajax({
@@ -503,10 +508,13 @@ textarea {
 		
 		// 스크랩 기능
 		$(".addScrapBtn").on("click", function(){
-			console.log("스크랩 클릭");
+			var user = $("#session_user").val();
+			if(user === ""){
+				alert("회원들만 이용할 수 있는 메뉴입니다.");
+				return false;
+			}
 			var quizcard_index = $(".wrongQuestionName").data("quizcardindex");
 			console.log("인덱스값 조회: " + quizcard_index );
-			var user = $("#session_user").val();
 			console.log("사용자 아이디 조회: " + user);
 			
 			// ajax호출 업데이트. => 중복이면 중복이라고 alert창.

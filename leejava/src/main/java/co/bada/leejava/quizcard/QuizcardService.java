@@ -17,7 +17,7 @@ public interface QuizcardService {
 	// 퀴즈카드 메인페이지 게시판 출력할 데이터
 	List<QuizcardVO> quizcardList();
 	// 퀴즈카드 아카이브 박스 내가 생성한 세트 리스트
-	QuizcardVO ajaxMyQuizcard(QuizcardVO qvo);
+	List<QuizcardVO> ajaxMyQuizcard(QuizcardVO qvo);
 	// 퀴즈카드 set별 문제 총 갯수 
 	int quizcardQuestionCount(QuizcardVO qvo); 
 	// 퀴즈카드 set별 댓글 갯수

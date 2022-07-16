@@ -212,10 +212,14 @@ fieldset {
     </div>
 </body>
 <script>
-	// 퀴즈카드 생성자 정보 호출 이벤트 => 다 정의하고 아래 script영역으로 옮기기
+	// 퀴즈카드 생성자 정보 호출 이벤트 => 다 정의하고 아래 script영역으로 옮기기 =====================================
 	$(".setCreaterClickA").on("click", function(e){
 		console.log("유저 닉네임 클릭");
-		console.log( $(e.target).text());
+		console.log( $(e.target).text()); 
+		// modal창을 호출시키는 게 낫긴 하다. 
+		// 방식은 모달창을 호출하는 형태로 하는 게 그나마 낫긴 한데, 무슨 정보를 보여줄지? 
+		// 이전에는 설득의 여지가 있었는데, 아예 완전 평행선에 존재. => 닉네임, 프로필 사진, 생성한 세트 목록, 자기 소개글.
+			
 	})
 </script>
 <script>
@@ -309,7 +313,6 @@ fieldset {
 				console.log(responseText);
 			}
 		})
-		
 	})
 </script>
 <script>
@@ -364,6 +367,10 @@ fieldset {
 	// 즐겨찾기 추가/취소.
 	$("#starClick").on("click",function(e){
 		var userEmail = $("#session_user").val();
+		if(userEmail === ""){
+			alert("회원들만 이용할 수 있는 서비스입니다.");
+			return false;
+		}
 		var thisSetNo = $("#quizcardBeforeSetNo").val();
 		// 클릭했을 때 별표의 class값에 따라 취소인지 아닌지 여부 판단 empty면 insert 아니면 delete // ajax두 번 호출? 
 		var b = $(e.target).hasClass("empty");
@@ -414,8 +421,6 @@ fieldset {
 				}
 			})
 		}	
-		
-		
 	})
 	
 </script>

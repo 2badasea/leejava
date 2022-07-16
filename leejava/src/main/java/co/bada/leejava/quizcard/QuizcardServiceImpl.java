@@ -47,7 +47,7 @@ public class QuizcardServiceImpl implements QuizcardService {
 	}
 
 	@Override
-	public QuizcardVO ajaxMyQuizcard(QuizcardVO qvo) {
+	public List<QuizcardVO> ajaxMyQuizcard(QuizcardVO qvo) {
 		// TODO Auto-generated method stub
 		return map.ajaxMyQuizcard(qvo);
 	}

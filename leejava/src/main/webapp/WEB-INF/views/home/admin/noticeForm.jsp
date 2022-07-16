@@ -55,8 +55,8 @@ select {
 					<th style="width: 200px;">카테고리</th>
 					<td style="width: 200px"><select name="n_category" id="n_category">
 							<option selected="selected" value="all">전체</option>
-							<option value="긴급">긴급</option>
-							<option value="이벤트">이벤트</option>
+							<option value="emergency">긴급</option>
+							<option value="event">이벤트</option>
 					</select></td>
 				</tr>
 				<tr>

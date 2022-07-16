@@ -101,9 +101,13 @@
      .archiveTable{
      	border: 1px solid gray;
      	width: 100%;
+     	border-collapse: collapse;
      }
      .archiveTr:hover{
      	cursor: pointer;
+     }
+     .archiveTr{
+     	border-bottom: 1px solid black;
      }
 </style>
 </head>
@@ -207,7 +211,7 @@
     </div>
 </body>
 <script>
-	// 회원이메일 
+	// 회원이메일 (세션갑승로 읽어들임 => 로그인을 하지 않은 상태라면 null이다.)
 	const m_email = $("#session_user").val();
 
 	// archiveBox 리스트 클릭 quizardInfo.jsp로 이동
@@ -237,25 +241,39 @@
 			success: function(data){
 				console.log("ajax수신 성공");
 				console.log(data);
+				console.log("데이터 길이: " + data.length);
 				// 데이터가 성공적으로 json타입으로 온다면 반복분으로 출력
 					// 반환타입이 배열객체형식이다. 서버단에서 list에 담아서 보냈으니깐. 
 					// 반복문으로 인덱스로 돌아가며 출력시킨다.
 					//console.log(data[0].quizcard_set_no);
-				$.each(data, function(index, item){
-					var $quizcard_set_no = item.quizcard_set_no;
-					var $quizcard_set_name = item.quizcard_set_name;
-					var $quizcard_set_cdate = item.quizcard_set_cdate;
-					var $quizcard_set_udate = item.quizcard_set_udate;
-					var $quizcard_category = item.quizcard_category;
-					var tr = $("<tr class='archiveTr' />").append(
-						$("<td />").text($quizcard_set_no),
-						$("<td />").text($quizcard_set_name),
-						$("<td />").html($quizcard_set_cdate + "<br>" + $quizcard_set_udate),
-						$("<td />").text($quizcard_category)
-					);
-					tb.append(tr);
-				})
-				$(".archiveBody").append(tb);
+				if(data.length !== 0){
+					$.each(data, function(index, item){
+						var $quizcard_set_no = item.quizcard_set_no;
+						var $quizcard_set_name = item.quizcard_set_name;
+						var $quizcard_set_cdate = item.quizcard_set_cdate;
+						var $quizcard_set_udate = item.quizcard_set_udate;
+						var $quizcard_category = item.quizcard_category;
+						var tr = $("<tr class='archiveTr' />").append(
+							$("<td />").text($quizcard_set_no),
+							$("<td />").text($quizcard_set_name),
+							$("<td />").html($quizcard_set_cdate + "<br>" + $quizcard_set_udate),
+							$("<td />").text($quizcard_category)
+						);
+						tb.append(tr);
+					})
+					$(".archiveBody").append(tb);
+				} else if(data.length === 0){
+					// return되는 값이 null이라면 생성한 퀴즈카드가 없다고 출력시키기. 리턴되는 값이 json형태다. length속성으로 함. 
+					var noResultCount = $(".noResult").length;
+					if(noResultCount >=1){
+						alert("생성한 퀴즈카드가 없습니다.");
+						return false;
+					}
+					var str = "<div class='noResult' style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
+					str += "<span>아직 생성한 퀴즈카드가 없습니다. </span></div>";
+			        $(".archiveBody").append(str);
+					console.log("아직 생성한 퀴즈카드가 없습니다.");
+				}
 			},
 			error: function(data){
 				var str = "<div style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
@@ -268,7 +286,16 @@
 	
 	// 아카이브 메뉴 클릭 => div박스 보여주기
 	$(".archiveBtn").on("click", function(){
-		$(".archiveBox").toggle();
+		if(m_email === ""){
+			var check = confirm("회원들만 이용하실 수 있는 서비스입니다. 회원가입 하시겠어요?");
+			if(check){
+				location.href="memberJoinTerms.do";
+			} else {
+				return false;
+			}
+		} else{
+			$(".archiveBox").toggle();
+		}
 	})
 	
 	// 아카이브 외부 영역

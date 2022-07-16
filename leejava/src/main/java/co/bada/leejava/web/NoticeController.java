@@ -61,14 +61,13 @@ public class NoticeController {
 		
 		// 전달하는 페이지에서 search클래스의 필드값에 다가 데이터를 담아 다시 페이징처리된 url을 호출하기 위해서 보냄. 
 		model.addAttribute("search", svo);
+		// 아래 svo객체에 settter메서드로 담는 것들은 @RequestParam으로 지정한 파라미터값들이다. 
 		svo.setN_category(n_category);
 		svo.setN_title(n_title);
 		svo.setN_content(n_content);
 		svo.setN_writer(n_writer);
-		logger.info("================== svo는에 뭘담았는지???  형태로 오는지? " + svo);
 		// 페이징Info를 위해서 구한다. 총 게시글 갯수.
 		int listCnt = noticeDao.getNoticeListCnt(svo);
-		logger.info("==========================  listCnt의 값: " +listCnt);
 
 		// Search클래스의 객체 svo 자체가 부모클래스 Paging을 extends하고 있기 때문에 svo로 접근가능.
 		// 현재 페이지, 현재 속한 페이지 범위, 총 게시글 갯수를 인자로 가진다.
@@ -78,12 +77,7 @@ public class NoticeController {
 			// 그리고 list에 담아서 페이지에 뿌려준다. 그래서 제네릭타입이 NoticeVO인 것이다. 
 		List<NoticeVO> list = noticeDao.noticeSearchSelect(svo);
 		logger.info(" ======================= 페이지에 전달해줄 list ??? : " + list);
-		// 굳이 안 해줘도 될 듯. '마으미' 프로젝트에선 date의 길이가 10을 넘었던 것 같다. 
-//		for (int i = 0; i < list.size(); i++) {
-//			String date = list.get(i).getN_wdate();
-//			date = 	date.substring(0, 10);
-//			list.get(i).setN_wdate(date);
-//		}
+		
 		// 앞서 위의 "Search"라는 변수로 보낸 svo객체는 검색용도로 필터링하기 위한 필드값들을 의미하고
 			// 아래 "Pagination"이란 변수명으로 보내는 건, pageInfo()처리된 정보를 보내는 것이다
 			// svo객체가 Paging클래스를 상속하고 있기 때문에 가능하다.

@@ -116,16 +116,15 @@ public class QuizcardController {
 	// 내가 만든 세트 조회하기
 	@ResponseBody
 	@GetMapping(value= "/ajaxMyQuizcard.do", produces = MediaType.APPLICATION_JSON_VALUE )
-	public List<QuizcardVO> ajaxMyQuizcard(HttpServletRequest request, QuizcardVO qvo,
+	public List<QuizcardVO> ajaxMyQuizcard( QuizcardVO qvo,
 				@RequestParam(value = "m_email") String m_email) {
 		logger.info("================ ajax로 넘어온 m_email값: " + m_email);
 		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
 		
 		qvo.setM_email(m_email);
-		qvo = quizcardDao.ajaxMyQuizcard(qvo);
+		list = quizcardDao.ajaxMyQuizcard(qvo);
 		logger.info("=============== qvo 결과 조회: " + qvo);
-		if( qvo !=null) {
-			list.add(qvo);
+		if( list !=null) {
 			return list;
 		} else {
 			return null;

@@ -41,7 +41,7 @@ public class Paging {
 		// SQL쿼리에 쓸 start, end 라고 명시되어 있음. 
 			// sql쿼리 결과에서 rownum as rn인, 즉 몇 개의 row데이터(행)을 보여줄 것인지. 
 			// 이때 start, end는 주어진 page내에서 글번호의 시작과 끝값을 의미한다. (rownum)  
-			// range * rangesize() 와ㅇ 유사하다. 
+			// range * rangesize() 와 유사하다. 
 		this.end = page * listSize;
 		// getEnd() => this.end()값. this.end() 값을 기준으로 this.start를 구한다. 
 			// startPage()와 유사하다 =>  page * 
@@ -56,10 +56,9 @@ public class Paging {
 				// 실제 페이지갯수를 endPage값에 대입시킨다. 
 			this.endPage = this.pageCnt;
 			// 그리고 실제페이지갯수(pageCnt)가  endPage가 됨으로, next버튼은 없다(false) 
-			this.next = false;
+			this.next = false; // 
 		}
 	}
-	
 	//페이징 
 	public boolean isPrev() {
 		return prev;

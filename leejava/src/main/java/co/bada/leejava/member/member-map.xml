@@ -153,5 +153,25 @@ resultType="co.bada.leejava.member.MemberVO">
 	WHERE M_EMAIL = #{m_email}
 </update>
 
+<select id="emailSelectByNickname" resultType="co.bada.leejava.member.MemberVO">
+	SELECT M_EMAIL
+	FROM MEMBER
+	WHERE M_NICKNAME = #{m_nickname}
+</select>
+
+<select id="memberInfoSelect" resultType="co.bada.leejava.member.MemberVO">
+	SELECT M.M_NICKNAME, M.M_JOINDATE, M.M_INTRO,  M.M_EMAIL,
+				P.FILENAME, P.UPLOADPATH, P.UUID 
+	FROM MEMBER M FULL OUTER JOIN PROFILE_IMAGE P
+		ON M.M_EMAIL = P.M_EMAIL
+	WHERE  M.M_EMAIL = #{m_email}
+</select>
+
+<select id="quizcardInfoSelect" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * 
+	FROM QUIZCARD 
+	WHERE M_EMAIl = #{m_email}
+</select>
+
 
 </mapper>

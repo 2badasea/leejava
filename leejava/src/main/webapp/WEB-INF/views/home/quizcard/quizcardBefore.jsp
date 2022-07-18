@@ -14,7 +14,9 @@
 	margin-top: 8%;
 	margin-left: 3%;
 }
-
+textarea{
+	resize: none;
+}
 .quizcardInfo {
     width: 35%;
 }
@@ -137,6 +139,52 @@ fieldset {
 	margin-left : 10px;
 	color: teal;
 }
+/* 사용자 정보 조회하는 모달창 */
+.userInfo_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.userInfo_modal_content {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 700px;
+    min-height: 500px;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 30px;
+}
+
+.userInfo_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: grey;
+    opacity: 0.3;
+    transition: 2s;
+}
+.userInfoModalCloseBtn{
+    float: right;
+}
+.userInfo_modal_body{
+    display: flex;
+}
+.profileImg{
+	border: 0.3px solid black;
+	width: 200px;
+	height: 200px;
+}
+
 </style>
 </head>
 <body>
@@ -210,16 +258,104 @@ fieldset {
         </div>
         <div class="studyType_modal_layer"></div>
     </div>
+    <!-- ----------------------------------------------- -->
+    <!-- 사용자 정보 조회하는 모달창  -->
+    <div class="userInfo_modal_container">
+        <div class="userInfo_modal_content">
+            <div class="userInfo_modal_header">
+                <span id="userInfoTitle">(사용자 닉네임)님의 정보</span>
+            </div>
+            <div class="userInfo_modal_body">
+                <div class="userInfo_left">
+                    <div class="userInfo_image">
+                    	<img class="profileImg"  alt="사진을 준비중입니다." src="resources/image/loopy.jpeg">
+                    </div>
+                    <div class="userInfo_subInfo">
+                        <label for="m_nickname">닉네임</label>
+                        <input type="text" id="m_nickname" value="">
+                        <br>
+                        <label for="m_joinDate">가입날짜</label>
+                        <input type="text" id="m_joindate" value="">
+                    </div>
+                </div>
+                <div class="userInfo_right">
+                    <label for="userIntroForm" id="userIntroLabel"></label>
+                    <div class="userInfo_IntroForm">
+                        <textarea id="userIntroForm" cols="30" rows="10" readonly="readonly"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
+                <div class="userInfo_write">
+                    작성한 게시글 목록이 들어가는 곳
+                </div>
+            <br>
+            <hr>
+            <div class="userInfo_modal_footer">
+                <button class="userInfoModalCloseBtn">X</button>
+            </div>
+        </div>
+        <div class="userInfo_modal_layer"></div>
+    </div>
+    <!-- ----------------------------------------------- -->
 </body>
 <script>
-	// 퀴즈카드 생성자 정보 호출 이벤트 => 다 정의하고 아래 script영역으로 옮기기 =====================================
+	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
 	$(".setCreaterClickA").on("click", function(e){
 		console.log("유저 닉네임 클릭");
+		let email;
 		console.log( $(e.target).text()); 
-		// modal창을 호출시키는 게 낫긴 하다. 
-		// 방식은 모달창을 호출하는 형태로 하는 게 그나마 낫긴 한데, 무슨 정보를 보여줄지? 
-		// 이전에는 설득의 여지가 있었는데, 아예 완전 평행선에 존재. => 닉네임, 프로필 사진, 생성한 세트 목록, 자기 소개글.
+		$(".userInfo_modal_container").css("display", "block");
+		var sendNickname = $(e.target).text();
+		// 첫 번째 ajax로 프로필 정보(닉네임, 이메일, 가입날짜, intro + 프로필이미지 정보)		
+		$.ajax({
+			url: "ajaxUserInfo.do?m_nickname=" +  sendNickname,
+			type: "GET",
+			dataType: "json",
+			async: false,
+			contentType: "application/json; charset=utf-8",
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+				email = data.m_email;
+				$("#m_nickname").val(data.m_nickname);
+				$("#m_joindate").val(data.m_joindate);
+				$("#userIntroForm").val(data.m_intro);
+				$("#userInfoTitle").html(data.m_nickname + " 님의 사용자 정보");
+				$("#userIntroLabel").text(data.m_nickname + " 님의 Intro");
+								
+			},
+			error: function(responseText){
+				console.log("호출 실패");
+				console.log(responseText);
+			}
+		})
+		// 두 번째 ajax => 작성한 퀴즈카드 정보 넣기
+		$.ajax({
+			url: "ajaxMyQuizcard.do",
+			type: "GET",
+			async: false,
+			dataType: "json",
+			data: {
+				m_email: email
+			},
+			contentType: "application/json; charset=utf-8",
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+			},
+			error: function(responseText){
+				console.log("호출 실패");
+				console.log(responseText);
+			}
 			
+		})
+	})
+	
+	// 모달창 닫기버튼(X) 
+	$(".userInfoModalCloseBtn").on('click', function(){
+		console.log("사용자 정보 창 닫기");
+		$(".userInfo_modal_container").css('display', 'none');
 	})
 </script>
 <script>
@@ -261,7 +397,6 @@ fieldset {
 			$(".questionNo").text(count + 1);
 			$(".questionName").text( questionNameList[count] );
 		}
-		
 		
 		// 이전문제버튼, 다음문제 버튼  prevQuestion  nextQuestion
 		$(".prevQuestion").on("click", function(){
@@ -361,7 +496,6 @@ fieldset {
 		} else {
 			return false;
 		}
-		
 	})
 	
 	// 즐겨찾기 추가/취소.
@@ -422,6 +556,6 @@ fieldset {
 			})
 		}	
 	})
-	
 </script>
+
 </html>

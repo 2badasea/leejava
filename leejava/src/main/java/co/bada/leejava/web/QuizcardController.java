@@ -113,24 +113,6 @@ public class QuizcardController {
 		return "redirect:quizcardBefore.do";
 	}
 	
-	// 내가 만든 세트 조회하기
-	@ResponseBody
-	@GetMapping(value= "/ajaxMyQuizcard.do", produces = MediaType.APPLICATION_JSON_VALUE )
-	public List<QuizcardVO> ajaxMyQuizcard( QuizcardVO qvo,
-				@RequestParam(value = "m_email") String m_email) {
-		logger.info("================ ajax로 넘어온 m_email값: " + m_email);
-		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
-		
-		qvo.setM_email(m_email);
-		list = quizcardDao.ajaxMyQuizcard(qvo);
-		logger.info("=============== qvo 결과 조회: " + qvo);
-		if( list !=null) {
-			return list;
-		} else {
-			return null;
-		}
-	}
-	
 	// archiveBox, 메인페이지 리스트 클릭 => quizcardInfo 페이지 이동. 
 	@RequestMapping(value = "/quizcardBefore.do" )
 	public String quizcardInfo(HttpServletRequest request, QuizcardVO qvo, Model model,

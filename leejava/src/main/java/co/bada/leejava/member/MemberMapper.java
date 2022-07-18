@@ -32,5 +32,11 @@ public interface MemberMapper {
 	int updateProfileImage(AttachImageVO ivo); 
 	// 개인정보동의, 프로모션 동의여부 업데이트 
 	int ajaxJoinTermsUpdate(MemberVO mvo); 
+	// 닉네임으로 이메일 조회
+	MemberVO emailSelectByNickname(MemberVO mvo);
+	// 사용자 정보 조회(이메일, 닉네임, 가입날짜, 소개글, 프로필이미지 정보) 
+	MemberVO memberInfoSelect(MemberVO mvo);
+	// 퀴즈카드 정보 가져오기
+	MemberVO quizcardInfoSelect(MemberVO mvo);
 	
 }

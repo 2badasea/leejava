@@ -12,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.annotation.RequestScope;
 
+import co.bada.leejava.Search;
+import co.bada.leejava.member.MemberService;
+import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
 
@@ -29,6 +30,8 @@ import co.bada.leejava.quizcard.QuizcardVO;
 public class QuizcardRestController {
 	@Autowired
 	QuizcardService quizcardDao;
+	@Autowired
+	MemberService memberDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(QuizcardController.class);
 	
@@ -148,6 +151,24 @@ public class QuizcardRestController {
 		logger.info("완료");
 	}
 	
+	// 내가 만든 세트 조회하기
+	@GetMapping(value= "/ajaxMyQuizcard.do", produces = MediaType.APPLICATION_JSON_VALUE )
+	public List<QuizcardVO> ajaxMyQuizcard( QuizcardVO qvo,
+				@RequestParam(value = "m_email") String m_email) {
+		logger.info("================ ajax로 넘어온 m_email값: " + m_email);
+		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
+		
+		qvo.setM_email(m_email);
+		list = quizcardDao.ajaxMyQuizcard(qvo);
+		logger.info("=============== qvo 결과 조회: " + qvo);
+		if( list !=null) {
+			return list;
+		} else {
+			return null;
+		}
+	}
+	
+	
 	// 퀴즈카드 문제 호출 
 	@GetMapping(value = "ajaxStudyStart.do" , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<QuizcardVO> ajaxStudyStart( QuizcardVO qvo,
@@ -168,6 +189,7 @@ public class QuizcardRestController {
 		}
 	}
 	
+	
 	// 퀴즈카드 단어추가/수정 페이지, info 수정
 	@PostMapping(value = "ajaxQuizInfoUpdate.do")
 	public ResponseEntity<String> ajaxQuizInfoUpdate(QuizcardVO qvo, 
@@ -176,7 +198,6 @@ public class QuizcardRestController {
 				@RequestParam(value = "quizcard_set_intro", required = false) String quizcard_set_intro,
 				@RequestParam(value = "quizcard_type", required = false) String quizcard_type,
 				@RequestParam(value = "quizcard_set_status", required = false) String quizcard_set_status){
-		
 		
 		logger.info("===========세트번호: " + quizcard_set_no);
 		logger.info("===========세트이름: " + quizcard_set_name);
@@ -333,7 +354,19 @@ public class QuizcardRestController {
 			message = "EXIST";
 			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
 		}
-		
+	}
+	
+	// 사용자 정보 조회 모달창에 출력할 내용.
+	@GetMapping(value = "ajaxUserInfo.do", produces = MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<MemberVO> ajaxUserInfo(MemberVO mvo, QuizcardVO qvo, 
+			@RequestParam("m_nickname") String m_nickname){
+		System.out.println("넘어온 닉네임: " + m_nickname);
+		mvo.setM_nickname(m_nickname);
+		String m_email = memberDao.emailSelectByNickname(mvo).getM_email();
+		System.out.println("닉네임으로 조회한 이메일: " + m_email);
+		// 해당 이메일읉 오해서 프로필 이미지와ㅈ 정보들을 모두 가져온다. 
+		mvo.setM_email(m_email);
+		return new ResponseEntity <MemberVO>(memberDao.memberInfoSelect(mvo), HttpStatus.OK);
 	}
 	
 }

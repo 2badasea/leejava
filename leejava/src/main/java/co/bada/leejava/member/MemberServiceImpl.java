@@ -132,4 +132,22 @@ public class MemberServiceImpl implements MemberService {
 		return map.ajaxJoinTermsUpdate(mvo);
 	}
 
+	@Override
+	public MemberVO emailSelectByNickname(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.emailSelectByNickname(mvo);
+	}
+
+	@Override
+	public MemberVO memberInfoSelect(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberInfoSelect(mvo);
+	}
+
+	@Override
+	public MemberVO quizcardInfoSelect(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.quizcardInfoSelect(mvo);
+	}
+
 }

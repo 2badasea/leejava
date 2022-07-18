@@ -1,6 +1,7 @@
 package co.bada.leejava;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,31 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Search extends Paging {
+	
+	// 회원 member
+	private String m_email;		// 가입 이메일
+	private String m_password;	// 비밀번호
+	private String m_joindate;	// 가입 날짜
+	private String m_joinpath;  // 가입 경로(유형)
+	private String m_phone;		// 연락처 
+	private String m_address;	// 주소
+	private String m_status; 	// 권한
+	private String m_birthdate; // 생년월일
+	private String m_salt; 		// 암호화를 위해 생성한 salt값
+	private String m_intro;
+	// 가입약관 동의여부
+	private String m_privacy; // 개인정보 유효기간
+	private String m_promotion; // 프로모션 수신 여부
+	/* 이미지 정보 	*/
+	private List<AttachImageVO> imageList; 
+	
+	/* 프로필 이미지 경로 정보 AttachImageVO */
+	// 경로
+	private String uploadPath;
+	// uuid
+	private String uuid;
+	// 파일 이름
+	private String fileName;
 	
 	// 공지사항 notice
 	private int n_no; // 글번호
@@ -35,7 +61,7 @@ public class Search extends Paging {
 	
 	// QuizcardVO 클래스에 선언되어 있는 filed 값들. ================================
 	private int quizcard_set_no; 				// 퀴즈카드 세트번호
-	private String m_email; 					// 사용자 이메일
+//	private String m_email; 					// 사용자 이메일
 	private String m_nickname;					// 사용자 닉네임
 	private String quizcard_set_name;			// 퀴즈카드 세트 이름
 	private String quizcard_set_cdate;			// 퀴즈카드 생성날짜

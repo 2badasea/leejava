@@ -84,7 +84,8 @@
      .archiveBox{
      	border: 1px solid black;
      	width: 500px;
-     	height: 300px;
+     	min-height: 300px;
+     	height: auto;
      	background-color: #E8F5FF;
      	color: black;
       	display: none; 
@@ -154,7 +155,7 @@
     <div class="quizcard_modal_container">
         <div class="quizcard_modal_content">
             <div class="quizcard_modal_header">
-                <span>New Quizcard </span>
+                <span>New Quizcard</span>
                 <button id="quizcardCloseBtn" style="float: right; width: 20px; height: 20px;">X</button>
             </div>
             <br>
@@ -381,5 +382,4 @@
 		}
 	})
 </script>
-
 </html>

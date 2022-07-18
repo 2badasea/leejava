@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.quizcard.QuizcardMapper">
-
+	
+	<!--  퀴즈카드 생성 -->
 	<insert id="quizcardSetCreate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		INSERT INTO QUIZCARD VALUES(
 			SET_NO_SEQ.NEXTVAL,   <!-- 시퀀스 적용. -->

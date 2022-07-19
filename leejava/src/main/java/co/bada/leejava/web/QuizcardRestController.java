@@ -369,4 +369,13 @@ public class QuizcardRestController {
 		return new ResponseEntity <MemberVO>(memberDao.memberInfoSelect(mvo), HttpStatus.OK);
 	}
 	
+	// 아카이브 박스 즐겨찾기 리스트 조회
+	@GetMapping(value = "ajaxBookmark.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<QuizcardVO>> ajaxBookmark(QuizcardVO qvo, @RequestParam String m_email){
+		logger.info("넘어온 이메일 조회: " + m_email );
+		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
+		qvo.setM_email(m_email);
+		list = quizcardDao.ajaxBookmark(qvo);
+		return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.OK);
+	}
 }

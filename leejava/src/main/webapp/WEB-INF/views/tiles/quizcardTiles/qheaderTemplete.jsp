@@ -222,13 +222,31 @@
 		// 화면이 전환되는데 굳이 ajax릃 호출할 필요강 없다. ajax는 페이지 내에서. 
 		location.href="quizcardBefore.do" + "?set_no=" + set_no + "&m_email=" +m_email ;
 	})
+	
+	// Bookmark(즐겨찾기) 세트 조회해서 archiveBox에 출력시키기
+	function ajaxBookmarkCard(m_email){
+		console.log("이메일 확인: " + m_email);
+		var tb = $("<table class='archiveBookmark' />");
+		$.ajax({
+			url: "ajaxBookmark.do?m_email=" + m_email,
+			type: "GET",
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+			},
+			error: function(responseText){
+				console.log("호출 실패");
+				console.log(responseText);
+			}
+		})
+	}
+	
 
 	// 내가 만든 세트 조회하기 
 	function ajaxMyQuizcard(m_email){
 		var m_email = m_email;
-		// ajax로 데이터를 요청해서 archiveBox의 body부분에 데이터를 노출시킨다. 
-			// 쿼리문 날려서 노출시킬 정보는 세트번호, 세트이름, 그리고 카테고리. 생성일
-			// 1. get요청으로 날려서. 2. json형태로 받아서 3. 해당 데이터를 반복문을 돌려 4. 화면에 노출시킨다.
 		
 		var tb = $("<table class='archiveTable' />");
 		$.ajax({
@@ -237,16 +255,12 @@
 			data: {
 				m_email : m_email
 			},
-// 			contentType: "application/json; charset=utf-8",
+			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			success: function(data){
 				console.log("ajax수신 성공");
 				console.log(data);
 				console.log("데이터 길이: " + data.length);
-				// 데이터가 성공적으로 json타입으로 온다면 반복분으로 출력
-					// 반환타입이 배열객체형식이다. 서버단에서 list에 담아서 보냈으니깐. 
-					// 반복문으로 인덱스로 돌아가며 출력시킨다.
-					//console.log(data[0].quizcard_set_no);
 				if(data.length !== 0){
 					$.each(data, function(index, item){
 						var $quizcard_set_no = item.quizcard_set_no;

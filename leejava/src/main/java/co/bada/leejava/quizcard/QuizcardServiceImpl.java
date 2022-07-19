@@ -184,6 +184,12 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.quizcardLikeitUpdate(qvo);
 	}
 
+	@Override
+	public List<QuizcardVO> ajaxBookmark(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxBookmark(qvo);
+	}
+
 
 
 }

@@ -62,5 +62,7 @@ public interface QuizcardService {
 	int ajaxLikeitAdd(QuizcardVO qvo);
 	// 퀴즈카드 좋아요 수 +1 업데이트
 	int quizcardLikeitUpdate(QuizcardVO qvo);
+	// 퀴즈카드 아카이브 박스 즐겨찾기 리스트 호출
+	List<QuizcardVO> ajaxBookmark(QuizcardVO qvo);
 	
 }

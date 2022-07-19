@@ -7,6 +7,11 @@
 <meta charset="UTF-8">
 <title>${member.m_nickname }님의개인정보</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <style>
 .myInfoDetail{
 	border: 1px solid gainsboro;
@@ -373,7 +378,7 @@ label {
 		<br> 
 		<div class="myInfoDetail_bottom">
 			<h3>My Info...</h3>
-			<textarea rows="7" cols="" id="m_intro" name="m_intro" readonly="readonly">${member.m_intro }</textarea>
+			<textarea rows="7" cols="" id="m_intro"  name="m_intro" readonly="readonly">${member.m_intro }</textarea>
 			<button id="myIntroUpdateBtn" style="float: right">자기소개 수정</button>
 			<button class="updateBtnAfter" id="myIntroUpdateEnd" value="${member.m_email }">수정 완료</button>
 			<button class="updateBtnAfter" id="myIntroCancel" value="${member.m_intro }" style="margin-right: 15px;" >수정 취소</button>
@@ -751,7 +756,7 @@ label {
 		console.log("obj의 값: " + obj);
 		console.log(obj)    // .replace(/\\/g,'/')  (/\//g, '\')
 		console.log("obj.uploadPath의 값: " + obj.uploadPath);
-		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
+// 		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
 		// 현재 프로필을 선택해서 display.do로 보내는 정보와 프로필을 등록하고 db에서 get.JSOO으로 읽어들인 정보를 비교했을 때 전해지는
 			// fileCallPath의 정보 형식이 차이가 나지 않음에도 이미지가 출력이 되지 않고 있음. 
 		let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);

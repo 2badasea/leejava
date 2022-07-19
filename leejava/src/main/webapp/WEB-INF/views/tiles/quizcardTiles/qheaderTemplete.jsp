@@ -213,7 +213,7 @@
 </body>
 <script>
 	// 회원이메일 (세션갑승로 읽어들임 => 로그인을 하지 않은 상태라면 null이다.)
-	const m_email = $("#session_user").val();
+	var m_email = $("#session_user").val();
 
 	// archiveBox 리스트 클릭 quizardInfo.jsp로 이동
 	$(document).on("click", ".archiveTr", function(){
@@ -225,8 +225,9 @@
 	
 	// Bookmark(즐겨찾기) 세트 조회해서 archiveBox에 출력시키기
 	function ajaxBookmarkCard(m_email){
+		$(".archiveBody").empty(); // 폼 안의 영역을 초기화 하고 리스트를 출력시킨다.
 		console.log("이메일 확인: " + m_email);
-		var tb = $("<table class='archiveBookmark' />");
+		var tb = $("<table class='archiveTable' />");
 		$.ajax({
 			url: "ajaxBookmark.do?m_email=" + m_email,
 			type: "GET",
@@ -234,18 +235,45 @@
 			contentType: "application/json; charset=utf-8",
 			success: function(data){
 				console.log("호출 성공");
-				console.log(data);
+				console.log(data); 
+				console.log("데이터 길이: " + data.length);
+				if(data.length !== 0){
+					$.each(data, function(index, item){
+						var $quizcard_set_no = item.quizcard_set_no;
+						var $quizcard_set_name = item.quizcard_set_name;
+						var $quizcard_category = item.quizcard_category;
+						var tr = $("<tr class='archiveTr' />").append(
+							$("<td />").text($quizcard_set_no),
+							$("<td />").text($quizcard_set_name),
+							$("<td />").text($quizcard_category)
+						);
+						tb.append(tr);
+					})
+					$(".archiveBody").append(tb);
+				} else if(data.length === 0){
+					// return되는 값이 null이라면 생성한 퀴즈카드가 없다고 출력시키기. 리턴되는 값이 json형태다. length속성으로 함. 
+					var noResultCount = $(".noResult").length;
+					if(noResultCount >=1){
+						alert("생성한 퀴즈카드가 없습니다.");
+						return false;
+					}
+					var str = "<div class='noResult' style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
+					str += "<span>아직 추가한 즐겨찾기가 없습니다.</span></div>";
+			        $(".archiveBody").append(str);
+					console.log("아직 추가한 즐겨찾기가 없습니다.");
+				}  
 			},
 			error: function(responseText){
 				console.log("호출 실패");
 				console.log(responseText);
 			}
-		})
-	}
+		}) // ajax 끝
+	} // function 이벤트 끝.
 	
 
 	// 내가 만든 세트 조회하기 
 	function ajaxMyQuizcard(m_email){
+		$(".archiveBody").empty();
 		var m_email = m_email;
 		
 		var tb = $("<table class='archiveTable' />");

@@ -244,6 +244,7 @@
 </body>
 <script>
 	//회원이메일 (현재 header영역에서 const식별자로 정의되어 있는 상태.)
+	var m_email = $("#session_user").val();
 	console.log("현재 로그인 계정 조회: " + m_email);
 	
 	// 퀴즈카드 before페에지로 이동	

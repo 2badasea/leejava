@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,14 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import co.bada.leejava.AttachImageVO;
+import co.bada.leejava.SHA256Util;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.notice.NoticeService;
@@ -599,9 +603,51 @@ public class MemberController {
 			message = "NO";
 			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
 		}
-		
-		
 	}
+	
+	// 주소 변경 업데이트
+	@ResponseBody
+	@PostMapping(value = "ajaxAddressUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxNicknameUpdate( @RequestBody MemberVO mvo){
+		
+		System.out.println("@requestbody값: " + mvo);
+		
+		String message = null;
+		int n = memberDao.memberUpdate(mvo);
+		if(n == 1) {
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
+		}
+	}
+	
+	// 비밀번호 수정 전 기존 비밀번호 확인  ( salt값이랑 digest값 감안해야 한다) 
+	@ResponseBody
+	@GetMapping(value = "ajaxPwdCheck.do")
+	public ResponseEntity<String> ajaxPwdCheck(MemberVO mvo, @RequestParam String m_email,
+					@RequestParam String m_password){
+		
+		logger.info("넘어온 이메일: " + m_email + ",  넘어온 비밀번호: " + m_password);
+		// 1. 우선 이메일을 통해서 현재 salt값을 조회
+			// 2. 해당 salt값이랑 입력한 비밀번호를 통해서 digest비밀번호를 생성하여, 맞는지 조회
+		mvo.setM_email(m_email);
+		String m_salt = memberDao.selectSalt(mvo);
+		m_password = SHA256Util.getEncrypt(m_password, m_salt);
+		mvo.setM_password(m_password);
+		boolean b = memberDao.ajaxPwdCheck(mvo);
+		String message = "";
+		if(b) {
+			System.out.println("b의 값: " + b);
+			message  ="NO";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			System.out.println("b의 값: " + b);
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		}
+	}
+	
 	
 
 	

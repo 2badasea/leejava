@@ -36,4 +36,6 @@ public interface MemberService {
 	MemberVO memberInfoSelect(MemberVO mvo);
 	// 퀴즈카드 정보 가져오기
 	MemberVO quizcardInfoSelect(MemberVO mvo);
+	// 이메일과 다이제스트 암호로 정보 체크 
+	boolean ajaxPwdCheck(MemberVO mvo);
 }

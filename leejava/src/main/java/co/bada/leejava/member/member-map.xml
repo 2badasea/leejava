@@ -80,7 +80,7 @@ resultType="co.bada.leejava.member.MemberVO">
 		#{m_promotion}
 		)
 </insert>
-<!-- 새로운 비밀번호로 업데이트하는 구문 -->
+<!-- 새로운 비밀번호로 업데이트하는 구문 ( 로그인 페이지. 새로운 비밀번호 찾는 과정에서 )-->
 <update id="ajaxNewPasswordUpdate" parameterType="co.bada.leejava.member.MemberVO">
 	UPDATE MEMBER 
 		SET M_SALT = #{m_salt}, 
@@ -171,6 +171,13 @@ resultType="co.bada.leejava.member.MemberVO">
 	SELECT * 
 	FROM QUIZCARD 
 	WHERE M_EMAIl = #{m_email}
+</select>
+
+<select id="ajaxPwdCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	 SELECT 
+	 	CASE WHEN  COUNT(*)  = 0 THEN 'TRUE' ELSE  'FALSE' END  
+	 FROM MEMBER 
+	 WHERE M_EMAIL = #{m_email} AND M_PASSWORD = #{m_password}
 </select>
 
 

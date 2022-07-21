@@ -334,7 +334,7 @@ public class HomeController {
 		return responseCode; // ajax를 요청한 view페이지로 num데이터(인증번호)를 전달한다. => 해당 view의 ajax구문으로 ㄱㄱ
 	}
 
-	// ajax로 새로운 비밀번호로 업데이트 시키기
+	// ajax로 새로운 비밀번호로 업데이트 시키기 ( 비밀번호를 찾는 과정에서 새롭게 업데이트 ) 
 	@ResponseBody
 	@RequestMapping("/ajaxNewPasswordUpdate.do")
 	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, MemberVO mvo,
@@ -383,7 +383,7 @@ public class HomeController {
 			// m_password비교.
 			m_password = SHA256Util.getEncrypt(m_password, m_salt);
 			mvo.setM_password(m_password);
-			mvo.setM_phone(m_phone);
+			mvo.setM_phone(m_phone);	
 			mvo = memberDao.memberSelect(mvo); // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
 			if (mvo != null) {
 				result = "YES";

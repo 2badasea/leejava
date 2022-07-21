@@ -83,6 +83,7 @@ label {
 	border: none;
 	font-size: 15px;
 	width: 250px;
+	font-weight: bolder;
 }
 #m_privacy,
 #m_promotion:focus{
@@ -220,176 +221,192 @@ label {
     display: block;
 }
 /***********************************************8*/
+
+/* 회원탈퇴 모달창 디자인 */
+.leave_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.leave_modal_content {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    width: 500px;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.leave_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: gray;
+    opacity: 0.5;
+    transition: 2s;
+}
+.memberLeaveCloseBtn{
+	border-radius: 20px;
+	width: 80px;
+	height: 30px;
+	border-style: none;
+	background-color: #F0FFF0;
+	color: #05AA6D;
+}
+.memberLeaveCloseBtn:hover {
+	cursor: pointer;
+	background-color: #05AA6D;
+	color:#F0FFF0;
+	transition: 1s;
+}
+/*************************************/
+#table{
+	border-style: none;
+}
+
+#table button {
+	border-radius: 20px;
+	width: auto;
+	height: 30px;
+	border-style: none;
+	background-color: #F0FFF0;
+	color: #05AA6D;
+	padding: 10px;
+}
+
+#table button:hover {
+	cursor: pointer;
+	background-color: #05AA6D;
+	color:#F0FFF0;
+	transition: 1s;
+}
+#table input, #email{
+	border-style: none;
+	border-bottom: 1px solid black;
+	text-align: center;
+}
+.memberLeaveBtn{
+	border-radius: 20px;
+	width: auto;
+	height: 30px;
+	border-style: none;
+	background-color: #F0FFF0;
+	color: #05AA6D;
+	padding: 10px;
+}
+.memberLeaveBtn:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color:#F0FFF0;
+	transition: 1s;
+}
+.myInfoWrapper button{
+	border-radius: 20px;
+	width: auto;
+	height: 30px;
+	border-style: none;
+	background-color: #F0FFF0;
+	color: #05AA6D;
+	padding: 10px;
+}
+.myInfoWrapper button:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color:#F0FFF0;
+	transition: 1s;
+}
+
+/**************** 주소 수정 모달창 디자인 ********************8*/
+.address_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.address_modal_content {
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    width: 500px;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.address_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: gray;
+    opacity: 0.5;
+    transition: 2s;
+}
+.addressUpdateBtn{
+    display: block;
+    margin: auto;            
+}
+/***************************************************/
+
+/* 비밀번호 변경 모달창 디자인 */
+.password_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.password_modal_content {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    width: 500px;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.password_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: gray;
+    opacity: 0.5;
+    transition: 2s;
+}
+
+.newPwdBox {
+	display: none;
+}
+/* **************************************** */
 </style>
 </head>
 <body>
-<!--회원탈퇴 관련 모달창. 추후  코드 위치 수정 -->
-<!-- 인증번호 modal창 뿐 -->
- <div class="leave_modal_container">
-        <div class="leave_modal_content">
-            <form id="memberLeaveForm">
-                <div class="leave_modal_header">
-                    <h3 align="center">연락처 인증</h3>
-                </div>
-                 <div class="leave_modal_body">
-                        <div class="codeCheckbox" style="display: none;">
-                                <input type="text" id="inputCode">
-                                <button type="button" id="codeCheckBtn" class="button">인증번호 확인</button>
-                                <br>
-                                <span style="color: red; size: 15px;" id="timer">00 : 05</span>
-                        </div>
-                        <div class="inputPhoneBox" style="display: block;">
-                            <input type="text" id="inputPhone" placeholder="연락처를 입력하세요">
-                            <br>
-                            <input type="password" id="inputPassword" placeholder="비밀번호를 입력하세요">
-                            <button type="button" id="inputPhoneCheckBtn" class="button">인증번호 받기!</button>
-                            <br>
-                        </div>
-                </div>
-                <br>
-                <div class="leave__modal_footer">
-                    <button type="button" class="memberLeaveCloseBtn">닫기</button>
-                </div>
-            </form>
-        </div>
-        <div class="leave_modal_layer"></div>
-    </div>
-<!--  모달창 끝 -->	
-<script>
-	// 회원탈퇴 모달창 호출
-	$(".memberLeaveBtn").on("click", function(){
-		console.log("모달창 열기");
-        $(".leave_modal_container").css("display", "block");
-        $("body").css("overflow", "hidden");
-    })
-	
-
-    // 회원탈퇴 모달창 닫기
-    $(".memberLeaveCloseBtn").on("click", function(){
-    	console.log("모달창 닫기");
-        $(".leave_modal_container").css("display", "none");
-        $("#memberLeaveForm")[0].reset();
-        $("body").css("overflow", "unset");
-    })
-	
-	$("#inputPhoneCheckBtn").on("click", function(){
-		var m_email = $("#m_email").val(); 
-		var m_password = $("#inputPassword").val();
-		var m_phone = $("#inputPhone").val(); 
-		console.log("입력한 값 확인: " + m_email + ", " + m_phone + ", " + m_password);
-		// ajax 호출 비밀번호를 다시 입력하게 해서 조회? 
-		$.ajax({
-			url: "ajaxPhoneSelect.do",
-			data: {
-				m_email : m_email,
-				m_phone : m_phone,
-				m_password: m_password
-			},
-			type: "POST",
-			dataType: "text",
-			success: function(result){
-				if(result === "YES") {
-					alert(result);
-					console.log(result);
-					// 이벤트를 호출하는 방식으로 진행해보자. 입력한 비밀번호값만 넘기고.
-					phoneCodeCheck(m_phone);
-					
-				} else {
-					console.log(result);
-					alert("다시 입력해주세요");
-					$("#inputPassword").val('');
-					$("#inputPhone").val('').focus();
-				}
-				// 연락처 조회 성공 => 입력한 연락처를 통해서 coolsms클래스의 인증코드를 호출하고, 화면전환?
-			}
-		})
-	})
-	
-	function phoneCodeCheck(m_phone){
-		console.log("정의한 이벤트로 phone이 왔나? : " + m_phone); 
-		$.ajax({
-			type: "POST",
-			url: "ajaxCoolSMS.do",
-			data: {
-				inputPhone : m_phone
-			},
-			success: function(result){
-				console.log("인증번호: " + result);
-				$(".inputPhoneBox").css("display", "none");
-				$(".codeCheckbox").css("display", "block");
-				$("#codeCheckBtn").val(result); 
-				modalTimer();
-			}
-		})
-	}
-	
-	// 타이머 구현. 
-	var timer = null;
-	
-	function modalTimer(){
-		var display = $("#timer");  // 남은시간 보여주는 <span> 영역
-		var leftSec = 180; // 유효시간 설정. 180초. 
-		startTimer(leftSec, display);
-	}
-	
-	function startTimer(count, display){
-		var minutes;
-		var seconds;
-		timer = setInterval(function(){
-			minutes = parseInt(count/60, 10);
-			seconds = parseInt(count%60, 10); 
-			
-			minutes = minutes < 10 ? "0" + minutes : minutes;
-			seconds = seconds < 10 ? "0" + seconds : seconds; 
-			
-			display.html(minutes + " : " + seconds);
-			
-			// 타이머끝
-			if(--count <0){
-				clearInterval(timer);
-				alert("인증시간이 초과되었습니다. 재인증해주세요");
-				location.reload();
-			}
-		},1000)
-	}
-	
-	// 입력값이랑 비교하는 이벤트.  
-	$("#codeCheckBtn").on("click", function(){
-		var inputCode = $("#inputCode").val(); 
-		// 생성된 인증번호를 <button>의 value속성의 값으로 넣었었음.
-		var realCode = $("#codeCheckBtn").val();
-		if(inputCode === realCode){
-			alert("인증완료되었습니다.");
-			$("#container").css("display", "none"); // 인증이 완료되면 => 회원탈퇴 처리ㅇㅇ. 
-			// ajax로 탈퇴대기상태로 m_status변경하고, 로그아웃 & 세션없애버리기 
-			var m_email = $("#m_email").val();
-			var m_status = "LEAVING";
-			$.ajax({
-				url: "ajaxMemberLeave.do",
-				type: "POST",
-				data:{
-					m_email : m_email,
-					m_status : m_status
-				},
-				success: function(result){
-					if(result === "YES"){
-						console.log("업데이트 성공");
-						location.href='logout.do';
-					} else {
-						console.log("업데이트 실패");
-						alert("탈퇴 처리에 실패하였습니다.");
-						location.reload();
-					}
-				}
-			})
-		} else {
-			alert("인증번호가 틀렸습니다.");
-			$("#inputCode").val('').focus();
-		}
-	})
-	
-</script>
-	<div class="wrapper">
+	<div class="myInfoWrapper">
 		<!--개인정보 상세 조회 & 수정 영역-->
 	  <div class="myInfoDetail">
 			<div class="myInfoDetailTop">
@@ -422,8 +439,8 @@ label {
 				<div class="myInfo_intro">
 					<!--이메일아이디, 자기소개(간단한 자신에 대한 소개글. 다른 사람들에게 보여짐)-->
 					<!--  버튼으로선택할 수 있도로 해야 한다. => 체크해하면 안 보임 -->
-					<label for="m_email">이메일</label>
-					<input type="text" value="${member.m_email }"	 readonly="readonly">
+					<label for="email"><b>이메일</b></label>
+					<input type="text" value="${member.m_email }" readonly="readonly" id="email">
 					<br><br>
 					<div>
 						<h5>자기소개 말고 다른 거 생각해보기</h5>
@@ -431,26 +448,26 @@ label {
 				</div>
 			</div>
 			<div class="myInfoDetail_right">
-				<table border="1" id="table">
+				<table id="table">
 					<tr>
-						<th id="nicknameTh">닉네임조회</th>
+						<th id="nicknameTh">닉네임</th>
 						<td>
-							<input type="text" id="m_nickname" value="${member.m_nickname }" readonly="readonly">
+							<input type="text" id="m_nickname" value="${member.m_nickname }" style="width: 300px;" readonly="readonly">
 							<button type="button" class="nicknameUpdateBtn">닉네임 변경</button>
 						</td>
 					</tr>
 					<tr>
 						<th>연락처</th>
 						<td>	
-							<input type="text" id="m_phone" value="${member.m_phone }">
+							<input type="text" id="m_phone" value="${member.m_phone }" style="width: 300px;" readonly="readonly">
 							<button type="button" class="phoneUpdateBtn">연락처 수정</button>
 						</td>
 					</tr>
 					<tr>
 						<th>주소</th>
 						<td>
-							<input type="text" id="m_address" value="${member.m_address }">
-							<button type="button" id="addressUpdateBtn">주소 수정</button>
+							<input type="text"  id="m_address" value="${member.m_address }" style="width: 300px;" readonly="readonly">
+							<button type="button" class="addressModalBtn">주소 수정</button>
 						</td>
 					</tr>
 				</table>
@@ -474,9 +491,11 @@ label {
 				        <input type="radio" name="m_promotion" id="m_promotion_yes" value="YES" checked="checked">
 				        <label for="m_promotion_no">미동의</label>
 				        <input type="radio" name="m_promotion" id="m_promotion_no" value="NO">
-				    </div>
-					<button id="passwordUpdateBtn">비밀번호 변경</button>
-					<button class="memberLeaveBtn">회원탈퇴</button>
+				    </div><br>
+				    <div align="right">
+						<button type="button" class="passwordModalBtn">비밀번호 변경</button>
+						<button type="button" class="memberLeaveBtn">회원탈퇴</button>
+					</div>
 				</div>			
 			</div>  <!-- myInfo 오른쪽 영역 -->
 		</div>  <!-- myinfoDedatil Wrapper 영역 -->
@@ -484,13 +503,13 @@ label {
 		<div class="myInfoDetail_bottom">
 			<h3>My Info...</h3>
 			<textarea rows="7" cols="" id="m_intro"  name="m_intro" readonly="readonly">${member.m_intro }</textarea>
-			<button id="myIntroUpdateBtn" style="float: right">자기소개 수정</button>
+			<button id="myIntroUpdateBtn" style="float: right; margin-top: 10px;">자기소개 수정</button>
 			<button class="updateBtnAfter" id="myIntroUpdateEnd" value="${member.m_email }">수정 완료</button>
 			<button class="updateBtnAfter" id="myIntroCancel" value="${member.m_intro }" style="margin-right: 15px;" >수정 취소</button>
 				<!-- 수정취소를 클릭하면 원글이 횝고되도록, 새로고침 없이ㄴ-->
 		</div>
 	  </div> 
-	  
+
 	  <!-- 닉네임 변경 업데이트 모달 영역 -->
 	  <div class="nickname_modal_container">
         <div class="nickname_modal_content">
@@ -552,10 +571,411 @@ label {
         <div class="phone_modal_layer"></div>
     </div>
 	<!-- -------------------------------------------------------------- -->
-
-	</div>
+	<!--회원탈퇴 관련 모달창. 추후  코드 위치 수정 -->
+ 	<div class="leave_modal_container">
+        <div class="leave_modal_content">
+            <form id="memberLeaveForm">
+                <div class="leave_modal_header">
+                    <h3 align="center">연락처 인증</h3>
+                    <hr>
+                </div>
+                 <div class="leave_modal_body">
+                        <div class="codeCheckbox" style="display: none;" align="center">
+                        		<br>
+                        		<label for="inputCode">인증번호</label>
+                                <input type="text" id="inputCode">
+                                <button type="button" id="codeCheckBtn" class="button">인증번호 확인</button>
+                                <br>
+                                <span style="color: red; size: 15px;" id="timer"></span>
+                        </div>
+                        <div class="inputPhoneBox" style="display: block;">
+                        	<label for="inputPhone">연락처</label>
+                            <input type="text" id="inputPhone" placeholder="연락처를 입력하세요" style="margin-left: 53px;">
+                            <br>
+                            <label for="inputPassword" style="margin-top: 5px;">패스워드 확인</label>
+                            <input type="password" id="inputPassword" placeholder="비밀번호를 입력하세요">
+                            <button type="button" id="inputPhoneCheckBtn" class="button">인증번호 받기!</button>
+                            <br>
+                        </div>
+                </div>
+                <br>
+                <div class="leave__modal_footer">
+                    <button type="button" class="memberLeaveCloseBtn" style="float: right;">닫기</button>
+                </div>
+            </form>
+        </div>
+        <div class="leave_modal_layer"></div>
+    </div>
+	<!-- ----------------------------------------------------->	
+	
+	<!-- 주소 수정 모달창 영역  -->
+	 <div class="address_modal_container">
+        <div class="address_modal_content">
+            <div class="address_modal_header" align="center">
+                <span style="font-size: 22px;"><b>연락처 수정</b></span>
+                <hr>
+            </div>
+            <div class="address_modal_body">
+                <form id="addressFrm">
+                    <input type="text" id="sample4_postcode" placeholder="우편번호">
+                    <button type="button" onclick="sample4_execDaumPostcode()" id="addressBtn">우편번호 찾기</button>
+                    <br>
+                    <input type="text" id="sample4_roadAddress" placeholder="도로명주소">
+                    <input type="text" id="sample4_jibunAddress" placeholder="지번주소">
+                    <span id="guide" style="color:#999;display:none"></span>
+                    <input type="text" id="sample4_detailAddress" placeholder="상세주소">
+                    <input type="text" id="sample4_extraAddress" placeholder="참고항목">
+                    <input type="hidden" id="address">
+                </form>
+                <br>
+                <button type="button" class="addressUpdateBtn">연락처 수정</button>
+            </div>
+            <br>
+            <div class="address_modal_footer">
+                 <button style="float: right;" class="addressCloseBtn">닫기</button>
+            </div>
+        </div>
+        <div class="address_modal_layer"></div>
+    </div>
+	<!-- ---------------------------------------------------- -->
+	<!-- 비밀번호 변경 모달창  -->
+	 <div class="password_modal_container">
+        <div class="password_modal_content">
+            <div class="password_modal_header" align="center">
+                  <span style="font-size: 22px;"><b>비밀번호 수정</b></span>
+                <hr>
+            </div>
+            <form id="passwordFrm">
+                <div class="password_modal_body" align="center">
+                    <label for="beforePwd">패스워드 입력</label> 
+                    <input type="password" id="beforePwd" style="width: auto;" placeholder="현재 패스워드를 입력하세요.">
+                    <button type="button" class="beforePwdBtn">비밀번호 확인</button>
+                    <div class="newPwdBox">
+                        <br>
+                        <label for="newPwd">*새로운 패스워드</label>
+                        <input type="password" id="newPwd"><br>
+                        <span class="pwdRegkSpan" style="font-size: 15px;"></span><br>
+                        <label for="newPwdCheck">*비밀번호 확인</label>
+                        <input type="password" id="newPwdCheck"><br>
+                        <span class="pwdCheckSpan" style="font-size: 15px;"></span>
+                        <button type="button" class="pwdUpdateBtn" style="display: none; margin-top: 10px;">패스워드 변경</button>
+                    </div>
+                </div>
+            </form>
+            <br>
+            <div class="password_modal_footer">
+                  <button style="float : right;" class="passwordCloseBtn">닫기</button>
+            </div>
+        </div>
+        <div class="password_modal_layer"></div>
+    </div>
+	
+	
+	</div> <!-- bodyWrapper 영역 -->
 </body>
 <script>
+	//현재 비밀번호 확인부터 하기  => 정상적으로 조회가 되면 => 새로운 패스워드 입력창 박스 보이게 하기
+	$(".beforePwdBtn").on("click", function(){
+	    var email = $("#m_email").val();
+	    var password = $("#beforePwd").val();
+	    // ajax로 입력한 비밀번호 맞는지 조회 => 기존 정보창에서 찾는다. 여기서는 단순조회. 
+	    $.ajax({ 
+	    	url: "ajaxPwdCheck.do",
+	    	data: {
+	    		m_email : email,
+	    		m_password : password
+	    	},
+	    	method : "GET",
+	    	dataType: "text",
+	    	contentType: "application/text; charset=utf-8",
+	    	success: function(message){
+	    		console.log("호출 성공");
+	    		if(message === "YES"){
+	    			alert("비밀번호가 확인되었습니다.");
+	    			$("#beforePwd").attr("readonly", "readonly");
+	    			$('.newPwdBox').css("display", "block");
+	    		} else {
+	    			alert("비밀번호를 확인해주세요");
+	    			$("#beforePwd").val('').focus();
+	    			return false;
+	    		}
+	    	},
+	    	error: function(message){
+	    		console.log("호출 실패");
+	    		console.log(message);
+	    	}
+	    })
+	})
+	
+	// 새로운 패스워드 입력칸 유효성 체크
+	$("#newPwd").on("keyup", function(){
+	    var pwd = $("#newPwd").val();
+	    var pwdReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%^*#?&])[A-Za-z\d@$!%^*#?&]{8,15}$/;
+	    var message = "";
+	    if(pwdReg.test(pwd)){
+	        message = "사용가능한 비밀번호 입니다.";
+	        $(".pwdRegkSpan").text(message);
+	        $(".pwdRegkSpan").css("color", "#05AA6D");
+	    } else {    
+	        message = "영문, 숫자, 특수문자 최소 1개씩 포함한 8~15자리 이상이어야 합니다.";
+	         $(".pwdRegkSpan").text(message);
+	         $(".pwdRegkSpan").css("color", "tomato");
+	    }
+	})
+	
+	// 비밀번호 확인창 
+	$("#newPwdCheck").on("keyup", function(){
+	    var pwd = $("#newPwd").val();
+	    var newPwd = $("#newPwdCheck").val();
+	    var message = "";
+	    if( pwd === newPwd){
+	        // class="pwdCheckSpan"
+	        message = "비밀번호가 일치합니다.";
+	        $(".pwdCheckSpan").text(message);
+	        $(".pwdCheckSpan").css("color", "#05AA6D");
+	        $(".pwdUpdateBtn").css("display", "block");
+	    } else {
+	        message = "비밀번호가 일치하지 않습니다.";
+	        $('.pwdCheckSpan').text(message);
+	        $(".pwdCheckSpan").css("color", "tomato");
+	        $(".pwdUpdateBtn").css("display", "none");
+	    }
+	})
+	
+	// 비밀번호 업데이트 버튼 클릭 이벤트
+	$(".pwdUpdateBtn").on("click", function(){
+	    var email = $("#m_email").val();
+	    var password = $("#newPwdCheck").val();
+	    console.log("이메일: " + email + ",  변경할 비밀번호: " + password);
+	    var data = {
+	        m_password : password,
+	        m_email : email
+	    };
+	    
+	})
+	
+	// 패스워드 변경 모달창 호출
+	$(".passwordModalBtn").on("click", function(){
+	    console.log("패스워드 모달 오픈");
+	    $('.password_modal_container').css("display", "block");
+	    $("body").css("position", "fixed");
+	    $("body").css("overflow", "hidden");
+	})
+	
+	// 패스워드 변경 모달창 닫기
+	$(".passwordCloseBtn").on("click", function(){
+	    console.log("패스워드 모달창 닫기");
+	    $("#passwordFrm")[0].reset();
+	    $("#beforePwd").removeAttr("readonly");
+	    $('.password_modal_container').css("display", "none");
+	    $('.newPwdBox').css("display", "none");
+	    $(".pwdRegkSpan").text('');
+	    $('.pwdCheckSpan').text('');
+	    $("body").css("position", "unset");
+	    $("body").css("overflow", "unset");
+	})
+
+	////////// 비밀번호 변경 스크립트 부분. 다 정의하고 경계선 지우기 //////////////
+	
+	// 모달창 호출
+	$(".addressModalBtn").on("click", function(){
+		console.log("주소수정 모달창 호출");
+	    $(".address_modal_container").css("display", "block");
+	    $("body").css("position", "fixed");
+	    $("body").css("overflow", "hidden");
+	})
+	
+	// 모달창 닫기
+	$(".addressCloseBtn").on("click", function(){
+	    console.log("주소수정 모달창 닫기");
+	    $(".address_modal_container").css("display", "none");
+	    $("#addressFrm")[0].reset();
+	    $("body").css("position", "unset");
+	    $("body").css("overflow", "unset");
+	})
+	
+	// 주소변경 버튼 클릭
+	$(".addressUpdateBtn").on("click", function(){
+	    console.log("업데이트 버튼 클릭");
+	    var doroAddress = $('#sample4_roadAddress').val();
+		var jibunAddress = $('#sample4_jibunAddress').val();
+		var detailAddress = $('#sample4_detailAddress').val(); 
+		
+		var sendAddresss = doroAddress + '(' + jibunAddress + ') ' + detailAddress;
+		$('#address').val(sendAddresss);  
+	    console.log("가공된 주소 조회: " + sendAddresss);
+	    var sendEmail = $("#m_email").val();
+	    console.log("이메일 조회: " + sendEmail);
+	    // 주소변경 업데이트 ajax호출 => 성공하면 모달창 닫고, 주소 보여주는 창에 최신 주소로 value값 대입
+	    let data = {
+	    		m_address: sendAddresss,
+	    		m_email : sendEmail
+	    };
+	    $.ajax({
+	    	url: "ajaxAddressUpdate.do",
+	    	type: "POST",
+	    	dataType: "text",
+	    	contentType: "application/json; charset=utf-8",
+	    	data: JSON.stringify(data),
+	    	success: function(message){
+	    		console.log("호출 성공");
+	    		alert("주소가 변경되었습니다.");
+	    		$("#m_address").val(sendAddresss);
+	    		$(".addressCloseBtn").click();
+	    	},
+	    	error: function(message){
+	    		console.log("호출 실패");
+	    		console.log(message);
+	    	}
+	    })
+	    
+	})
+
+/////////////////////  주소 수정 스크립트. 끝나고 구분선 지우기  ///////////////////////////////////
+	// 회원탈퇴 모달창 호출
+	$(".memberLeaveBtn").on("click", function(){
+		console.log("모달창 열기");
+		var memberLeaveCheck = confirm("정말 떠나시겠습니까");
+		if(memberLeaveCheck){
+			$(".leave_modal_container").css("display", "block");
+			$("body").css("position", "fixed");
+	        $("body").css("overflow", "hidden");
+		} else {
+			return false;
+		}
+	})
+	
+	// 회원탈퇴 모달창 닫기
+	$(".memberLeaveCloseBtn").on("click", function(){
+		console.log("회원탈퇴 취소");
+		alert("회원탈퇴를 취소하였습니다.");
+	    $(".leave_modal_container").css("display", "none");
+	    location.reload();
+	    $("#memberLeaveForm")[0].reset();
+	    $("body").css("position", "unset");
+	    $("body").css("overflow", "unset");
+	})
+	
+	// 연락처랑 비밀번호 입력하면 => 실제 회원이 맞는지 조회.
+	$("#inputPhoneCheckBtn").on("click", function(){
+		var m_email = $("#m_email").val(); 
+		var m_password = $("#inputPassword").val();
+		var m_phone = $("#inputPhone").val(); 
+		console.log("입력한 값 확인: " + m_email + ", " + m_phone + ", " + m_password);
+		// ajax 호출 비밀번호를 다시 입력하게 해서 조회? 
+		$.ajax({
+			url: "ajaxPhoneSelect.do",
+			data: {
+				m_email : m_email,
+				m_phone : m_phone,
+				m_password: m_password
+			},
+			type: "POST",
+			dataType: "text",
+			success: function(result){
+				if(result === "YES") {
+					alert(result);
+					console.log(result);
+					// 이벤트를 호출하는 방식으로 진행해보자. 입력한 비밀번호값만 넘기고.
+					phoneCodeCheck(m_phone);
+				} else {
+					console.log(result);
+					alert("다시 입력해주세요");
+					$("#inputPassword").val('');
+					$("#inputPhone").val('').focus();
+				}
+				// 연락처 조회 성공 => 입력한 연락처를 통해서 coolsms클래스의 인증코드를 호출하고, 화면전환?
+			},
+			error: function(message){
+				console.log("호출 실패");
+				console.log(message);
+			}
+		})
+	})
+	
+	function phoneCodeCheck(m_phone){
+		console.log("정의한 이벤트로 phone이 왔나? : " + m_phone); 
+		$.ajax({
+			type: "POST",
+			url: "ajaxCoolSMS.do",
+			data: {
+				inputPhone : m_phone
+			},
+			success: function(result){
+				console.log("인증번호: " + result);
+				$(".inputPhoneBox").css("display", "none");
+				$(".codeCheckbox").css("display", "block");
+				$("#codeCheckBtn").val(result); 
+				modalTimer();
+			}
+		})
+	}
+	
+	// 타이머 구현. 
+	var timer = null;
+	
+	function modalTimer(){
+		var display = $("#timer");  // 남은시간 보여주는 <span> 영역
+		var leftSec = 180; // 유효시간 설정. 180초. 
+		startTimer(leftSec, display);
+	}
+	
+	function startTimer(count, display){
+		var minutes;
+		var seconds;
+		timer = setInterval(function(){
+			minutes = parseInt(count/60, 10);
+			seconds = parseInt(count%60, 10); 
+			
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds; 
+			
+			display.html(minutes + " : " + seconds);
+			
+			// 타이머끝
+			if(--count <0){
+				clearInterval(timer);
+				alert("인증시간이 초과되었습니다. 재인증해주세요");
+				location.reload();
+			}
+		},1000)
+	}
+	
+	// 입력값이랑 비교하는 이벤트.  
+	$("#codeCheckBtn").on("click", function(){
+		var inputCode = $("#inputCode").val(); 
+		// 생성된 인증번호를 <button>의 value속성의 값으로 넣었었음.
+		var realCode = $("#codeCheckBtn").val();
+		if(inputCode === realCode){
+			alert("인증완료되었습니다.");
+			$(".leave_modal_container").css("display", "none"); // 인증이 완료되면 => 회원탈퇴 처리ㅇㅇ. 
+			// ajax로 탈퇴대기상태로 m_status변경하고, 로그아웃 & 세션없애버리기 
+			var m_email = $("#m_email").val();
+			var m_status = "LEAVING";
+			$.ajax({
+				url: "ajaxMemberLeave.do",
+				type: "POST",
+				data:{
+					m_email : m_email,
+					m_status : m_status
+				},
+				success: function(result){
+					if(result === "YES"){
+						console.log("업데이트 성공");
+						location.href='logout.do';
+					} else {
+						console.log("업데이트 실패");
+						alert("탈퇴 처리에 실패하였습니다.");
+						location.reload();
+					}
+				}
+			})
+		} else {
+			alert("인증번호가 틀렸습니다.");
+			$("#inputCode").val('').focus();
+		}
+	})
+
 	// 연락처 수정 관련 스크립트 
 	// 새로운 연락처 입력. 
     $(".newPhoneCheckBtn").on("click", function(e){
@@ -698,21 +1118,7 @@ label {
     })
 </script>
 <script>
-	// 회원탈퇴 이벤트 memberLeave() 이벤트 정의
-		// onclick이벤트로 정의한 이벤트들은 글로벌 전역 함수만 호출한다. onclick이벤트를 정의할 거면, 
-		// $(document).on("ready") 바깥에 정의해야 한다. 내부에 있으면 해당 함수를 찾지 못 한다.
-		// 그리고 이벤트 버블을 막기 위해서 해당 태그의 기본이벤트를 지정하여 preventDefault()로 비활시킨다.
-		// 순서 1. 확인체크(confirm()메서드 호출) 2. 조건에 따른 실행 => , 3. yes면 모달창 띄워서 휴대폰 인증받기
-		// 4. 휴대폰 인증되면 db상에서 m_status값을 ajax로 수정한다. 
-		// 사용자 입장에서 회원탈퇴가 간단해야 함. 
-	$(".memberLeaveBtn").on("click", function(){
-		var memberLeaveCheck = confirm("정말 떠나시겠습니까");
-		if(memberLeaveCheck){
-			$(".leave_modal_container").css("display", "block");
-		} else {
-			return false;
-		}
-	})
+
 		
 	// 닉네임 모달창 닫기 
 	$(".nickModalCloseBtn").on("click", function(){
@@ -1152,6 +1558,66 @@ label {
 	}) // get.JSON 메서드 영역
 	
 	})
+</script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    //본 예제에서는 도로명 주소 표기 방식에 대한 법령에 따라, 내려오는 데이터를 조합하여 올바른 주소를 구성하는 방법을 설명합니다.
+    function sample4_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var roadAddr = data.roadAddress; // 도로명 주소 변수
+                var extraRoadAddr = ''; // 참고 항목 변수
+
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                   extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraRoadAddr !== ''){
+                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample4_postcode').value = data.zonecode;
+                document.getElementById("sample4_roadAddress").value = roadAddr;
+                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+                
+                // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
+                if(roadAddr !== ''){
+                    document.getElementById("sample4_extraAddress").value = extraRoadAddr;
+                } else {
+                    document.getElementById("sample4_extraAddress").value = '';
+                }
+				
+                var guideTextBox = document.getElementById("guide");
+                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                if(data.autoRoadAddress) {
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                    guideTextBox.style.display = 'block';
+
+                } else if(data.autoJibunAddress) {
+                    var expJibunAddr = data.autoJibunAddress;
+                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                    guideTextBox.style.display = 'block';
+                    document.getElementById("sample4_jibunAddress").value = expJibunAddr;
+                    
+                } else {
+                    guideTextBox.innerHTML = '';
+                    guideTextBox.style.display = 'none';
+                }
+            }
+        }).open();
+    }
 </script>
 
 </html>

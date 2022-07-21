@@ -122,7 +122,7 @@ td > input:not(#addressBtn)  {
 		</div>
 		<div class="joinform">
 			<form id='frm' action="memberJoin.do">
-				<table border="0.5">
+				<table border="1">
 					<tr>
 						<th>이메일</th>
 						<td><input type="email" id="email" name="email">
@@ -138,14 +138,14 @@ td > input:not(#addressBtn)  {
 						<td>
 							<input type="password" id="password" name="password">
 							<br>
-							<span id="passwordRegMessage"><span>
+							<span id="passwordRegMessage"></span>
 						</td>
 					</tr>
 					<tr>
 						<th>*비밀번호 확인</th>
 						<td><input type="password" id="passwordCheck">
 						<br>
-							<span id="passwordCheckMessage"><span>
+							<span id="passwordCheckMessage"></span>
 						</td>
 					</tr>
 					<tr>

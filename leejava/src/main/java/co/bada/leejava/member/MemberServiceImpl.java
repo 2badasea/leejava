@@ -150,4 +150,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.quizcardInfoSelect(mvo);
 	}
 
+	@Override
+	public boolean ajaxPwdCheck(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxPwdCheck(mvo);
+	}
+
 }

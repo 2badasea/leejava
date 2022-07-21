@@ -38,7 +38,6 @@ import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.notice.NoticeService;
 import co.bada.leejava.notice.NoticeVO;
 import co.bada.leejava.totolist.TodoService;
-import co.bada.leejava.totolist.TodoVO;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
@@ -429,20 +428,17 @@ public class MemberController {
 		// view단의 ajax문에서 error가 지속적으로 난 원인 => ajax는 @ResponseBody 어노테이션 사용해야 함. 
 		// 그리고 produces속성의 값으로 밑에처럼 명시한 이유는 => 서버에서 view로 응답할 때 한글의 경우 인식을 못 하기 때문이다.
 	@ResponseBody
-	@RequestMapping(value = "/ajaxNicknameUpdate.do", produces = "application/text; charset=UTF-8")
-	public String ajaxNicknameUpdate(Model model, HttpServletRequest request
+	@PostMapping(value = "/ajaxNicknameUpdate.do", produces = "application/text; charset=utf-8"  )
+	public ResponseEntity<String> ajaxNicknameUpdate(Model model, HttpServletRequest request
 			, MemberVO mvo
-			,@RequestParam("m_nickname") String m_nickname
-			,@RequestParam("m_email") String m_email ) {
+			,@RequestParam String m_nickname
+			,@RequestParam String m_email ) {
 		
-		// 닉네임이랑 회원의 이메일을 가져와야 한다. 
-		logger.info("===============ajax를 통해 들어온 새로운 닉네임: " + m_nickname);
-		logger.info("===============ajax로 넘어온 전역변수 사용자 이메일: " + m_email );
 		
 		// mvo객체에 담아서 중복체크를 먼저 한 다음에 중복이 아닐 때 처리해준다. 
 		mvo.setM_nickname(m_nickname);
-		// 닉네임 중복체크 쿼리는 이미 존재
-		String responseText = null;
+		// 닉네임 중복체크 쿼리는 이미 존재	
+		String message = null;
 		boolean b = memberDao.memberNicknameCheck(mvo);
 		if(b) { 
 			logger.info("===============중복된 닉네임 없음");
@@ -450,17 +446,19 @@ public class MemberController {
 			int n = memberDao.ajaxNicknameUpdate(mvo);
 			if(n !=0) {
 				logger.info("===============닉네임 변경 성공");
-				responseText = "업데이트 성공";
+				message = "YES";
+				return new ResponseEntity<String>(message, HttpStatus.OK);
 			} else {
 				logger.info("===============닉네임 변경 실패");
-				responseText ="닉네임 변경 실패. 관리자에게 문의"; 
+				message ="NO"; 
+				return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
 			}
 		} else {
 			logger.info("===============중복된 이메일 존재");
-			responseText ="already the nickname is exist...!";
+			message ="ALREADY";
+			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
 		}
 		
-		return responseText;
 	}
 	
 	// 사용자뷰 공지사항으로 이동
@@ -554,6 +552,7 @@ public class MemberController {
 	}
 	
 	// 회원탈퇴 처리 => m_status값만 변경. 
+	@ResponseBody
 	@RequestMapping("/ajaxMemberLeave.do")
 	public ResponseEntity<String> ajaxMemberLeave(HttpServletRequest request
 			,@RequestParam("m_email") String m_email
@@ -579,6 +578,30 @@ public class MemberController {
 		}
 	}
 	
+	// 연락처 수정 ajax 
+	@ResponseBody
+	@RequestMapping(value = "ajaxMemberUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxMemberUpdate( MemberVO mvo,
+				@RequestParam String m_email,
+				@RequestParam String m_phone){
+		
+		System.out.println("에메일: " + m_email);
+		System.out.println("연락처: " + m_phone);
+		mvo.setM_email(m_email);
+		mvo.setM_phone(m_phone);
+		String message = null;
+		
+		int n = memberDao.memberUpdate(mvo);
+		if( n == 1) {
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
+		}
+		
+		
+	}
 	
 
 	

@@ -366,8 +366,10 @@ public class HomeController {
 	// 연락처 조회 by memberMyInfo.jsp 회원탈퇴 부분
 	@ResponseBody
 	@RequestMapping("ajaxPhoneSelect.do")
-	public String ajaxPhoneSelect(MemberVO mvo, HttpServletRequest request, @RequestParam("m_email") String m_email,
-			@RequestParam("m_phone") String m_phone, @RequestParam("m_password") String m_password) {
+	public String ajaxPhoneSelect(MemberVO mvo, HttpServletRequest request, 
+			@RequestParam("m_email") String m_email,
+			@RequestParam("m_phone") String m_phone, 
+			@RequestParam("m_password") String m_password) {
 
 		logger.info("======================= ajax로 넘어온 이메일: " + m_email);
 		logger.info("======================= ajax로 넘어온 연락처: " + m_phone);

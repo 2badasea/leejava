@@ -7,109 +7,129 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
-	header{
-		display: flex;
-		justify-content: space-around;
-	}
-	.leftHeader a,
-	.centerHeader a,
-	.rightHeader a{
-		margin-left: 30px;
-	}
-	a:hover{
-		cursor: pointer;
-	}
-	a{
-	text-decoration: none;
-    display: inline-block;
-    color: white;
-    -webkit-transition: 0.5s;
-    -moz-transition: 0.5s;
-    -o-transition: 0.5s;
-    -ms-transition: 0.5s;
-    transition: 0.5s;
-	}
+header{
+	display: flex;
+	justify-content: space-around;
+}
+.leftHeader a,
+.centerHeader a,
+.rightHeader a{
+	margin-left: 30px;
+}
+a:hover{
+	cursor: pointer;
+}
+a{
+text-decoration: none;
+   display: inline-block;
+   color: white;
+   -webkit-transition: 0.5s;
+   -moz-transition: 0.5s;
+   -o-transition: 0.5s;
+   -ms-transition: 0.5s;
+   transition: 0.5s;
+}
 
-	a:hover {
-	    -webkit-transform: scale(1.5,1.5);
-	    -moz-transform: scale(1.5,1.5);
-	    -o-transform: scale(1.5,1.5);
-	    -ms-transform: scale(1.5,1.5);
-	    transform: scale(1.5,1.5);
-	}
-	/* **************새로운 퀴즈카드 세트 모달창*************/
- 	.quizcard_modal_container {
-           position: fixed;
-           top: 0px;
-           bottom: 0px;
-           width: 100%;
-           height: 100vh;
-           display: none; 
-           z-index: 1;
-     }
-
-     .quizcard_modal_content {
-         position: absolute;
-         top: 30%;
-         left: 35%;
-         width: 400px;
-         height: auto;
-         z-index: 3;
-         background-color: teal;
-         color: white;
-         border: 0.5px solid #05AA6D;
-         border-radius: 30px;
-         padding: 20px;
-     }
-	
-     .quizcard_modal_layer {
-         position: relative;
+a:hover {
+    -webkit-transform: scale(1.5,1.5);
+    -moz-transform: scale(1.5,1.5);
+    -o-transform: scale(1.5,1.5);
+    -ms-transform: scale(1.5,1.5);
+    transform: scale(1.5,1.5);
+}
+/* **************새로운 퀴즈카드 세트 모달창*************/
+.quizcard_modal_container {
+         position: fixed;
+         top: 0px;
+         bottom: 0px;
          width: 100%;
-		 height: 100%; 
-         z-index: 2;
-         background-color: #bebebe;
-         opacity : 0.5;
-         transition: 2s;
-     }
+         height: 100vh;
+         display: none; 
+         z-index: 1;
+}
 
-     #category_direct {
-         width: 120px;
-     }
-     #quizcard_set_intro{
-     	resize: none;
-     	width: 300px;
-     	height: 150px;
-     }
-     .archiveBox{
-     	border: 1px solid black;
-     	width: 500px;
-     	min-height: 300px;
-     	height: auto;
-     	background-color: #E8F5FF;
-     	color: black;
-      	display: none; 
-/*      	z-index: 2; */
-     	margin-top: 40px;
-     	position: absolute;
-     }
-     .archiveBox a{
-     	color: black;
-     }
-     .archiveHeader{
-     	padding: 10px;
-     }
-     .archiveTable{
-     	border: 1px solid gray;
-     	width: 100%;
-     	border-collapse: collapse;
-     }
-     .archiveTr:hover{
-     	cursor: pointer;
-     }
-     .archiveTr{
-     	border-bottom: 1px solid black;
-     }
+.quizcard_modal_content {
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    width: 400px;
+    height: auto;
+    z-index: 3;
+    background-color: teal;
+    color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.quizcard_modal_layer {
+    position: relative;
+    width: 100%;
+	height: 100%; 
+    z-index: 2;
+    background-color: #bebebe;
+    opacity : 0.5;
+    transition: 2s;
+}
+
+#category_direct {
+    width: 120px;
+}
+#quizcard_set_intro{
+	resize: none;
+	width: 300px;
+	height: 150px;
+}
+.archiveBox{
+	border: 1px solid black;
+	min-width: 550px;
+	width: auto;
+	min-height: 300px;
+	height: auto;
+	background-color: ghostwhite;
+	color: black;
+ 	display: none; 
+	margin-top: 40px;
+	position: absolute;
+}
+.archiveBox a{
+	color: black;
+	font-weight: bolder;
+}
+.archiveHeader{
+	padding: 10px;
+}
+.archiveTable{
+	border: 1px solid gray;
+	width: 100%;
+	border-collapse: collapse;
+	text-align: center;
+}
+.archiveNameTd:hover{
+	cursor: pointer;
+}
+.archiveTr{
+	border-bottom: 1px solid black;
+	height: 30px;
+}
+.archiveTh td{
+	font-weight: 900;
+	font-size: 17px;
+	color: teal;
+	border-bottom: 1px dashed teal;
+}
+/* 아카이브 박스 즐겨찾기 별표 모양*/
+.addStar{
+	color: orange;
+}
+.fa-xmark, .fa-xmark-large{
+	color: tomato;
+}
+.scrapTd:hover {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -125,10 +145,10 @@
 			<div class="archiveBox">
 				<div class="archiveHeader">
 					<!-- 각각의 메뉴들에 대해서 클릭하면 ajax로 데이터를 추출해서 밑의 archiveBody에 붙인다. -->
-					<a onclick="ajaxStudyingCard('${session_user }')" id="studyingMenu">학습중인 세트</a>
-					<a onclick="ajaxBookmarkCard('${session_user }')" id="bookmarkMenu">즐겨찾기</a>
-					<a onclick="ajaxMyQuizcard('${session_user }')" id="selfMenu">내가 만든</a>
-					<a>스크랩 문제</a>
+					<a onclick="ajaxStudyingCard('${session_user }')" id="archiveStudyingA" class="archiveHeaderA">학습중인 세트</a>
+					<a onclick="ajaxBookmarkCard('${session_user }')" class="archiveHeaderA">즐겨찾기</a>
+					<a onclick="ajaxMyQuizcard('${session_user }')" class="archiveHeaderA">내가 만든</a>
+					<a onclick="ajaxMyScrap('${session_user }')" class="archiveHeaderA">스크랩 문제</a>
 				</div>	
 				<hr>
 				<div class="archiveBody">
@@ -216,18 +236,202 @@
 	var m_email = $("#session_user").val();
 
 	// archiveBox 리스트 클릭 quizardInfo.jsp로 이동
-	$(document).on("click", ".archiveTr", function(){
-		var set_no = $(this).children().eq(0).text();
+	$(document).on("click", ".archiveNameTd", function(){
+		var set_no = $(this).prev().text();
 		console.log("퀴즈카드 세트번호 확인: " + set_no);
-		// 화면이 전환되는데 굳이 ajax릃 호출할 필요강 없다. ajax는 페이지 내에서. 
 		location.href="quizcardBefore.do" + "?set_no=" + set_no + "&m_email=" +m_email ;
 	})
+		
+	// 아카이브 박스 헤더 메뉴 클릭 이벤트
+	$(".archiveHeaderA").on("click", function(){		
+		$(".archiveHeader a").css("color", "black");
+		$(this).css("color" , "teal");
+	})
+	
+	// arhiveeTr에 mouseover, mouseleave 이벤트 주기
+	$(document).on("mouseover", ".archiveTr", function(){
+		$(this).css("backgroundColor", "#E8F5FF");
+	})
+	$(document).on("mouseleave", ".archiveTr", function(){
+		$(this).css("backgroundColor", "unset");
+	})
+	
+	// 스크랩 목록을 조회해서 archiveBox에 출력시키기
+	function ajaxMyScrap(m_email){
+		var m_email = m_email;
+		var data = {
+				m_email : m_email 
+		};
+		$(".archiveBody").empty();
+		var tb = $("<table class='archiveTable' />");
+		var th = $("<tr class='archiveTh' />").append(
+				$("<td />").text("세트번호"),
+				$("<td />").text("#문제번호"),
+				$("<td />").text("세트이름"),
+				$("<td />").text("카테고리"),
+				$("<td />").text("     ")
+				);
+		tb.append(th);
+		$.ajax({
+			url: "ajaxArchiveScrapSelect.do", 
+			data: JSON.stringify(data),
+			method: "POST",
+			dataType: "json",
+			contentType : "application/json; charset=utf-8",
+			success: function(data){
+				console.log('호출성공');
+				console.log("데이터 길이: " + data.length);
+				if(data.length !== 0){
+					$.each(data, function(index, item){
+						var $index = item.quizcard_index;
+						var $setno = item.quizcard_set_no;
+						var $qno = item.quizcard_no;
+						var $name = item.quizcard_set_name;
+						var $category = item.quizcard_category;
+						var tr = $("<tr class='archiveTr' />").append(
+							$("<td class='scrapTd' />").text($setno),
+							$("<td class='scrapTd' />").text($qno),
+							$("<td class='scrapTd' />").text($name),
+							$("<td class='scrapTd' />").text($category),
+							$("<td data-index='" + $index + "'/>").html('<a><i class="fa-solid fa-xmark scarpDelete"></i></a>')
+						);
+						tb.append(tr);
+					})
+					$(".archiveBody").append(tb);
+				} else if(data.length === 0){
+					// return되는 값이 null이라면 생성한 퀴즈카드가 없다고 출력시키기. 리턴되는 값이 json형태다. length속성으로 함. 
+					var noResultCount = $(".noResult").length;
+					if(noResultCount >=1){
+						alert("스크랩한 문제가 없습니다.");
+						return false;
+					}
+					var str = "<div class='noResult' style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
+					str += "<span>스크랩한 문제가 없습니다.</span></div>";
+			        $(".archiveBody").append(str);
+					console.log("스크랩한 문제가 없습니다.");
+				}	
+			},
+			error: function(message){
+				console.log("호출 실패");
+				console.log(message);
+			}
+		})
+		
+	}
+	
+	// 스크랩 리스트 클릭 => 모달창 호출. 
+	$(document).on("click", ".scrapTd", function(){
+		console.log("클릭 확인");
+	})
+	
+	// 아카이브 스크랩 영역. 스크랩 취소 아이콘 이벤트 (동적태그 이벤트 적용해야 함)
+	$(document).on("click", ".scarpDelete", function(){
+		var memail = m_email;
+		var quizcard_index = $(this).closest('td').data('index');
+		console.log("이메일 : " + memail + ",   인덱스 확인: " + quizcard_index);
+		var check = confirm("스크랩을 취소할까요?");
+		if(check){
+			var data = {
+					m_email : memail,
+					quizcard_index : quizcard_index
+			};
+			$.ajax({
+				url: "ajaxScrapDelete.do",
+				data: JSON.stringify(data),
+				method: "DELETE",
+				dataType: "text",
+				contentType: "application/json; charset=utf-8",
+				success: function(message){
+					console.log("호출 성공");
+					alert(message);
+					ajaxMyScrap(memail);
+				},
+				error: function(){
+					console.log("호출 실패");
+				}
+			})
+		} else {
+			return false;
+		}
+	})
+	
+	// 학습중인 세트 목록 조회해서 archiveBox에 출력시키기. 
+	function ajaxStudyingCard(m_email){
+		var m_email = m_email;
+		var quizcard_history = "학습중";
+		var data = {
+				m_email : m_email,
+				quizcard_history : quizcard_history
+		};
+		$(".archiveBody").empty();
+		var tb = $("<table class='archiveTable' />");
+		var th = $("<tr class='archiveTh' />").append(
+				$("<td />").text("카드번호"),
+				$("<td />").text("카드이름"),
+				$("<td />").text("카테고리"),
+				$("<td />").text("마지막학습일"),
+				$("<td />").text("진행상황")
+				);
+		tb.append(th);
+		$.ajax({
+			url : "ajaxHistorySelect.do",
+			dataType: "json",
+			contentType : "application/json; charset=utf-8",
+			method : "POST",
+			data : JSON.stringify(data),
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+				console.log("데이터 길이: " + data.length);
+				if(data.length !== 0){
+					$.each(data, function(index, item){
+						var $no = item.quizcard_set_no;
+						var $name = item.quizcard_set_name;
+						var $category = item.quizcard_category;
+						var $date = item.quizcard_history_date;
+						var $history = item.quizcard_history;
+						var tr = $("<tr class='archiveTr' />").append(
+							$("<td />").text($no),
+							$("<td class='archiveNameTd' />").text($name),
+							$("<td />").text($category),
+							$("<td />").text($date),
+							$("<td />").text($history)
+						);
+						tb.append(tr);
+					})
+					$(".archiveBody").append(tb);
+				} else if(data.length === 0){
+					// return되는 값이 null이라면 생성한 퀴즈카드가 없다고 출력시키기. 리턴되는 값이 json형태다. length속성으로 함. 
+					var noResultCount = $(".noResult").length;
+					if(noResultCount >=1){
+						alert("학습중인 퀴즈카드가 없습니다.");
+						return false;
+					}
+					var str = "<div class='noResult' style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
+					str += "<span>학습중인 퀴즈카드가 없습니다.</span></div>";
+			        $(".archiveBody").append(str);
+					console.log("학습중인 퀴즈카드가 없습니다.");
+				}	
+			},
+			error : function(message){
+				console.log("호출 실패");
+				console.log(message);
+			}
+		})
+	}
 	
 	// Bookmark(즐겨찾기) 세트 조회해서 archiveBox에 출력시키기
 	function ajaxBookmarkCard(m_email){
 		$(".archiveBody").empty(); // 폼 안의 영역을 초기화 하고 리스트를 출력시킨다.
 		console.log("이메일 확인: " + m_email);
 		var tb = $("<table class='archiveTable' />");
+		var th = $("<tr class='archiveTh' />").append(
+				$("<td />").text("카드번호"),
+				$("<td />").text("카드이름"),
+				$("<td />").text("카테고리"),
+				$("<td />").text("     ")
+				);
+		tb.append(th);
 		$.ajax({
 			url: "ajaxBookmark.do?m_email=" + m_email,
 			type: "GET",
@@ -244,8 +448,9 @@
 						var $quizcard_category = item.quizcard_category;
 						var tr = $("<tr class='archiveTr' />").append(
 							$("<td />").text($quizcard_set_no),
-							$("<td />").text($quizcard_set_name),
-							$("<td />").text($quizcard_category)
+							$("<td class='archiveNameTd' />").text($quizcard_set_name),
+							$("<td />").text($quizcard_category),
+							$("<td />").html('<a><i class="fa-solid fa-star addStar" ></i></a>')
 						);
 						tb.append(tr);
 					})
@@ -258,7 +463,7 @@
 						return false;
 					}
 					var str = "<div class='noResult' style='display: flex; justify-content: center; margin-top: 50px; font-size: 20px;'>";
-					str += "<span>아직 추가한 즐겨찾기가 없습니다.</span></div>";
+					str += "<span>즐겨찾기에 등록된 카드가 없습니다.</span></div>";
 			        $(".archiveBody").append(str);
 					console.log("아직 추가한 즐겨찾기가 없습니다.");
 				}  
@@ -268,7 +473,37 @@
 				console.log(responseText);
 			}
 		}) // ajax 끝
-	} // function 이벤트 끝.
+	} // function 이벤트 끝. 
+	
+	// 아카이브 박스 즐겨찾기(별표모양) 클릭 => 즐겨찾기 해제하기 
+	$(document).on("click", ".addStar", function(){
+		var memail = $("#session_user").val();
+		var setNo = $(this).closest('tr').children().eq(0).text();
+		var check = confirm("즐겨찾기를 해제하시겠어요?");
+		if(check){
+			$.ajax({
+				url: "ajaxBookmarkDelete.do",
+				data: {
+					m_email : memail,
+					quizcard_set_no : setNo
+				},
+				dataType: "text",
+				method : "POST",
+				success: function(message){
+					console.log("호출 성공");
+					if(message === "OK"){
+						alert("즐겨찾기 목록에서 지워졌습니다.");
+						ajaxBookmarkCard(memail);
+					} else {
+						alert("명령 처리 중 오류 발생. 관리자에게 문의하세요");
+						return false;
+					}
+				}
+			})
+		} else {
+			return false;
+		}
+	})
 	
 
 	// 내가 만든 세트 조회하기 
@@ -277,6 +512,13 @@
 		var m_email = m_email;
 		
 		var tb = $("<table class='archiveTable' />");
+		var th = $("<tr class='archiveTh' />").append(
+				$("<td />").text("카드번호"),
+				$("<td />").text("카드이름"),
+				$("<td />").text("생성일/수정일"),
+				$("<td />").text("카테고리")
+				);
+		tb.append(th);
 		$.ajax({
 			url: "ajaxMyQuizcard.do",
 			type: "GET",
@@ -298,7 +540,7 @@
 						var $quizcard_category = item.quizcard_category;
 						var tr = $("<tr class='archiveTr' />").append(
 							$("<td />").text($quizcard_set_no),
-							$("<td />").text($quizcard_set_name),
+							$("<td class='archiveNameTd' />").text($quizcard_set_name),
 							$("<td />").html($quizcard_set_cdate + "<br>" + $quizcard_set_udate),
 							$("<td />").text($quizcard_category)
 						);
@@ -337,7 +579,14 @@
 				return false;
 			}
 		} else{
-			$(".archiveBox").toggle();
+			$(".archiveBox").toggle(function(){
+				$(".archiveBox").css("display", "block");
+			},function(){
+				ajaxStudyingCard(m_email);
+				$("#archiveStudyingA").css("color", "teal");
+			}); 
+			
+			
 		}
 	})
 	

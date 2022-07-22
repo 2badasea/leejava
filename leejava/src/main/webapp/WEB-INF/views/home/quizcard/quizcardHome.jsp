@@ -19,10 +19,11 @@
 	.quizcardTable{
 		margin-top: 5%;
 	}
-	tbody > tr > td:nth-child(4):hover{
+	 
+	.quizcardTable td:nth-child(4):hover{
 		cursor: pointer;
 	}
-	tbody > tr > td:nth-child(6):hover{
+	.quizcardTable td:nth-child(6):hover{
 		cursor: pointer;
 	}
 	
@@ -248,7 +249,7 @@
 	console.log("현재 로그인 계정 조회: " + m_email);
 	
 	// 퀴즈카드 before페에지로 이동	
-	$("tbody> tr > td:nth-child(4)").on("click", function(){
+	$(".quizcardTable td:nth-child(4)").on("click", function(){
 		var setNo = $(this).parent().find("td").eq(0).text();
 		location.href="quizcardBefore.do" + "?set_no=" + setNo + "&m_email=" + m_email;
 	})
@@ -264,7 +265,7 @@
 	})
 	
 	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
-	$("tbody> tr > td:nth-child(6)").on("click", function(e){
+	$(".quizcardTable td:nth-child(6)").on("click", function(e){
 		console.log("유저 닉네임 클릭");
 		let email;
 		console.log( $(e.target).text()); 

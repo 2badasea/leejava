@@ -64,4 +64,16 @@ public interface QuizcardMapper {
 	int quizcardLikeitUpdate(QuizcardVO qvo);
 	// 퀴즈카드 아카이브 박스 즐겨찾기 리스트 호출
 	List<QuizcardVO> ajaxBookmark(QuizcardVO qvo);
+	// 학습중인 세트 있는지 조회
+	boolean ajaxHistory(QuizcardVO qvo);
+	// 학습주인 세트 최초 insert
+	int ajaxHistoryInsert(QuizcardVO qvo);
+	// 학습중인 세트 update
+	int ajaxHistoryUpdate(QuizcardVO qvo);
+	// 퀴즈카드 히스토리 아카이브에 출력시킬 리스트 조회
+	List<QuizcardVO> ajaxHistorySelect(QuizcardVO qvo);
+	// 퀴즈카드 스크랩 문제 아카이브 영역 출력
+	List<QuizcardVO> ajaxArchiveScrapSelect(QuizcardVO qvo);
+	// 퀴즈카드 스크랩(아카이브 박스) 삭제 구현
+	int ajaxScrapDelete(QuizcardVO qvo);
 }

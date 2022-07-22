@@ -190,6 +190,42 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.ajaxBookmark(qvo);
 	}
 
+	@Override
+	public boolean ajaxHistory(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxHistory(qvo);
+	}
+
+	@Override
+	public int ajaxHistoryInsert(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxHistoryInsert(qvo);
+	}
+
+	@Override
+	public int ajaxHistoryUpdate(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxHistoryUpdate(qvo);
+	}
+
+	@Override
+	public List<QuizcardVO> ajaxHistorySelect(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxHistorySelect(qvo);
+	}
+
+	@Override
+	public List<QuizcardVO> ajaxArchiveScrapSelect(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxArchiveScrapSelect(qvo);
+	}
+
+	@Override
+	public int ajaxScrapDelete(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.ajaxScrapDelete(qvo);
+	}
+
 
 
 }

@@ -9,14 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -637,15 +636,44 @@ public class MemberController {
 		mvo.setM_password(m_password);
 		boolean b = memberDao.ajaxPwdCheck(mvo);
 		String message = "";
-		if(b) {
+		if(b) {  // true가 리턴된 경우(입력한 이메일과 비밀번호로 조회결과 없음)  
 			System.out.println("b의 값: " + b);
-			message  ="NO";
+			message  ="NO"; 
 			return new ResponseEntity<String>(message, HttpStatus.OK);
-		} else {
-			System.out.println("b의 값: " + b);
+		} else { // false가 리턴된 경우(입력한 이메일과 비밀번호와 일치)
+			System.out.println("b의 값: " + b);  
 			message = "YES";
 			return new ResponseEntity<String>(message, HttpStatus.OK);
 		}
+	}
+	
+	// 비밀번호 업데이트 ajax
+	@ResponseBody
+	@PostMapping(value= "ajaxNewPwdUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxNewPwdUpdate(@RequestBody Map<String, Object> map, MemberVO mvo){
+		
+		System.out.println("map의 형태: " + map);
+		String password = (String) map.get("m_password");
+		String m_email = (String) map.get("m_email");
+		System.out.println("조회: " + m_email  + ", " +  password);
+		
+		// 새로운 m_salt값 생성
+		String m_salt = SHA256Util.generateSalt();
+		// 암호화가 적용된 새로운 비밀번호 생성
+		String m_password = SHA256Util.getEncrypt(password, m_salt); 
+		mvo.setM_email(m_email);
+		mvo.setM_salt(m_salt);
+		mvo.setM_password(m_password);
+		int n = memberDao.memberUpdate(mvo);
+		String message = "";
+		if(n == 1) {
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
+		}
+		
 	}
 	
 	

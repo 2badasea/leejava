@@ -695,7 +695,7 @@ label {
 	    			$("#beforePwd").attr("readonly", "readonly");
 	    			$('.newPwdBox').css("display", "block");
 	    		} else {
-	    			alert("비밀번호를 확인해주세요");
+	    			alert("비밀번호가 일치하지 않습니다.");
 	    			$("#beforePwd").val('').focus();
 	    			return false;
 	    		}
@@ -751,6 +751,31 @@ label {
 	        m_password : password,
 	        m_email : email
 	    };
+	    // 기존에 새로운 비밀번호를 설정하는 ajax구문이 있지만, 새롭게 정의(m_salt값, password값 업데이트)
+	    $.ajax({
+	    	url: "ajaxNewPwdUpdate.do",
+	    	type: "POST",
+	    	dataType: "text",
+	    	contentType: "application/json; charset=utf-8",
+	    	data : JSON.stringify(data),
+	    	success: function(message){
+	    		console.log("호출 성공");
+	    		if(message === "YES"){
+	    			alert("비밀번호 변경이 성공했습니다.");
+	    			location.reload();
+	    		} else {
+	    			alert("비밀번호 변경이 실패했습니다. 다시 진행해주세요");
+	    			$(".passwordCloseBtn").click();
+	    		}
+	    	},
+	    	error: function(message){
+	    		console.log("호출 실패");
+	    		console.log(message);
+	    		$(".passwordCloseBtn").click();
+	    	}
+	    	
+	    })
+	    
 	    
 	})
 	
@@ -765,6 +790,7 @@ label {
 	// 패스워드 변경 모달창 닫기
 	$(".passwordCloseBtn").on("click", function(){
 	    console.log("패스워드 모달창 닫기");
+	    alert("비밀번호 변경이 취소되었습니다.");
 	    $("#passwordFrm")[0].reset();
 	    $("#beforePwd").removeAttr("readonly");
 	    $('.password_modal_container').css("display", "none");

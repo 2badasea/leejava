@@ -87,4 +87,9 @@ public class Search extends Paging {
 	private String quizcard_reply_status;		 // 대댓글 여부 상태
 	// ======================================================================
 	
-}
+	// quizcard_history 테이블
+	private String quizcard_history; // 학습진도 상태
+	private String quizcard_history_date; // 최근학습날짜
+
+
+}	

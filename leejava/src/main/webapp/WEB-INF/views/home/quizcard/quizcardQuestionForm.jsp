@@ -325,9 +325,7 @@
             $(item).find('.questionFormBody').data("no", (index + 1));
             $(item).find('.deleteQuestionBtn').data("no", (index+1));
         })
-        
         location.reload();
-		        
 	})
 	
 	
@@ -338,7 +336,6 @@
         console.log("삭제되기 전 박스갯수(= 문제갯수): " + boxCount);
 		// 화면상에서 요소를 지운다.
 		$(this).closest('.questionForm').remove();
-		
 		
         // 삭제할 문제 번호.
 		var qno = $(e.target).data("no");
@@ -376,7 +373,6 @@
 			$(".addQuestionBtn:first").css("display", "block");
 		}
 		location.reload();
-		
 	})
        
 	function questionUpdateFnc( qno, count ){
@@ -409,7 +405,6 @@
 		})
 		
 	}
-	
 	
 	// 힌트 클릭.
 	$(document).on("click", '.hintCreateBtn', function () {

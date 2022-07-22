@@ -42,10 +42,10 @@ public class QuizcardVO {
 	private String quizcard_reply_update; // 댓글 수정시간
 	private String quizcard_reply_status; // 대댓글 여부 상태
 	
-	// quizcard_scrap 특정 문제번호들만 따로 모아놓은 테이블. 외래키로만 구성.
-		// m_email의 경우엔 외래키.
-		// quizcard_no 외래키 => 세트번호 + 문제번호로 구성. 
 	
+	// quizcard_history 테이블
+	private String quizcard_history; // 학습진도 상태
+	private String quizcard_history_date; // 최근학습날짜
 	
 	
 }

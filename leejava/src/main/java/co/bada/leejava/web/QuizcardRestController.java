@@ -6,16 +6,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -378,4 +382,73 @@ public class QuizcardRestController {
 		list = quizcardDao.ajaxBookmark(qvo);
 		return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.OK);
 	}
+	
+	// 퀴즈카드 히스토리 insert & update
+	@RequestMapping(value = "ajaxHistory.do", method = {RequestMethod.POST, RequestMethod.PUT}, produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxHistory(@RequestBody QuizcardVO qvo){
+		
+		System.out.println("파라미터 qvo값 조회: " + qvo);
+		String responseText = "";
+		boolean b = quizcardDao.ajaxHistory(qvo);
+		if(b) {  // true인 경우. => 해당 quizcard_set_no  데이터로 history테이블에 존재한다는 뜻. => update 실행
+			int m = quizcardDao.ajaxHistoryUpdate(qvo);
+			if(m == 1) {
+				responseText = "UPDATE";
+				return new ResponseEntity<String>(responseText, HttpStatus.OK);
+			} else {
+				responseText  = "NOTUPDATE";
+				return new ResponseEntity<String>(responseText, HttpStatus.NOT_MODIFIED);
+			}
+		} else { // false인 경우 => 최초. insert실행. 
+			String quizcard_history = "학습중";
+			qvo.setQuizcard_history(quizcard_history);
+			int n = quizcardDao.ajaxHistoryInsert(qvo);
+			if(n == 1) {
+				responseText = "INSERT";
+				return new ResponseEntity<String>(responseText, HttpStatus.OK);
+			} else {
+				responseText =  "NOTINSERT";
+				return new ResponseEntity<String>(responseText, HttpStatus.NOT_IMPLEMENTED);
+			}
+		}
+	}
+	
+	// 아카이브 박스 현재 학습중인 세트 조회하기 
+	@PostMapping(value = "ajaxHistorySelect.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<QuizcardVO>> ajaxHistorySelect(@RequestBody QuizcardVO qvo){
+		
+		logger.info("ajax로 넘어온 @RequestBody의 값: " + qvo);
+		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
+		list = quizcardDao.ajaxHistorySelect(qvo);
+		System.out.println(list);
+		return new ResponseEntity<List<QuizcardVO>>(list,HttpStatus.OK);
+	}
+	
+	// 아카이브 박스 스크랩 목록 출력시키기
+	@PostMapping(value = "ajaxArchiveScrapSelect.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<QuizcardVO>> ajaxScrapSelect(@RequestBody Map<String, String> map, QuizcardVO qvo){
+		
+		System.out.println("이메일 값 조회: " + map.get("m_email"));
+		qvo.setM_email(map.get("m_email"));
+		List<QuizcardVO> list = new ArrayList<>();
+		list = quizcardDao.ajaxArchiveScrapSelect(qvo);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	// 아카이브 박스 스크랩 삭제 버튼 클릭
+	@DeleteMapping(value = "ajaxScrapDelete.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxScrapDelete(@RequestBody QuizcardVO qvo){
+		
+		System.out.println("넘어온 qvo값 확인: " + qvo);
+		String message = "";
+		int n = quizcardDao.ajaxScrapDelete(qvo);
+		if(n ==1) {
+			message = "삭제되었습니다.";
+		} else {
+			message = "삭제실패";
+		}
+		return new ResponseEntity<>(message, HttpStatus.OK);
+		
+	}
+	
 }

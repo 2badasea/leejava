@@ -219,7 +219,7 @@
 			QUIZCARD_QUESTION_NO
 	</select>
 	
-	<!-- 퀴즈카드 북마크 추가 quizcard before 페이지 영역 -->
+	<!-- 퀴즈카드 북마크(즐겨찾기) 추가 quizcard before 페이지 영역 -->
 	<insert id="ajaxBookmarkAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		INSERT 
 			INTO QUIZCARD_BOOKMARK 
@@ -229,7 +229,7 @@
 		)
 	</insert>
 	
-	<!-- 퀴즈카드 북마크 취소 quizcard before.jsp  -->
+	<!-- 퀴즈카드 북마크(즐겨찾기) 취소 quizcard before.jsp  -->
 	<delete id="ajaxBookmarkDelete" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		DELETE FROM QUIZCARD_BOOKMARK
 		WHERE M_EMAIL = #{m_email} 
@@ -280,4 +280,58 @@
 			ON Q.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
 		WHERE B.M_EMAIL  = #{m_email}
 	</select>
+	
+	<!-- quizcard_history에 기존에 존재하는 데이터가 존재하는지 -->
+	<select id="ajaxHistory" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="boolean">
+		SELECT 
+			CASE WHEN COUNT(*) = 0 THEN 'FALSE' ELSE 'TRUE' END 
+		FROM QUIZCARD_HISTORY
+		WHERE 
+			QUIZCARD_SET_NO = #{quizcard_set_no} AND M_EMAIL = #{m_email}
+	</select>
+	
+	<!-- 퀴즈카드 히스토리 최초 => insert시키기  -->
+	<insert id="ajaxHistoryInsert" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_HISTORY
+			( QUIZCARD_SET_NO, QUIZCARD_SET_NAME, QUIZCARD_CATEGORY, QUIZCARD_HISTORY, QUIZCARD_HISTORY_DATE, M_EMAIL )
+		VALUES
+			( #{quizcard_set_no}, #{quizcard_set_name}, #{quizcard_category}, #{quizcard_history}, SYSDATE, #{m_email} )
+	</insert>
+	
+	<!-- 퀴즈카드 히스토리 업데이트 (학습진도상태와 학습날짜만 수정된다. )-->
+	<update id="ajaxHistoryUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD_HISTORY 
+			SET 
+				QUIZCARD_HISTORY = NVL(#{quizcard_history}, QUIZCARD_HISTORY),
+				QUIZCARD_HISTORY_DATE = SYSDATE
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} AND M_EMAIL = #{m_email}
+	</update>
+	
+	<!-- 퀴즈카드 히스토리 아카이브 박스(학습중인 세트) 출력 진행상황이 studying인 것 -->
+	<select id="ajaxHistorySelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+		FROM QUIZCARD_HISTORY
+		WHERE M_EMAIL = #{m_email} 
+			AND QUIZCARD_HISTORY = #{quizcard_history}
+	</select>
+	
+	<!-- 퀴즈카드 스크랩문제 아카이브 박스에 출력 -->
+	<select id="ajaxArchiveScrapSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT  S.QUIZCARD_INDEX, Q.QUIZCARD_SET_NO, Q.QUIZCARD_NO, C.QUIZCARD_SET_NAME, G.QUIZCARD_CATEGORY
+			FROM QUIZCARD_SCRAP  S INNER JOIN QUIZCARD_QUESTION Q
+				ON S.QUIZCARD_INDEX  = Q.QUIZCARD_INDEX
+			INNER JOIN QUIZCARD C
+				ON Q.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO 
+			INNER JOIN QUIZCARD_CATEGORY G
+				ON C.QUIZCARD_SET_NO  = G.QUIZCARD_SET_NO
+		WHERE S.M_EMAIL = #{m_email}
+	</select>
+	
+	<!-- 아카이브 박스 스크랩 문제.  삭제 이벤트 -->
+	<delete id="ajaxScrapDelete" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE 
+			FROM QUIZCARD_SCRAP 
+		WHERE M_EMAIL  = #{m_email} 
+			AND QUIZCARD_INDEX = #{quizcard_index} 
+	</delete>
 </mapper>

@@ -187,7 +187,7 @@ textarea {
 				<h3 id="questionOrderList"></h3>
 				<br>
 				<button id="nextQuestionBtn">다음문제</button>
-				<button id="studyEndBtn">학습종료</button>
+				<button id="studyEndBtn">다음에 풀기</button>
 				<!--진행중인문제번호/총문제수,  다음문제버튼, 종료버튼,-->
 			</div>
 		</div>
@@ -544,15 +544,36 @@ textarea {
 			})
 		})
 		
-		
 		// 결과 모달창 닫기 
 		$(".resultCloseBtn").on("click", function(){
+			var m_email = $("#session_user").val();
+			// quizard_history 값 "FINISH"로 수정해준다.
+			var quizcard_history = "FINISH";
+			var data = {
+					m_email : m_email,
+					quizcard_set_no : setNo,
+					quizcard_history : quizcard_history
+			};
+			$.ajax({
+				url: "ajaxHistory.do",
+				method : "PUT",
+				dataType: "text",
+				async: false,
+				data : JSON.stringify(data),
+				contentType: "application/json; charset=utf-8",
+				success: function(message){
+					console.log("호출 성공");
+					alert("퀴즈세트 정보창으로 돌아갑니다.");
+				},
+				error: function(message){
+					console.log("호출 실패");
+				}
+			})
 			$(".result_modal_container").css("display", "none");
 			// 모달창 닫고 난 뒤 외부영역 스크롤 활성화
 			$("body").css("overflow", "unset");
-	 		alert("퀴즈세트 정보창으로 돌아갑니다.");
-	 		var m_email = $("#session_user").val();
 			location.href="quizcardBefore.do?set_no=" + setNo  + "&m_email=" + m_email;
+			
 		})
 		
 		// 틀린문제 조회 힌트창 열기
@@ -568,7 +589,7 @@ textarea {
 		// 학습종료 버튼 구현. 
 		$("#studyEndBtn").on("click", function(){
 			console.log("학습 종료");
-			var finishCheck = confirm("정말 종료하시겠어요?");
+			var finishCheck = confirm("정말 종료하시겠어요? \n지금 종료하더라도 학습중인 세트에서 조회할 수 있습니다.");
 			if(finishCheck){
 				var m_email = $("#session_user").val();
 				location.href="quizcardBefore.do?set_no=" + setNo  + "&m_email=" + m_email;
@@ -576,11 +597,7 @@ textarea {
 				return false;
 			}
 		})
-		
-		// 퀴즈카드 좋아요 버튼 클릭. 
-		
 	})
-	
 	
 </script>
 </html>

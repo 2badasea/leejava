@@ -210,7 +210,6 @@ fieldset {
 }
 .userInfo_quizcardTr:hover{
 	cursor: pointer;
-	
 }
 .userInfoFieldset{
 	border: 1px solid teal;
@@ -236,7 +235,7 @@ fieldset {
 </style>
 </head>
 <body>
-<input type="hidden" id="quizcardBeforeSetNo" value="${qvo.quizcard_set_no }">
+<input type="hidden" id="quizcardBeforeSetNo" value="${qvo.quizcard_set_no }" data-category="${qvo.quizcard_category }" data-setname="${qvo.quizcard_set_name }">
 <div class="quizcardInfoWrapper">
         <div class="quizcardInfo">
             <h1>${qvo.quizcard_set_name }</h1>
@@ -409,7 +408,6 @@ fieldset {
 				console.log("호출 실패");
 				console.log(responseText);
 			}
-			
 		})
 	})
 	
@@ -545,10 +543,39 @@ fieldset {
 		// 세트번호와 학습방식의 값을 날린다. 
 		var setNo = $("#modalHeader").data("setno");
 		var studyType = $("input[name='studyType']:checked").val();
-		console.log("선택한 세트번호: " + setNo);
-		console.log("선택한 학습모드: " + studyType);
-		// 두 값을 컨트롤러를 통해 페이지에 넘긴다. 그리고 해당 페이지에서 restController를 통해 작업!
-		location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
+		// 세트이름, 카테고리, 세트번호는 quizcard_history 테이블에 insert된다.
+		var setName = $("#quizcardBeforeSetNo").data("setname");
+		var setCategory = $("#quizcardBeforeSetNo").data("category");
+		var memail = $("#session_user").val();
+		var data = {
+				quizcard_set_no : setNo,
+				quizcard_set_name : setName,
+				quizcard_category : setCategory,
+				m_email : memail
+		};
+		// ajax 호출 우선.. async: true로 해보고, 에러가 생기면 false로 해보자
+		$.ajax({
+			url: "ajaxHistory.do",
+			method : "POST",
+			dataType: "text",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(data),
+			success: function(responseText){
+				console.log("호출 성공");
+				if(responseText === "UPDATE" || responseText === "INSERT"){
+					// 두 값을 컨트롤러를 통해 페이지에 넘긴다. 그리고 해당 페이지에서 restController를 통해 작업!
+					location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
+				} else {
+					console.log(responseText);
+					location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
+				}
+			},
+			error: function(responseText){
+				console.log("호출 실패");
+				console.log(responseText);
+				location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
+			}
+		})
 	})
 	
 	

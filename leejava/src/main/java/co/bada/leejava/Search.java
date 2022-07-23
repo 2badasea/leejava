@@ -70,7 +70,7 @@ public class Search extends Paging {
 	private String quizcard_set_status;			// 퀴즈카드, 상태( 접근권한) 
 	private String quizcard_set_intro;			// 퀴즈카드 소개(설명) 
 	private int quizcard_set_hit;				// 퀴즈카드 조회수
-	private String quizcard_type;				// 퀴즈카드 유형
+	private String quizcard_type;				// 퀴즈카드 유형 (box형인지 아닌지)
 	
 	private String quizcard_category;			// 퀴즈카드 카테고리
 	
@@ -85,11 +85,11 @@ public class Search extends Paging {
 	private String quizcard_reply_wdate; 		 // 댓글 작성시간
 	private String quizcard_reply_update; 		// 댓글 수정시간
 	private String quizcard_reply_status;		 // 대댓글 여부 상태
-	// ======================================================================
 	
 	// quizcard_history 테이블
 	private String quizcard_history; // 학습진도 상태
 	private String quizcard_history_date; // 최근학습날짜
 
+	// ======================================================================
 
 }	

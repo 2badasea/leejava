@@ -130,6 +130,109 @@ a:hover {
 .scrapTd:hover {
 	cursor: pointer;
 }
+/* ************* 스크랩 모달창 스타일 ************* */
+.scrap_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.scrap_modal_content {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 45%;
+    height: auto;
+    z-index: 3;
+    background-color:  white;
+    border: 0.5px solid teal;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.scrap_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: #2E3856;
+    opacity: 0.8;
+    transition: 2s;
+}
+.questionBox{
+	margin-top: 10px;
+    width: 95%;
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid teal;
+}
+.hidden{
+    display: none;
+}
+.show{
+    display: block;
+}
+.scrap_modal_content textarea{
+    resize: none;
+    border-radius: 20px;
+    padding: 15px;
+    color: teal;
+    font-size: large;
+    font-weight: bold;
+}
+.answerCheckBtn{
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+}
+.scrap_modal_content button {
+    border-radius: 20px;
+    width: auto;
+    height: auto;
+    font-weight: 900;
+    color: teal;
+    background-color:  whitesmoke;
+    border-style: none;
+    padding: 10px;
+}
+.scrap_modal_content button:hover{
+    cursor: pointer;
+    background-color: teal;
+    color: whitesmoke;
+    transition: 1s;
+}
+.hintBtn{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.scrapCloseBtn{
+	min-width: 100px;
+}
+.inputAnswerReset,
+.scrapSetNoA {
+	color: teal;
+}
+.inputAnswerReset{
+	border-style: none;
+	border-radius: 20px;
+	width: auto;
+	padding: 5px;
+	color: teal;
+	background-color: whitesmoke;
+	float: right;
+	margin-bottom: -5px;
+	margin-right: 15px;
+}
+.inputAnswerReset:hover {
+	cursor: pointer;
+	background-color: teal;
+	color: whitesmoke;
+	transition: 1s;
+}
 </style>
 </head>
 <body>
@@ -190,7 +293,7 @@ a:hover {
 	                <!--   is(":selected") 요소만 선발하기-->
 	                <span>카테고리 선택</span>
 	                <select id="quizcard_category_first" name="quizcard_category_first">
-	                    <option value="All">모두 선택</option>
+	                    <option value="ALL">모두 선택</option>
 	                    <option value="Java">Java</option>
 	                    <option value="Javascript">Javascript</option>
 	                    <option value="HTML&CSS">HTML&CSS</option>
@@ -199,7 +302,7 @@ a:hover {
 	                    <option value="React">React</option>
 	                    <option value="Vue">Vue</option>
 	                    <option value="DB">DB</option>
-	                    <option value="direct">직접입력</option>
+	                    <option value="DIRECT">직접입력</option>
 	                </select>
 	                    <input type="text" style="display: none;" id="category_direct" name="">
 	                <br>
@@ -229,6 +332,56 @@ a:hover {
             </div>
         </div>
         <div class="quizcard_modal_layer"></div>
+    </div>
+<!-------------- 스크랩 문제 모달창 -------------- -->
+
+     <div class="scrap_modal_container">
+        <div class="scrap_modal_content">
+            <div class="scrap_modal_header" align="center">
+                  <span style="font-size: 25px;" class="scarpQuizcardNo"><b></b></span>
+                  <br>
+                  <span style="float: right;" class="scrapQuizcardSetNo"></span>
+                  <br>	
+                  <button class="nameBtn remoteBtn">문제 보기</button>
+                  <button class="hintBtn remoteBtn">힌트 보기</button>
+                  <button class="answerBtn remoteBtn">답안 보기</button>
+            </div>
+            <br>
+            <hr>
+            <div class="scrap_modal_body">
+                <div class="sname questionBox">
+                    <div class="snameEvent" style="display: flex; justify-content: space-around;">
+                        <div>
+                            <span>문제</span>
+                            <br>
+                            <textarea id="questionArea" cols="38" rows="15" readonly="readonly"></textarea>
+                        </div>
+                        <div>
+                            <span>답안 입력</span>
+                            <input type="button" class="inputAnswerReset" value="답안 초기화">
+                            <br>
+                            <textarea id="answerInputArea" cols="38" rows="15"></textarea>
+                        </div>
+                    </div>
+                    <button class="answerCheckBtn">답안 체크</button>
+                </div>
+                <div class="shint questionBox" align="center">
+                    <span>힌트</span>
+                    <br>
+                    <textarea id="hintArea" cols="50" rows="15" readonly="readonly"></textarea>
+                </div>
+                <div class="sanswer questionBox" align="center">
+                    <span>답안</span>
+                    <br>
+                    <textarea id="answerArea" cols="50" rows="15" readonly="readonly"></textarea>
+                </div>
+            </div>
+            <br>
+            <div class="scrap_modal_footer">
+                  <button style="float: right;" class="scrapCloseBtn">닫기</button>
+            </div>
+        </div>
+        <div class="scrap_modal_layer"></div>
     </div>
 </body>
 <script>
@@ -320,9 +473,81 @@ a:hover {
 	}
 	
 	// 스크랩 리스트 클릭 => 모달창 호출. 
-	$(document).on("click", ".scrapTd", function(){
-		console.log("클릭 확인");
+	$(document).on("click", ".scrapTd", function(e){
+		 $('.scrap_modal_container').css("display", "block");
+         $(".questionBox").addClass('hidden');
+         $('.sname').removeClass('hidden');
+         $("body").css("position", "fixed");
+         $("body").css("overflow", "hidden");
+         var quizcard_no = $(e.target).closest('tr').children().eq(1).text();
+		 // 문제를 뿌려주는 이벤트를 별도로 정의(코드가 길어지기에)
+		 questionSelectFn(quizcard_no);
 	})
+	
+	// 스크랩 문제 출력시키는 함수 정의
+	function questionSelectFn(quizcard_no){
+		console.log("퀴즈카드 번호 확인: " + quizcard_no);
+		// ajax 호출 (getMapping 사용. json.stringify() 사용X )
+		$.ajax({
+			url: "scrapQuestionSelect.do",
+			data: {
+				quizcard_no : quizcard_no
+			},
+			method: "GET",
+			dataType: "json",
+			contentType: "application/text; charset=utf-8",
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+				$(".scarpQuizcardNo").text("스크랩 문제 번호  #" + data.quizcard_no);
+				$("#questionArea").val(data.quizcard_question_name);
+				$("#hintArea").val(data.quizcard_question_hint);
+				$("#answerArea").val(data.quizcard_question_answer);
+				$(".scrapQuizcardSetNo").html("세트번호: " + "<a class='scrapSetNoA'>" + data.quizcard_set_no + "</a>");			
+			},
+			error: function(){
+				console.log("호출 실패");
+			}
+		})		
+	}
+	
+	// 스크랩 문제 답안 비교
+	$(".answerCheckBtn").on("click", function(){
+		var myAnswer = $("#answerInputArea").val();
+		var answer = $("#answerArea").val();
+		if(myAnswer === answer){
+			alert("정답입니다.!!");
+		} else {
+			alert("답이 일치하지 않습니다.");
+			$("#answerInputArea").focus();
+		}
+	})
+	
+	// 스크랩 문제 답안 작성폼 리셋
+	$(".inputAnswerReset").on("click", function(){
+		$("#answerInputArea").val('').focus();
+	})
+	
+	// 스크랩문제 모달창 닫기
+    $(".scrapCloseBtn").on("click", function(){
+          $('.scrap_modal_container').css("display", "none");
+          // 답안 입력창 초기화 시키기
+          $("#answerInputArea").val(''); 
+          $("body").css("position", "unset");
+          $("body").css("overflow", "unset");
+    })
+    
+    // 스크랩 모달창 내부 (문제, 힌트, 답안 영역 전환)
+    $(".remoteBtn").on("click", function(){
+        $(".questionBox").removeClass('show').addClass('hidden');
+        if ( $(this).hasClass('nameBtn') ) {
+            $(".sname").addClass('show');
+        } else if( $(this).hasClass('hintBtn')){
+            $(".shint").addClass('show');
+        } else {
+            $('.sanswer').addClass('show');
+        }
+    })
 	
 	// 아카이브 스크랩 영역. 스크랩 취소 아이콘 이벤트 (동적태그 이벤트 적용해야 함)
 	$(document).on("click", ".scarpDelete", function(){
@@ -585,14 +810,13 @@ a:hover {
 				ajaxStudyingCard(m_email);
 				$("#archiveStudyingA").css("color", "teal");
 			}); 
-			
-			
 		}
 	})
 	
-	// 아카이브 외부 영역
+	// 아카이브 외부 영역 ( 스크랩 모달창을 눌러도 안 사라지도록 )
 	$(document).on("click", function(e){
-		if( $(e.target).closest(".archiveBox").length == 0  && !$(e.target).hasClass("archiveBtn")){
+		if( $(e.target).closest(".archiveBox").length == 0  && !$(e.target).hasClass("archiveBtn") 
+				&& $(e.target).closest('.scrap_modal_container').length == 0 ){
 			$(".archiveBox").css("display","none");
 		}
 	})
@@ -605,7 +829,7 @@ a:hover {
 		var m_email = $("#session_user").val();
 		console.log("m_email 확인: " + m_email);
 		console.log("세트이름 확인: " + $("#quizcard_set_name").val());
-		if( $("#quizcard_category_first").val() === "direct"  ){
+		if( $("#quizcard_category_first").val() === "DIRECT"  ){
 			 $("#quizcard_category_first").removeAttr('name');
 			 $("#category_direct").attr('name','quizcard_category_first');
 		}
@@ -632,7 +856,7 @@ a:hover {
 	
 	// 카테고리 selectbox 직접입력 이벤트
 	$("#quizcard_category_first").on("change", function () {
-	    if ($("#quizcard_category_first").val() === "direct") {
+	    if ($("#quizcard_category_first").val() === "DIRECT") {
 	        console.log("직접 입력 선택");
 	        $("#category_direct").css("display", "block").focus();
 	    } else {

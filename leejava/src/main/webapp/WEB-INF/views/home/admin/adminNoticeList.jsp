@@ -215,7 +215,7 @@ tr > td {
 		</div>
 	</div>
 </body>
-<script>
+<script> 
 	// 페이징 function 구현. 난 기존의 3개에다가, 검색항목인 제목, 내용, 카테고리, 작성자르르 더 넣양 함. 
 	function fn_prev(page, range, rangeSize, listSize, n_title, n_category, n_content, n_writer) {
 			var page = ((range - 2) * rangeSize) + 1;
@@ -274,7 +274,7 @@ tr > td {
 	}
 	
 	// 해당 구문은 동적으로 element가 생겼을 때 function을 사용할 수 있도록 해주는 구문이다. 
-	$(document).on('click', '#btnSearch', function(e) {
+	$(document).on('click', '#$btnSearch', function(e) {
 		e.preventDefault();
 		var url = "adminNoticeList.do";
 		url = url + "?n_title=" + $('#n_title').val();

@@ -2,6 +2,8 @@ package co.bada.leejava.quizcard;
 
 import java.util.List;
 
+import co.bada.leejava.Search;
+
 public interface QuizcardMapper {
 	
 	//	quizcard_set_ 생성 
@@ -76,4 +78,11 @@ public interface QuizcardMapper {
 	List<QuizcardVO> ajaxArchiveScrapSelect(QuizcardVO qvo);
 	// 퀴즈카드 스크랩(아카이브 박스) 삭제 구현
 	int ajaxScrapDelete(QuizcardVO qvo);
+	// 아카이브 스크랩 문제 모달창 호출
+	QuizcardVO scrapQuestionSelect(QuizcardVO qvo);
+	
+	// 페이징 처리를 위한 퀴즈카드 총 갯수를 구한다. (검색항목 3개 반영된 것) 
+	int getQuizcardListCnt(Search svo) throws Exception;
+	// 페이징 처리가 된 퀴즈카드 리스트 메인리스트에 출력
+	List<QuizcardVO> quizcardSearchSelect(Search svo) throws Exception;
 }

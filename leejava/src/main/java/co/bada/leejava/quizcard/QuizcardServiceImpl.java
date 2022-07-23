@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import co.bada.leejava.Search;
+
 @Repository("quizcardDao")
 public class QuizcardServiceImpl implements QuizcardService {
 	@Autowired
@@ -224,6 +226,24 @@ public class QuizcardServiceImpl implements QuizcardService {
 	public int ajaxScrapDelete(QuizcardVO qvo) {
 		// TODO Auto-generated method stub
 		return map.ajaxScrapDelete(qvo);
+	}
+
+	@Override
+	public QuizcardVO scrapQuestionSelect(QuizcardVO qvo) {
+		// TODO Auto-generated method stub
+		return map.scrapQuestionSelect(qvo);
+	}
+
+	@Override
+	public int getQuizcardListCnt(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.getQuizcardListCnt(svo);
+	}
+
+	@Override
+	public List<QuizcardVO> quizcardSearchSelect(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.quizcardSearchSelect(svo);
 	}
 
 

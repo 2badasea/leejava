@@ -448,7 +448,12 @@ public class QuizcardRestController {
 			message = "삭제실패";
 		}
 		return new ResponseEntity<>(message, HttpStatus.OK);
-		
+	}
+	
+	// 스크랩 문제 호출
+	@GetMapping(value = "scrapQuestionSelect.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<QuizcardVO> scrapQuestionSelect(QuizcardVO qvo){
+		return new ResponseEntity<QuizcardVO>(quizcardDao.scrapQuestionSelect(qvo), HttpStatus.OK);
 	}
 	
 }

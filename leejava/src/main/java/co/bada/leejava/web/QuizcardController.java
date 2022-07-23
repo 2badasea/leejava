@@ -9,16 +9,13 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import co.bada.leejava.Search;
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
 
@@ -31,13 +28,39 @@ public class QuizcardController {
 	
 	// 퀴즐렛 학습 페이지 이동
 	@RequestMapping("/quizcard.do")
-	public String quizcard(HttpServletRequest request, Model model) {
+	public String quizcard(Model model
+			,@RequestParam(required = false, defaultValue = "1") int page
+			,@RequestParam(required = false, defaultValue = "1") int range
+			,@RequestParam(required = false, defaultValue = "ALL") String quizcard_category
+			,@RequestParam(required = false) String quizcard_set_name
+			,@RequestParam(required = false) String m_nickname
+			,Search svo) throws Exception {
+		
+		// 지금 전달하는 svo는 아무런 값이 들어있지 않은 svo객체의 필드값들이다.
+			// 페이징박스(prev, 페이지넘버, next 버튼의 이벤트 파라미터로 사용된다. 검색항목이3개니, 총 9개 "serrch"값 정의)
+		model.addAttribute("search", svo);
+		// 검색항목 3개를 svo객체에 담아서 페이징 처리된 파라미터 전달할 준비
+		svo.setQuizcard_category(quizcard_category);
+		svo.setQuizcard_set_name(quizcard_set_name);
+		svo.setM_nickname(m_nickname);
+		// 페이징 처리를 위한 게시글의 총 갯수를 구한다. ( pageInfo(page, range, listCnt). 그리고 mapper쿼리문 정의)
+		int listCnt = quizcardDao.getQuizcardListCnt(svo);
+		
+		// 페이징 처리를 위한 필드값들을 생성한다.
+		svo.pageinfo(page, range, listCnt);
+		
+		List<QuizcardVO> list = quizcardDao.quizcardSearchSelect(svo);
+		System.out.println("list값: " + list);
+		
+		model.addAttribute("pagination", svo); // 페이징 처리 
+		model.addAttribute("quizcardList", list); // 기존의 공지사항 리스트 대신
+		
 		
 		// 여기로 올 때 현재 생성되어 있는 퀴즐렛 quizcard들이 목록으로 출력되도록 한다.
-		model.addAttribute("quizcardList", quizcardDao.quizcardList());
-		List<QuizcardVO> list = new ArrayList<>();
-		list = quizcardDao.quizcardList();
-		logger.info("메인페이지에 넘어갈 퀴즈카드 리스트: " + list);
+//		model.addAttribute("quizcardList", quizcardDao.quizcardList());
+//		List<QuizcardVO> list = new ArrayList<>();
+//		list = quizcardDao.quizcardList();
+//		logger.info("메인페이지에 넘어갈 퀴즈카드 리스트: " + list);
 		return "home/quizcard/quizcardHome";
 	}
 	

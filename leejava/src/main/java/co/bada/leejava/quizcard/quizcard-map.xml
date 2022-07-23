@@ -334,4 +334,47 @@
 		WHERE M_EMAIL  = #{m_email} 
 			AND QUIZCARD_INDEX = #{quizcard_index} 
 	</delete>
+	
+	<!-- 아카이브 스크랩 문제 모달창 호출 -->
+	<select id="scrapQuestionSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+			FROM  QUIZCARD_QUESTION 
+		WHERE QUIZCARD_NO = #{quizcard_no}
+	</select>
+	
+	<!-- 페이징 처리( pageInfo(page, range, listCnt) )를 위한 퀴즈카드 총 갯수 -->
+	<select id="getQuizcardListCnt" resultType="int">
+		SELECT  COUNT(*)
+		    FROM QUIZCARD Q INNER JOIN MEMBER M
+		    	ON Q.M_EMAIL = M.M_EMAIL
+		    INNER JOIN QUIZCARD_CATEGORY C 
+		    	ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		<!-- 검색 요소로는 카테고리, 세트이름, 만든이(닉네임)으록 구성된다. -->
+		<trim prefix="where" prefixOverrides="and | or">
+		 	<if test="quizcard_category !='ALL' ">AND C.QUIZCARD_CATEGORY LIKE '%'||#{quizcard_category}||'%'</if>
+			<if test="quizcard_set_name != '' ">AND Q.QUIZCARD_SET_NAME LIKE '%'||#{quizcard_set_name}||'%'</if>
+			<if test="m_nickname !='' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+		</trim>
+	</select>
+	
+	<!-- 페이징 처리가 된 퀴즈카드 리스트. 퀴즈카드 메인에 출력 -->
+	<select id="quizcardSearchSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT *
+		FROM ( SELECT ROWNUM RN, A.*)
+		FROM ( SELECT * 
+		FROM QUIZCARD Q INNER JOIN MEMBER M
+			ON Q.M_EMAIL = M.M_EMAIL
+		INNER JOIN QUIZCARD_CATEGORY C 
+			ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO 
+		<trim prefix="where" prefixOverrides="and | or">
+		 	<if test="quizcard_category !='ALL' ">AND C.QUIZCARD_CATEGORY LIKE '%'||#{quizcard_category}||'%'</if>
+			<if test="quizcard_set_name != '' ">AND Q.QUIZCARD_SET_NAME LIKE '%'||#{quizcard_set_name}||'%'</if>
+			<if test="m_nickname !='' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+			AND Q.QUIZCARD_SET_STATUS = 'PUBLIC'
+		</trim>
+		ORDER BY Q.QUIZCARD_SET_CDATE DESC
+		) A
+		) 
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
 </mapper>

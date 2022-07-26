@@ -11,7 +11,7 @@
 	crossorigin="anonymous"></script>
 <style>
 .loginWrapper {
-	width: 80em;
+	width: 90em;
 }
 
 .loginFrame {
@@ -20,8 +20,8 @@
 	padding: 50px;
 	width: 40%;
 	display: block;
-	margin-top: 10%;
-	margin-left: 15%;
+	margin-top: 15%;
+	margin-left: 30%;
 	margin-bottom: 10%;
 	z-index: 1;
 }

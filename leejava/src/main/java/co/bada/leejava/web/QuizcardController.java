@@ -52,11 +52,13 @@ public class QuizcardController {
 		List<QuizcardVO> list = quizcardDao.quizcardSearchSelect(svo);
 		System.out.println("list값: " + list);
 		
-		model.addAttribute("pagination", svo); // 페이징 처리 
-		model.addAttribute("quizcardList", list); // 기존의 공지사항 리스트 대신
+		// 페이지에 대한 정보를 보여주는 요소들.  Paging클래스에 있는 요소들이다.
+		model.addAttribute("pagination", svo); 
+		// 페이징 처리 결과로 화면에 출력될 게시글 리스트
+		model.addAttribute("quizcardList", list); 
 		
 		
-		// 여기로 올 때 현재 생성되어 있는 퀴즐렛 quizcard들이 목록으로 출력되도록 한다.
+		// 밑에 코드들은 페이징 처리하기 이전에 단순히 리스트를 출력할 때 사용했던 소스
 //		model.addAttribute("quizcardList", quizcardDao.quizcardList());
 //		List<QuizcardVO> list = new ArrayList<>();
 //		list = quizcardDao.quizcardList();
@@ -197,7 +199,7 @@ public class QuizcardController {
 		// 문제갯수만큼 반복문으로 DB에 저장된 quesiton들을 출력시킨다.
 		model.addAttribute("questionCount", quizcardQuestionCount);
 		
-		return "home/quizcard/quizcardQuestionForm";
+		return "home/quizcard/updateQuizcard";
 	}
 	
 	// 퀴즈카드 학습 시작 페이지 이동

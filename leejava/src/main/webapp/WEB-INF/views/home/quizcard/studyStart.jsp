@@ -13,31 +13,32 @@
 	margin-top : 8%;
 	margin-left: 10%;
 	margin-right: 10%;
-	padding: 50px;
+	padding: 30px;
 	border: 2px solid teal;
-	border-radius: 20px; background-color : white;
-	color: #05AA6D;
-	background-color: white;
+	border-radius: 20px;
+	background-color: white;   /*  white */
+	height: auto;
 }
 
 .questionBody {
 	display: flex;
+	justify-content: space-around;
 }
 
 .questionHint {
-	padding: 10px;
-	margin-left: 20%;
+	padding: 15px;
 	display: none; 
 	z-index: 3;
-	background-color: teal;
+	background-color: #2E3856;
 	color: white;
 	position: absolute;
+	width: 30%;
 }
 
 textarea {
 	resize: none;
-	width: 100%;
-	height: 90%;
+	width: 95%;
+	height: 75%;
 }
 
 .openHint {
@@ -53,7 +54,7 @@ textarea {
 	border-radius: 15px;
 	padding: 10px;
 	width: 45%;
-	height: 250px;
+	min-height: 250px;
 }
 .timerView{
 	color: tomato;
@@ -150,6 +151,81 @@ textarea {
 	color: tomato;
 	margin-left: 5px;
 }
+.questionForm button{
+	border-radius: 20px;
+    width: auto;
+    height: auto;
+    font-weight: 900;
+    color: teal;
+    background-color:  whitesmoke;
+    border-style: none;
+    padding: 10px;
+}
+.questionForm button:hover {
+	cursor: pointer;
+    background-color: teal;
+    color: whitesmoke;
+    transition: 1s;
+}
+.questionForm textarea {
+	border-radius: 20px;
+    padding: 15px;
+    color: teal;
+    font-size: large;
+    font-weight: bold; 
+}
+.closeHintBtn{
+	display: block;
+	margin: auto;
+	min-width: 100px;
+	width: auto;	
+}
+#studyHintArea{
+	background-color: whitesmoke;
+	color: black;
+}
+body {
+	background-color: #2E3856;
+}
+.wrongQuestionBody textarea{
+	font-size: larger;
+	padding: 15px; 
+	color: teal;
+	font-weight: 900;
+}
+.addScrapBtn{
+	border-radius: 20px;
+    width: auto;
+    height: auto;
+    font-weight: 900;
+    color: teal;
+    background-color:  whitesmoke;
+    border-style: none;
+    padding: 10px;
+}
+.addScrapBtn:hover{
+	cursor: pointer;
+    background-color: teal;
+    color: whitesmoke;
+    transition: 1s;
+}
+.wrongOpenHintBtn{
+	border-radius: 20px;
+    width: auto;
+    height: auto;
+    font-weight: 900;
+    color: teal;
+    background-color:  whitesmoke;
+    border-style: none;
+    padding: 10px;
+}
+.wrongOpenHintBtn:hover{
+	cursor: pointer;
+    background-color: teal;
+    color: whitesmoke;
+    transition: 1s;
+}
+
 </style>
 </head>
 <body>
@@ -160,32 +236,36 @@ textarea {
 		<!-- 문제 폼 영역  -->
 		<div class="questionForm">
 			<div class="questionHeader">
-				<h4>헤더 영억. 더 필요한 거 있으면 추가하도록</h4>
+				<h2 class="questionName" data-quizcardno=""></h2>
+				<br>
+				<hr>
 				<span class="timerView"></span>
 			</div>
 			<br>
 			<div class="questionBody">
 				<!--문제/힌트/답안-->
 				<div class="questionTitleForm">
-					<h4 class="questionName" data-quizcardno=""></h4>
-					<textarea name="" id="questionArea" cols="50" rows="10" readonly="readonly"></textarea>
+					<h3>문제</h3>
+					<textarea name="" id="studyQuestionArea" cols="50" rows="12" readonly="readonly"></textarea>
 				</div>
-				<button class="openHint">힌트보기</button>
+			
 				<div class="questionHint">
-					<h4>힌트</h4>
-					<textarea name="" id="hintArea" cols="50" rows="10" readonly="readonly"></textarea>
+					<h3>힌트</h3>
 					<br>
+					<textarea name="" id="studyHintArea" cols="50" rows="12" readonly="readonly"></textarea>
+					<br><br>
 					<button class="closeHintBtn">닫기</button>
 				</div>
 				<div class="questionAnswer">
-					<h4>답안</h4>
-					<textarea name="" id="answerArea" cols="50" rows="10"></textarea>
+					<h3>답안</h3>
+					<textarea name="" id="studyAnswerArea" cols="50" rows="12"></textarea>
 				</div>
 			</div>
-			<div class="questionFooter">
+			<div class="questionFooter" align="center">
 				<br>
 				<h3 id="questionOrderList"></h3>
 				<br>
+					<button class="openHint" style="height: 50px;">힌트 확인</button>
 				<button id="nextQuestionBtn">다음문제</button>
 				<button id="studyEndBtn">다음에 풀기</button>
 				<!--진행중인문제번호/총문제수,  다음문제버튼, 종료버튼,-->
@@ -200,7 +280,7 @@ textarea {
             	<span class="studyInfo"></span>
             	<br>
                 <span class="studyScore"></span>&nbsp;&nbsp;&nbsp;
-                &lt;<span class="studyTime"></span>&gt;
+                &lt;<span class="studyTime" style="color: tomato;"></span>&gt;
             </div>
             <div class="quizcard_modal_body">
             	<b>틀린 문제 리스트 (클릭하시면 해당 문제를 조회할 수 있습니다.)</b>
@@ -209,26 +289,26 @@ textarea {
                 <!-- 아래가 틀린문제 클릭했을 때 호출되는 창 -->
 		        <div class="wrongQuestionsBox">
 					<div class="wrongQuestionHeader">
-						<button class="addScrapBtn">문제 스크랩</button>
+						<button type="button" class="addScrapBtn">문제 스크랩</button>
 					</div>
 					<div class="wrongQuestionBody">
 						<!--문제/힌트/답안-->
 						<div class="wrondQuestionTitleForm">
 							<h4 class="wrongQuestionName" data-quizcardno="" data-quizcardindex=""></h4>
-							<textarea name="" id="wrongQuestionArea" cols="50" rows="10" readonly="readonly"></textarea>
+							<textarea name="" id="wrongQuestionArea" cols="50" rows="12" readonly="readonly"></textarea>
 						</div>
 						<br>
-						<button class="wrongOpenHint">힌트보기</button>
+						<button type="button" class="wrongOpenHintBtn">힌트 확인</button>
 						<div class="wrongQuestionHint">
 							<h4>힌트</h4>
-							<textarea name="" id="wrongHintArea" cols="50" rows="10" readonly="readonly"></textarea>
+							<textarea name="" id="wrongHintArea" cols="50" rows="12" readonly="readonly"></textarea>
 							<br>
 							<button class="wrongHintBtn">닫기</button>
 						</div>
 						<br>
 						<div class="wrongQuestionAnswer">
 							<h4>답안</h4>
-							<textarea id="wrongAnswerArea" cols="50" rows="10" readonly="readonly"></textarea>
+							<textarea id="wrongAnswerArea" cols="50" rows="12" readonly="readonly"></textarea>
 						</div>
 					</div>
 		        </div>
@@ -240,6 +320,7 @@ textarea {
 	            	<label for="heart">좋아요</label>
 	            	<i id="heart" class="fa-solid fa-heart"></i>
 	            	</a>
+	            	<br>
             	</div>
             	<div>
                 	<button class="resultCloseBtn">학습종료</button>
@@ -376,9 +457,9 @@ textarea {
 				console.log("ajax 통신 성공");
 				// json타입으로 데이터가 넘어옴.
 				console.log(data);
-				$("#questionArea").val(data.quizcard_question_name);
+				$("#studyQuestionArea").val(data.quizcard_question_name);
 				$("#nextQuestionBtn").val(data.quizcard_question_answer);
-				$("#hintArea").val(data.quizcard_question_hint);
+				$("#studyHintArea").val(data.quizcard_question_hint);
 				$(".questionName").text(questionIndex+1+ "번 문제   " + " (#" + data.quizcard_no + ")");
 				$(".questionName").data("quizcardno", data.quizcard_no);
 				$("#questionOrderList").text("< " + (questionIndex+1) + " / " + questionCount + " > ");
@@ -396,7 +477,7 @@ textarea {
 		// 다음문제 버튼 클릭 
 		$("#nextQuestionBtn").on("click", function(){
 			// 입력한 값이랑 비교하고 결과를 알려주고 다음 문제를 ajax로 다시 호출해서 페이지에 로딩한다
-			if( $("#nextQuestionBtn").val() ==  $("#answerArea").val() ){
+			if( $("#nextQuestionBtn").val() ==  $("#studyAnswerArea").val() ){
 				console.log("정답!!");	
 				correctCount++;
 			} else {
@@ -406,7 +487,7 @@ textarea {
 			}
 			
 			// 답안 작성 공간 초기화
-			$("#answerArea").val('');
+			$("#studyAnswerArea").val('');
 			
 			console.log("문제 총 갯수: " + questionCount);
 			console.log("현재 문제번호: " + (questionIndex+1));
@@ -430,9 +511,9 @@ textarea {
 						console.log("ajax 통신 성공");
 						// json타입으로 데이터가 넘어옴.
 						console.log(data);
-						$("#questionArea").val(data.quizcard_question_name);
+						$("#studyQuestionArea").val(data.quizcard_question_name);
 						$("#nextQuestionBtn").val(data.quizcard_question_answer);
-						$("#hintArea").val(data.quizcard_question_hint);
+						$("#studyHintArea").val(data.quizcard_question_hint);
 						$(".questionName").text(questionIndex+1+ "번 문제   " + " (#" + data.quizcard_no + ")");
 						$(".questionName").data("quizcardno", data.quizcard_no);
 						$("#questionOrderList").text("< " + (questionIndex+1) + " / " + questionCount + " > ");
@@ -577,8 +658,8 @@ textarea {
 		})
 		
 		// 틀린문제 조회 힌트창 열기
-		$(".wrongOpenHint").on("click", function(){
-			$(".wrongQuestionHint").css("display", "block");
+		$(".wrongOpenHintBtn").on("click", function(){
+			$(".wrongQuestionHint").toggle();
 		})
 		
 		// 틀린문제 조회 힌트창 닫기

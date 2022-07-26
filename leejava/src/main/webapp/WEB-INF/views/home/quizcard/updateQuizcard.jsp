@@ -17,11 +17,6 @@
 	    margin-left: 25%;
 	    margin-top: 3%;
 	}
-	
-	.questionInfoHeader {
-	    display: flex;
-	}
-	
 	#quizcard_set_info {
 	    resize: none;
 	}
@@ -44,8 +39,13 @@
         display: none;
         position: absolute;
         border: 0.5px solid teal;
-        margin-top: 5%;
         margin-left: 20%;
+        width: 35%;
+        background-color: lightgray;
+    }
+    .hint textarea {
+    	background-color: whitesmoke;
+    	border-style: none;
     }
 
     .questionFormBody {
@@ -53,9 +53,9 @@
     }
 
     .hintCreateBtn {
-        width: 50px;
+        width: auto;
         height: 50px;
-        margin-left: 20px;
+        margin-left: 45px;
         margin-right: 20px;
         margin-top: 60px;
         border-radius: 20px;
@@ -89,14 +89,27 @@
 
     .addQuestionBtnFirst,
     .addQuestionBtn {
-        display: block;
-        margin: auto;
         width: 150px;
         height: 50px;
         border-radius: 20px;
         border-style: none;
     }
-
+	.questionWrapper textarea{
+		border-radius: 20px;
+	    padding: 15px;
+	    color: teal;
+	    font-size: large;
+	    font-weight: bold; 
+	    width: 100%;
+	}
+	
+	.hint {
+		padding: 20px; 
+	}
+	
+	.hint textarea{
+		width: 95%;
+	}
 	
     .addQuestionBtnFirst,
     .addQuestionBtn:hover {
@@ -108,8 +121,8 @@
 
     .questionForm {
         border: 1px solid teal;
-        padding-left: 10%;
         margin-top: 50px;
+        padding-left: 8%;
     }
     .updateEndBtn{
     	display: block;
@@ -131,10 +144,50 @@
     	height: 20px;
     	font-size: 20px;
     }
-    #setName,
-    .quizcard_set_intro{
+    #setName{
     	border-style: none;
+    	font-size: large;
+    	font-weight: bolder;
     }
+    .questionForm button {
+    	border-radius: 20px;
+	    width: auto;
+	    height: auto;
+	    font-weight: 900;
+	    color: teal;
+	    background-color:  whitesmoke;
+	    border-style: none;
+	    padding: 10px;
+    }
+    .questionForm button:hover {
+    	cursor: pointer;
+	    background-color: teal;
+	    color: whitesmoke;
+	    transition: 1s;
+	}
+	.questionFormFooter {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		padding-right: 150px;
+	}
+	.hintCloseBtn{
+		display: block;
+		margin: auto;
+		min-width: 100px;
+		height: 40px;
+		margin-top:20px;
+	}
+	.intoTitle{
+		color: teal;
+	}
+	.quizcard_set_intro{
+		border: 1px solid #2E3856;
+		padding: 10px;
+		border-radius: 20px; 
+		font-weight: bolder;
+		border-style: none;
+		font-size: larger;
+	}
 </style>
 </head>
 <body>
@@ -142,23 +195,22 @@
         <div class="questionInfoWrapper">
             <div class="questionInfoHeader">
                 <!--세트번호, 카테고리, 생성일, 마지막 업데이트일-->
-                <h5 class="quizcardSetNo" data-quizcardsetno="${qvo.quizcard_set_no }">세트번호: ${qvo.quizcard_set_no }</h5>
-                <h5>카테고리: ${qvo.quizcard_category }</h5>
-                <h5>세트유형: ${qvo.quizcard_type }</h5>
-                <h5 class="questionCount" data-questioncount="${questionCount}">문제 수: ${questionCount} </h5>
+                <h3 class="quizcardSetNo intoTitle" data-quizcardsetno="${qvo.quizcard_set_no }">세트번호: ${qvo.quizcard_set_no }</h3>
+                <h3 class="intoTitle">카테고리: ${qvo.quizcard_category }</h3>
+                <h3 class="intoTitle">세트유형: ${qvo.quizcard_type }</h3>
+                <h3 class="questionCount intoTitle" data-questioncount="${questionCount}">문제 수: ${questionCount} </h3>
                 <div class="questionInfoDate" style="float: right;">
-                    <h6>생성일: ${qvo.quizcard_set_cdate } </h6><br>
-                    <h6>수정일: ${qvo.quizcard_set_udate }</h6>
+                    <h4 class="intoTitle">생성일: ${qvo.quizcard_set_cdate } </h4><br>
+                    <h4 class="intoTitle">수정일: ${qvo.quizcard_set_udate }</h4>
                 </div>
             </div>
             <div class="questionInfoBody">
                 <!--세트이름, 세트설명-->
-                <label for="setName"><b>세트 이름</b></label>&nbsp;&nbsp;
+                <h3 class="intoTitle"><label for="setName">세트 이름</label></h3>&nbsp;&nbsp;
                 <input type="text" id="setName" name="setName" value="${qvo.quizcard_set_name}">
                 <br>
-                <label for="quizcard_set_info"><b>세트 설명</b></label>
-                <br><br>
-                <textarea name="quizcard_set_info" cols="50" rows="7"
+                <h3 class="intoTitle"><label for="quizcard_set_info">세트 설명</label></h3>
+                <textarea name="quizcard_set_info" cols="50" rows="8"
                     class="quizcard_set_intro">${qvo.quizcard_set_intro}</textarea>
             </div>
             <div class="questionInfoFooter">
@@ -175,7 +227,7 @@
         <hr>
         <br>
 	<!-- 여기 밑으로가 이제 문제들이 출력되어야 한다. c:forEach문 활용해서 반복적으로 출력해야 함. -->
-	<!-- 잘 생각해보야함. 해당 폼 전체를 :forEach 메서드로 ㅗ돌리ㄹ는 게 가능한ㄱ. -->
+	<!-- 잘 생각해보야함. 해당 폼 전체를 :forEach 메서드로 돌리는 게 가능한가. -->
 	
 	<!-- ------------------------------------------------------------------- -->
 		<div class="questionWrapper">
@@ -188,28 +240,28 @@
 	                <br>
 	                <div class="questionFormBody" data-no="${list.quizcard_question_no }">
 	                    <div class="question">
-	                    	<span>문제</span>
+	                    	<h3>문제</h3>
 	                        <br>
-	                        <textarea name="quizcard_question_name" class="quizcard_question_name" cols="30"
-	                            rows="10">${list.quizcard_question_name }</textarea>
+	                        <textarea name="quizcard_question_name" class="quizcard_question_name" cols="50"
+	                            rows="12">${list.quizcard_question_name }</textarea>
 	                    </div>
-	                    <button class="hintCreateBtn">힌트 추가</button>
+	                    <button class="hintCreateBtn" style="height: 45px;">힌트 입력</button>
 	                    <div class="hint">
-	                        <input type="text" value="힌트" readonly>
+	                        <h3>힌트</h3>
 	                        <br>
-	                        <textarea name="quizcard_question_hint" class="quizcard_question_hint" cols="30"
-	                            rows="10">${list.quizcard_question_hint }</textarea>
+	                        <textarea name="quizcard_question_hint" class="quizcard_question_hint" cols="50"
+	                            rows="12">${list.quizcard_question_hint }</textarea>
 	                        <button class="hintCloseBtn">닫기</button>
 	                    </div>
 	                    <div class="answer">
-	                        <span>답안</span>
+	                        <h3>답안</h3>
 	                        <br>
-	                        <textarea name="quizcard_question_answer" class="quizcard_question_answer" cols="30"
-	                            rows="10">${list.quizcard_question_answer }</textarea>
+	                        <textarea name="quizcard_question_answer" class="quizcard_question_answer" cols="50"
+	                            rows="12">${list.quizcard_question_answer }</textarea>
 	                    </div>
 	                </div>
 	                <br>
-	                <div class="questionFormFooter">
+	                <div class="questionFormFooter" align="center">
 	                    <button class="addQuestionBtn">퀴즈카드 추가</button>
 	                    <button class="deleteQuestionBtn" data-no="${list.quizcard_question_no }">퀴즈카드 삭제</button>
 	                </div>
@@ -270,18 +322,18 @@
         str += "<div class='questionForm'><div class='questionFormHeader'>";
         str += " <input class='questionNumber' id='questionNumber'>";
         str +=
-            "</div><br><div class='questionFormBody'data-no=''><div class='question'><span>문제</span>";
-        str += "<br><textarea name='quizcard_question_name' class='quizcard_question_name' cols='30' rows='10'>문제를 입력하세요</textarea></div>";
+            "</div><br><div class='questionFormBody'data-no=''><div class='question'><h3>문제</h3>";
+        str += "<br><textarea name='quizcard_question_name' class='quizcard_question_name' cols='50' rows='12'>문제를 입력하세요</textarea></div>";
         str += "<button class='hintCreateBtn'>힌트추가</button>";
-        str += "<div class='hint'><span>힌트</span><br>";
+        str += "<div class='hint'><h3>힌트</h3><br>";
         str +=
-            "<textarea name='quizcard_question_hint' class='quizcard_question_hint' cols='30' rows='10'>힌트를 입력하세요</textarea>";
+            "<textarea name='quizcard_question_hint' class='quizcard_question_hint' cols='50' rows='12'>힌트를 입력하세요</textarea>";
         str += "<button class='hintCloseBtn'>닫기</button></div>";
-        str += "<div class='answer'><span>답안</span><br>";
+        str += "<div class='answer'><h3>답안</h3><br>";
         str +=
-            "<textarea name='quizcard_question_answer' class='quizcard_question_answer' cols='30' rows='10'>답안을 입력하세요</textarea></div></div><br>";
+            "<textarea name='quizcard_question_answer' class='quizcard_question_answer' cols='50' rows='12'>답안을 입력하세요</textarea></div></div><br>";
         str +=
-            "<div class='questionFormFooter'><button class='addQuestionBtn'>퀴즈카드 추가</button>";
+            "<div class='questionFormFooter' align='center'><button class='addQuestionBtn'>퀴즈카드 추가</button>";
         str += "<button class='deleteQuestionBtn' data-no=''>퀴즈카드 삭제</button>";
         str += "</div></div>";
 
@@ -327,7 +379,6 @@
         })
         location.reload();
 	})
-	
 	
 	/************** 카드 삭제 이벤트. **************/
 	$(document).on("click", ".deleteQuestionBtn", function(e){
@@ -403,7 +454,6 @@
 				console.log("통신실패");
 			}
 		})
-		
 	}
 	
 	// 힌트 클릭.
@@ -424,6 +474,10 @@
 	
 	// 세트이름 수정 =>
 	$(document).on("blur", "#setName, .quizcard_set_intro, input[name='quizcard_set_status']" ,function(){
+		if ( $(this) === $("input[name='quizcard_set_status']")){
+			console.log("공개여부 blue이벤트 발생");
+		}
+		
 		var setName = $("#setName").val();
 		var	setIntro = $(".quizcard_set_intro").val();
 		console.log("세트 이름: " + setName);
@@ -457,7 +511,6 @@
 				
 			})
 		}
-		
 	})
 	
 </script>

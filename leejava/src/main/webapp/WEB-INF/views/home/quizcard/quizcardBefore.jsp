@@ -80,8 +80,8 @@ textarea{
     width: 400px;
     height: auto;
     z-index: 3;
-    background-color: teal;
-    color: white;
+    background-color: white;
+    color: #2E3856 ;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
     padding: 20px;
@@ -92,8 +92,8 @@ textarea{
     width: 100%;
     height: 100%;
     z-index: 2;
-    background-color: 	#bebebe;
-    opacity : 0.5;
+	background-color: #2E3856;
+    opacity: 0.8;    
     transition: 2s;
 }
 
@@ -107,7 +107,7 @@ fieldset {
 }
 .questionBtns > button {
 	margin-right: 10px;
-	background-color: white;
+	background-color: whitesmoke;
 	border-style: none;
 	width: 120px;
     height: 40px;
@@ -138,6 +138,14 @@ fieldset {
 .setCreaterClickA{
 	margin-left : 10px;
 	color: teal;
+}
+#modalHeader{
+	font-size: 20px;
+	font-weight: bold;
+}
+legend{
+	font-size: 20px;
+	font-weight: bold;
 }
 /* 사용자 정보 조회하는 모달창 */
 .userInfo_modal_container {
@@ -178,7 +186,7 @@ fieldset {
     width: 100px;
     height: 50px;
     border-radius: 20px;
-    background: white;
+    background: whitesmoke;
     color: teal;
     border-style: none;
     font-size: 20px;
@@ -231,6 +239,22 @@ fieldset {
 	font-size: 18px;
 	color: teal;
 	font-weight: bolder;
+}
+.studyType_modal_container button {
+	border-radius: 20px;
+    width: auto;
+    height: auto;
+    font-weight: 900;
+    color: teal;
+    background-color:  whitesmoke;
+    border-style: none;
+    padding: 10px;
+}
+.studyType_modal_container button:hover {
+	cursor: pointer;
+    background-color: teal;
+    color: whitesmoke;
+    transition: 1s;
 }
 </style>
 </head>
@@ -286,8 +310,9 @@ fieldset {
         <div class="studyType_modal_content">
             <div class="studyType_modal_header">
                 <span id="modalHeader" data-setno="${qvo.quizcard_set_no }">선택한 세트번호: ${qvo.quizcard_set_no } </span>
-                <button id="studyTypeCloseBtn" style="float: right; width: 20px; height: 20px;">X</button>
             </div>
+            <br>
+            <hr>
             <br>
             <div class="studyType_modal_body">
                 <fieldset>
@@ -300,7 +325,8 @@ fieldset {
             </div>
             <br>
             <div class="studyType_modal_footer">
-                <button id="studyStartBtn">학습시작!</button>
+                <button id="studyStartBtn" style="display: block; margin:auto;">학습시작!</button>
+                <button id="studyTypeCloseBtn" style="float: right; min-width : 80px;">취소</button>
             </div>
         </div>
         <div class="studyType_modal_layer"></div>

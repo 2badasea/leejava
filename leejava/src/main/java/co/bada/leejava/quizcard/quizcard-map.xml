@@ -315,7 +315,7 @@
 			AND QUIZCARD_HISTORY = #{quizcard_history}
 	</select>
 	
-	<!-- 퀴즈카드 스크랩문제 아카이브 박스에 출력 -->
+	<!-- 퀴즈카드 스크랩문제 아카이브 박스에 출력  -->
 	<select id="ajaxArchiveScrapSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT  S.QUIZCARD_INDEX, Q.QUIZCARD_SET_NO, Q.QUIZCARD_NO, C.QUIZCARD_SET_NAME, G.QUIZCARD_CATEGORY
 			FROM QUIZCARD_SCRAP  S INNER JOIN QUIZCARD_QUESTION Q
@@ -349,18 +349,19 @@
 		    	ON Q.M_EMAIL = M.M_EMAIL
 		    INNER JOIN QUIZCARD_CATEGORY C 
 		    	ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
-		<!-- 검색 요소로는 카테고리, 세트이름, 만든이(닉네임)으록 구성된다. -->
+		<!-- 검색 요소로는 카테고리, 세트이름, 만든이(닉네임)으록 구성된다. 그리고 카테고리처럼 조건이 ALL이면 where like절이 필요없음.-->
 		<trim prefix="where" prefixOverrides="and | or">
 		 	<if test="quizcard_category !='ALL' ">AND C.QUIZCARD_CATEGORY LIKE '%'||#{quizcard_category}||'%'</if>
 			<if test="quizcard_set_name != '' ">AND Q.QUIZCARD_SET_NAME LIKE '%'||#{quizcard_set_name}||'%'</if>
 			<if test="m_nickname !='' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+			AND Q.QUIZCARD_SET_STATUS = 'PUBLIC'
 		</trim>
 	</select>
 	
 	<!-- 페이징 처리가 된 퀴즈카드 리스트. 퀴즈카드 메인에 출력 -->
 	<select id="quizcardSearchSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT *
-		FROM ( SELECT ROWNUM RN, A.*)
+		FROM ( SELECT ROWNUM RN, A.*
 		FROM ( SELECT * 
 		FROM QUIZCARD Q INNER JOIN MEMBER M
 			ON Q.M_EMAIL = M.M_EMAIL

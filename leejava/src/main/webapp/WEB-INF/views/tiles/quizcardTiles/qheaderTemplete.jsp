@@ -54,11 +54,11 @@ a:hover {
     position: absolute;
     top: 30%;
     left: 35%;
-    width: 400px;
+    width: 25%;
     height: auto;
     z-index: 3;
-    background-color: teal;
-    color: white;
+    background-color: white;
+    color: teal;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
     padding: 20px;
@@ -69,8 +69,8 @@ a:hover {
     width: 100%;
 	height: 100%; 
     z-index: 2;
-    background-color: #bebebe;
-    opacity : 0.5;
+    background-color: #2E3856;
+    opacity: 0.8;
     transition: 2s;
 }
 
@@ -79,8 +79,6 @@ a:hover {
 }
 #quizcard_set_intro{
 	resize: none;
-	width: 300px;
-	height: 150px;
 }
 .archiveBox{
 	border: 1px solid black;
@@ -233,6 +231,36 @@ a:hover {
 	color: whitesmoke;
 	transition: 1s;
 }
+.quizcard_modal_body textarea {
+	border-radius: 20px;
+	padding: 10px;
+	border: 0.5px solid teal;
+	width: 80%;
+}
+.quizcard_modal_footer{
+	display: flex;
+	justify-content: center;
+}
+
+.quizcard_modal_footer button{
+	border-radius: 20px;
+ 	background-color: whitesmoke;
+ 	color: teal;
+ 	border-style: none;
+ 	padding: 10px;
+ 	width: auto;
+    height: auto;
+    font-weight: 900;
+}
+.quizcard_modal_footer button:hover {
+	cursor: pointer;
+	color: whitesmoke;
+	background-color: teal;
+	transition: 1s;
+}
+.statusLabel{
+	color: black;
+}
 </style>
 </head>
 <body>
@@ -274,12 +302,13 @@ a:hover {
 		</nav>
 	</div>
 </header>
-<!-- 퀴즈카드 새로 만들기 모달창 생성하기 -->
+
+
+<!-------- 퀴즈카드 새로 만들기 모달창 생성하기 ---------------------->
     <div class="quizcard_modal_container">
         <div class="quizcard_modal_content">
             <div class="quizcard_modal_header">
-                <span>New Quizcard</span>
-                <button id="quizcardCloseBtn" style="float: right; width: 20px; height: 20px;">X</button>
+                <h3>New Quizcard</h3>
             </div>
             <br>
             <div class="quizcard_modal_body">
@@ -315,20 +344,21 @@ a:hover {
 	                <br>
 	                <span>퀴즈카드 소개(설명)</span>
 	                <br>
-	                <textarea rows="" cols="" id="quizcard_set_intro" name="quizcard_set_intro"></textarea>
+	                <textarea rows="7" cols="50" id="quizcard_set_intro" name="quizcard_set_intro"></textarea>
 	                <br>
 	                <!--여기는 readio박스-->
 	                <span>공개여부</span>
 	                <br>
-	                <label for="public">공개</label>
+	                <label for="public" class="statusLabel">공개</label>
                    	 	<input type="radio" name="quizcard_set_status" value="PUBLIC" id="public">
-                    <label for="private">비공개</label>
+                    <label for="private" class="statusLabel">비공개</label>
                     	<input type="radio" name="quizcard_set_status" value="PRIVATE" id="private">
             	</form> <!--------------- form------------- -->
             </div>
             <br>
             <div class="quizcard_modal_footer">
-                <button onclick="createNew()">생성생성!!</button>
+                <button onclick="createNew()">생성생성!!</button>&nbsp;&nbsp;&nbsp;
+                  <button id="quizcardCloseBtn">취소</button>
             </div>
         </div>
         <div class="quizcard_modal_layer"></div>
@@ -423,7 +453,7 @@ a:hover {
 				$("<td />").text("세트이름"),
 				$("<td />").text("카테고리"),
 				$("<td />").text("     ")
-				);
+				);  
 		tb.append(th);
 		$.ajax({
 			url: "ajaxArchiveScrapSelect.do", 
@@ -469,7 +499,6 @@ a:hover {
 				console.log(message);
 			}
 		})
-		
 	}
 	
 	// 스크랩 리스트 클릭 => 모달창 호출. 
@@ -510,6 +539,16 @@ a:hover {
 			}
 		})		
 	}
+	
+	// 아카이브 스크랩 문제를 출력하는 모달창에서 해당 문제의 퀴즈카드 세트로 이동
+	$(document).on("click", ".scrapQuizcardSetNo", function(){
+		console.log("세트 번호 클릭");
+		var setNo = $(this).children().text(); 
+		console.log("세트번호 조회: " + setNo);
+		var email = $("#session_user").val();
+		location.href="quizcardBefore.do?m_email=" + email + "&set_no=" + setNo;
+	})
+	
 	
 	// 스크랩 문제 답안 비교
 	$(".answerCheckBtn").on("click", function(){

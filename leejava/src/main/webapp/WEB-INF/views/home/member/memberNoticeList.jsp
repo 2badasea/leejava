@@ -27,7 +27,7 @@
 </style>
 </head>
 <body>
-	<div class="wrapper">
+	<div class="memberNoticeListwrapper">
 		<div class="mainSearchWrapper">
 			<div class="noticeListWrapper">
 				<h4>공지사항 리스트</h4>
@@ -57,6 +57,9 @@
 						</c:forEach>
 					</table>
 				</div>
+			</div>
+			<div class="noticeSearchWrapper">
+			
 			</div>
 		</div>
 	</div>

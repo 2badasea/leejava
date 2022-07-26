@@ -35,7 +35,7 @@ public class Paging {
 		// int형 두 수의 연산결과는int형 =>그래서 올림처리가 안 됨. 나누어 떨어진 몫만큼만 페이지가 생성. 나머지가 사라짐. 
 		this.pageCnt = (int) Math.ceil((double) listCnt / listSize);// 전체 페이지수
 		this.startPage = (range - 1) * rangeSize + 1;// 시작 페이지
-		this.endPage = range * rangeSize;// 끝 페이지
+		this.endPage = range * rangeSize; 	// 끝 페이지
 		// 게시판 시작번호의 경우 우항의 계산식에서 +1을 해준 것이 실제 페이지별 게시글 시작번호다. 
 		this.startList = (page - 1) * listSize;// 게시판 시작번호
 		// SQL쿼리에 쓸 start, end 라고 명시되어 있음. 

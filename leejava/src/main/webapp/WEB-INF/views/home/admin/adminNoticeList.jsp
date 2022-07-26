@@ -123,12 +123,10 @@ tr > td {
 				<h3>공지사항 리스트</h3>
 				<c:choose>
 					<c:when test="${pagination.listCnt lt pagination.end }">
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start }
-							~ ${pagination.listCnt }건)</span>
+						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
 					</c:when>
 					<c:otherwise>
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start }
-							~ ${pagination.end }건)</span>
+						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
 					</c:otherwise>
 				</c:choose>
 				&nbsp;&nbsp;&nbsp;
@@ -284,9 +282,7 @@ tr > td {
 		console.log("전달되는 값들 목록: " + $('#n_title').val() + ", " + $('#n_category').val() +  ", " + $('#n_content').val() + ", " + $('#n_writer').val());
 		location.href = url;
 	});
-	
 		
-
 	// 선택 삭제 구현
 	$("#selectDeleteBtn").on("click", function(){
 		var deleteCheck = confirm("정말 삭제하시겠습니까?");

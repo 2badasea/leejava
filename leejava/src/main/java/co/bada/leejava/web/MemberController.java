@@ -120,9 +120,8 @@ public class MemberController {
 					// view단에 가서 ajax속성으로 error와 콜백함수 추가.
 			}
 			
-			
 		} // view에서 넘어오는 파일 객체들에 대해 반복문을 통하여 타입체크 끝
-		
+			
 		// 업로드할 프로필 사진을 저장할 경로 설정
 		String uploadFolder = "C:\\leejava\\profile"; 
 		

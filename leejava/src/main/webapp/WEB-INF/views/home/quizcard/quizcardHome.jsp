@@ -272,6 +272,26 @@ fieldset {
 	transition: 1s;
 }
 /* ***************************************** */
+.paginationUl > li{
+	list-style-type: none;
+	float: left;
+	padding: 5px;
+}
+
+.paginationLink {
+	color: teal;
+	font-size: 20px;
+}
+.paginationBox{
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: center;
+}
+.active a{
+	font-weight: bolder;
+	color: tomato;
+	font-size: large;
+}
 </style>
 </head>
 <script>
@@ -283,8 +303,8 @@ fieldset {
 	})
 </script>
 <body>
-	<div class="quizcardWrapper">
-		<div class="quizcardMain" align="center">
+	<div class="quizcardWrapper" align="center">
+		<div class="quizcardMain">
 			<form id="searchFrm">
 				<table class="quizcardSearchTb">
 					<tr>
@@ -322,38 +342,94 @@ fieldset {
 			<button class="searchResetBtn">항목 초기화</button>
 		</div>
 		<!-- 검색항목 영역과 퀴즈카드 리스트 구분선. 메인은 리스트니깐, 검색항목 영역은 상대적으로 작게 구현할 것. -->
-		<div class="quizcardListWrapper" align="center">
+		<br><br><hr><br><br>
+		<div class="quizcardListWrapper">
 			<!--  table 형태로 생성한다.-->
-			<table class="quizcardTable">
-				<thead>
-					<tr class="quizcardTableThTr">
-						<th>세트번호</th>
-						<th>카테고리</th>
-						<th>세트유형</th>
-						<th style="width: 300px;">세트이름</th>
-						<th>최근 업데이트</th>
-						<th style="width: 100px;">만든이</th>
-						<th>조회수</th>
-						<th>추천수</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach items="${quizcardList }" var="list">
-						<tr class="quizcardTableTr">
-							<td>${list.quizcard_set_no }</td>
-							<td>${list.quizcard_category }</td>
-							<td>${list.quizcard_type }</td>
-							<td><a>${list.quizcard_set_name }</a></td>
-							<td>${list.quizcard_set_udate }</td>
-							<td class="userInfoTd"><a>${list.m_nickname }</a></td>
-							<td>${list.quizcard_set_hit }</td>
-							<td>${list.quizcard_set_likeit }</td>
+			<div class="quizcardListPagingInfo">
+				<h3>퀴즈카드 리스트</h3>
+				<c:choose>
+					<c:when test="${pagination.listCnt lt pagination.end}">
+						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
+					</c:when>
+					<c:otherwise>
+						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
+					</c:otherwise>
+				</c:choose>
+				&nbsp;&nbsp;&nbsp;
+				<select class="paging" name="searchType" id="listSize" onchange="page(1)">
+					<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건 보기</option>
+					<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option>
+					<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option>
+				</select>
+			</div>  <!--  	<div class="quizcardListPagingInfo"> 영역 끝  -->
+				<table class="quizcardTable">
+					<thead>
+						<tr class="quizcardTableThTr">
+							<th>세트번호</th>
+							<th>카테고리</th>
+							<th>세트유형</th>
+							<th style="width: 300px;">세트이름</th>
+							<th>최근 업데이트</th>
+							<th style="width: 100px;">만든이</th>
+							<th>조회수</th>
+							<th>추천수</th>
 						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-		</div>
-	</div>
+					</thead>
+					<tbody>
+						<c:forEach items="${quizcardList }" var="list">
+							<tr class="quizcardTableTr">
+								<td>${list.quizcard_set_no }</td>
+								<td>${list.quizcard_category }</td>
+								<td>${list.quizcard_type }</td>
+								<td><a>${list.quizcard_set_name }</a></td>
+								<td>${list.quizcard_set_udate }</td>
+								<td class="userInfoTd"><a class="userInfoTd">${list.m_nickname }</a></td>
+								<td>${list.quizcard_set_hit }</td>
+								<td>${list.quizcard_set_likeit }</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				<br><br>
+				<!-- 페이징 박스. class값으로 이벤트 정의. id속성값으로 꾸미기 -->
+				<div class="paginationBox" id="paginationBox">
+					<ul class="paginationUl">
+						<c:if test="${pagination.prev }">
+								<li class="paginationLi">
+									<a class="paginationLink" onclick="fn_prev('${pagination.page}', '${pagination.range }'
+																						, '${pagination.rangeSize}', '${pagination.listSize }'
+																						, '${search.quizcard_category}', '${search.quizcard_set_name }'
+																						, '${search.m_nickname }' )">
+									이전
+									</a>
+								</li>
+						</c:if>
+						<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="quizcardNo">
+							<!-- 해당 페이지를 클릭한 상태라면('active') 그 페이지 번호의 class속성에 'active'를 준다. => 꾸미기 위함  -->
+							<li class="paginationLi <c:out value="${pagination.page == quizcardNo ? 'active' : ''}"/> ">
+								<a class="paginationLink" onclick="fn_pagination('${quizcardNo}', '${pagination.range }'
+																						 , '${pagination.rangeSize }', '${pagination.listSize }'
+																						 , '${search.quizcard_category }', '${search.quizcard_set_name }'
+																						 , '${search.m_nickname }' )">
+								${quizcardNo }
+								</a>
+							</li>
+						</c:forEach>
+						<c:if test="${pagination.next }">
+							<li class="paginationLi">
+								<a class="paginationLink"  onclick="fn_next('${pagination.page}', '${pagination.range }'
+																				, '${pagination_rangeSize }', '${pagination_listSize }'
+																				, '${search.quizcard_category }', '${search.quizcard_set_name }'
+																				, '${search.m_nickname }')">
+								다음
+								</a>
+							</li>			
+						</c:if>
+					</ul>
+				</div> <!--  	<div class="paginationBox"> 끝.  -->
+		</div> <!--  <div class="quizcardListWrapper"> 끝 -->
+		
+	</div>  <!--  <div class="quizcardWrapper"> 끝  -->
 
 	<!-- 사용자 정보 조회하는 모달창  -->
 	<div class="userInfo_modal_container">
@@ -414,8 +490,61 @@ fieldset {
 		url = url + "?quizcard_category=" + quizcard_category;
 		url = url + "&quizcard_set_name=" + quizcard_set_name;
 		url = url + "&m_nickname=" + m_nickname;
-// 		location.href = url; 
+		location.href = url; 
 	})
+	
+	// "~몇 건씩 보기(selexbox) 이벤트 정의"
+	function page(Paging){
+		// selectBox이기 때문에 클릭해서 옵션을 변경할 때마다 이벤트가 일어나도록 onChange()이벤트를 명시함. 기본값은 1이다.
+		var startPage = Paging; 
+		var listSize = $("#listSize option:selected").val();
+		if(listSize == 10){
+			var url = "quizcard.do?startPage="  + startPage + "&listSize=" + listSize;
+		} else if(listSize == 15){
+			var url = "quizcard.do?startPage="  + startPage + "&listSize=" + listSize;
+		} else if(listSize == 20){
+			var url = "quizcard.do?startPage="  + startPage + "&listSize=" + listSize;
+		}
+		location.href= url;
+	}
+	
+	// 페이징 박스 fn 이벤트 정의. 페이징정보4개 파라미터와 search타입의 필드 3개(category, set_name, nickname)
+	function fn_prev(page, range, rangeSize, listSize, quizcard_category, quizcard_set_name, m_nickname){
+		var page = ((range - 2) * rangeSize) + 1; 
+		var rnage = range - 1;
+		var url = "quizcard.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize="  + listSize;
+		url = url + "&quizcard_category=" + quizcard_category;
+		url = url + "&quizcard_set_name=" + quizcard_set_name;
+		url = url + "&m_nickname=" + m_nickname;
+		location.href= url;
+	}
+	
+	function fn_pagination(page, range, rangeSize, listSize, quizcard_category, quizcard_set_name, m_nickname){
+		var url = "quizcard.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize=" + listSize;
+		url = url + "&quizcard_category=" + quizcard_category;
+		url = url + "&quizcard_set_name=" + quizcard_set_name;
+		url = url + "&m_nickname=" + m_nickname;
+		location.href = url;
+	} 
+	
+	function fn_next(page, range, rangeSize, listSize, quizcard_category, quizcard_set_name, m_nickname){
+		var page = parseInt((range * rangeSize)) + 1;
+		var range = parseInt(range) + 1;
+		var url = "quizcard.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize=" + listSize;
+		url = url + "&quizcard_category=" + quizcard_category;
+		url = url + "&quizcard_set_name=" + quizcard_set_name;
+		url = url + "&m_nickname=" + m_nickname;
+		location.href = url;
+	}
 	
 	
 	// 검색 항목 초기화 버튼

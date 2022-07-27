@@ -30,5 +30,10 @@ public interface NoticeService {
 
 	// 페이징 처리를 한 것을 기준으로 리스트를 해당 view페이지에 출력한다.
 	public List<NoticeVO> noticeSearchSelect(Search svo) throws Exception;
-
+	
+	// 사용자 공지사항에 출력시킬 게시글의 총 갯수 => 검색조건이 하나 더 있어서 별도로 정의
+	int getUserNoticeListCnt(Search svo) throws Exception;
+	
+	// 사용자 공지사항에 출력시킬 게시글 리스트(위의 게시글이 총 갯수를 감안하여 페이징 처리된 결과 리스트 
+	public List<NoticeVO> userNoticeSearchSelect(Search svo) throws Exception;
 }

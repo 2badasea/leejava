@@ -272,13 +272,14 @@ tr > td {
 	}
 	
 	// 해당 구문은 동적으로 element가 생겼을 때 function을 사용할 수 있도록 해주는 구문이다. 
-	$(document).on('click', '#$btnSearch', function(e) {
-		e.preventDefault();
+	$(document).on('click', '#btnSearch', function(e) {
+		e.preventDefault();  
 		var url = "adminNoticeList.do";
 		url = url + "?n_title=" + $('#n_title').val();
 		url = url + "&n_category=" + $('#n_category').val();
 		url = url + "&n_content=" + $('#n_content').val();
 		url = url + "&n_writer=" + $('#n_writer').val();
+		alert("테스트 alert. 정상적으로 넘겨지는 url 값: " +  url);
 		console.log("전달되는 값들 목록: " + $('#n_title').val() + ", " + $('#n_category').val() +  ", " + $('#n_content').val() + ", " + $('#n_writer').val());
 		location.href = url;
 	});

@@ -18,6 +18,26 @@
 li{
 	margin-top: 20px;
 }
+.specialA:hover{
+	cursor: pointer;
+}
+.specialA{
+text-decoration: none;
+   display: inline-block;
+   -webkit-transition: 0.5s;
+   -moz-transition: 0.5s;
+   -o-transition: 0.5s;
+   -ms-transition: 0.5s;
+   transition: 0.5s;
+}
+
+.specialA:hover {
+    -webkit-transform: scale(1.5,1.5);
+    -moz-transform: scale(1.5,1.5);
+    -o-transform: scale(1.5,1.5);
+    -ms-transform: scale(1.5,1.5);
+    transform: scale(1.5,1.5);
+} 
 </style>
 <body>
 	<!-- 왼쪽 사이드바 -->

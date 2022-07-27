@@ -447,8 +447,6 @@
 	     	$("#showComment").text('비밀번호 보이기');
 		}
 	})
-
-	
 	
 	// enterkey로 로그인 기능 정의
 	$('#password').on('keypress', function(e) {

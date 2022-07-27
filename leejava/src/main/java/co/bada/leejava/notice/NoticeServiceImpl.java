@@ -80,4 +80,16 @@ public class NoticeServiceImpl implements NoticeService {
 		return map.noticeSearchSelect(svo);
 	}
 
+	@Override
+	public int getUserNoticeListCnt(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.getUserNoticeListCnt(svo);
+	}
+
+	@Override
+	public List<NoticeVO> userNoticeSearchSelect(Search svo) throws Exception {
+		// TODO Auto-generated method stub
+		return map.userNoticeSearchSelect(svo);
+	}
+
 }

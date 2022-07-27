@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.SHA256Util;
+import co.bada.leejava.Search;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.notice.NoticeService;
@@ -202,7 +203,6 @@ public class MemberController {
 //				BufferedImage bo_image = ImageIO.read(saveFile); 
 //				logger.info("===============bo_image의 정체: " + bo_image);
 				
-				
 				// 높이와 너비에 대해 비율을 하드코딩 해서 맞춰줄 경우, 특정 이미지의 경우 보기가 불편하게 변경될 수 있음.
 					// 그래서 전체적으로 동일한 비율로 썸네일 이미지를 생성하기 위해 다음과 같이 코드를 작성한다. 
 					// ratio가 double타입이기 때문에 나눈 값이 double타입이된다. 파라미터로 부여할 형은 int형이기 때문에 형변환
@@ -296,8 +296,6 @@ public class MemberController {
 		
 	} // url매핑 끝 부분. 
 	
-	
-	
 	// 업로드 이미지 출력 구현 부분을 위한 메서드. by 김밤파
 		// ResponseEntity 객체를 통해 body에 byte[]배열을 보내야 하기 때문에 다음과 같은 반환타입으로 작성.
 		// 파라미터의 경우, '파일 경로' + '파일 이름'을 전달받아야 하기 때문에 String타입의 fileName변수를 파라미터로 부여
@@ -330,7 +328,6 @@ public class MemberController {
 		}
 		return result; 
 	}
-	
 	/* 이미지 파일 삭제*/
 	// HTTP Body에 String 데이터를 추가하기 위해 타입 매개 변수로서 String을 부여한다. 
 	@PostMapping("/deleteFile.do")
@@ -366,7 +363,7 @@ public class MemberController {
 			// 관련된 문자열을 뷰로 전송해주도록 return문을 작성한다. 
 		return new ResponseEntity<String>("success", HttpStatus.OK);
 	}
-	
+
 	/* 이미지 정보 반환 */ 
 	// 반환해주는 데이터가 json형식이 되도록 지정해주기 위해 @GetMapper 어노테이션에 produces속성을 추가
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -425,7 +422,7 @@ public class MemberController {
 		// 프로필 신규추가나 업데이트가 성공했으면 Y값을 가짐
 		return result;
 	}
-	
+	 
 	// 개인정보 페이지에서 닉네임 변경 신청 
 		// view단의 ajax문에서 error가 지속적으로 난 원인 => ajax는 @ResponseBody 어노테이션 사용해야 함. 
 		// 그리고 produces속성의 값으로 밑에처럼 명시한 이유는 => 서버에서 view로 응답할 때 한글의 경우 인식을 못 하기 때문이다.
@@ -435,7 +432,6 @@ public class MemberController {
 			, MemberVO mvo
 			,@RequestParam String m_nickname
 			,@RequestParam String m_email ) {
-		
 		
 		// mvo객체에 담아서 중복체크를 먼저 한 다음에 중복이 아닐 때 처리해준다. 
 		mvo.setM_nickname(m_nickname);
@@ -460,19 +456,38 @@ public class MemberController {
 			message ="ALREADY";
 			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
 		}
+	}  
+	// 사용자뷰 공지사항으로 이동 (페이징 처리 & 검색항목 구현) 
+	@RequestMapping("/memberNoticeList.do")  
+	public String memberNoticeList(Model model
+				,@RequestParam(required = false, defaultValue = "1") int page
+				,@RequestParam(required = false, defaultValue = "1") int range
+				,@RequestParam(required = false, defaultValue = "all" ) String n_category
+				,@RequestParam(required = false) String n_title
+				,@RequestParam(required = false) String n_content
+				,@RequestParam(required = false) String n_writer
+				,Search svo)  throws Exception{
 		
-	}
-	
-	// 사용자뷰 공지사항으로 이동
-	@RequestMapping("/memberNoticeList.do")
-	public String memberNoticeList(Model model, HttpServletRequest request
-			,NoticeVO nvo) {
+		// 해당 view에석 검색요소로 쓰일 변수들을 보낸다
+		model.addAttribute("search", svo);
+		svo.setN_category(n_category); 
+		svo.setN_title(n_title);
+		svo.setN_content(n_content);
+		svo.setN_writer(n_writer);
+		int listCnt = noticeDao.getUserNoticeListCnt(svo);
+		System.out.println("페이징 처리된 게시글의 갯수: " + listCnt );
 		
-		// 공지사항 리스트 목록 전체를 날려보낸다.
-		model.addAttribute("notices", noticeDao.noticeSelectList());
+		svo.pageinfo(page, range, listCnt);
+		List<NoticeVO> list = noticeDao.userNoticeSearchSelect(svo);
+		System.out.println("페이지에 전달해줄 list: " + list);
+		
+		// 페이징처리된 해당 페이지의 정보  
+		model.addAttribute("pagination", svo);
+		// 화면에 출력해줄 공지사항 리스트들
+		model.addAttribute("notice", list);
 		
 		return "home/member/memberNoticeList";
-	}
+	} 
 	
 	// 사용자뷰 공지사항 조회
 	@RequestMapping("/memberNoticeRead.do")
@@ -497,7 +512,6 @@ public class MemberController {
 		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
 		// 조회수 count되게 만들어야 함 클릭했을 때, 
 		// 현재 조회수 count를 가져가야 하나? 
-		
 		return "home/member/memberNoticeRead";
 	}
 	
@@ -672,7 +686,6 @@ public class MemberController {
 			message = "NO";
 			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
 		}
-		
 	}
 	
 	

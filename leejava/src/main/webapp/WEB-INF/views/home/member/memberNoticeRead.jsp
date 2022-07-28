@@ -6,27 +6,17 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항 조회</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- summernote css/js-->
+<script src="resources/js/summernote/summernote-lite.js"></script>
+<script src="resources/js/summernote/lang/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="resources/css/summernote/summernote-lite.css">
+<!-- 아래는 font-awesome의 아이콘을 적용시키기 위해 추가한 스크립트 부분 -->
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
-.noticeReadFormWrapper {
+.noticeTableWrapper {
 	margin-top: 15%;
 	margin-left: 20%;
-}
-.noticeReadFormBtn {
-	
-}
-.notice_content {
-	height: 300px;
-}
-
-.notice_filename {
-	
-}
-#noticeNo {
-	width: 50px;
-	border: none;
-	text-align: center;
 }
 #fileTag{
 	color: black;
@@ -44,16 +34,16 @@
 	cursor: pointer;
 }
 </style>
+
 </head>
 <body>
 <!-- 공지사항 조회하는 폼 디자인 해야 함. -->
-<!-- 들어갈 목록: 작성자, 조회수, 글번호, 제목, 내용, 첨부, 작성일, 카테고리  -->
-	<div class="Wrapper">
-		<div class="noticeReadFormWrapper">
+	<div class="memberNoticeRead_Wrapper">
+		<div class="noticeTableWrapper">
 			<table border="1">
 				<tr>
 					<td width="150px;">
-						<input id="noticeNo" value='<c:out value="${notice.n_no }" />' >
+						${notice.n_no }
 					</td>
 					<td width="300px;">${notice.n_wdate }</td>
 					<td width="250px;">${notice.n_writer }</td>
@@ -63,11 +53,13 @@
 					<td colspan="4" class="notice_title_section">
 						<span class="notice_category">${notice.n_category }</span>
 						<br> 
-						<span class="notice_title">${notice.n_title }</span>
+						<span class="notice_title" >${notice.n_title }</span>
 					</td>
 				</tr>
-				<tr>
-					<td colspan="4" class="notice_content">${notice.n_content }</td>
+				<tr style="height: 300px;">	
+					<td colspan="4" class="noticeContentTr">
+						${notice.n_content }
+					</td>
 				</tr>
 				<tr class="fileTr">
 					<td class="notice_file">첨부파일</td>
@@ -79,7 +71,7 @@
 					</td>
 				</tr>
 			</table>
-			<br>
+			<br>  
 			<div class="noticeReadFormBtn">
 				<button id="noticeReadFormBackBtn">목록보기</button>
 			</div>
@@ -87,11 +79,11 @@
 	</div>
 </body>
 <script>
-	// 이전 페이지로 돌아가는 버튼
+	// 이전 페이지로 돌아가는 버튼  
 	$("#noticeReadFormBackBtn").on("click", function(){
 		console.log('뒤로가기 버튼 클릭');
+		// 뒤로 가기 메소드를 활용. 
 		history.back(); 
-// 		location.href="userNoticeList.do";
 	})
 	
 	// 첨부파일 아이콘 클릭해도 첨부파일 다운로드 되도록
@@ -100,16 +92,55 @@
 		location.href="noticeFileDownload.do?filename=" + file + "&pfilename=" + pfile;
 	}
 	
+	// 툴바 환경설정
+	var toolbar = [
+	    // 글꼴 설정
+	    ['fontname', ['fontname']],
+	    // 글자 크기 설정
+	    ['fontsize', ['fontsize']],
+	    // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
+	    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+	    // 글자색
+	    ['color', ['forecolor','color']],
+	    // 표만들기
+	    ['table', ['table']],
+	    // 글머리 기호, 번호매기기, 문단정렬
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    // 줄간격
+	    ['height', ['height']],
+	    // 그림첨부, 링크만들기, 동영상첨부
+	    ['insert',['picture','link','video']],
+	    // 코드보기, 확대해서보기, 도움말
+	    ['view', ['codeview','fullscreen', 'help']]
+	  ];  
+	
+	var setting = {
+	        height : 300,
+	        width: 840,
+	        minHeight : null,
+	        maxHeight : null,
+	        focus : true,
+	        lang : 'ko-KR',
+	        toolbar : toolbar,
+	        callbacks : { //여기 부분이 이미지를 첨부하는 부분
+	        onImageUpload : function(files, editor,
+	        welEditable) {
+	        for (var i = files.length - 1; i >= 0; i--) {
+	        uploadSummernoteImageFile(files[i],
+	        this);
+	        		}
+	        	}
+	        }
+	     };
+    $('.summernote').summernote(setting);
 </script>
-<script>
-	$(document).ready(function(){
+<script>	
+	$(function(){
 		var attachFileName = $("#fileTag").text();
 		console.log("첨부파일 명 확인: " + attachFileName);
 		if( attachFileName !== ""){
 			$("#attachFileIcon").css("display", "block");
 		}
-	})	
+	})
 </script>
-
-
 </html>

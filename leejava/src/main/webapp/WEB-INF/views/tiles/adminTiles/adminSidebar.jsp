@@ -9,13 +9,13 @@
 </head>
 <style>
 .adminSidemenu {
-	font-size: 20px;
+	font-size: 15px;
 }
-.sideWrap{
+.adminSidebar_wrapper{
 	background-color: #05AA6D;
 	min-height: 100vh; 
  }
-li{
+.adminSidebar_wrapper li{
 	margin-top: 20px;
 }
 .specialA:hover{
@@ -41,7 +41,7 @@ text-decoration: none;
 </style>
 <body>
 	<!-- 왼쪽 사이드바 -->
-	<div class="sideWrap">
+	<div class="adminSidebar_wrapper">
 		<div onclick="location.href='home.do'">JAVA STORY</div>
 		<br><br><br><br><br>
 		<ul>
@@ -72,9 +72,5 @@ text-decoration: none;
 		e.preventDefault();
 		location.href="adminStudy.do";
 	})
-	
-	
-	
-	
 </script>
 </html>

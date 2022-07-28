@@ -17,11 +17,7 @@
 	
 }
 .notice_content {
-	height: 300px;
-}
-
-.notice_filename {
-	
+	min-height: 300px;
 }
 #noticeNo {
 	width: 50px;
@@ -33,7 +29,7 @@
 </head>
 <body>
 	<!-- 들어갈 목록: 작성자, 조회수, 글번호, 제목, 내용, 첨부, 작성일, 카테고리  -->
-	<div class="Wrapper">
+	<div class="noticeRead_wrapper">
 		<div class="noticeReadFormWrapper">
 			<table border="1">
 				<tr>
@@ -70,7 +66,6 @@
 	</div>
 </body>
 <script>
-	// 첨부파일 
 	
 	// 수정하기 버튼
 	$("#noticeReadFormUpdateBtn").on("click", function() {

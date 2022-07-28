@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 .sidebar {
 	background-color: #05AA6D;
@@ -76,7 +76,6 @@
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
     padding: 20px;
-
 }
 
 .todo_modal_layer {

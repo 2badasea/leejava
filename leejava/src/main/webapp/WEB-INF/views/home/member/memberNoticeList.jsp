@@ -8,16 +8,42 @@
 <title>공지사항 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
-#noticeNumber {
-	width: 50px;
-	border: none;
-	text-align: center;
-	
-}
 .mainSearchWrapper {
 	margin-left: 15%;
-	margin-top : 20%;
+	margin-top : 10%;
 }
+/*	공지사항 테이블 디자인 */
+.noticeTable{
+	margin-top: 2%;
+	text-align: center;
+	border-collapse: collapse;
+	border: 1px solid #05AA6D; 
+}
+.noticeTableThTr{
+	border-bottom: 1px solid #05AA6D;
+}
+.noticeTable th{
+	font-size: 18px;
+	height: 30px;
+	border-left: 1px solid #05AA6D;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	font-weight: 900;
+}
+.noticeTable td {
+	border-bottom: 1px solid #05AA6D;
+	height: 20px;
+	border-left: 1px solid #05AA6D;
+	padding: 5px;
+}
+.noticeTable a {
+	color: #05AA6D;
+	font-weight: bold;
+}
+
+/*	********************	*/
 .noticeListTitleTd:hover{
 	cursor: pointer;
 }
@@ -83,7 +109,7 @@
 </style>
 </head>
 <body>
-	<div class="memberNoticeListwrapper">
+	<div class="memberNoticeList_wrapper">
 		<div class="mainSearchWrapper">
 			<div class="noticeListWrapper">
 				<h3>공지사항 리스트</h3>
@@ -104,21 +130,37 @@
 				
 				<div class="noticeList">
 					<!--체크박스 공간,  글번호, 작성날짜, 카테고리, 제목, 상단 고정, 관리( 수정, 삭제, 고정or고정취소)  -->
-					<table border="1">
-						<tr>
-							<th style="width: 50px;" class="listTh">글번호</th>
+					<table class="noticeTable">
+						<tr class="noticeTableThTr">
+							<th style="width: auto;" class="listTh">글번호</th>
 							<th style="width: 150px;" class="listTh">카테고리</th>
 							<th style="width: 400px;" class="listTh">제목</th>
 							<th style="width: 100px;" class="listTh">작성일</th>
 							<th style="width: 100px;" class="listTh">작성자</th>
-							<th style="width: 50px;" class="listTh">조회수</th>
+							<th style="width: auto;" class="listTh">조회수</th>
 						</tr>
 						<c:forEach items="${notice }" var="notice">
 							<tr class="noticeListTr">
 								<td>${notice.n_no }
 									<input class="noticeFixedTd" type="hidden" value="${notice.n_fixed }">
 								</td>
-								<td>${notice.n_category }</td>
+								<!-- 카테고리의 값에 따라서 알아서 한글로 번역하게 해준다. c:choose 사용. ${notice.n_category }  -->
+								<td>
+									<c:choose>
+										<c:when test="${notice.n_category eq 'all'}">
+											전체
+										</c:when>
+										<c:when test="${notice.n_category eq 'emergency'}">
+											긴급
+										</c:when>
+										<c:when test="${notice.n_category eq 'event'}">
+											이벤트
+										</c:when>
+										<c:otherwise>
+											전체
+										</c:otherwise>
+									</c:choose>
+								</td>
 								<td class="noticeListTitleTd" onclick="memberNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</td>
 								<td>${notice.n_wdate }</td>
 								<td>${notice.n_writer }</td>
@@ -313,13 +355,15 @@
 		// 고정값이 T인 것은 문서가 로드되자마자 해당 tr행이 색깔을 다르게 표기한다.
 		if( $('.noticeFixedTd').val() === "T"){
 			$("input[value='T']").parent().parent().css('background',
-			'#FFE6EB');
+			'#F0FFF0');
 		}
 		
 		// 공지사항 리스트가 로드되자마자 해당 속성의 값이 생기도록
 		if( $('.noticeSearchSelect option:selected').val() === "titleAndContent"){
              $(".searchInputBox").attr("placeholder", "제목 또는 내용을 입력하세요");
         }
+		
+		// 그리고 공지사항의 카테고리값도 영어가 아닌 한글로 출력할 수 있도록 할 것.
 	})
 </script>
 </html>

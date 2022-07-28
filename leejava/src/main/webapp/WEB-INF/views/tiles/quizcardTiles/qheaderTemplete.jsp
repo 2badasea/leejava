@@ -587,7 +587,6 @@ a:hover {
             $('.sanswer').addClass('show');
         }
     })
-	
 	// 아카이브 스크랩 영역. 스크랩 취소 아이콘 이벤트 (동적태그 이벤트 적용해야 함)
 	$(document).on("click", ".scarpDelete", function(){
 		var memail = m_email;

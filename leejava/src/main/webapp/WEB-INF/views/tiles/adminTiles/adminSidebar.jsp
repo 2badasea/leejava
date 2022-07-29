@@ -24,11 +24,11 @@
 .specialA{
 text-decoration: none;
    display: inline-block;
-   -webkit-transition: 0.5s;
-   -moz-transition: 0.5s;
-   -o-transition: 0.5s;
-   -ms-transition: 0.5s;
-   transition: 0.5s;
+   -webkit-transition: 0.3s;
+   -moz-transition: 0.3s;
+   -o-transition: 0.3s;
+   -ms-transition: 0.3s;
+   transition: 0.3s;
 }
 
 .specialA:hover {
@@ -42,7 +42,9 @@ text-decoration: none;
 <body>
 	<!-- 왼쪽 사이드바 -->
 	<div class="adminSidebar_wrapper">
-		<div onclick="location.href='home.do'">JAVA STORY</div>
+		<div onclick="location.href='home.do'">
+			JAVA STORY
+		</div>
 		<br><br><br><br><br>
 		<ul>
 			<li>

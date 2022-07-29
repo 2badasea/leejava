@@ -7,50 +7,49 @@
 <head>
 <meta charset="UTF-8">
 <title><tiles:getAsString name="title" /></title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 * {
 	margin: 0px;
 	padding: 0px;
 }
-
-.wrapper {
+.memberTilesWrapper {
 	width: 100%;
 	height: 100%;
 	display: flex;
 }
-.sideWrapper {
+.memberTilesSideWrapper {
 	width: 12%;
+
 }
-.mainWrapper {
-	width: 85%;
+.memberTilesMainWrapper {
+	width: 85%; 
 }
-.headerWrapper {
+.memberTilesHeaderWrapper {
 	height: 5%;
 	background-color: #FFF0F0	;
 }
-.bodyWrapper{
+.memberTilesBodyWrapper{
 	min-height: 700px; 
 }
-.footerWrapper{
+.memberTilesFooterWrapper{
 	background-color: #FFF0F0;
 	height: 70px;
 }
 </style>
 </head>
 <body>
-	<div class="wrapper">
-		<div class="sideWrapper">
+	<div class="memberTilesWrapper">
+		<div class="memberTilesSideWrapper">
 			<tiles:insertAttribute name="left" />
 		</div>
-		<div class="mainWrapper">
-			<div class="headerWrapper">
+		<div class="memberTilesMainWrapper">
+			<div class="memberTilesHeaderWrapper">
 				<tiles:insertAttribute name="header" />
 			</div>
-			<div class="bodyWrapper">
+			<div class="memberTilesBodyWrapper">
 				<tiles:insertAttribute name="body" />
 			</div>
-			<div class="footerWrapper">
+			<div class="memberTilesFooterWrapper">
 				<tiles:insertAttribute name="foot" />
 			</div>
 		</div>

@@ -12,7 +12,7 @@
 	margin: 0px;
 	padding: 0px;
 }	
-.wrapper {
+.adminLayout_wrapper {
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -37,7 +37,7 @@
 </style>
 </head>
 <body>
-	<div class="wrapper">
+	<div class="adminLayout_wrapper">
 		<div class="sideWrapper">
 			<tiles:insertAttribute name="asidebar" />
 		</div>

@@ -74,7 +74,7 @@
 	min-width: 100px;
 	min-height: 40px;
 }
-.noticeRegisterBtns button:hover {
+.noticeRegisterBtns button:hover { 	
 	cursor: pointer;
 	background-color: #05AA6D;
 	color: whitesmoke;
@@ -100,7 +100,7 @@
 					<th style="width: 200px;">카테고리</th>
 					<td style="width: 200px">
 						<select name="n_category" id="n_category">
-							<option selected="selected" value="all">전체</option>
+							<option value="all" selected="selected">전체</option>
 							<option value="emergency">긴급</option>
 							<option value="event">이벤트</option>
 						</select>
@@ -143,7 +143,6 @@
 			return false;
 		}
 		$("#frm").submit();
-		
 	})
 
 	// 돌아가기 버튼 
@@ -151,7 +150,7 @@
 			location.href='adminNoticeList.do';
 	});
 	
-	// 검색 input창에 focus를 주면 border-bottom의 색깔을 변경시켜버리기  ( class="searchInput")  border-bottom: 1px solid #05AA6D;
+	// 제목을 입력하는 창에 포커스를 주거나 포커스에서 벗어나는 경우에 실행시킬 이벤트를 정의.
 	$(".inputNotice_title").on({
 		focus : function(e){
 			$(e.target).css("outline-color", "tomato");
@@ -160,7 +159,6 @@
 			$(e.target).css("outline-color", "whitesmoke")
 		}
 	})
-	
 	
 </script>
 <script>

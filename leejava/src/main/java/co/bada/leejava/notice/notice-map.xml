@@ -96,7 +96,7 @@
 	VALUES( 
 		(SELECT MAX(N_NO)+1 FROM NOTICE),
 		#{n_writer},
-		SYSDATE,
+		TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
 		#{n_category},
 		#{n_title},
 		#{n_content},

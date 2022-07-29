@@ -287,8 +287,8 @@ public class NoticeController {
 
 	// 공지사항 수정페이지 이동
 	@RequestMapping("/noticeFormUpdate.do")
-	public String noticeFormUpdate(Model model, HttpServletRequest request, NoticeVO nvo,
-			@RequestParam("n_no") int n_no) {
+	public String noticeFormUpdate(Model model, NoticeVO nvo,
+				@RequestParam("n_no") int n_no) {
 
 		logger.info("===============글번호 들어왔니?" + n_no);
 		nvo.setN_no(n_no);
@@ -306,34 +306,36 @@ public class NoticeController {
 	// 공지사항 수정한 것 등록 //
 	@RequestMapping("/noticeUpdate.do")
 	public String noticeUpdate(Model model, HttpServletRequest request, NoticeVO nvo
-			,@RequestParam("n_no") int n_no
+			,@RequestParam(value = "n_no") int n_no
 			,@RequestParam(value = "filename", required = false) MultipartFile file) throws Exception {
 
-		// 수정폼에서 넘어오는 것 => n_title, n_category, n_content, file
-		// 위 4개는 값 확인 후, vo객체에 담아서 noticeDao.noticeUpdate()를 실행.
-		// 첨부파일 업로드 로직 구현하고 => 물리파일 생성 후 => 2개 모두 db상에서 변경 => 총 5개 변경.
+		String n_message = request.getParameter("n_message");
 		String n_title = request.getParameter("n_title");
 		String n_category = request.getParameter("n_category");
 		String n_content = request.getParameter("n_content");
 
-		logger.info("===============수정할 제목 들어왔니? " + n_title);
-		logger.info("===============수정할 카테고리 값 들어왔니? " + n_category);
-		logger.info("===============수정할 내용은 들어왔니? " + n_content);
-		logger.info("===============@requestparam 첨부파일 이름이랑 같니? " + file);
+		System.out.println("===============수정할 제목 들어왔니? " + n_title);
+		System.out.println("===============수정할 카테고리 값 들어왔니? " + n_category);
+		System.out.println("===============수정할 내용은 들어왔니? " + n_content);
+		System.out.println("===============@requestparam 첨부파일 이름이랑 같니? " + file);
+		System.out.println("=============== n_message의 값은 어떻게 들어왔니? " + n_message);
 
+		nvo.setN_no(n_no);
+		if(n_message != "") {
+			noticeDao.ajaxNoticeFileDelete(nvo);
+		}
 		// 새로운 첨부파일 업로드 작업하기
 			// form에서 값이 넘어왔을 때만 vo객체에 담는다.
-		if (file != null) {
+		if (file.getSize() != 0) {
 			String n_file = file.getOriginalFilename(); // 원본파일명
 			logger.info("===============첨부파일 원본명 최종 확인: " + n_file);
 			// 중복 가공된 파일. 실제 물리파일.
-			String n_pfile = null;
-			// 업로드한 파일이 없다면 물리파일명 안 만들도록. 업로드한 파일이 있으면 물리파일 생성
-			if (n_file != "") {
-				// 원본명을 바탕으로 물리명을 생성하는 작업. 구현 메서드는 위쪽에 구현되어 있음.
-				n_pfile = uploadFile(n_file, file.getBytes(), request);
+			if(n_file != null) {
+				// 원본파일명이 공백("")이라도 물리파일명은 생성되었다 => 
+					//그래서 원본파일명이 공백이 아닌, 실제 file에 담겼을 때만 물리파일명을 생성하고 nvo객체에 담는다. 
+				String n_pfile = uploadFile(n_file, file.getBytes(), request);
 				logger.info("===============물리파일명 확인: " + n_pfile);
-				// 업로드한 파일과 물리적으로 가공된 파일이 존재하면 vo객체에 담는다.
+				// 첨부한 파일이 존재했다면, 해당 파일들을 담는다.
 				nvo.setN_file(n_file);
 				nvo.setN_pfile(n_pfile);
 			}
@@ -343,10 +345,6 @@ public class NoticeController {
 		nvo.setN_title(n_title);
 		nvo.setN_category(n_category);
 		nvo.setN_content(n_content);
-		// mapper문에서 where조건으로 글번호가 들어와야 한다. 이것도 vo객체에 담아야 했음.
-		logger.info("===============글번호는 제대로 날아온 거니? " + n_no);
-		// 마지막으로 글 번호까지 담는다.
-		nvo.setN_no(n_no);
 
 		int n = noticeDao.noticeUpdate(nvo);
 		if (n != 0) {
@@ -356,27 +354,6 @@ public class NoticeController {
 		}
 
 		return "redirect:adminNoticeList.do";
-	}
-
-	// 공지사항 수정폼. 첨부파일 변경. 기존 파일 삭제
-	@ResponseBody
-	@RequestMapping("/ajaxNoticeFileDelete.do")
-	public String ajaxNoticeFileDelete(Model model, HttpServletRequest request, NoticeVO nvo,
-			@RequestParam("n_no") int n_no) {
-
-		logger.info("===============글번호 값 넘어왔니?" + n_no);
-		nvo.setN_no(n_no);
-
-		int n = noticeDao.ajaxNoticeFileDelete(nvo);
-		String message = null;
-		if (n != 0) {
-			logger.info("===============삭제 성공");
-			message = "YES";
-		} else {
-			logger.info("===============삭제 실패");
-			message = "NO";
-		}
-		return message;
 	}
 
 	// 공지사항 개별 삭제 by ajax
@@ -436,5 +413,4 @@ public class NoticeController {
 		}
 		return message;
 	}
-
 }

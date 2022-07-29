@@ -5,32 +5,118 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>공지사항 조회</title>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- summernote css/js-->
-<script src="resources/js/summernote/summernote-lite.js"></script>
-<script src="resources/js/summernote/lang/summernote-ko-KR.js"></script>
-<link rel="stylesheet" href="resources/css/summernote/summernote-lite.css">
-<!-- 아래는 font-awesome의 아이콘을 적용시키기 위해 추가한 스크립트 부분 -->
+<title>사용자 공지사항 조회 페이지</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
-.noticeTableWrapper {
-	margin-top: 15%;
-	margin-left: 20%;
+.noticeReadFormWrapper {
+	margin-top: 10%;
+	margin-left: 15%;
 }
-#fileTag{
-	color: black;
-	text-decoration: none;
-	margin-left: 20px;
-	margin-top: 5px;
+/* 새로운 공지사항 폼 */
+.noticeForm{
+	border: 0.5px solid lightgray;	
+	width: 950px;
 }
-.fileTr{
+.noticeFormHeaderLeft{
+	float: left;
+}
+.noticeFormHeaderRight{
+	float: right;	
+}
+
+hr{
+	border: 0 none;
+	height: 0.1px;
+	background-color: lightgray;
+	width: 100%;
+	text-align: center;
+}
+.noticeFormHeaderHr{
+	width: 100%;
+}
+span{
+	font-weight: 900;
+	
+}
+.noticeFormBody{
+	padding: 10px;
+	min-height: 400px;
+	width: 98%; 
+	height: auto;
+}
+.noticeFormHeader{
+	min-height: 100px;
+	height: auto;
+	padding: 15px;
+}
+.noticeUserImage{
+	width: 40px;
 	height: 40px;
 }
-#attachFileIcon{
-	display: none;
+.noticeTitle{
+	margin-top: 20px;
 }
-#attachFileIcon:hover{
+.noticeNo,
+.noticeCategory,
+.noticeWdate{
+	color: lightgray;
+}
+.noticeWriter{
+	color: #05AA6D;
+	font-weight: 900;
+	font-size: 17px;
+}
+.noticeFileName{
+	font-size: 12px;
+}
+.noticeFormFooter table {
+	border: 1px solid lightgray;
+}
+.noticeFormFooter td{
+	padding: 10px;
+}
+.noticeFormFooter th{
+	border-right: 1px solid lightgray;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+img,
+.noticeWriter:hover{
+	cursor: pointer;
+}
+.noticeFormFooter{
+	min-height: 30px;
+	padding: 15px;
+}
+.attachedFileIcon{
+	font-size: 30px;
+}
+/* *********************** */
+.noticeReadFormBtns{
+	padding-top: 30px;
+	padding-bottom: 30px;
+	padding-left: 52%;
+}
+.noticeReadFormBtns button{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 100px;
+	min-height: 40px;
+}
+.noticeReadFormBtns button:hover {
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
+.attachedFileIcon:hover {
 	cursor: pointer;
 }
 </style>
@@ -38,109 +124,110 @@
 </head>
 <body>
 <!-- 공지사항 조회하는 폼 디자인 해야 함. -->
-	<div class="memberNoticeRead_Wrapper">
-		<div class="noticeTableWrapper">
-			<table border="1">
-				<tr>
-					<td width="150px;">
-						${notice.n_no }
-					</td>
-					<td width="300px;">${notice.n_wdate }</td>
-					<td width="250px;">${notice.n_writer }</td>
-					<td width="120px;"><i class="fa-regular fa-eyes"></i>${notice.n_hit }</td>
-				</tr>
-				<tr>
-					<td colspan="4" class="notice_title_section">
-						<span class="notice_category">${notice.n_category }</span>
-						<br> 
-						<span class="notice_title" >${notice.n_title }</span>
-					</td>
-				</tr>
-				<tr style="height: 300px;">	
-					<td colspan="4" class="noticeContentTr">
-						${notice.n_content }
-					</td>
-				</tr>
-				<tr class="fileTr">
-					<td class="notice_file">첨부파일</td>
-					<td class="notice_filename" colspan="3">
-						<div style="display: flex;">
-							<i id="attachFileIcon" class="fa-solid fa-2x fa-file-arrow-down" onclick="noticeFileDownload('${notice.n_file }','${notice.n_pfile }')"></i>
-							<a id="fileTag" href="noticeFileDownload.do?filename=${notice.n_file }&pfilename=${notice.n_pfile }">${notice.n_file }</a>
-						</div>
-					</td>
-				</tr>
-			</table>
-			<br>  
-			<div class="noticeReadFormBtn">
-				<button id="noticeReadFormBackBtn">목록보기</button>
-			</div>
-		</div>
+	<div class="memberNoticeRead_wrapper">
+            <div class="noticeReadFormWrapper">
+                <div class="noticeForm">
+                	<input class="noticeInputData" type="hidden" data-file="${notice.n_file }" data-no="${notice.n_no }">
+                    <div class="noticeFormHeader">
+                   		<div class="noticeFormHeaderLeft" style="display: flex;">
+                   			<div class="userImageBox">
+	                   			<img alt="" src="resources/image/loopy.jpeg" class="noticeUserImage" onclick="fn_userInfo('${notice.n_writer}')">
+                   			</div>
+                   			<div class="userNameWdateBox" style="margin-left: 10px;">
+                           		<a class="noticeWriter" onclick="fn_userInfo('${notice.n_writer}')">${notice.n_writer }</a>
+                            	<br>
+                            	<span class="noticeWdate">${notice.n_wdate }</span>
+                            </div>
+                       </div>
+                       <div class="noticeFormHeaderRight">
+                            <i class="fa-solid fa-eye"></i>
+                            <span class="noticeHit">${notice.n_hit }</span>
+                       </div>
+                            <br>
+                            <hr class="noticeFormHeaderHr">
+                            <span class="noticeNo">#${notice.n_no }</span>
+                            &nbsp;&nbsp;&nbsp;
+                            <span class="noticeCategory">${notice.n_category }</span>
+                            <h2 class="noticeTitle">${notice.n_title }</h2>
+                    </div>
+                    <hr>
+                    <div class="noticeFormBody">
+                        ${notice.n_content }
+                    </div>
+                    <hr>
+                    <div class="noticeFormFooter">
+                    	<table>
+                    		<tr>
+                    			<th>
+                    				첨부파일
+                    			</th>
+                    			<td style="width: auto; text-align: center;">
+                    				<h5 class="emptyFileMessage" style="display: none; margin-top: 15px;">첨부파일 없음</h5>
+									<i class="fa-solid fa-file-arrow-down attachedFileIcon"></i>
+                    				<br>
+                    				<a class="noticeFileName" id="noticeFileName" href="noticeFileDownload.do?filename=${notice.n_file }&pfilename=${notice.n_pfile }">${notice.n_file }</a>
+                    			</td>
+                    		</tr>
+                    	</table>
+                    </div>
+                </div>
+	             <div class="noticeReadFormBtns">
+					<button type="button" class="noticeReadFormBackBtn">목록보기</button>
+				</div>
+            </div>
 	</div>
 </body>
 <script>
 	// 이전 페이지로 돌아가는 버튼  
-	$("#noticeReadFormBackBtn").on("click", function(){
+	$(".noticeReadFormBackBtn").on("click", function(){
 		console.log('뒤로가기 버튼 클릭');
 		// 뒤로 가기 메소드를 활용. 
 		history.back(); 
 	})
 	
 	// 첨부파일 아이콘 클릭해도 첨부파일 다운로드 되도록
-	function noticeFileDownload(file, pfile){
-		console.log("첨부파일명 확인: " + file + ", 물리파일명: " + pfile);
-		location.href="noticeFileDownload.do?filename=" + file + "&pfilename=" + pfile;
+	$(".attachedFileIcon").on("click", function(){
+		// attr()메서드를 통해 해당 속성값을 가져와서 페이지 이동시킴 
+		var url = $('.noticeFileName').attr("href");
+		location.href = url;
+	})
+	
+	// 작성자 정보 조회하는 이벤트 정의 => 하지만, 공지사항의 경우 작성자는 운영자. 최소한의 정보는 제공할 것. 
+	function fn_userInfo(userNickname){
+		console.log("해당 유저의 이름: "  + userNickname);
+		console.log("추후에 해당 유저의 정보를 호출하는 모달창 생성해서 구현");
+		// 추후에 해당 유저의 정보를 호출하는 모달창 생성해서 구현
 	}
 	
-	// 툴바 환경설정
-	var toolbar = [
-	    // 글꼴 설정
-	    ['fontname', ['fontname']],
-	    // 글자 크기 설정
-	    ['fontsize', ['fontsize']],
-	    // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
-	    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-	    // 글자색
-	    ['color', ['forecolor','color']],
-	    // 표만들기
-	    ['table', ['table']],
-	    // 글머리 기호, 번호매기기, 문단정렬
-	    ['para', ['ul', 'ol', 'paragraph']],
-	    // 줄간격
-	    ['height', ['height']],
-	    // 그림첨부, 링크만들기, 동영상첨부
-	    ['insert',['picture','link','video']],
-	    // 코드보기, 확대해서보기, 도움말
-	    ['view', ['codeview','fullscreen', 'help']]
-	  ];  
-	
-	var setting = {
-	        height : 300,
-	        width: 840,
-	        minHeight : null,
-	        maxHeight : null,
-	        focus : true,
-	        lang : 'ko-KR',
-	        toolbar : toolbar,
-	        callbacks : { //여기 부분이 이미지를 첨부하는 부분
-	        onImageUpload : function(files, editor,
-	        welEditable) {
-	        for (var i = files.length - 1; i >= 0; i--) {
-	        uploadSummernoteImageFile(files[i],
-	        this);
-	        		}
-	        	}
-	        }
-	     };
-    $('.summernote').summernote(setting);
+
 </script>
 <script>	
-	$(function(){
-		var attachFileName = $("#fileTag").text();
-		console.log("첨부파일 명 확인: " + attachFileName);
-		if( attachFileName !== ""){
-			$("#attachFileIcon").css("display", "block");
+	// 문서가 로드되면 자동으로 실행시킬 이벤트들 정의
+	$(document).ready(function(){
+		
+		/*	카테고리 우리말로 변환	*/
+		var category = $(".noticeCategory").text();
+		// 경우의수는 all, emergency, event 3가지다. 
+		var fixedCategory;
+		if(category === "all"){
+			fixedCategory = "전체";
+		} else if(category === "emergency"){
+			fixedCategory = "긴급";
+		} else if(category === "event"){
+			fixedCategory = "이벤트";
+		} else {
+			fixedCategory = "전체";
 		}
+		$(".noticeCategory").text(fixedCategory);
+		
+		/* 첨부파일 존재유무에 따른 아이콘 활성화 유무 */ 
+		var fileName = $(".noticeInputData").data('file');
+		if( fileName == ""){
+			$(".attachedFileIcon").css("display", "none");
+			$(".emptyFileMessage").css("display", "block");			
+		}
+		
+		
 	})
 </script>
 </html>

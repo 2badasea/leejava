@@ -172,7 +172,6 @@ public class QuizcardRestController {
 		}
 	}
 	
-	
 	// 퀴즈카드 문제 호출 
 	@GetMapping(value = "ajaxStudyStart.do" , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<QuizcardVO> ajaxStudyStart( QuizcardVO qvo,

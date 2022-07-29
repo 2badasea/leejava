@@ -8,8 +8,8 @@
 			SET_NO_SEQ.NEXTVAL,   <!-- 시퀀스 적용. -->
 			#{m_email},
 			#{quizcard_set_name},
-			TO_CHAR( SYSDATE),
-			TO_CHAR( SYSDATE),
+			TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
+			TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
 			0,
 			#{quizcard_set_status},
 			#{quizcard_set_intro},
@@ -126,7 +126,7 @@
 	<!-- 퀴즈카드 업데이트 마지막 수정일 업데이트 -->
 	<update id="quizcardUdateChange" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		UPDATE QUIZCARD 
-			SET QUIZCARD_SET_UDATE = SYSDATE 
+			SET QUIZCARD_SET_UDATE = TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
 	</update>
 	
@@ -295,7 +295,7 @@
 		INSERT INTO QUIZCARD_HISTORY
 			( QUIZCARD_SET_NO, QUIZCARD_SET_NAME, QUIZCARD_CATEGORY, QUIZCARD_HISTORY, QUIZCARD_HISTORY_DATE, M_EMAIL )
 		VALUES
-			( #{quizcard_set_no}, #{quizcard_set_name}, #{quizcard_category}, #{quizcard_history}, SYSDATE, #{m_email} )
+			( #{quizcard_set_no}, #{quizcard_set_name}, #{quizcard_category}, #{quizcard_history}, TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'), #{m_email} )
 	</insert>
 	
 	<!-- 퀴즈카드 히스토리 업데이트 (학습진도상태와 학습날짜만 수정된다. )-->
@@ -303,7 +303,7 @@
 		UPDATE QUIZCARD_HISTORY 
 			SET 
 				QUIZCARD_HISTORY = NVL(#{quizcard_history}, QUIZCARD_HISTORY),
-				QUIZCARD_HISTORY_DATE = SYSDATE
+				QUIZCARD_HISTORY_DATE = TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
 		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} AND M_EMAIL = #{m_email}
 	</update>
 	

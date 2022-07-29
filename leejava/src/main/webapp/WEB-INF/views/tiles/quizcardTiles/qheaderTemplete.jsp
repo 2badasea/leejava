@@ -25,11 +25,11 @@ a{
 text-decoration: none;
    display: inline-block;
    color: white;
-   -webkit-transition: 0.5s;
-   -moz-transition: 0.5s;
-   -o-transition: 0.5s;
-   -ms-transition: 0.5s;
-   transition: 0.5s;
+   -webkit-transition: 0.3s;
+   -moz-transition: 0.3s;
+   -o-transition: 0.3s;
+   -ms-transition: 0.3s;
+   transition: 0.3s;
 }
 
 a:hover {

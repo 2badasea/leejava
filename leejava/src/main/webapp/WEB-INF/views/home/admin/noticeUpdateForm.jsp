@@ -6,90 +6,162 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항 수정 페이지</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-
-<!-- summernote 사용 -->
-<!-- include libraries(jQuery, bootstrap) -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<link
-	href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-	rel="stylesheet">
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<!-- include summernote css/js -->
-<link
-	href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css"
-	rel="stylesheet">
-<script
-	src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="resources/js/summernote/summernote-lite.js"></script>
+<script src="resources/js/summernote/lang/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="resources/css/summernote/summernote-lite.css">
 <style>
-tr>th {
-	text-align: center;
-}
-
 .mainFormWrapper {
 	margin-left: 10%;
 	margin-top: 5%;
 }
-
-input {
-	width: 100%;
+.noticeFormTable {
+	margin-top: 2%;
+	border-collapse: collapse;
+	border: 1px solid #05AA6D; 
+}
+.noticeFormTable tr{
+	border-bottom: 1px solid #05AA6D;
+}
+.noticeFormTable th{
+	font-size: 18px;
+	height: 30px;
+	border-left: 1px solid #05AA6D;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	font-weight: 900;
+	text-align: center;
+}
+.noticeFormTable td{
+	border-bottom: 1px solid #05AA6D;
+	height: 20px;
+	border-left: 1px solid #05AA6D;
+	padding: 5px;
+}
+#n_category,
+#n_title{
+	width: 98%;
+	height: 100%;
+	font-size: 100%;
+	border-style: none;
+}
+#n_category,
+#n_title{
+	border-bottom: 1px dashed #05AA6D;
+}
+#n_category{
+	text-align: center;
+}
+.noticeRegisterBtns{
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 3%;
+	margin-right: 25%;
+}
+.noticeRegisterBtns button{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 100px;
+	min-height: 40px;
+}
+.noticeRegisterBtns button:hover {
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
+.changeFileBtn{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 70px;
+	min-height: 30px;
+	margin-left: 30px;
+	margin-top: 3px;
+}
+.changeFileBtn:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
 }
 
-select {
-	width: 100%;
+.noticeRegisterBtn{
+	margin-right: 20px;
+}
+.noticeFileName{
+	font-size: 15px;
+	color: blue;
+	text-decoration: none;
+	margin-top: 5px;
+}
+a:hover {
+	cursor: pointer;
 }
 </style>
 </head>
 
 <body>
-	<div class="wrapper">
+	<div class="noticeUpdateForm_wrapper">
 		<div class="mainFormWrapper">
 			<h3>공지사항 수정하기</h3>
 			<!-- 공지사항 항목 구성( 카테고리, 제목, 내용, 첨부파일 -->
 			<form action="noticeUpdate.do" id="frm" method="post" enctype="multipart/form-data">
-			<table border="1">
-				<tr>
-					<th style="width: 150px;">제목</th>
-					<td style="width: 500px;">
-						<input type="text" name="n_title" id="n_title" value="${notice.n_title }">
-					</td>
-					<th style="width: 200px;">카테고리</th>
-					<td style="width: 200px">
-						<select name="n_category" id="n_category">
-							<option value="all" id="categoryAll">전체</option>
-							<option value="긴급" id="categoryEmergency">긴급</option>
-							<option value="이벤트" id="categoryEvent">이벤트</option>
-						</select>
-						<input type="hidden" id="noticeCategory" value="${notice.n_category }">
-					</td>
-				</tr>
-				<tr>
-					<th>내용</th>
-					<td colspan="3"><textarea rows="" cols="" name="n_content"
-							id="summernote">${notice.n_content }</textarea></td>
-				</tr>
-				<tr>
-					<th>첨부파일</th>
-					<td colspan="3">
-						${notice.n_file }
-						<input type="hidden" id="fileCheck" value="${notice.n_file }">
-						<button id="changeFileBtn">첨부파일 수정</button>
-					</td>
-				</tr>
-			</table>
-			<input type="hidden" id="n_no" name="n_no" value="${notice.n_no }">
+				<input type="hidden" name="n_no" class="hiddenNoticeInput" data-category="${notice.n_category }" data-no="${notice.n_no}"  data-file="${notice.n_file }" value="${notice.n_no }">
+				<input type="hidden" name="n_message" value="" class="n_message">
+				<table class="noticeFormTable">
+					<tr>
+						<th style="width: 150px;">제목</th>
+						<td style="width: 500px;">
+							<input type="text" class="inputNotice_title" name="n_title" id="n_title" value="${notice.n_title }" placeholder="제목을 입력해주세요.">
+						</td>
+						<th style="width: 200px;">카테고리</th>
+						<td style="width: 200px">
+							<select name="n_category" id="n_category">
+								<option value="all" id="categoryAll">전체</option>
+								<option value="emergency" id="categoryEmergency">긴급</option>
+								<option value="event" id="categoryEvent">이벤트</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td colspan="3"><textarea rows="" cols="" name="n_content"
+								id="summernote">${notice.n_content }</textarea></td>
+					</tr>
+					<tr>
+						<th>첨부파일</th>
+						<td colspan="3" style="display: flex; border-left: 1px solid #05AA6D; height: 100%; border-bottom: 0px none;">
+							<a class="noticeFileName" href="noticeFileDownload.do?filename=${notice.n_file }&pfilename=${notice.n_pfile }">${notice.n_file }</a>
+							<input type="file" name="filename" id="n_file" class="n_file">
+							<button type="button" class="changeFileBtn">첨부파일 수정</button>
+						</td>
+					</tr>
+				</table>	
 			</form>
 			<div class="noticeRegisterBtns">
-				<button id="noticeRegisterBtn">수정완료</button>
-				<button id="goBackBtn">돌아가기</button>
+				<button type="button" class="noticeRegisterBtn">수정완료</button>
+				<button type="button" class="goBackBtn">돌아가기</button>
 			</div>
 		</div>
 	</div>
 </body>
 <script>
 	// 공지사항 수정완료 버튼 ( 제목 null인지 아닌지 체크, 내용은 무관 )
-	$('#noticeRegisterBtn').on('click', function(){ 
+	$('.noticeRegisterBtn').on('click', function(){ 
 		// 제목만 체크
 		var noticeTitle = $("#n_title").val();
 		if( noticeTitle === null) {
@@ -108,65 +180,66 @@ select {
 	})
 	
 	// 첨부파일 변경 버튼
-	$("#changeFileBtn").on("click", function(){ 
-		// DB에 저장되어 있는 첨부파일 원본명.
-		var fileCheck = $("#fileCheck").val();
-		alert("파일이름 확인: " + fileCheck);
-		
-		if( fileCheck == ''){ 
-			// value값이 없는 경우 => 즉, 첨부파일이 없는 게시글의 경우  첨부파일을 업로드하여 게시글을 수정시키기 위함.
-				// 동적으로 요소를 추가한다.
-			$("#changeFileBtn").closest('td').html('<input type="file" name="filename" id="n_file">');
-		} else { 
-			// fileCheck가 null이 아니라는 건, 해당 게시글에 업로드한 첨부파일이 존재한다는 뜻. 
-			 var check = confirm("기존에 업로드한 파일은 삭제하시겠어요?");
-			 if(check){ 
-				 // ajax로 기존의 해당 게시글 첨부파일 삭제해버리기
-				 var n_no = $("#n_no").val();
-				 $.ajax({
-					 type: "POST",
-					 url: 'ajaxNoticeFileDelete.do',
-					 data: { 
-						 n_no : n_no
-					 },
-					 success: function(message){ 
-						 if( message === "YES"){ 
-							 alert("삭제했습니다.");
-						 } else { 
-							 alert("삭제 실패. 시스템 에러");
-						 }
-					 }
-				 }) // ajax끝.
-				 
-				 // ajax로 기존 파일 삭제 후, 첨부파일 업로드 버튼 생성.
-				 $("#changeFileBtn").closest('td').html('<input type="file" name="filename" id="n_file">');
-			 } else { 
-				 return false;
-			 }
-		 
-		} // else문
+	$(".changeFileBtn").on("click", function(){ 
+		// 1. 체크확인을 먼저 한다. => 최종적으로 "수정완료" 버튼을 누르지 않으면 그대로 유지. 
+			// 2. 여튼 ok하면 input창 활성화 시키기 => 그리고 name값이 "n_file"인 input태그에 value값으로 우선 
+		var check = confirm("\"수정 완료\" 버튼을 누르면 기존에 업로드된 첨부파일이 삭제됩니다.")
+		if(check){
+			$(".n_message").val("YES");
+			$(".noticeFileName").css("display", "none");  	// 첨부파일명
+			$(".n_file").css("display", "block");			// <input type='file'> 
+			$(".changeFileBtn").css("display", "none");		// 첨부파일 수정 버튼 
+			console.log("n_message의 값: " + $(".n_message").val());
+		} else {
+			return false;
+		}
+			
 	})
-	
+
 
 	// 돌아가기 버튼 
-	$("#goBackBtn").on("click", function(){ 
-			history.back(); // 이전 페이지로 이동시키기
-// 			location.href='adminNoticeList.do';
+	$(".goBackBtn").on("click", function(){ 
+			history.back(); 
 	});
 	
+	// 제목을 입력하는 창에 포커스를 주거나 포커스에서 벗어나는 경우에 실행시킬 이벤트를 정의.
+	$(".inputNotice_title").on({
+		focus : function(e){
+			$(e.target).css("outline-color", "tomato");
+		}, 
+		blur : function(e){
+			$(e.target).css("outline-color", "whitesmoke")
+		}
+	})
 	
-	// 문서가 로드되면 서머노트 적용시키도록 
-	$(document).ready(function() {
+	
+</script>
+<script>
+	$(document).ready(function(){
 		
-		// 컨트롤러에서 넘어온 카테고리 값으로 기본 selected 하기 // 얘도 문서가 로드되면 자동으로 실행되도록 하기 
-		var categoryValue = $("#noticeCategory").val();
-		console.log("컨트롤러에서 넘어온 카테고리 값: " + categoryValue);
-		if( categoryValue == "전체"){ 
-			$("#categoryAll").attr("selected", "selected");
-		} else if(categoryValue == "긴급" ) { 
-			$("#categoryEmergency").attr("selected", "selected");
+		// 기존에 첨부파일이 존재했던 경우 "첨부파일 수정"버튼은 비활성화 시키고, 기본 <input type="file">을 활성화 시킨다. 
+		var existingFileCheck = $(".hiddenNoticeInput").data('file');
+		if(existingFileCheck){
+			// 첨부파일이 존재하는 경우 => "첨부파일 수정"버튼을 숨긴다. 그리고 기본 <input type="file">을 활성화 시킴.
+			$(".changeFileBtn").css("display", "block");
+			$(".n_file").css("display", "none");
 		} else {
+			// 첨부파일이 존재하지 않는 경우 => 
+			$(".changeFileBtn").css("display", "none");
+			$(".n_file").css("display", "block");
+		}
+				
+		// 컨트롤러에서 넘어온 카테고리 값으로 기본 selected 하기 // 얘도 문서가 로드되면 자동으로 실행되도록 하기 
+		var categoryValue = $(".hiddenNoticeInput").data('category');
+		console.log("컨트롤러에서 넘어온 카테고리 값: " + categoryValue);
+		if( categoryValue == "all"){ 
+			$("#categoryAll").attr("selected", "selected");
+		} else if(categoryValue == "emergency" ) { 
+			$("#categoryEmergency").attr("selected", "selected");
+		} else if(categoryValue == "event" ){
 			$("#categoryEvent").attr("selected", "selected");
+		} else {
+			$("#categoryAll").attr("selected", "selected");
 		}
 		
 		// summernote 적용시키는 부분
@@ -229,6 +302,8 @@ select {
 				}
 			});
 		}
-	});
+		
+		
+	})
 </script>
 </html>

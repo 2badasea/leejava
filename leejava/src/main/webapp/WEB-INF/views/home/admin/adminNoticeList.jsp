@@ -23,13 +23,11 @@ tr > td {
 	text-align: center;
 }
 .noticeListBtns { 
-	display: flex;
-	justify-content: flex-end;
+	padding-left: 70%;
 	
 }
 .noticeListBtns button { 
 	margin-right: 10px;
-	margin-bottom: 10px;
 }
 #noticeNumber {
 	width: 50px;
@@ -152,6 +150,11 @@ input[type="checkbox"]{
 	color: whitesmoke;
 	transition: 0.5s;
 }
+.noticeListTable button{
+	padding-left: 10px;
+	padding-right: 10px;
+	
+}
 .noticeSearchBtns{
 	margin-top: 20px;
 }
@@ -236,7 +239,6 @@ input[type="checkbox"]{
 					<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option>
 					<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option>
 				</select>
-				
 				<div class="noticeListBtns">
 					<button type="button" class="noticeFormBtn">공지사항 작성</button>
 					<button type="button" class="selectDeleteBtn">선택 삭제</button>

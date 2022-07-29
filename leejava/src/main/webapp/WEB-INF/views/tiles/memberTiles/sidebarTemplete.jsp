@@ -8,12 +8,22 @@
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
-.sidebar {
+.sidebarTemplete_wrapper {
 	background-color: #05AA6D;
 	min-height: 100vh; 
 }
-.sideWrap {
-	padding: 20px;
+.sidebar_menu a{
+	margin-top: 10px;
+	text-decoration: none;
+	font-size: large;
+	font-weight: 600;
+	color: whitesmoke;
+}
+.sidebar_menu a:not(.quizcard):hover{
+	color: coral;
+}
+.quizcard:hover{
+	color: #2E3856;
 }
 .sidebar_logo_image {
 	width: 30px;
@@ -36,21 +46,17 @@
 #logoutBtn{
 	height: 30px;
 }
-#mainMenu, 
-#subMenu {
+#mainMenu {
 	list-style-type: none;
 }
-#subMenu > li {
-	padding-left: 20px;
-	display: none;
-}
-.sidebar_menu > li, ul {
+.subMenuTitle{
+	font-size: x-large;
+	font-weight: 700;
 	margin-top: 20px;
+	color: coral;
 }
-.sidebar_menu > a {
-	text-decoration: none;
-}
-/* 모달창 관련 스타일 속성 들어가는 공간.  */
+
+/* todolist 모달창 관련 스타일 속성 들어가는 공간.  */
 #todoUl {
     list-style: none;
     padding-left: 0px;
@@ -69,13 +75,13 @@
     position: absolute;
     bottom: 10%;
     right: 10%;
-    width: 500px;
+    width: 550px;
     height: auto;
     z-index: 3;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
-    padding: 20px;
+    padding: 25px;
 }
 
 .todo_modal_layer {
@@ -83,10 +89,10 @@
     width: 100%;
     height: 100%;
     z-index: 2;
-    background-color: transparent;
-    transition: 2s;
+    background-color: lightgray;
+    opacity: 0.5;
+    transition: 0.5s;
 }
-
 
 .todo_modal_footer,
 .todo_modal_body {
@@ -97,7 +103,6 @@
     display: flex;
     justify-content: end;
 }
-
 
 #todoInput {
     bottom: 5px;
@@ -112,14 +117,25 @@
 	height: 30px;
 	font-size: 15px;
 }
-#modalOpen{
-	width: 70px;
-	height: 70px;
-	background-color: #82F0F0;
-	color: black;
+
+.modalOpen{
+	border-radius: 30px;
+	border-style: none;
+	min-width: 100px;
+	width: auto; 
+	height: 80px;
+	margin-top: 80%;
+	background-color: white;
+	color: #05AA6D;
+	font-weight: 700;
+	font-size: x-large;
+	padding: 20px;
 }
-#modalOpen:hover{
+.modalOpen:hover{
 	cursor: pointer;
+	background-color: coral; /* coral, salmon, darkorange */
+	color: white;
+	transition: 0.3s;
 }
 .todoDeleteBtn{
 	margin-left: 10px;
@@ -134,26 +150,42 @@
 #todoBoxCloseBtn{
 	margin-top: 10px;
 	margin-right: 30px;
-	width: 60px;
-	height: 40px;
-	background-color: #05AA6D;
-	border-radius: 30px;
+	min-width: 70px;
+	min-height: 40px;
+	width: auto;
+	height: auto;
+	border-style: none;
+	font-weight: 600;
+	font-size: medium;
+	padding: 10px;
+	background-color: whitesmoke;
+	border-radius: 20px;
+	color: #05AA6D;
+}
+#todoBoxCloseBtn:hover{
+	cursor: pointer;
+	background-color: coral;
 	color: white;
+	transition: 0.3s;
+}
 }
 #todoUl li{
 	margin-bottom: 7px;
 }
+/*	*************************************	*/
+
+/* 특별히 강조효과를 주고 싶은 경우에 사용할 효과*/
 .specialA:hover{
 	cursor: pointer;
 }
 .specialA{
 text-decoration: none;
    display: inline-block;
-   -webkit-transition: 0.5s;
-   -moz-transition: 0.5s;
-   -o-transition: 0.5s;
-   -ms-transition: 0.5s;
-   transition: 0.5s;
+   -webkit-transition: 0.3s;
+   -moz-transition: 0.3s;
+   -o-transition: 0.3s;	
+   -ms-transition: 0.3s;
+   transition: 0.3s;
 }
 
 .specialA:hover {
@@ -162,20 +194,18 @@ text-decoration: none;
     -o-transform: scale(1.5,1.5);
     -ms-transform: scale(1.5,1.5);
     transform: scale(1.5,1.5);
-} 
+}
 </style>
 </head>
 <body>
-<div class="sidebar">
-	<div class="sideWrap">
+<div class="sidebarTemplete_wrapper">
 		<div class="sidebar_logo" align="center">
 				<a href="home.do">
-				<img src="resources/image/loopy.jpeg" class="sidebar_logo_image">
-				<div class="sidebarSiteName">
+					<img src="resources/image/loopy.jpeg" class="sidebar_logo_image">
 					<span style="font-size: 20px;">LEEJAVA</span>
 				</a>
-			</div>
 		</div>
+		
 		<div class="sidebar_userInfo">
 			<c:if test="${empty session_user}">
 			<div class="sidebar_beforeLogin" >
@@ -185,7 +215,7 @@ text-decoration: none;
 			</c:if>
 			<c:if test="${not empty session_user }">
 				<div class="sidebar_afterLogin">
-					<span>${session_user}님 오늘도 빡코딩!</span><br>
+					<span>${session_user}님 오늘도 화이팅</span><br>
 					<c:if test="${session_user != null and session_nickname != '관리자' }">
 						<button type="button" id="myInfoBtn">My Info</button>
 					</c:if>
@@ -195,87 +225,73 @@ text-decoration: none;
 		</div>
 		<br>
 		
-		<div class="sidebar_menu">
-			<hr>
+		<div class="sidebar_menu" align="center">
 			<ul id="mainMenu">
 				<c:if test="${session_user == \"bada\"}">
 					<li><a href="adminPage.do" class="sideMenu">관리자 화면</a></li>
 				</c:if>
-				<li><a href="quizcard.do">퀴즐렛 학습하기</a></li>
-				<ul id="subMenu">커뮤니티
-					<li><a href="boardList.do" class="sideMenu">자유게시판</a></li>
-					<li><a href="#" class="sideMenu">QNA</a></li>
-					<li><a href="#" class="sideMenu">정보/팁</a></li>
-					<li><a href="#" class="sideMenu">읽을거리</a></li>
-					<li><a href="#" class="sideMenu">스터디/정기모임</a></li>
-					<li><a href="#" class="sideMenu">책/인강 리뷰</a></li>
-				</ul>
-				<li><a href="memberNoticeList.do">공지사항</a></li>
+				<li><a href="quizcard.do" class="quizcard" style="font-size: x-large;">퀴즈카드 학습</a></li>
+				<li><a href="memberNoticeList.do" class="sideMenu">공지사항</a></li>
+				<li class="subMenuTitle">커뮤니티</li>
+					<li><a href="boardList.do" class="sideMenu community">자유게시판</a></li>
+					<li><a href="#" class="sideMenu community">QNA</a></li>
+					<li><a href="#" class="sideMenu community">정보/팁</a></li>
+					<li><a href="#" class="sideMenu community">읽을거리</a></li>
+					<li><a href="#" class="sideMenu community">스터디/정기모임</a></li>
+					<li><a href="#" class="sideMenu community">책/인강 리뷰</a></li>
 			</ul>
-		</div>
 		<!-- 로그인해서 세션값이 존재하는 유저만 button이 보이도록 한다. -- -->
 		<c:if test="${not empty session_user }">
-			<button id="modalOpen">todolist</button>
+			<button type="button" class="modalOpen">todolist</button>
 		</c:if>
+		</div>
 		
-		<!-- ㅡ----------------  modaㅣ들어가는 공간 		----------------------- -->
-		 <!--모달창 연습 공간-->
-    <div class="todo_modal_container">
-        <div class="todo_modal_content">
-            <!-- modal header 영역-->
-            <div class="todo_modal_header">
-                <label for="totolist">To do List by BADA</label>
-                <input type="hidden" id="m_email" value="${session_user}">
-            </div>
-            <!--modal body 영역 -->
-            <div class="todo_modal_body">
-<!--                 <form id="frm" onsubmit="return false;"> -->
-                    <!--여기 안에 입력했던 요소들이 생성된다. -->
-                    <div id="todolistBox">
-                        <ul id="todoUl">
-
-                        </ul>
-                    </div>
-
-                    <div class="todo_inputBox">
-                        <input type="text" id="todoInput" placeholder="input your today goal" maxlength="20">
-                        <input type="button" id="todoBtn" value="+"
-                            style="background-color: white; color:#05AA6D; border-radius: 30px;">
-                    </div>
-<!--                 </form> -->
-            </div><br>
-            <!--modal footer 영역 -->
-            <div class="todo_modal_footer">
-<!--                 <button id="allDeleteBtn">전체삭제</button> -->
-<!--                 <button id="allCompleteBtn">전체완료</button> -->
-                <button id="todoBoxCloseBtn">창닫기</button>
-            </div>
-        </div>
-        <div class="todo_modal_layer"></div>
-    </div>
+		<!-- ************ To do List 모달창 들어가는 공간 ************ -->
+ 	  	 <div class="todo_modal_container">
+	        <div class="todo_modal_content">
+	        	<!--  modal header 영역  -->
+	            <div class="todo_modal_header">
+	                <label for="totolist">To do List by BADA</label>
+	                <input type="hidden" id="m_email" value="${session_user}">
+	            </div>
+	            <!--modal body 영역 -->
+	            <div class="todo_modal_body">
+	                    <!--여기 안에 입력했던 요소들이 생성된다. -->
+	                    <div id="todolistBox">
+	                        <ul id="todoUl">
+	
+	                        </ul>
+	                    </div>
+	                    <div class="todo_inputBox">
+	                        <input type="text" id="todoInput" placeholder="input your today goal" maxlength="20">
+	                        <button type="button" id="todoBtn" class="todoBtn">+</button>
+	                    </div>
+	            </div>
+	            <br>
+	            <!--modal footer 영역 -->
+	            <div class="todo_modal_footer">
+	                <button id="todoBoxCloseBtn" class="todoBoxCloseBtn">창닫기</button>
+	            </div>
+	        </div>
+	        <div class="todo_modal_layer"></div>
+   		 </div>
 		<!-- --------------모달창 끝나는 공간---------------- -->
-	</div>
-</div>
+</div>  <!-- 가장 바깥 div끝 (sidebarTemplete_wrapper)  -->
 </body>
 <script>
-	// 커뮤니티 메뉴 드랍다운 방식으로 생성
-	$("#subMenu").hover( function(){
-		$("#subMenu > li").show(); 
-	});
-	
 	// 로그인 페이지 띄우기
 	$("#sidebar_loginBtn").on("click", function(){
 		alert("Move to Login Page~");
 		location.href="loginPage.do";
 	})
-	
+	 
 	// 로그아웃 처리   click function 
 	$("#logoutBtn").click(function(){
 		alert("로그아웃 합니다.");
 		location.href="logout.do";
 	})
 	
-	// 회원가입 페이지 이동
+	// 회원가입 페이지 이동 
 	$("#sidebar_memberJoinBtn").on("click", function(){
 		alert("회원가입 페이지로 이동하겠습니다.");
 		location.href='memberJoinTerms.do';
@@ -284,10 +300,14 @@ text-decoration: none;
 	// 개인정보 조회하는 공간으로 이동
 	$("#myInfoBtn").on("click", function(){ 
 		alert("개인정보 조호히하는 공간으로 이동"); 
-		location.href='memberMyInfo.do';
+		location.href='memberMyInfo.do'; 
 	});
 	
-	/***************  Modal Script ***************/
+	/***************  <To Do List> Modal Script ***************/
+	
+	// todolist 입력창에 포커스를 주면, 테두리 색깔 coral로 변경시키기
+	
+	
 	$("#todoBtn").on("click", function () {
 		// m_eamil은 ajax로 todolist dB값 조회하기 위한 용도
 		let m_email = $("#m_email").val();
@@ -309,7 +329,7 @@ text-decoration: none;
 	        var $todoInput = $("#todoInput").val();
 	        console.log("입력한 값 확인: " + $todoInput);
 	        if ($todoInput.length === 0) {
-	            alert("toodlist를 입력하세요");
+	            alert("To Do List를 입력하세요");
 	            return false;
 	        }
 	        ajaxInsert(m_email, $todoInput);
@@ -349,13 +369,11 @@ text-decoration: none;
 				$("#todoUl").append(str);
 				$("#todoInput").val('');
 			},
-			error: function(data){
+			error: function(){
 				console.log("통신 중 에러 발생");
-				console.log("에러났을 때 data값은 무엇? " + data);
 			}
 		})
 	}
-
 
 	// 이제 리스트중 하나를 삭제했을 때의 이벤트를 생각해야 한다. 
 	$(document).on("click", '.todoDeleteBtn', function (e) {
@@ -393,7 +411,15 @@ text-decoration: none;
 	    // json데이터를 제외한 단숞 입력요소들은 모두 지우도록 한다. 
 	    $("#todoUl > li").remove();
 	    $(".todo_modal_container").css("display", "none");
-	    $("#modalOpen").css("display", "block");
+	    $(".modalOpen").css("display", "block");
+	})
+	
+	// 외부입력으로 todolist모달창 닫을 수 있도록 구현하기
+	$(document).on("click", function(e){
+		if( $(e.target).closest('.todo_modal_content').length == 0  && !$(e.target).hasClass("todoBoxCloseBtn")
+				&& !$(e.target).hasClass("modalOpen") ){
+			$('.todoBoxCloseBtn').click();
+		}
 	})
 
 	// todolist 입력 후 엔터키로 목록에 추가시키기
@@ -408,13 +434,13 @@ text-decoration: none;
 	
 	
 	// 모달창 열기  => 모달창을 열면서 ajax를 호출하여 데이터를 삽입해야 한다. 루핑 돌면서 반복적으로 <ul>태그 밑으로 요소들을 집어넣는다. 
-	$("#modalOpen").on("click", function () {
-    	$("#modalOpen").hide();
+	$(".modalOpen").on("click", function () {
+    	$(".modalOpen").hide();
  	  	// sidebar에 있는 session값을 m_email에 담자.
   	 	var m_email = $("#m_email").val();
   	  	// ajax를 호출해보자 호출해서 db에 있는 데이터를 가져와야 한다. 
-    	//방식은 일단 일반적인 ajaxㅎ방식으로 호출한다. => 
-    
+    	//방식은 일단 일반적인 ajaxㅎ방식으로 호출한다. =>
+  	  	
 	    $.ajax({
 	    	async: false,
 	        url: "ajaxTodolist.do",
@@ -530,7 +556,11 @@ text-decoration: none;
 			})
 		}
 	})
-	
-
+</script>
+<script>
+	// 문서가 모두 로드되면 실행시킬 이벤트 정의
+	$(document).on("ready", function(){
+		$(".sidebar_menu a").addClass("specialA");
+	})
 </script>
 </html>

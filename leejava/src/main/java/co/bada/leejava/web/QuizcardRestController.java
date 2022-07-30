@@ -410,7 +410,7 @@ public class QuizcardRestController {
 				return new ResponseEntity<String>(responseText, HttpStatus.NOT_IMPLEMENTED);
 			}
 		}
-	}
+	} 
 	
 	// 아카이브 박스 현재 학습중인 세트 조회하기 
 	@PostMapping(value = "ajaxHistorySelect.do", produces = MediaType.APPLICATION_JSON_VALUE)

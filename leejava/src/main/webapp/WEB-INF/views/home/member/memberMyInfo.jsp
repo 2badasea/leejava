@@ -7,13 +7,14 @@
 <meta charset="UTF-8">
 <title>${member.m_nickname }님의개인정보</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
 .myInfoDetail{
-	border: 1px solid gainsboro;
+	border: 0.3px solid #05AA6D;
 	border-radius: 30px;
 	padding: 50px;
-	width: 70%;
-	margin-top: 10%;	
+	width: 50%;
+	margin-top: 8%;	
 	margin-left: 15%;
 }
 .myInfoDetailTop {
@@ -28,7 +29,7 @@ label {
 #m_email{
 	border: none;
 }
-<!-- 업로드한 이미지 공간을 위한 스타일 by kimvampa -->
+/*	업로드한 이미지 공간을 위한 스타일 by kimvampa 	*/ 
 #result_card img{
  	max-width: 100%; 
     height: auto;
@@ -69,9 +70,12 @@ label {
 	padding: 15px;
 	margin-top: 5px;
 	resize: none;
+	font-weight: 900;
+	font-size: medium;
 }
+
 #m_intro:focus{ 
-	outline: none;
+	outline-color: coral;
 }
 .updateBtnAfter{
 	margin-top: 5px;
@@ -89,39 +93,6 @@ label {
 #m_promotion:focus{
 	outline: none;
 }
-<!-- 모달창 관련 style 부분 --> 
-#container {
-  position:relative;
-  width:100%;
-  height:100%;
-  z-index:1;
-  display: none;
-}
-#container h2 {
-  margin:0;
-}
-#container button {
-	width:100px;
-	float: right;
-}
-#container .modal {
-  width:350px;
-  margin:100px auto;
-  padding:20px 10px;
-  background:#fff;
-  border:2px solid #666;
-  height: 150px;
-}
-#container .modal_layer {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0, 0, 0, 0.5);
-  z-index:-1;
-} 
-
 /* 닉네임 변경창 스타일 부분*/
 .nickname_modal_container {
     position: fixed;
@@ -130,7 +101,7 @@ label {
     width: 100%;
     height: 100vh;
     display: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 .nickname_modal_content {
@@ -139,7 +110,7 @@ label {
     left: 35%;
     width: 450px;
     height: auto;
-    z-index: 3;
+    z-index: 4;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -150,10 +121,10 @@ label {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 3;
     background-color: gray;
-    opacity: 0.3;
-    transition: 2s;
+    opacity: 0.5;
+    transition: 1s;
 }
 .nickname_modal_body{
     display: flex;
@@ -172,7 +143,7 @@ label {
     width: 100%;
     height: 100vh;
     display: none;
-    z-index: 1;
+    z-index: 5;
 }
 
 .phone_modal_content {
@@ -181,7 +152,7 @@ label {
     left: 35%;
     width: 400px;
     height: auto;
-    z-index: 3;
+    z-index: 7;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -192,7 +163,7 @@ label {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 6;
     background-color: gray;
     opacity: 0.5;
     transition: 2s;
@@ -230,7 +201,7 @@ label {
     width: 100%;
     height: 100vh;
     display: none;
-    z-index: 1;
+    z-index: 8;
 }
 
 .leave_modal_content {
@@ -239,7 +210,7 @@ label {
     left: 30%;
     width: 500px;
     height: auto;
-    z-index: 3;
+    z-index: 10;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -250,7 +221,7 @@ label {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 9;
     background-color: gray;
     opacity: 0.5;
     transition: 2s;
@@ -270,54 +241,17 @@ label {
 	transition: 1s;
 }
 /*************************************/
-#table{
-	border-style: none;
-}
-
-#table button {
-	border-radius: 20px;
-	width: auto;
-	height: 30px;
-	border-style: none;
-	background-color: #F0FFF0;
-	color: #05AA6D;
-	padding: 10px;
-}
-
-#table button:hover {
-	cursor: pointer;
-	background-color: #05AA6D;
-	color:#F0FFF0;
-	transition: 1s;
-}
-#table input, #email{
-	border-style: none;
-	border-bottom: 1px solid black;
-	text-align: center;
-}
-.memberLeaveBtn{
-	border-radius: 20px;
-	width: auto;
-	height: 30px;
-	border-style: none;
-	background-color: #F0FFF0;
-	color: #05AA6D;
-	padding: 10px;
-}
-.memberLeaveBtn:hover{
-	cursor: pointer;
-	background-color: #05AA6D;
-	color:#F0FFF0;
-	transition: 1s;
-}
 .myInfoWrapper button{
 	border-radius: 20px;
-	width: auto;
-	height: 30px;
+	min-width: 60px;
+	width: auto; 
+	min-height: 20px;
+	height: auto;
 	border-style: none;
-	background-color: #F0FFF0;
+	background-color: whitesmoke;
 	color: #05AA6D;
 	padding: 10px;
+	font-weight: 700;
 }
 .myInfoWrapper button:hover{
 	cursor: pointer;
@@ -326,7 +260,7 @@ label {
 	transition: 1s;
 }
 
-/**************** 주소 수정 모달창 디자인 ********************8*/
+/****************************** 주소 수정 모달창 디자인 *********************************8*/
 .address_modal_container {
     position: fixed;
     top: 0px;
@@ -334,7 +268,7 @@ label {
     width: 100%;
     height: 100vh;
     display: none;
-    z-index: 1;
+    z-index:11;
 }
 
 .address_modal_content {
@@ -343,7 +277,7 @@ label {
     left: 35%;
     width: 500px;
     height: auto;
-    z-index: 3;
+    z-index: 13;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -354,7 +288,7 @@ label {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 12;
     background-color: gray;
     opacity: 0.5;
     transition: 2s;
@@ -373,7 +307,7 @@ label {
     width: 100%;
     height: 100vh;
     display: none;
-    z-index: 1;
+    z-index: 14;
 }
 
 .password_modal_content {
@@ -382,7 +316,7 @@ label {
     left: 30%;
     width: 500px;
     height: auto;
-    z-index: 3;
+    z-index: 16;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -393,7 +327,7 @@ label {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 15;
     background-color: gray;
     opacity: 0.5;
     transition: 2s;
@@ -403,6 +337,23 @@ label {
 	display: none;
 }
 /* **************************************** */
+.form_section{
+	border: 1px dotted lightgray;
+	min-height: 200px;    
+	height: auto;
+}
+
+.myBasicInfo input, #email{
+	border-style: none;
+	text-align: center;
+	border-bottom: 0.5px solid #05AA6D;
+	font-weight: 700;
+	font-size: large;
+}
+.myInfoWrapper input:focus{
+	outline-color: coral;
+}
+
 </style>
 </head>
 <body>
@@ -410,99 +361,89 @@ label {
 		<!--개인정보 상세 조회 & 수정 영역-->
 	  <div class="myInfoDetail">
 			<div class="myInfoDetailTop">
-			<!--세 영역으로 나눈다. 프로필사진영역, 개인정보 상세 -->
-			<div class="myInfoDetail_left">
-				<div class="form_section">
-					<!-- 여기다가 이미지를 보여준다 -->
-           			<div class="form_section_title">
-            			<label>프로필 이미지</label>
-                    </div>
-                    <div class="form_section_content">
-						<form id='frm' action="ajaxProfileImgUpdate.do" method="post" enctype="multipart/form-data">
-							<!--form요소로 전달할, 프로필 변경에 필요한 파라미터 1. 사용자 이메일 2. 이미지 파일  -->
-							<div id='uploadResult'>
-	<!-- 								여기에 ajax success을 통해 추가될 동적 태그들이 추가된다. -->
-	<!-- 							<div id="result_card"> -->
-	<!-- 								<div class="imgDeleteBtn">x</div> -->
-	<!-- 								<img src="resources/image/loopy.jpeg"> -->
-	<!-- 							</div> -->
-							</div>
+			
+				<div class="myInfoDetail_left">	
+					<div class="form_section" align="center">
+						<!-- 여기다가 이미지를 보여준다 -->
+	                    <div class="form_section_content">
+							<form id='frm' action="ajaxProfileImgUpdate.do" method="post" enctype="multipart/form-data">
+								<!--form요소로 전달할, 프로필 변경에 필요한 파라미터 1. 사용자 이메일 2. 이미지 파일  -->
+								<div id='uploadResult'>
+		<!-- 								여기에 ajax success을 통해 추가될 동적 태그들이 추가된다. -->
+		<!-- 							<div id="result_card"> -->
+		<!-- 								<div class="imgDeleteBtn">x</div> -->
+		<!-- 								<img src="resources/image/loopy.jpeg"> -->
+		<!-- 							</div> -->
+								</div>
+								<br>
+								<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
+								<label for="m_profilefile" class="speicalTitle">이미지 선택</label>
+								<br>
+								<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
+								<br>
+							</form>	
+						</div>			
+					</div>
+					<div class="myInfo_intro">
+						<!--이메일아이디, 자기소개(간단한 자신에 대한 소개글. 다른 사람들에게 보여짐)-->
+						<!--  버튼으로선택할 수 있도로 해야 한다. => 체크해하면 안 보임 -->
+						<label for="email" class="speicalTitle"><b>이메일</b></label>
+						<input type="text" value="${member.m_email }" readonly="readonly" id="email">
+						<br><br>
+						<div>
+							<h5>자기소개 말고 다른 거 생각해보기</h5>
+						</div>
+					</div>
+				</div>
+				
+				<div class="myInfoDetail_right">
+					<div class="myBasicInfo" align="center">
+							<label for="m_nickname" class="nicknameLabel speicalTitle"><b>닉네임</b></label>
+								<input type="text" id="m_nickname" value="${member.m_nickname }" style="width: 300px;" readonly="readonly">
+								<button type="button" class="nicknameUpdateBtn">닉네임 변경</button>
+							<br>	
+							<label for="m_phone"  class="phoneLabel speicalTitle"><b>연락처</b></label>
+								<input type="text" id="m_phone" value="${member.m_phone }" style="width: 300px;" readonly="readonly">
+								<button type="button" class="phoneUpdateBtn">연락처 수정</button>
 							<br>
-							<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
-							<label for="m_profilefile">이미지 선택</label>
-							<br>
-							<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
-							<br>
-						</form>	
+							<label for="m_address" class="addressLabel speicalTitle"><b>주소</b></label>
+								<input type="text"  id="m_address" value="${member.m_address }" style="min-width: 300px; width: auto;" readonly="readonly">
+								<button type="button" class="addressModalBtn">주소 수정</button>
+					</div>
+					<br>
+					<div class="myInfoPrivate">
+						<!-- 1.비밀번호 변경, 2. 회원탈퇴 3. 개인정보약관 4. 프로모션 동의여부 3번이랑 4번은 radioㅂ방식으로. -->
+						<!-- 중요한 개인정보의 경우 ㅅ정할 수 잇도록 한다. -->
+						<div>
+					        <input type="text" value="개인정보 3년 제공 동의 여부" readonly="readonly" id="m_privacy" class="speicalTitle" data-privacy="${member.m_privacy }">
+					        <br>
+					        <label for="m_privacy_yes">동의</label>
+					        <input type="radio" name="m_privacy" id="m_privacy_yes" value="YES">
+					        <label for="m_privacy_no">미동의</label>
+					        <input type="radio" name="m_privacy" id="m_privacy_no" value="NO">
+					    </div>
+					    <br>
+					    <div>
+					        <input type="text" value="프로모션 동의 여부" class="speicalTitle" readonly="readonly" id="m_promotion" data-promotion="${member.m_promotion }">
+					        <br>
+					        <label for="m_promotion_yes">동의</label>
+					        <input type="radio" name="m_promotion" id="m_promotion_yes" value="YES" checked="checked">
+					        <label for="m_promotion_no">미동의</label>
+					        <input type="radio" name="m_promotion" id="m_promotion_no" value="NO">
+					    </div><br>
+					    <div align="right">
+							<button type="button" class="passwordModalBtn">비밀번호 변경</button>
+							<button type="button" class="memberLeaveBtn">회원탈퇴</button>
+						</div>
 					</div>			
-				</div>
-				<div class="myInfo_intro">
-					<!--이메일아이디, 자기소개(간단한 자신에 대한 소개글. 다른 사람들에게 보여짐)-->
-					<!--  버튼으로선택할 수 있도로 해야 한다. => 체크해하면 안 보임 -->
-					<label for="email"><b>이메일</b></label>
-					<input type="text" value="${member.m_email }" readonly="readonly" id="email">
-					<br><br>
-					<div>
-						<h5>자기소개 말고 다른 거 생각해보기</h5>
-					</div>
-				</div>
-			</div>
-			<div class="myInfoDetail_right">
-				<table id="table">
-					<tr>
-						<th id="nicknameTh">닉네임</th>
-						<td>
-							<input type="text" id="m_nickname" value="${member.m_nickname }" style="width: 300px;" readonly="readonly">
-							<button type="button" class="nicknameUpdateBtn">닉네임 변경</button>
-						</td>
-					</tr>
-					<tr>
-						<th>연락처</th>
-						<td>	
-							<input type="text" id="m_phone" value="${member.m_phone }" style="width: 300px;" readonly="readonly">
-							<button type="button" class="phoneUpdateBtn">연락처 수정</button>
-						</td>
-					</tr>
-					<tr>
-						<th>주소</th>
-						<td>
-							<input type="text"  id="m_address" value="${member.m_address }" style="width: 300px;" readonly="readonly">
-							<button type="button" class="addressModalBtn">주소 수정</button>
-						</td>
-					</tr>
-				</table>
-				<br>
-				<div class="myInfoPrivate">
-					<!-- 1.비밀번호 변경, 2. 회원탈퇴 3. 개인정보약관 4. 프로모션 동의여부 3번이랑 4번은 radioㅂ방식으로. -->
-					<!-- 중요한 개인정보의 경우 ㅅ정할 수 잇도록 한다. -->
-					<div>
-				        <input type="text" value="개인정보 3년 제공 동의 여부" readonly="readonly" id="m_privacy" data-privacy="${member.m_privacy }">
-				        <br>
-				        <label for="m_privacy_yes">동의</label>
-				        <input type="radio" name="m_privacy" id="m_privacy_yes" value="YES">
-				        <label for="m_privacy_no">미동의</label>
-				        <input type="radio" name="m_privacy" id="m_privacy_no" value="NO">
-				    </div>
-				    <br>
-				    <div>
-				        <input type="text" value="프로모션 동의 여부" readonly="readonly" id="m_promotion" data-promotion="${member.m_promotion }">
-				        <br>
-				        <label for="m_promotion_yes">동의</label>
-				        <input type="radio" name="m_promotion" id="m_promotion_yes" value="YES" checked="checked">
-				        <label for="m_promotion_no">미동의</label>
-				        <input type="radio" name="m_promotion" id="m_promotion_no" value="NO">
-				    </div><br>
-				    <div align="right">
-						<button type="button" class="passwordModalBtn">비밀번호 변경</button>
-						<button type="button" class="memberLeaveBtn">회원탈퇴</button>
-					</div>
-				</div>			
-			</div>  <!-- myInfo 오른쪽 영역 -->
+				</div>  <!-- myInfo 오른쪽 영역 -->
 		</div>  <!-- myinfoDedatil Wrapper 영역 -->
-		<br> 
+		
+		<br>
+		 
 		<div class="myInfoDetail_bottom">
-			<h3>My Info...</h3>
-			<textarea rows="7" cols="" id="m_intro"  name="m_intro" readonly="readonly">${member.m_intro }</textarea>
+			<h3><label for="m_intro"><b>My Info...</b></label></h3>
+			<textarea rows="8" cols="" id="m_intro"  name="m_intro" readonly="readonly">${member.m_intro }</textarea>
 			<button id="myIntroUpdateBtn" style="float: right; margin-top: 10px;">자기소개 수정</button>
 			<button class="updateBtnAfter" id="myIntroUpdateEnd" value="${member.m_email }">수정 완료</button>
 			<button class="updateBtnAfter" id="myIntroCancel" value="${member.m_intro }" style="margin-right: 15px;" >수정 취소</button>
@@ -512,24 +453,24 @@ label {
 
 	  <!-- 닉네임 변경 업데이트 모달 영역 -->
 	  <div class="nickname_modal_container">
-        <div class="nickname_modal_content">
-            <div class="nickname_modal_header" align="center">
-                <span style="font-size: 22px;"><b>닉네임 변경하기</b></span>
-                <hr>
-            </div>
-            <div class="nickname_modal_body">
-                 <form id="nicknameForm">
-                    <label for="newNickname">새로운 닉네임</label>
-					<input type="text" id="newNickname" class="newNickname">
-					<button type="button" class="newNicknameUpdateBtn">변경하기</button>
-                 </form>
-            </div>
-            <br>
-            <div class="nickname_modal_footer">
-                <button style="float: right;" class="nickModalCloseBtn">닫기</button>
-            </div>
-        </div>
-        <div class="nickname_modal_layer"></div>
+	        <div class="nickname_modal_content">
+	            <div class="nickname_modal_header" align="center">
+	                <span style="font-size: 22px;"><b>닉네임 변경하기</b></span>
+	                <hr>
+	            </div>
+	            <div class="nickname_modal_body">
+	                 <form id="nicknameForm">
+	                    <label for="newNickname" class="speicalTitle" >새로운 닉네임</label>
+						<input type="text" id="newNickname" class="newNickname">
+						<button type="button" class="newNicknameUpdateBtn">변경하기</button>	
+	                 </form>
+	            </div>
+	            <br>
+	            <div class="nickname_modal_footer">
+	                <button style="float: right;" class="nickModalCloseBtn">닫기</button>
+	            </div>
+	        </div>
+	        <div class="nickname_modal_layer"></div>
    	  </div>
 	<!---------------연락처 수정 모달창---------------------- -->
 	<div class="phone_modal_container">
@@ -540,7 +481,7 @@ label {
             </div>
             <div class="phone_modal_body" align="center">
                 <form id="newPhoneFrm">
-                    <label for="frontPhone">연락처</label>
+                    <label for="frontPhone" class="speicalTitle">연락처</label>
                     <select id="frontPhone" class="newPhoneInput">
                         <option value="" selected>선택</option>
                         <option value="010">010</option>
@@ -551,11 +492,11 @@ label {
                         <option value="018">018</option>
                         <option value="019">019</option>
                     </select>
-                    - <input type="text" class="newPhoneInput" id="middlePhone" >
-                    - <input type="text" class="newPhoneInput" id="backPhone">
+                    - <input type="text" class="newPhoneInput" id="middlePhone" maxlength="4">
+                    - <input type="text" class="newPhoneInput" id="backPhone" maxlength="4">
                     <button class="newPhoneCheckBtn">인증코드 전송</button>
                     <div class="phoneCheckBox" align="center">
-                        <label for="">인증코드 입력</label>
+                        <label for="" class="speicalTitle">인증코드 입력</label>
                         <input type="text" id="phoneCodeInput" class="phoneCodeInput">
                         <button type="button" class="storedCodeBtn">인증하기</button>
                         <br>
@@ -589,10 +530,10 @@ label {
                                 <span style="color: red; size: 15px;" id="timer"></span>
                         </div>
                         <div class="inputPhoneBox" style="display: block;">
-                        	<label for="inputPhone">연락처</label>
+                        	<label for="inputPhone" class="speicalTitle">연락처</label>
                             <input type="text" id="inputPhone" placeholder="연락처를 입력하세요" style="margin-left: 53px;">
                             <br>
-                            <label for="inputPassword" style="margin-top: 5px;">패스워드 확인</label>
+                            <label for="inputPassword" class="speicalTitle" style="margin-top: 5px;">패스워드 확인</label>
                             <input type="password" id="inputPassword" placeholder="비밀번호를 입력하세요">
                             <button type="button" id="inputPhoneCheckBtn" class="button">인증번호 받기!</button>
                             <br>
@@ -612,7 +553,7 @@ label {
 	 <div class="address_modal_container">
         <div class="address_modal_content">
             <div class="address_modal_header" align="center">
-                <span style="font-size: 22px;"><b>연락처 수정</b></span>
+                <span style="font-size: 22px;"><b>주소 수정</b></span>
                 <hr>
             </div>
             <div class="address_modal_body">
@@ -647,15 +588,15 @@ label {
             </div>
             <form id="passwordFrm">
                 <div class="password_modal_body" align="center">
-                    <label for="beforePwd">패스워드 입력</label> 
+                    <label for="beforePwd" class="speicalTitle">패스워드 입력</label> 
                     <input type="password" id="beforePwd" style="width: auto;" placeholder="현재 패스워드를 입력하세요.">
                     <button type="button" class="beforePwdBtn">비밀번호 확인</button>
                     <div class="newPwdBox">
                         <br>
-                        <label for="newPwd">*새로운 패스워드</label>
+                        <label for="newPwd" class="speicalTitle">*새로운 패스워드</label>
                         <input type="password" id="newPwd"><br>
                         <span class="pwdRegkSpan" style="font-size: 15px;"></span><br>
-                        <label for="newPwdCheck">*비밀번호 확인</label>
+                        <label for="newPwdCheck" class="speicalTitle">*비밀번호 확인</label>
                         <input type="password" id="newPwdCheck"><br>
                         <span class="pwdCheckSpan" style="font-size: 15px;"></span>
                         <button type="button" class="pwdUpdateBtn" style="display: none; margin-top: 10px;">패스워드 변경</button>
@@ -670,10 +611,10 @@ label {
         <div class="password_modal_layer"></div>
     </div>
 	
-	
 	</div> <!-- bodyWrapper 영역 -->
 </body>
 <script>
+
 	//현재 비밀번호 확인부터 하기  => 정상적으로 조회가 되면 => 새로운 패스워드 입력창 박스 보이게 하기
 	$(".beforePwdBtn").on("click", function(){
 	    var email = $("#m_email").val();
@@ -775,10 +716,8 @@ label {
 	    	}
 	    	
 	    })
-	    
-	    
-	})
-	
+	})  
+		
 	// 패스워드 변경 모달창 호출
 	$(".passwordModalBtn").on("click", function(){
 	    console.log("패스워드 모달 오픈");
@@ -800,6 +739,24 @@ label {
 	    $("body").css("position", "unset");
 	    $("body").css("overflow", "unset");
 	})
+	
+	// 비밀번호 변경 외부 모달창 클릭으로 창 비활성화 시키기
+	$(document).on("click", function(e){
+		if( $(e.target).closest(".password_modal_content").length === 0 && !$(e.target).hasClass('passwordModalBtn') && !$(e.target).hasClass('todoBoxCloseBtn')){
+			// if문을 하나 더 걸어줘서, 해당 모달창이 보이는 기준에서만 이벤트가 실행되도록 한다. 
+			if( $('.password_modal_container').is(":visible")){
+				alert("비밀번호 변경이 취소되었습니다.");
+			    $("#passwordFrm")[0].reset();
+			    $("#beforePwd").removeAttr("readonly");
+			    $('.password_modal_container').css("display", "none");
+			    $('.newPwdBox').css("display", "none");
+			    $(".pwdRegkSpan").text('');
+			    $('.pwdCheckSpan').text('');
+			    $("body").css("position", "unset");
+			    $("body").css("overflow", "unset");
+			 }
+		}
+	})
 
 	////////// 비밀번호 변경 스크립트 부분. 다 정의하고 경계선 지우기 //////////////
 	
@@ -818,6 +775,16 @@ label {
 	    $("#addressFrm")[0].reset();
 	    $("body").css("position", "unset");
 	    $("body").css("overflow", "unset");
+	})
+	
+	// 주소수정 모달창 외부 영역 클릭으로 모달창 닫기
+	$(document).on("click", function(e){
+		if( $(e.target).closest('.address_modal_content').length === 0 && !$(e.target).hasClass('addressModalBtn') && !$(e.target).hasClass('todoBoxCloseBtn') ){
+		    $(".address_modal_container").css("display", "none");
+		    $("#addressFrm")[0].reset();
+		    $("body").css("position", "unset");
+		    $("body").css("overflow", "unset");
+		}
 	})
 	
 	// 주소변경 버튼 클릭
@@ -1118,7 +1085,7 @@ label {
     // 연락처 수정 모달창 닫기 
     $(".phoneModalCloseBtn").on("click", function(){
         $("#newPhoneFrm")[0].reset();
-        $('.phone_modal_container').css("display", "none");
+        $('.phone_modal_container').css("display", "none");  
         $("body").css("position", "unset");
         $("body").css("overflow", "unset");
         clearInterval(timer);
@@ -1130,7 +1097,7 @@ label {
 
     // 외부 영역 클릭 모달창 닫기
     $(document).on("click", function(e){
-        if( !$(e.target).hasClass("phoneUpdateBtn") && $(e.target).closest(".phone_modal_content").length === 0 ){
+        if( !$(e.target).hasClass("phoneUpdateBtn") && $(e.target).closest(".phone_modal_content").length === 0 && !$(e.target).hasClass('todoBoxCloseBtn') ){
         	$("#newPhoneFrm")[0].reset();
 	        $('.phone_modal_container').css("display", "none");
 	        $("body").css("position", "unset");
@@ -1144,30 +1111,34 @@ label {
     })
 </script>
 <script>
-
-		
 	// 닉네임 모달창 닫기 
 	$(".nickModalCloseBtn").on("click", function(){
 	    console.log("모달창 닫기");
 	    $("#nicknameForm")[0].reset();
 	    $(".nickname_modal_container").css("display", "none");
+		$("body").css("position", "unset");
 	    $("body").css("overflow", "unset");  // overflow의 속성값은  hidden <--> unset
 	})
 	
 	// 닉네임 모달창 호출
 	$(".nicknameUpdateBtn").on("click", function(){
+		console.log("닉네임 모달창 호출 버튼 클릭");
 		$(".nickname_modal_container").css("display", "block");
+		$("body").css("position", "absolute");
 		$("body").css("overflow", "hidden");
 	})
 	
-	// 닉네임 모달창 외부영역 클릭으로 없애기
+	// 외부영역 클릭으로 닉네임 모달창 닫기
+		// 현재 사이드바에 있는 todomodal 버튼 이벤트와 클릭이벤트가 충돌한다.  class속성값 todoBoxCloseBtn 이것도 e.target에서 제외시키기
 	$(document).on("click", function(e){
-		if( $(e.target).closest('.nickname_modal_content').length == 0 && !$(e.target).hasClass("nicknameUpdateBtn") ){
-		    $("#nicknameForm")[0].reset();
-			$(".nickname_modal_container").css("display", "none");
-			$("body").css("overflow", "unset");
+		if( $(e.target).closest('.nickname_modal_content').length == 0 && !$(e.target).hasClass("nicknameUpdateBtn") && !$(e.target).hasClass('todoBoxCloseBtn')){
+			 $("#nicknameForm")[0].reset();
+			 $(".nickname_modal_container").css("display", "none");
+		     $("body").css("position", "unset");
+		     $("body").css("overflow", "unset");  // overflow의 속성값은  hidden <--> unset
 		}
 	})
+
 	
 	// 새로운 닉네임 변경
 	$(".newNicknameUpdateBtn").on("click", function(e){
@@ -1218,372 +1189,372 @@ label {
 <script>
 	$(document).ready(function(){
 		console.log("페이지 로딩 확인");
-		
-		$("#container").css("display", "none");
-		
-	/*페이지 로딩되자마자 프로모션 동의 여부와 개인정보 제공여부 DB값에 따른 체크상태 출력*/
-	// 아래는 개인정보 제공 여부 
-	var privacy = $("#m_privacy").data("privacy");
-	console.log("개인정보 제공 동의 여부 값: " + privacy); 
-	if(privacy === "YES"){
-		$("#m_privacy_yes").prop("checked", true);
-	} else {
-		$("#m_privacy_no").prop("checked", true);
-	}
-	// 아래는 프로모션 부분
-	var promotion = $("#m_promotion").data("promotion");
-	console.log("프로모션 동의 여부 값: " + promotion); 
-	if(promotion === "YES"){
-		$("#m_promotion_yes").prop("checked", true);
-	} else {
-		$("#m_promotion_no").prop("checked", true);
-	}
-		
-	// 프로모션 동의 여부 체크값 변경에 따른 이벤트 발생 ajax로 업데이트하고 나서 새로고침 여부 판단. 실시간으로 바뀌는지 보고
-	$("input[name='m_promotion']").on("change", function(){
-		console.log("눌렸나>");
-		var email = $("#m_email").val(); 
-		var value = $(this).val(); 
-		var promotionCheck = confirm("변경하시겠습니까?");
-		if(promotionCheck){
-			// ajax호출
-			$.ajax({
-				url: "ajaxJoinTermsUpdate.do",
-				type: "POST",
-				data: {
-					m_email : email,
-					m_promotion : value
-				},
-				success: function(result){
-					alert(result);
-					console.log(result);
-				}
-			})
+
+			
+		/*페이지 로딩되자마자 프로모션 동의 여부와 개인정보 제공여부 DB값에 따른 체크상태 출력*/
+		// 아래는 개인정보 제공 여부 
+		var privacy = $("#m_privacy").data("privacy");
+		console.log("개인정보 제공 동의 여부 값: " + privacy); 
+		if(privacy === "YES"){
+			$("#m_privacy_yes").prop("checked", true);
 		} else {
-			location.reload();
+			$("#m_privacy_no").prop("checked", true);
 		}
-	})
-	
-	// 개인정보 동의 여부 체크값 변경에 따른 DB 업데이트 
-	$("input[name='m_privacy']").on("change", function(){
-		console.log("눌렸나>");
-		var email = $("#m_email").val(); 
-		var value = $(this).val(); 
-		var privacyCheck = confirm("변경하시겠습니까?");
-		if(privacyCheck){
-			// ajax 호출
-			$.ajax({
-				url: "ajaxJoinTermsUpdate.do",
-				type: "POST",
-				data: {
-					m_email : email,
-					m_privacy : value
-				},
-				success: function(result){
-					alert(result);
-					console.log(result);
-				}
-			})
-		} else { // 변경취소를 하는 경우 return false;
-			location.reload();
+		// 아래는 프로모션 부분
+		var promotion = $("#m_promotion").data("promotion");
+		console.log("프로모션 동의 여부 값: " + promotion); 
+		if(promotion === "YES"){
+			$("#m_promotion_yes").prop("checked", true);
+		} else {
+			$("#m_promotion_no").prop("checked", true);
 		}
-	})
-	
-	// 자기소개 수정 클릭
-	$("#myIntroUpdateBtn").on("click", function(){
-		$("#myIntroUpdateBtn").hide();
-		$("#m_intro").removeAttr("readonly");
-		$(".updateBtnAfter").css("display", "block");
-	})
-	
-	// 자기소개 수정 취소 
-	$("#myIntroCancel").on("click", function(){
-		var originText = $("#myIntroCancel").val();
-		console.log("Origin Text 확인: " + originText );
-		$("#m_intro").attr("readonly", "readonly");
-		$(".updateBtnAfter").css("display", "none");
-		$("#myIntroUpdateBtn").show();
-		$("#m_intro").val(originText);
-	})
-	
-	// 자기소개 수정 완료
-	$("#myIntroUpdateEnd").on("click", function(){
-		// 이메일 확인
-		var m_email = $("#myIntroUpdateEnd").val();
-		var m_intro = $("#m_intro").val();
-		console.log("이메일 확인:" + m_email);
-		console.log("수정한 입력값 확인: " + m_intro);
-		// ajax호출  => 쿼리스트링 방식으로 한번 연습해볼 것
-		$.ajax({
-			url: "ajaxMyIntroUpdate.do?m_email=" + m_email + "&m_intro=" + m_intro,
-			type: "GEt",
-			dataType: "text",
-			success: function(result){
-				alert(result);
-				$("#m_intro").val(m_intro);
-				$("#m_intro").attr("readonly", "readonly");
-				$(".updateBtnAfter").css("display", "none");
-				$("#myIntroUpdateBtn").show();
-				console.log("수정 완료");
+			
+		// 프로모션 동의 여부 체크값 변경에 따른 이벤트 발생 ajax로 업데이트하고 나서 새로고침 여부 판단. 실시간으로 바뀌는지 보고
+		$("input[name='m_promotion']").on("change", function(){
+			console.log("눌렸나>");
+			var email = $("#m_email").val(); 
+			var value = $(this).val(); 
+			var promotionCheck = confirm("변경하시겠습니까?");
+			if(promotionCheck){
+				// ajax호출
+				$.ajax({
+					url: "ajaxJoinTermsUpdate.do",
+					type: "POST",
+					data: {
+						m_email : email,
+						m_promotion : value
+					},
+					success: function(result){
+						alert(result);
+						console.log(result);
+					}
+				})
+			} else {
+				location.reload();
 			}
 		})
-	})
 		
-	// 프로필 이미지 DB 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
-	var $frm = $("#frm");
-	$frm.on("submit", function(e){
-		// button 눌렀을 때 기본 이벤트인 submit() 차단. ajax로 처리하기 위함.
-		e.preventDefault();
-		// ajax로 전해줄 데이터 4개 (m_email, uuid, uploadPath, fileName) 정의
-		// m_email을 제외하 나머지 3개는 프로필 이미지를 선택했을 때 동적으로 추가되는 태그요소들의 value 값.
-		var m_email = $("#m_email").val();
-		var uuid = $("input[name='imageList[0].uuid']").val();
-		var fileName = $("input[name='imageList[0].fileName']").val();
-		var uploadPath = $("input[name='imageList[0].uploadPath']").val();
-		console.log("ajax로 전해줄 값: " + m_email + " : " + uuid + " : " + fileName + " : " +uploadPath);
-		// ajax 호출 
-		$.ajax({
-			url: $frm.attr("action"),  // ajaxProfileImgUpdate.do
-			type: "POST",
-			data: {
-				m_email : m_email,
-				uuid : uuid,
-				fileName : fileName,
-				uploadPath : uploadPath
-			},
-			success: function(result){
-				if( result === "Y"){
-					console.log("ajax success!");
-					alert("프로필 이미지 업데이트!");
-					location.reload();
-				} else {
-					console.log("에러");
+		// 개인정보 동의 여부 체크값 변경에 따른 DB 업데이트 
+		$("input[name='m_privacy']").on("change", function(){
+			console.log("눌렸나>");
+			var email = $("#m_email").val(); 
+			var value = $(this).val(); 
+			var privacyCheck = confirm("변경하시겠습니까?");
+			if(privacyCheck){
+				// ajax 호출
+				$.ajax({
+					url: "ajaxJoinTermsUpdate.do",
+					type: "POST",
+					data: {
+						m_email : email,
+						m_privacy : value
+					},
+					success: function(result){
+						alert(result);
+						console.log(result);
+					}
+				})
+			} else { // 변경취소를 하는 경우 return false;
+				location.reload();
+			}
+		})
+		
+		// 자기소개 수정 클릭
+		$("#myIntroUpdateBtn").on("click", function(){
+			$("#myIntroUpdateBtn").hide();
+			$("#m_intro").removeAttr("readonly");
+			$(".updateBtnAfter").css("display", "block");
+		})
+		
+		// 자기소개 수정 취소 
+		$("#myIntroCancel").on("click", function(){
+			var originText = $("#myIntroCancel").val();
+			console.log("Origin Text 확인: " + originText );
+			$("#m_intro").attr("readonly", "readonly");
+			$(".updateBtnAfter").css("display", "none");
+			$("#myIntroUpdateBtn").show();
+			$("#m_intro").val(originText);
+		})
+		
+		// 자기소개 수정 완료
+		$("#myIntroUpdateEnd").on("click", function(){
+			// 이메일 확인
+			var m_email = $("#myIntroUpdateEnd").val();
+			var m_intro = $("#m_intro").val();
+			console.log("이메일 확인:" + m_email);
+			console.log("수정한 입력값 확인: " + m_intro);
+			// ajax호출  => 쿼리스트링 방식으로 한번 연습해볼 것
+			$.ajax({
+				url: "ajaxMyIntroUpdate.do?m_email=" + m_email + "&m_intro=" + m_intro,
+				type: "GEt",
+				dataType: "text",
+				success: function(result){
+					alert(result);
+					$("#m_intro").val(m_intro);
+					$("#m_intro").attr("readonly", "readonly");
+					$(".updateBtnAfter").css("display", "none");
+					$("#myIntroUpdateBtn").show();
+					console.log("수정 완료");
+				}
+			})
+		})
+
+		// 프로필 이미지 DB 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
+		var $frm = $("#frm");
+		$frm.on("submit", function(e){
+			// button 눌렀을 때 기본 이벤트인 submit() 차단. ajax로 처리하기 위함.
+			e.preventDefault();
+			// ajax로 전해줄 데이터 4개 (m_email, uuid, uploadPath, fileName) 정의
+			// m_email을 제외하 나머지 3개는 프로필 이미지를 선택했을 때 동적으로 추가되는 태그요소들의 value 값.
+			var m_email = $("#m_email").val();
+			var uuid = $("input[name='imageList[0].uuid']").val();
+			var fileName = $("input[name='imageList[0].fileName']").val();
+			var uploadPath = $("input[name='imageList[0].uploadPath']").val();
+			console.log("ajax로 전해줄 값: " + m_email + " : " + uuid + " : " + fileName + " : " +uploadPath);
+			// ajax 호출 
+			$.ajax({
+				url: $frm.attr("action"),  // ajaxProfileImgUpdate.do
+				type: "POST",
+				data: {
+					m_email : m_email,
+					uuid : uuid,
+					fileName : fileName,
+					uploadPath : uploadPath
+				},
+				success: function(result){
+					if( result === "Y"){
+						console.log("ajax success!");
+						alert("프로필 이미지 업데이트!");
+						location.reload();
+					} else {
+						console.log("에러");
+						
+					}
 					
 				}
-				
-			}
+			})
 		})
+	
+		// kimvampa // 첨부파일 이미지 업로드 다시 확인
+		// 프로필 이미지 업로드를 위한 스크립트 작성문. => 나중에 테스트 하고 불필요한 console.log나 alert() 지우기
+		$("input[type='file']").on('change', function(e){ 
+			
+			// 메모 108. 이미지가 등록될 때 파일이 이미 존재를 한다면 삭제를 처리한 후 서버에 이미지 업로드 요청을 수행하도록 한다. 
+				// 기존 이미지 파일이 저장되었을 때 삭제 요청 => 업로드가 앞서 이루어졌는지 어떻게 판단? => 
+				// 미리 보기 태그가 존재하는지를 통해서 판단가능. if문을 활용하여 이미지 태그의 존재 유무에 따라 deleteFile()
+				// 메서드를 호출하도록 한다. 
+			/* 이미지 존재시 삭제 */
+			if( $(".imgDeleteBtn").length > 0){ 
+				deleteFile();
+			}
+				
+			// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
+				// 화면 전환 없이 FromData객체에 담아서 ajax로 보내는 방식.
+			let formData = new FormData();
+			let fileInput = $("input[name='m_profilefile']"); // label태그에서 선택한 요소를 가져온 것 
+			// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileList객체 형태로 files속성에 저장된다. 
+				// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조(호출)하면 된다( .files 형태로 호출)
+			let fileList = fileInput[0].files; 
+			let fileObj = fileList[0];
+			
+			console.log('fileList : ' + fileList);
+			// fileList가 배열형태의 객체이기 때문에 index를 통해 접근 => fileobj의 정체는 File객체다.
+				// 그리고 내가 선택한 파일을 가리킨다.
+			console.log('fileObj: ' +  fileObj);
+			
+			// File객체에 담긴 데이터가 정말 <input>태그를 통해 선택한 파일의 데이터가 맞는지 확인. 
+			console.log("fileName : " + fileObj.name);
+			console.log("fileSize : " + fileObj.size);
+			console.log("fileType(MimeType) : " + fileObj.type);
+			
+			if(!fileCheck(fileObj.name, fileObj.size)){
+				return false;
+			}
+			// 기존의 key가 있는 상태에서 동일한 key로 데이터를 추가하면 기존 값을 덮어쓰지 않고 기존 값 집합의 끝에 
+				// 새로운 값을 추가한다. (서버에서는 배열 타입으로 데이터를 전달받기 때문);
+			formData.append("uploadFile", fileObj);
+				// 데이터에 파일객체를 넣어주었다 => ajax를 통해서 여러 개일 경우 개별적으로 이미지 업로드 되도록.
+				// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
+				// 		for(let i = 0; i < fileList.length; i++){
+				// 			formData.append("uploadFile", fileList[i]);
+				// 		}
+			// 첨부파일 서버전송 by ajax
+			$.ajax({
+				url: 'ajaxProfileUpdate.do',
+		    	processData : false, // 서버로 전송할 데이터를 queryString 형태로 변환활지 여부
+		    	contentType : false, // 서버로 전성되는 데이터의 content type
+		    	data : formData,
+		    	type : 'POST',
+		    	dataType : 'json',  // 서버로부터 반환받을 데이터타입
+		    	success: function(result){
+		    		// 여긴 profilePath, uuid, uploadFileName이 담겨져 있음. 
+		    			// 서버단에서는 위 세 값과 "_"를 통해 물리파일명을 생성해놓음. 경로에. 
+		    			// ajax로 넘겨받은 정보들을 통해 화면에 이미지를 호출한다.
+		    		console.log("서버로부터 돌아온 ajax 통신 result값: " + result);
+		    		console.log(result);
+		    		showUploadImage(result);
+		    	},
+		    	error: function(result){
+		    		alert("이미지 파일이 아닙니다.");
+		    	}
+			});	
+		})
+		
+		// 업로드할 이미지 파일의 형식과 용량이 알맞은지 체크. 만약 아니라면 경고창과 함께 onchage이벤트에서 벗어나도록
+		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
+		let maxSize = 1048576; //1MB
+		
+		function fileCheck(fileName, fileSize){ 
+			if( fileSize > maxSize){
+				alert("파일 용량 초과");
+				return false; 
+			}
+			if( !regex.test(fileName)){
+				alert("해당 종류의 파일은 업로드 할 수 없습니다.");
+				return false;
+			}
+			return true;
+		}
+		
+		// 프로필 이미지 출력 메서드 => ajax success속성의 콜백함수에서 호출된다. 
+		function showUploadImage(uploadResultArr){
+			// success콜백함수가 실행됐다는 건 업로드 이미지 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
+				// 가능성이 낮지만 혹여나 데이터를 전달받지 못 했을 경우를 가정하여 데이터를 검증하는 코드를 추가
+			/* 전달받은 데이터 검증*/ 
+			if(!uploadResultArr || uploadResultArr.length == 0){ return }; 
+			
+			// 이미지가 들어갈 공간 div태그
+			let uploadResult = $("#uploadResult");
+			// 서버에서 뷰로 반환 => List타입의 데이터를 전송. 뷰에서는 해당 데이터를 배열객체 형태로 전달받는다.(dataType이 json이었음) 
+				// 현재 한 개의 이미지 파일만 처리를 하기 때문에 데이터에쉽게 접근할 수 있도록 변수 obj를 선언하여 서버로부터
+				// 전달받은 배열 데이터의 첫 번째 요소로 초기화
+			let obj = uploadResultArr[0];
+			let str = "";
+			// str변수에 추가되어야 할 태그 코드들을 문자열 값 형태로 추가해주기 전 한 가지 변수를 하나 더 추가 => 
+				// 이미지 출력을 요청하는 url매핑 메서드("/display.do")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
+				// 썸네일 이미지를 출력하기 위해 "s_" 를 붙인 이미지 파일 정보를 선언하다. 
+	// 		let fileCallPath = obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName;
+			// 위에 코드처럼 설정하는 경우, browser에서  '\' 때문에 경로를 찾지 못한다. 이미치 출력 url을 
+				// 테스트할 때 파라미터 값의 구분자로서 '/'를 사용해야 정상적으로 출력이 되었다. 그래서 \를 /로 변경!
+	// 		let fileCallPath = encodeURIComponent(obj.uploadPath.replace(/\\/g,'/') + "/s_" + obj.uuid + "_" + obj.fileName);
+				// 대상 String 문자열 중 모든 '\'를 '/'로 변경해준다는 의미. 자바스크립트에서는 replaceAll과 
+					// 같은 메서드가 없기 때문에 replace메서드의 인자 값으로 정규표현식을 사용하여 
+					// 치환 대상 모든 문자를 지정할 수 있다. 
+					// 그리고 UTF-8로 인코딩을 자동으로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
+					// 덧붙여서, encodeURIComponent() 메서든느 '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
+					// 사용 안 해도 해당 URI로 동작이 된다. 
+			let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			console.log("display.do로 보내는 view창에서의 fileCallPath값 : " + fileCallPath);
+			// str 변수에 추가되어야 할 태그 코드인 문자열 값들을 저장해준다. 한 번에 값들을 다 넣어도 상관은 없음. 
+			str += "<div id='result_card'>";
+			str += "<img src='display.do?fileName=" + fileCallPath + "'>";
+			// 삭제할 파일의 경로에 대한 데이터가 담긴 'fileCallPath'를 data속성을 통해 심어둔다.  
+			str += "<div class='imgDeleteBtn' data-file='"+ fileCallPath +"'>x</div>";
+			// 메모110~119 참조. 프로필 이이지 등록 시점에 이미지 정보<input>태그가 추가되도록 작업. 
+			str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+			str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+			str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+			// 추가적으로 등록하는 버튼도 동적으로 추가해준다. 
+			str += "<br><button type='submit' id='profileUpdateBtn'>프로필 등록</button>";
+			str += "</div>";
+			// 마지막으로 태그 코드가 담긴 문자열(str)값을 uploadResult 태그에 append() 명령 혹은 
+				// html() 메서드를 호출하여 추가해준다. 
+			uploadResult.append(str); 
+			// 선택한 이미지를 화면에 출력함과 동시에, 기본 이미지는 지운다. => 이건 내가 조작해놓은 것
+			$("#basic_result_card").hide();
+				
+		}
+		
+		/* 이미지 삭제 버튼 동작 */ 
+		// 스크립트에 의해 동적으로 추가된 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
+			// 참고로 삭제를 버튼해서 클릭하는 경우와 기존에 이미 프로필을 선택하여 'x'표시가 있는 경우 새로운 프로필을 선택하면 기존 값은 지워진다.
+		$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
+			deleteFile();
+			$("#basic_result_card").show();
+		})	
+		
+		/* 업로드 이미지 파일 삭제 메서드 */
+		function deleteFile(){
+			// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터('fileCallPath') 대입. 
+				// 나머지 하나는 이미지 파일 업로드 시 출력되는 미리 보기 이미지를 감싸고 있는 result_card<div>태그
+			let targetFile = $(".imgDeleteBtn").data("file"); // 해당 태그의 data-file속성의 값 fileCallPath 을 호출하여 대입. 썸네일이미지정보임.
+			let targetDiv = $("#result_card");
+			// 메모 105. 파일 삭제를 요청하는 ajax 코드를 작성한다.
+			$.ajax({
+				url: "deleteFile.do",
+				data : {
+					fileName : targetFile
+				},
+				dataType : "text",
+				type: "POST",
+				success : function(result){
+					console.log(result);
+					// 파일 삭제를 성공한 경우 미리 보기 이미지를 삭제해주고, 파일<input> 태그를 초기화 해준다. 
+					targetDiv.remove();
+					// <input type='file'> 태그의 value는 선택한 파일의 경로에 대한 Dom string정보를 가지고 잇음.
+					$("input[type='file']").val("");
+				},
+				error: function(result){
+					console.log(result); // "fail"이란 값이 날라왔을 것이다.
+					alert("파일을 삭제하지 못 하였습니다.");
+				}
+			})
+		
+		}
+			
+		/* 이미지 정보 호출 */ 
+		let m_email = '<c:out value="${member.m_email}"/>';
+		let uploadResult = $("#uploadResult");
+		// 서버로부터 이미지 정보 요청을 위해서 getJSON메서드를 작성. get방식으로 요청 및 응답하는
+			// 서버로부터 JSON으로 인코딩 된 데이터를 전달받기 위해 사용되는 메서드. 
+			// 사용방법은 get.JSON(url[,data][,success]) 
+			// url: 서버에 요청할 get방식의 url, data: 서버에 요청을 할 때 전달할 데이터
+			// success: 성공적으로 서버로부터 데이터를 전달받았을 때 실행할 콜백함수. 
+		$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
+			console.log("getJSON 성공?");
+			// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
+			console.log("데이터 길이: " + arr.length);
+			if(arr.length === 0){
+				// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
+				console.log("이미지가 없음");
+				let str = "";
+				str += "<div id='basic_result_card'>";
+				str += "<img src='resources/img/s_loopy.jpeg'>";
+				str += "</div>";
+				uploadResult.html(str); 
+				return; 
+			}
+			// 반대로 이미지가 있을 경우. 
+			// 메모 138. 콜백함수 구현부에 먼저 두 가지 변수를 추가  
+			let str = "";
+			// List자료구조의 객체배열 상태로 반환받으니깐 반환한 데이터 갯수와 무관하게 []형태의 인덱스로 참조한다. 
+			let obj = arr[0]; 
+			console.log("obj의 값: " + obj);
+			console.log(obj)    // .replace(/\\/g,'/')  (/\//g, '\')
+			console.log("obj.uploadPath의 값: " + obj.uploadPath);
+	// 		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
+			// 현재 프로필을 선택해서 display.do로 보내는 정보와 프로필을 등록하고 db에서 get.JSOO으로 읽어들인 정보를 비교했을 때 전해지는
+				// fileCallPath의 정보 형식이 차이가 나지 않음에도 이미지가 출력이 되지 않고 있음. 
+			let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			console.log("fildCallPath 값:" + fileCallPath);
+	// 		fileCallPath = decodeURIComponent(fileCallPath); // 확인용 추가 
+	// 		console.log("디코딩한 fileCAllPath 값: " + fileCallPath); // 확인용 추가 
+	// 		fileCallPath = fileCallPath.replace(/\\/g,'/');
+	// 		console.log("문자 수정 한 fileCallPath 값: " + fileCallPath);
+			console.log("기존 이미지가 존재하는 경우, display.do로 보내는 fileCallPath값: " + fileCallPath);
+			// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
+			str += "<div id='basic_result_card'";
+			str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename'" + obj.fileName + "'";
+			str += ">";
+			str += "<img src='/display.do?fileName=" + fileCallPath  +"'>";
+			str += "</div>";
+			// html()메서드를 사용해서 str변수에 저장된 값들이 uploadResult태그 내부에 추가되도록 해준다. 
+			uploadResult.html(str);
+			
+		}) // get.JSON 메서드 영역
+		
 	})
 
-	// kimvampa // 첨부파일 이미지 업로드 다시 확인
-	// 프로필 이미지 업로드를 위한 스크립트 작성문. => 나중에 테스트 하고 불필요한 console.log나 alert() 지우기
-	$("input[type='file']").on('change', function(e){ 
-		
-		// 메모 108. 이미지가 등록될 때 파일이 이미 존재를 한다면 삭제를 처리한 후 서버에 이미지 업로드 요청을 수행하도록 한다. 
-			// 기존 이미지 파일이 저장되었을 때 삭제 요청 => 업로드가 앞서 이루어졌는지 어떻게 판단? => 
-			// 미리 보기 태그가 존재하는지를 통해서 판단가능. if문을 활용하여 이미지 태그의 존재 유무에 따라 deleteFile()
-			// 메서드를 호출하도록 한다. 
-		/* 이미지 존재시 삭제 */
-		if( $(".imgDeleteBtn").length > 0){ 
-			deleteFile();
-		}
-			
-		// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
-			// 화면 전환 없이 FromData객체에 담아서 ajax로 보내는 방식.
-		let formData = new FormData();
-		let fileInput = $("input[name='m_profilefile']"); // label태그에서 선택한 요소를 가져온 것 
-		// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileList객체 형태로 files속성에 저장된다. 
-			// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조(호출)하면 된다( .files 형태로 호출)
-		let fileList = fileInput[0].files; 
-		let fileObj = fileList[0];
-		
-		console.log('fileList : ' + fileList);
-		// fileList가 배열형태의 객체이기 때문에 index를 통해 접근 => fileobj의 정체는 File객체다.
-			// 그리고 내가 선택한 파일을 가리킨다.
-		console.log('fileObj: ' +  fileObj);
-		
-		// File객체에 담긴 데이터가 정말 <input>태그를 통해 선택한 파일의 데이터가 맞는지 확인. 
-		console.log("fileName : " + fileObj.name);
-		console.log("fileSize : " + fileObj.size);
-		console.log("fileType(MimeType) : " + fileObj.type);
-		
-		if(!fileCheck(fileObj.name, fileObj.size)){
-			return false;
-		}
-		// 기존의 key가 있는 상태에서 동일한 key로 데이터를 추가하면 기존 값을 덮어쓰지 않고 기존 값 집합의 끝에 
-			// 새로운 값을 추가한다. (서버에서는 배열 타입으로 데이터를 전달받기 때문);
-		formData.append("uploadFile", fileObj);
-			// 데이터에 파일객체를 넣어주었다 => ajax를 통해서 여러 개일 경우 개별적으로 이미지 업로드 되도록.
-			// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
-			// 		for(let i = 0; i < fileList.length; i++){
-			// 			formData.append("uploadFile", fileList[i]);
-			// 		}
-		// 첨부파일 서버전송 by ajax
-		$.ajax({
-			url: 'ajaxProfileUpdate.do',
-	    	processData : false, // 서버로 전송할 데이터를 queryString 형태로 변환활지 여부
-	    	contentType : false, // 서버로 전성되는 데이터의 content type
-	    	data : formData,
-	    	type : 'POST',
-	    	dataType : 'json',  // 서버로부터 반환받을 데이터타입
-	    	success: function(result){
-	    		// 여긴 profilePath, uuid, uploadFileName이 담겨져 있음. 
-	    			// 서버단에서는 위 세 값과 "_"를 통해 물리파일명을 생성해놓음. 경로에. 
-	    			// ajax로 넘겨받은 정보들을 통해 화면에 이미지를 호출한다.
-	    		console.log("서버로부터 돌아온 ajax 통신 result값: " + result);
-	    		console.log(result);
-	    		showUploadImage(result);
-	    	},
-	    	error: function(result){
-	    		alert("이미지 파일이 아닙니다.");
-	    	}
-		});	
-	})
-	
-	// 업로드할 이미지 파일의 형식과 용량이 알맞은지 체크. 만약 아니라면 경고창과 함께 onchage이벤트에서 벗어나도록
-	let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
-	let maxSize = 1048576; //1MB
-	
-	function fileCheck(fileName, fileSize){ 
-		if( fileSize > maxSize){
-			alert("파일 용량 초과");
-			return false; 
-		}
-		if( !regex.test(fileName)){
-			alert("해당 종류의 파일은 업로드 할 수 없습니다.");
-			return false;
-		}
-		return true;
-	}
-	
-	// 프로필 이미지 출력 메서드 => ajax success속성의 콜백함수에서 호출된다. 
-	function showUploadImage(uploadResultArr){
-		// success콜백함수가 실행됐다는 건 업로드 이미지 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
-			// 가능성이 낮지만 혹여나 데이터를 전달받지 못 했을 경우를 가정하여 데이터를 검증하는 코드를 추가
-		/* 전달받은 데이터 검증*/ 
-		if(!uploadResultArr || uploadResultArr.length == 0){ return }; 
-		
-		// 이미지가 들어갈 공간 div태그
-		let uploadResult = $("#uploadResult");
-		// 서버에서 뷰로 반환 => List타입의 데이터를 전송. 뷰에서는 해당 데이터를 배열객체 형태로 전달받는다.(dataType이 json이었음) 
-			// 현재 한 개의 이미지 파일만 처리를 하기 때문에 데이터에쉽게 접근할 수 있도록 변수 obj를 선언하여 서버로부터
-			// 전달받은 배열 데이터의 첫 번째 요소로 초기화
-		let obj = uploadResultArr[0];
-		let str = "";
-		// str변수에 추가되어야 할 태그 코드들을 문자열 값 형태로 추가해주기 전 한 가지 변수를 하나 더 추가 => 
-			// 이미지 출력을 요청하는 url매핑 메서드("/display.do")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
-			// 썸네일 이미지를 출력하기 위해 "s_" 를 붙인 이미지 파일 정보를 선언하다. 
-// 		let fileCallPath = obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName;
-		// 위에 코드처럼 설정하는 경우, browser에서  '\' 때문에 경로를 찾지 못한다. 이미치 출력 url을 
-			// 테스트할 때 파라미터 값의 구분자로서 '/'를 사용해야 정상적으로 출력이 되었다. 그래서 \를 /로 변경!
-// 		let fileCallPath = encodeURIComponent(obj.uploadPath.replace(/\\/g,'/') + "/s_" + obj.uuid + "_" + obj.fileName);
-			// 대상 String 문자열 중 모든 '\'를 '/'로 변경해준다는 의미. 자바스크립트에서는 replaceAll과 
-				// 같은 메서드가 없기 때문에 replace메서드의 인자 값으로 정규표현식을 사용하여 
-				// 치환 대상 모든 문자를 지정할 수 있다. 
-				// 그리고 UTF-8로 인코딩을 자동으로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
-				// 덧붙여서, encodeURIComponent() 메서든느 '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
-				// 사용 안 해도 해당 URI로 동작이 된다. 
-		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-		console.log("display.do로 보내는 view창에서의 fileCallPath값 : " + fileCallPath);
-		// str 변수에 추가되어야 할 태그 코드인 문자열 값들을 저장해준다. 한 번에 값들을 다 넣어도 상관은 없음. 
-		str += "<div id='result_card'>";
-		str += "<img src='display.do?fileName=" + fileCallPath + "'>";
-		// 삭제할 파일의 경로에 대한 데이터가 담긴 'fileCallPath'를 data속성을 통해 심어둔다.  
-		str += "<div class='imgDeleteBtn' data-file='"+ fileCallPath +"'>x</div>";
-		// 메모110~119 참조. 프로필 이이지 등록 시점에 이미지 정보<input>태그가 추가되도록 작업. 
-		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
-		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
-		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
-		// 추가적으로 등록하는 버튼도 동적으로 추가해준다. 
-		str += "<br><button type='submit' id='profileUpdateBtn'>프로필 등록</button>";
-		str += "</div>";
-		// 마지막으로 태그 코드가 담긴 문자열(str)값을 uploadResult 태그에 append() 명령 혹은 
-			// html() 메서드를 호출하여 추가해준다. 
-		uploadResult.append(str); 
-		// 선택한 이미지를 화면에 출력함과 동시에, 기본 이미지는 지운다. => 이건 내가 조작해놓은 것
-		$("#basic_result_card").hide();
-			
-	}
-	
-	/* 이미지 삭제 버튼 동작 */ 
-	// 스크립트에 의해 동적으로 추가된 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
-		// 참고로 삭제를 버튼해서 클릭하는 경우와 기존에 이미 프로필을 선택하여 'x'표시가 있는 경우 새로운 프로필을 선택하면 기존 값은 지워진다.
-	$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
-		deleteFile();
-		$("#basic_result_card").show();
-	})	
-	
-	/* 업로드 이미지 파일 삭제 메서드 */
-	function deleteFile(){
-		// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터('fileCallPath') 대입. 
-			// 나머지 하나는 이미지 파일 업로드 시 출력되는 미리 보기 이미지를 감싸고 있는 result_card<div>태그
-		let targetFile = $(".imgDeleteBtn").data("file"); // 해당 태그의 data-file속성의 값 fileCallPath 을 호출하여 대입. 썸네일이미지정보임.
-		let targetDiv = $("#result_card");
-		// 메모 105. 파일 삭제를 요청하는 ajax 코드를 작성한다.
-		$.ajax({
-			url: "deleteFile.do",
-			data : {
-				fileName : targetFile
-			},
-			dataType : "text",
-			type: "POST",
-			success : function(result){
-				console.log(result);
-				// 파일 삭제를 성공한 경우 미리 보기 이미지를 삭제해주고, 파일<input> 태그를 초기화 해준다. 
-				targetDiv.remove();
-				// <input type='file'> 태그의 value는 선택한 파일의 경로에 대한 Dom string정보를 가지고 잇음.
-				$("input[type='file']").val("");
-			},
-			error: function(result){
-				console.log(result); // "fail"이란 값이 날라왔을 것이다.
-				alert("파일을 삭제하지 못 하였습니다.");
-			}
-		})
-	
-	}
-		
-	/* 이미지 정보 호출 */ 
-	let m_email = '<c:out value="${member.m_email}"/>';
-	let uploadResult = $("#uploadResult");
-	// 서버로부터 이미지 정보 요청을 위해서 getJSON메서드를 작성. get방식으로 요청 및 응답하는
-		// 서버로부터 JSON으로 인코딩 된 데이터를 전달받기 위해 사용되는 메서드. 
-		// 사용방법은 get.JSON(url[,data][,success]) 
-		// url: 서버에 요청할 get방식의 url, data: 서버에 요청을 할 때 전달할 데이터
-		// success: 성공적으로 서버로부터 데이터를 전달받았을 때 실행할 콜백함수. 
-	$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
-		console.log("getJSON 성공?");
-		// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
-		console.log("데이터 길이: " + arr.length);
-		if(arr.length === 0){
-			// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
-			console.log("이미지가 없음");
-			let str = "";
-			str += "<div id='basic_result_card'>";
-			str += "<img src='resources/img/s_loopy.jpeg'>";
-			str += "</div>";
-			uploadResult.html(str); 
-			return; 
-		}
-		// 반대로 이미지가 있을 경우. 
-		// 메모 138. 콜백함수 구현부에 먼저 두 가지 변수를 추가  
-		let str = "";
-		// List자료구조의 객체배열 상태로 반환받으니깐 반환한 데이터 갯수와 무관하게 []형태의 인덱스로 참조한다. 
-		let obj = arr[0]; 
-		console.log("obj의 값: " + obj);
-		console.log(obj)    // .replace(/\\/g,'/')  (/\//g, '\')
-		console.log("obj.uploadPath의 값: " + obj.uploadPath);
-// 		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
-		// 현재 프로필을 선택해서 display.do로 보내는 정보와 프로필을 등록하고 db에서 get.JSOO으로 읽어들인 정보를 비교했을 때 전해지는
-			// fileCallPath의 정보 형식이 차이가 나지 않음에도 이미지가 출력이 되지 않고 있음. 
-		let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-		console.log("fildCallPath 값:" + fileCallPath);
-// 		fileCallPath = decodeURIComponent(fileCallPath); // 확인용 추가 
-// 		console.log("디코딩한 fileCAllPath 값: " + fileCallPath); // 확인용 추가 
-// 		fileCallPath = fileCallPath.replace(/\\/g,'/');
-// 		console.log("문자 수정 한 fileCallPath 값: " + fileCallPath);
-		console.log("기존 이미지가 존재하는 경우, display.do로 보내는 fileCallPath값: " + fileCallPath);
-		// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
-		str += "<div id='basic_result_card'";
-		str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename'" + obj.fileName + "'";
-		str += ">";
-		str += "<img src='/display.do?fileName=" + fileCallPath  +"'>";
-		str += "</div>";
-		// html()메서드를 사용해서 str변수에 저장된 값들이 uploadResult태그 내부에 추가되도록 해준다. 
-		uploadResult.html(str);
-		
-	}) // get.JSON 메서드 영역
-	
-	})
 </script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>

@@ -20,8 +20,8 @@
 	padding: 50px;
 	width: 40%;
 	display: block;
-	margin-top: 15%;
-	margin-left: 30%;
+	margin-top: 10%;
+	margin-left: 20%;
 	margin-bottom: 10%;
 	z-index: 1;
 }
@@ -43,14 +43,29 @@
 }
 
 .joinLink {
-	color: #05AA6D;
+	color: coral;
 	text-decoration: none;
+	font-weight: 800;
+	font-size: large;
 }
 
 #email, #password {
 	margin-top: 5px;
 	width: 100%;
 	height: 50px;
+	font-size: 20px;
+	font-weight: 600;
+}
+#email, #password:focus{
+	outline-color: coral;
+}
+#email::placeholder{
+	color: lightgray;
+	font-style: italic;
+} 
+#password::placeholder{
+	color: lightgray;
+	font-style: italic;
 }
 
 .inputPassword_upper {
@@ -83,6 +98,13 @@
 	border-style: none;
 	border-radius: 30px;
 }
+#loginBtn:hover{
+	background-color: whitesmoke;
+	color: #05AA6D;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
 
 .forgotPasswordLink {
 	text-decoration: none;
@@ -165,8 +187,23 @@
 	top: 100px;
 	left: 30px;
 }
+#joinLabel, 
+#showComment{
+	color: #05AA6D;
+	font-weight: bold;
+}
 #showComment:hover{
 	cursor: pointer;
+}
+#forgotPasswordBtn{
+	font-weight: 900;
+	color: coral; 
+		
+}
+#forgotPasswordBtn:hover {
+	cursor: pointer;
+
+	
 }
 </style>
 </head>
@@ -384,11 +421,11 @@
  <div class="loginWrapper">
         <div class="loginFrame">
             <div class="loginTitle">
-                <h1 style="font-weight:bolder;">Log in</h1>
+                <h1 style="font-weight:bolder;">Log In</h1>
             </div>
             <div class="inputEmail_upper">
                 <span id="emailLabel">Email</span>
-                <span id="joinLabel">Need an account? <a href="memberJoinTerms.do" class="joinLink">Sign up</a></span>
+                <span id="joinLabel">Need an account? <a href="memberJoinTerms.do" class="joinLink specialA">Sign up</a></span>
             </div>
             <form id="frm" action="login.do">
             <input type="email" placeholder="Input your Eamil Address" id="email" name="email">
@@ -411,9 +448,11 @@
             <div class="bottomBtn">
                 <button type="button" id="loginBtn">Log in</button>
                 <div align="center" id="forgotDiv">
-                    <a class="forgotPasswordLink" id="forgotPasswordBtn">
-                        <h4>Forgot password?</h4>
-                    </a>
+                    <h4>
+                    	<a class="forgotsPasswordLink specialA" id="forgotPasswordBtn">
+                     	   Forgot password?
+                    	</a>
+                   	</h4>
                 </div>
             </div>
         </div>
@@ -441,10 +480,10 @@
 		
 		if( $("#password").attr("type") === 'password' ) {
 			$("#password").attr("type", "text");
-	     	$("#showComment").text('비밀번호 가리기');
+	     	$("#showComment").text('<비밀번호 가리기>');
 		} else {
 			$("#password").attr("type", "password");
-	     	$("#showComment").text('비밀번호 보이기');
+	     	$("#showComment").text('<비밀번호 보이기>');
 		}
 	})
 	

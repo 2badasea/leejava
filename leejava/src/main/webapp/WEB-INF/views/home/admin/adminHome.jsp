@@ -7,8 +7,16 @@
 <head>
 <meta charset="UTF-8">
 <title>관리자 페이지 입니다.</title>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
-
+	<div class="adminTest">
+		<button class="testBtn">테스트 버튼 클릭</button>
+	</div>
 </body>
+<script>
+	$(document).on("click", function(){
+		console.log("클릭 이벤트 확인");
+	})
+</script>
 </html>

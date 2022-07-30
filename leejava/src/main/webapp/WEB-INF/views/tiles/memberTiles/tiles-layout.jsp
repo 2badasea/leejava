@@ -22,17 +22,18 @@
 
 }
 .memberTilesMainWrapper {
-	width: 85%; 
+ 	width: 100%;  
 }
 .memberTilesHeaderWrapper {
-	height: 5%;
-	background-color: #FFF0F0	;
+	width: 100%; 	
+	height: 2%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
+	background-color: whitesmoke;
 }
 .memberTilesBodyWrapper{
 	min-height: 700px; 
 }
 .memberTilesFooterWrapper{
-	background-color: #FFF0F0;
+	background-color: whitesmoke;
 	height: 70px;
 }
 </style>

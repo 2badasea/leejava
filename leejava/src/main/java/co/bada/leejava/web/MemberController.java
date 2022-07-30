@@ -471,7 +471,7 @@ public class MemberController {
 		// 해당 view에석 검색요소로 쓰일 변수들을 보낸다
 		model.addAttribute("search", svo);
 		svo.setN_category(n_category); 
-		svo.setN_title(n_title);
+		svo.setN_title(n_title);  
 		svo.setN_content(n_content);
 		svo.setN_writer(n_writer);
 		int listCnt = noticeDao.getUserNoticeListCnt(svo);
@@ -687,6 +687,8 @@ public class MemberController {
 			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
 		}
 	}
+	
+	
 	
 	
 

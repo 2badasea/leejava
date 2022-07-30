@@ -849,7 +849,7 @@ a:hover {
 				$("#archiveStudyingA").css("color", "teal");
 			}); 
 		}
-	})
+	})  
 	
 	// 아카이브 외부 영역 ( 스크랩 모달창을 눌러도 안 사라지도록 )
 	$(document).on("click", function(e){

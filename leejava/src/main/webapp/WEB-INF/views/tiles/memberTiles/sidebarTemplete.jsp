@@ -35,17 +35,11 @@
 .sidebarSiteName span {
 	padding-right: 25px;
 }
-.sidebar_beforeLogin {
-	margin-top: 20px;
-}
 .sidebar_menu {
 	margin-top: 100px;
 }
-#sidebar_loginBtn, 
-#sidebar_memberJoinBtn, 
-#logoutBtn{
-	height: 30px;
-}
+
+
 #mainMenu {
 	list-style-type: none;
 }
@@ -55,7 +49,6 @@
 	margin-top: 20px;
 	color: coral;
 }
-
 /* todolist 모달창 관련 스타일 속성 들어가는 공간.  */
 #todoUl {
     list-style: none;
@@ -68,7 +61,7 @@
     width: 100%;
     height: 100vh;
     display: none; 
-    z-index: 1;
+    z-index: 20;
 }
 
 .todo_modal_content {
@@ -77,7 +70,7 @@
     right: 10%;
     width: 550px;
     height: auto;
-    z-index: 3;
+    z-index:22;
     background-color: white;
     border: 0.5px solid #05AA6D;
     border-radius: 30px;
@@ -88,34 +81,53 @@
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 21;
     background-color: lightgray;
     opacity: 0.5;
     transition: 0.5s;
 }
 
-.todo_modal_footer,
 .todo_modal_body {
-    border-top: 0.2px solid #05AA6D;
+    border-top: 0.2px dotted #05AA6D;
 }
-
+.todo_modal_body{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 .todo_modal_footer {
     display: flex;
     justify-content: end;
 }
-
-#todoInput {
-    bottom: 5px;
-}
-
 .todo_inputBox {
     bottom: 10px;
+    margin-right: 15px;
 } 
-#todoInput,
-.todoInputList{
-	width: 400px;
+#todoInput,  /* todolist 입력하는 태그 */
+.todoInputList{	/*	todolist 출력하는 태그 */
+	width: 80%;
 	height: 30px;
 	font-size: 15px;
+	font-weight: 600;
+	margin-bottom: 5px;
+	border-style: none;		
+	border-bottom: 0.5px solid #05AA6D;
+}
+
+#todoInput {
+	margin-top: 10px;
+	border-bottom: 0.5px solid coral;
+}
+
+.todoInputList{
+	font-size: 15px;
+	font-weight: 700;
+}
+#todoInput:focus,
+.todoInputList:focus{
+	outline-color: coral;
+}
+#todoInput::placeholder{
+	color: lightgray;
 }
 
 .modalOpen{
@@ -137,15 +149,37 @@
 	color: white;
 	transition: 0.3s;
 }
+.todoBtn,
 .todoDeleteBtn{
-	margin-left: 10px;
-	width: 20px;
-	height: 20px;
+	margin-left: 15px;
+	width: auto;
+	height: auto;
+	border-style: none;
+	border-radius: 20px; 
+	background-color: white;
+	color: #05AA6D;
+	font-weight: 700;
 }
+.todoDeleteBtn{
+}
+
+.todoBtn:hover,
+.todoDeleteBtn:hover{
+	cursor: pointer;
+	background-color: white;
+	color: coral;
+	transition: 0.3s;
+}
+
+
 .inputCheck{
 	margin-right: 10px;
+	margin-top: 10px;
 	height: 20px;
 	width: 20px;
+}
+.inputCheck:hover{
+	cursor: pointer;
 }
 #todoBoxCloseBtn{
 	margin-top: 10px;
@@ -195,31 +229,96 @@ text-decoration: none;
     -ms-transform: scale(1.5,1.5);
     transform: scale(1.5,1.5);
 }
+
+.speicalTitle{
+	color: #05AA6D;
+	font-weight: 500;
+}
+
+
+.todolistTitleSpan{ 
+	font-size: xx-large;
+	font-weight: 900;
+	color: coral;
+	font-style: italic;
+}
+.todoInputSpan{
+	font-style: italic;
+	color: coral;
+	font-weight: 700;
+	font-size: large;
+	padding: 5px;
+}
+#todolistBox{
+	margin-bottom: 8px; 
+}
+.helpCommentSpan{
+	/* 디자인 요소와 별개로 스크립트 단에서 이벤트를 많이 생성해야 함.*/
+	font-size: 14px;
+	color:	#05AA6D;
+	font-style: oblique;
+}
+.helpCommentLabel{
+	font-size: 14px;
+	color: black;
+	font-style: oblique;
+}
+/* 사이드바 영역 유저정보에 대한 레이아웃 스타일 */
+.sidebar_userInfo{
+	border-bottom: 0.3px dotted lightgray; 
+	padding-bottom: 100px;
+	padding-top: 20px;
+}
+.sidebar_logo_image{
+	width: 50px;
+	height: auto;
+}
+.sidebar_userInfo button{
+	min-width: 100px;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	min-height: 20px; 
+	height: auto;
+	border-style: none;
+	background-color: white;
+	color: #05AA6D;
+	border-radius: 10px;
+	margin-top: 8px;
+	font-weight: 800;
+	
+}
+.sidebar_userInfo button:hover {
+	cursor: pointer;
+	background-color: coral;
+	color: white;
+	transition: 0.3s;
+}
+/*	******************************	*/
 </style>
 </head>
 <body>
 <div class="sidebarTemplete_wrapper">
-		<div class="sidebar_logo" align="center">
-				<a href="home.do">
-					<img src="resources/image/loopy.jpeg" class="sidebar_logo_image">
-					<span style="font-size: 20px;">LEEJAVA</span>
-				</a>
-		</div>
-		
-		<div class="sidebar_userInfo">
+		<div class="sidebar_userInfo" align="center">
+			<a href="home.do">
+				<img src="resources/image/loopy.jpeg" class="sidebar_logo_image">
+			</a>
 			<c:if test="${empty session_user}">
-			<div class="sidebar_beforeLogin" >
-				<button type="button" id="sidebar_loginBtn">Login</button>
-				<button type="button" id="sidebar_memberJoinBtn">MemberJoin</button>
-			</div>
+				<div class="sidebar_beforeLogin" >
+					<span>안녕하세용</span>
+					<br>
+					<button type="button" class="sidebar_loginBtn">Login</button>
+					<br>
+					<button type="button" class="sidebar_memberJoinBtn">Join Us</button>
+				</div>
 			</c:if>
 			<c:if test="${not empty session_user }">
 				<div class="sidebar_afterLogin">
-					<span>${session_user}님 오늘도 화이팅</span><br>
-					<c:if test="${session_user != null and session_nickname != '관리자' }">
-						<button type="button" id="myInfoBtn">My Info</button>
-					</c:if>
-					<button type="button" id="logoutBtn">로그아웃</button>
+					<span>${session_nickname}님 안녕하세요.</span>
+					<br>
+					<button type="button" class="myInfoBtn">My Info</button>
+					<br>
+					<button type="button" class="logoutBtn">Logout</button>
 				</div>
 			</c:if>
 		</div>
@@ -228,11 +327,15 @@ text-decoration: none;
 		<div class="sidebar_menu" align="center">
 			<ul id="mainMenu">
 				<c:if test="${session_user == \"bada\"}">
-					<li><a href="adminPage.do" class="sideMenu">관리자 화면</a></li>
+					<li>
+						<a href="adminPage.do" class="sideMenu adminMenu" style="font-size: large; color: #2E3856; margin-bottom: 10px;">
+							관리자 화면
+						</a>
+					</li>
 				</c:if>
-				<li><a href="quizcard.do" class="quizcard" style="font-size: x-large;">퀴즈카드 학습</a></li>
-				<li><a href="memberNoticeList.do" class="sideMenu">공지사항</a></li>
+				<li><a href="quizcard.do" class="quizcard" style="font-size: large; color:#2E3856;">퀴즈카드 학습</a></li>
 				<li class="subMenuTitle">커뮤니티</li>
+					<li><a href="memberNoticeList.do" class="sideMenu community">공지사항</a></li>
 					<li><a href="boardList.do" class="sideMenu community">자유게시판</a></li>
 					<li><a href="#" class="sideMenu community">QNA</a></li>
 					<li><a href="#" class="sideMenu community">정보/팁</a></li>
@@ -250,24 +353,26 @@ text-decoration: none;
  	  	 <div class="todo_modal_container">
 	        <div class="todo_modal_content">
 	        	<!--  modal header 영역  -->
-	            <div class="todo_modal_header">
-	                <label for="totolist">To do List by BADA</label>
+	            <div class="todo_modal_header" align="center">
+	                <span class="todolistTitleSpan">To Do List For ${session_user }</span>
 	                <input type="hidden" id="m_email" value="${session_user}">
 	            </div>
 	            <!--modal body 영역 -->
 	            <div class="todo_modal_body">
 	                    <!--여기 안에 입력했던 요소들이 생성된다. -->
-	                    <div id="todolistBox">
+	                    <div id="todolistBox" align="center">
 	                        <ul id="todoUl">
 	
 	                        </ul>
 	                    </div>
-	                    <div class="todo_inputBox">
-	                        <input type="text" id="todoInput" placeholder="input your today goal" maxlength="20">
-	                        <button type="button" id="todoBtn" class="todoBtn">+</button>
+	                    <div class="todo_inputBox"  align="center">
+	                    	<span class="todoInputSpan">New</span>
+	                        <input type="text" id="todoInput" placeholder="input your today goal" maxlength="25">
+	                        <button type="button" id="todoBtn" class="todoBtn specialA">추가</button>
+	                   		<label for="helpCommentSpan" class="helpCommentLabel">*도움말</label>
+	                   		<span class="helpCommentSpan" id="helpCommentSpan">투두리스트는 최대 5개까지 등록할 수 있습니다.</span>
 	                    </div>
 	            </div>
-	            <br>
 	            <!--modal footer 영역 -->
 	            <div class="todo_modal_footer">
 	                <button id="todoBoxCloseBtn" class="todoBoxCloseBtn">창닫기</button>
@@ -280,28 +385,26 @@ text-decoration: none;
 </body>
 <script>
 	// 로그인 페이지 띄우기
-	$("#sidebar_loginBtn").on("click", function(){
-		alert("Move to Login Page~");
+	$(".sidebar_loginBtn").on("click", function(){
 		location.href="loginPage.do";
 	})
 	 
-	// 로그아웃 처리   click function 
-	$("#logoutBtn").click(function(){
+	// 로그아웃 처리   click function 			
+	$(".logoutBtn").click(function(){
 		alert("로그아웃 합니다.");
 		location.href="logout.do";
 	})
 	
 	// 회원가입 페이지 이동 
-	$("#sidebar_memberJoinBtn").on("click", function(){
+	$(".sidebar_memberJoinBtn").on("click", function(){
 		alert("회원가입 페이지로 이동하겠습니다.");
 		location.href='memberJoinTerms.do';
 	})
 	
 	// 개인정보 조회하는 공간으로 이동
-	$("#myInfoBtn").on("click", function(){ 
-		alert("개인정보 조호히하는 공간으로 이동"); 
+	$(".myInfoBtn").on("click", function(){ 
 		location.href='memberMyInfo.do'; 
-	});
+	})
 	
 	/***************  <To Do List> Modal Script ***************/
 	
@@ -363,8 +466,8 @@ text-decoration: none;
 		        var $status = data[0].todo_status;
 				var str ="";
 				str += "<li><input type='checkbox' class='inputCheck'>";
-				str += "<input type='text' data-no='"+ $no +"' data-status='"+$status+"' value='"+$content+"' class='todoInputList' readonly='readonly'>";
-				str += "<button class='todoDeleteBtn'>X</button><br></li>";				
+				str += "<input type='text' data-no='"+ $no +"' data-status='"+$status+"' value='"+$content+"' class='todoInputList' maxlength='25' readonly='readonly' >";
+				str += "<button class='todoDeleteBtn speicalA'>삭제</button><br></li>";				
 				console.log("str값 확인: " + str);
 				$("#todoUl").append(str);
 				$("#todoInput").val('');
@@ -425,7 +528,7 @@ text-decoration: none;
 	// todolist 입력 후 엔터키로 목록에 추가시키기
 	$("#todoInput").keydown(function(e){
 		if(e.keyCode == 13){
-			// 마찬가지로 단순 엔터를 입력하면 submit()이벤트가 발생해 새로고침이 이루어진다. 
+			// 마찬가지로 단순 엔터를 입력하면 submit()이벤트가 발생해 새로고침이 이 루어진다. 
 				// 해당 기본이벤트를지우고, (+)클릭이벤트를 발생시킨다.
 			e.preventDefault();
 			$("#todoBtn").click();
@@ -459,8 +562,8 @@ text-decoration: none;
 	            	console.log("확인: " + $no + " , " + $content + " , " + $status);
 	            	var str = "";
 					str += "<li><input type='checkbox' class='inputCheck'>";
-					str += "<input type='text' data-no='"+ $no +"' data-status='"+$status+"' value='"+$content+"' class='todoInputList' readonly='readonly'>";
-					str += "<button class='todoDeleteBtn'>X</button><br></li>";				
+					str += "<input type='text' data-no='"+ $no +"' data-status='"+$status+"' value='"+$content+"' class='todoInputList' maxlength='25' readonly='readonly'>";
+					str += "<button class='todoDeleteBtn specialA'>삭제</button><br></li>";				
 					console.log("str값 확인: " + str);
 					$("#todoUl").append(str);
 					// 그리고 요소가 5개가 되면 자동으로 inptubox 요소를 비활성화 시킨다. 일단 어떻게 되는지 테스트. 
@@ -525,6 +628,33 @@ text-decoration: none;
 			$(this).attr("readonly", false).focus();
 		}
 	})
+	
+	// todoinputlist에 클릭을 주면 도움말의 메시지와 색상을 변경시킨다. 기본적으로 가려놓기   span의 class속성값 helpCommentSpan
+	$(document).on("mouseover", ".todoInputList", function(){
+		$('.helpCommentSpan').css("color", "coral");
+		$(".helpCommentSpan").text('더블클릭하면 수정할 수 있습니다. (최대 25자)');
+	})
+	
+	// #todoInput에 클릭을 하면 
+	$(document).on("mouseover", "#todoInput", function(){
+		$('.helpCommentSpan').css("color", "coral");	
+		$(".helpCommentSpan").text("최대 25자까지 입력이 가능합니다.");
+	})
+	
+	// 체크박스에 마우스를 올리면 또 하나 더 추가
+	$(document).on("mouseover", ".inputCheck", function(){
+		// 체크박스 위에 마우스를 올리는 경우에도 도움말 코멘트 추가. 
+		$('.helpCommentSpan').css("color", "coral");	
+		var str  = "체크박스를 클릭하면 완료표시가 됩니다.";
+		$(".helpCommentSpan").text("체크박스를 클릭하면 완료표시가 됩니다.");
+	})
+	
+	// 마우스가 위에 3개에 아무 곳에도 올라가 잇지 않은 경우에는 원래의 메시지를 출력시킨다
+	$(document).on("mouseleave", ".todoInputList, #todoInput, .inputCheck", function(){
+		$('.helpCommentSpan').css("color", "#05AA6D");	
+		$(".helpCommentSpan").text("투두리스트는 최대 5개까지 등록할 수 있습니다.");
+	})
+	
 	
 	
 	// 그리고 업데이트 발생시키기 엔터키 입력하면. 

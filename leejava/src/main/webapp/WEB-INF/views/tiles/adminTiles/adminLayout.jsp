@@ -21,17 +21,18 @@
 	width: 12%;
 }
 .mainWrapper {
-	width: 85%;
+	width: 100%;
 }
 .headerWrapper {
+	width: 100%;
 	height: 5%;
-	background-color: #FFF0F0	;
+	background-color: whitesmoke;
 }
 .bodyWrapper{
 	min-height: 700px; 
 }
 .footerWrapper{
-	background-color: #FFF0F0;
+	background-color: whitesmoke;
 	height: 70px;
 }
 </style>

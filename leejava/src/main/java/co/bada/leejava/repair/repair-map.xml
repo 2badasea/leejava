@@ -2,37 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.repair.RepairMapper">
 
-	<select id="repairSelectList" resultType="co.bada.leejava.repair.RepairVO">
-		SELECT * FROM REPAIR
-	</select>
-
-	<select id="repairSelect" parameterType="co.bada.leejava.repair.RepairVO">
-		SELECT * FROM REPAIR WHERE REPAIR_NO = #{repair_no}
-	</select>
 	
-	<insert id="repairInsert" parameterType="co.bada.leejava.repair.RepairVO">
-		INSERT INTO REPAIR VALUES(
-			#{repair_no},
-			#{repair_category},
-			#{repair_title},
-			#{repair_content},
-			TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24-MI-SS');
-		)
-	</insert>
-	
-	<update id="repairUpdate" parameterType="co.bada.leejava.repair.RepairVO">
-		<!-- 이번에도 업데이트 구문의 경우 nvl함수를 사용해서 처리햇따.  -->
-		UPDATE REPAIR SET
-			REPAIR_CATEOGRY = NVL(#{repair_category}, REPAIR_CATEGORY),
-			REPAIR_TITLE = NVL(#{repair_title}, REPAIR_TITLE),
-			REPAIR_CONTENT = NVL(#{repair_content}, REPAIR_CONTENT)
-		WHERE REPAIR_NO = #{repair_no}
-	</update>
-	
-	<delete id="repairDelete" parameterType="co.bada.leejava.repair.RepairVO">
-		DELETE FROM REPAIR
-		WHERE REPAIR_NO = #{repair_no}
-	</delete>
 	
 	
 </mapper>

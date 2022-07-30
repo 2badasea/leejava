@@ -156,4 +156,10 @@ public class MemberServiceImpl implements MemberService {
 		return map.ajaxPwdCheck(mvo);
 	}
 
+	@Override
+	public int memberStatusUpdate(MemberVO mvo) {
+		// TODO Auto-generated method stub
+		return map.memberStatusUpdate(mvo);
+	}
+
 }

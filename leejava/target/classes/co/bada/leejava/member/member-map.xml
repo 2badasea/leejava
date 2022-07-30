@@ -180,5 +180,12 @@ resultType="co.bada.leejava.member.MemberVO">
 	 WHERE M_EMAIL = #{m_email} AND M_PASSWORD = #{m_password}
 </select>
 
+<!-- 회원의 권한 변경 ( 관리자 화면 )  -->
+<update id="memberStatusUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_STATUS = #{m_status} 
+	WHERE M_EMAIL = #{m_email}
+</update>
+
 
 </mapper>

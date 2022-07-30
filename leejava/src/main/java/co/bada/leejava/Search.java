@@ -89,6 +89,15 @@ public class Search extends Paging {
 	// quizcard_history 테이블
 	private String quizcard_history; // 학습진도 상태
 	private String quizcard_history_date; // 최근학습날짜
+	
+	// Repair 유지보수 관리 테이블
+	private int rno;				// 글번호  
+	private String rCategory;		// 카테고리(게시판 영역 select태그로 모든 페이지 선택) 
+	private String rTitle;			// 제목 
+	private String rContent;		// 내용
+	private String rWdate;			// 작성날짜
+	private String rFdate;			// 유지보수 완료 날짜.
+	private String rStatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
 
 	// ======================================================================
 

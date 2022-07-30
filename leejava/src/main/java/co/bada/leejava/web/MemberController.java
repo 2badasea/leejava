@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,7 +62,7 @@ public class MemberController {
 			, MemberVO mvo) {
 		
 		// v_memberlist(회원 정보 일부) 정보 가지고 페이지로 이동  ( view생성하는 거 연습삼아서 최소한의 정보만 호출 ) 
-		model.addAttribute("members", memberDao.v_memberSelectList());
+		model.addAttribute("member", memberDao.v_memberSelectList());
 		return "home/admin/adminMemberList";
 	}
 	
@@ -688,9 +689,19 @@ public class MemberController {
 		}
 	}
 	
-	
-	
-	
-
-	
+	// 관리자 화면에서 회원의 권한을 변경시킨다. put방식으로 고고
+	@ResponseBody
+	@PutMapping(value = "memberStatusUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> memberStatusUpdate(@RequestBody MemberVO mvo){
+		
+		int n = memberDao.memberStatusUpdate(mvo);
+		String message = null;
+		if(n == 1) {
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+	}
 }

@@ -38,4 +38,6 @@ public interface MemberService {
 	MemberVO quizcardInfoSelect(MemberVO mvo);
 	// 이메일과 다이제스트 암호로 정보 체크 
 	boolean ajaxPwdCheck(MemberVO mvo);
+	// 회원의 권한 변경 ( 관리자 화면 ) 
+	int memberStatusUpdate(MemberVO mvo);
 }

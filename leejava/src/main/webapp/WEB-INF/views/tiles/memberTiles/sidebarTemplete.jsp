@@ -326,7 +326,7 @@ text-decoration: none;
 		
 		<div class="sidebar_menu" align="center">
 			<ul id="mainMenu">
-				<c:if test="${session_user == \"bada\"}">
+				<c:if test="${session_user == \"bada\" or session_status eq 'ADMIN'}">
 					<li>
 						<a href="adminPage.do" class="sideMenu adminMenu" style="font-size: large; color: #2E3856; margin-bottom: 10px;">
 							관리자 화면

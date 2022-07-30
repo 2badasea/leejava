@@ -98,6 +98,9 @@ public class HomeController {
 			mvo = memberDao.memberSelect(mvo); // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
 			if (mvo != null) {
 				String nickname = mvo.getM_nickname(); // nickname을 가져옴. 사이트에서 사용할 수 있는
+				// 회원등급도 같이 가져와서 session값에 부여한다. ADMIN 
+				String mstatus = mvo.getM_status();
+				session.setAttribute("session_status", mstatus);
 				session.setAttribute("session_user", email);
 				session.setAttribute("session_nickname", nickname);
 				logger.info("===============세션에 담은 이메일: " + email + ", 그리고 닉네임" + nickname);

@@ -237,6 +237,8 @@
 <script>
 	/*	문서가 로드되면 실행시킬 이벤트들 */
 	const nowDate = new Date().toISOString().substring(0,10);
+	let frontCal;
+	let backCal;
 	
 	// 회원검색 버튼 이벤트 
 	$(".memberSearchBtn").on("click", function(){
@@ -255,6 +257,37 @@
 		url = url + "&backCal=" + backCal; 
 		console.log("호출할 최종 URL 값: " + url);
 // 		location.href = url; 
+	})
+	
+	// 앞뒤 달력에 대한 이벤트를 조정하자.  frontCalendar의 값은 backCalendar보다 높을 수가 없다.
+	$(".frontCalendar").change(function(){
+		console.log("이벤트 발생");
+		frontCal = $(".frontCalendar").val();
+		backCal = $(".backCalendar").val();
+		console.log("프론트값: " + frontCal);
+		console.log("현재 시간: " + nowDate);
+		console.log("백 값: " + backCal);
+		if( frontCal > nowDate || frontCal > backCal){
+			alert("잘못된 날짜 형식입니다.");
+			$(".frontCalendar").val('');
+		} else {
+			console.log("잘 선택했네유.");
+		}
+	})
+	
+	$('.backCalendar').on("change", function(){
+		console.log("이벤트 발생");
+		frontCal = $(".frontCalendar").val();
+		backCal = $(".backCalendar").val();
+		console.log("프론트값: " + frontCal);
+		console.log("현재 시간: " + nowDate);
+		console.log("백 값: " + backCal);
+		if( backCal > nowDate || backCal < frontCal){
+			alert("잘못된 날짜형식입니다.");
+			$(".backCalendar").val(nowDate);
+		} else {
+			console.log("잘 선택하셧음 ^^");
+		}
 	})
 	
 	
@@ -302,7 +335,6 @@
 </script>
 <script>
 	$(function(){
-		
 		// 검색요소의 뒷달력의 기본값을 오늘날짜로 맞춘다. 
 		$(".backCalendar").val(nowDate);
 	})

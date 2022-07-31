@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -58,11 +59,33 @@ public class MemberController {
 	
 	// 관리자화면  회원리스트 정보 페이지 이동
 	@RequestMapping("/adminMemberList.do")
-	public String adminMemberList(Model model, HttpServletRequest request
-			, MemberVO mvo) {
+	public String adminMemberList(Model model,
+			@RequestParam(required = false, defaultValue = "1") int page,
+			@RequestParam(required = false, defaultValue = "1") int range, 
+			@RequestParam(required = false, defaultValue = "ALL") String m_joinpath,
+			@RequestParam(required = false) String m_email,
+			@RequestParam(required = false) String m_nickname,
+			@RequestParam(required = false) String frontCal,
+			@RequestParam(required = false) String backCal,
+			Search svo) {
+		
+		model.addAttribute("search", svo);
+		svo.setM_joinpath(m_joinpath);
+		svo.setM_email(m_email);
+		svo.setM_nickname(m_nickname);
+		svo.setFrontCal(frontCal);
+		svo.setBackCal(backCal);
+		int listCnt = memberDao.getMemberListCnt(svo);
+		System.out.println("listCnt값 확인해보기: " + listCnt);
+		
+		svo.pageinfo(page, range, listCnt);
+		List<MemberVO> list = memberDao.memberSearchSelect(svo);
+		
+		model.addAttribute("pagination", svo);
+		model.addAttribute("member", list);
 		
 		// v_memberlist(회원 정보 일부) 정보 가지고 페이지로 이동  ( view생성하는 거 연습삼아서 최소한의 정보만 호출 ) 
-		model.addAttribute("member", memberDao.v_memberSelectList());
+//		model.addAttribute("member", memberDao.v_memberSelectList());
 		return "home/admin/adminMemberList";
 	}
 	
@@ -669,7 +692,7 @@ public class MemberController {
 		System.out.println("map의 형태: " + map);
 		String password = (String) map.get("m_password");
 		String m_email = (String) map.get("m_email");
-		System.out.println("조회: " + m_email  + ", " +  password);
+		System.out.println("조회: " + m_email  + ", " +  password);   
 		
 		// 새로운 m_salt값 생성
 		String m_salt = SHA256Util.generateSalt();
@@ -690,7 +713,7 @@ public class MemberController {
 	}
 	
 	// 관리자 화면에서 회원의 권한을 변경시킨다. put방식으로 고고
-	@ResponseBody
+	@ResponseBody  
 	@PutMapping(value = "memberStatusUpdate.do", produces = "application/text; charset=utf-8")
 	public ResponseEntity<String> memberStatusUpdate(@RequestBody MemberVO mvo){
 		

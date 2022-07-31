@@ -67,9 +67,12 @@ text-decoration: none;
     -ms-transform: scale(1.2,1.2);
     transform: scale(1.2,1.2);
 } 
+.adminSidebarMenu h5{
+	color: whitesmoke;
+}
 </style>
 <body>
-<input type="hidden" class="adminPageHiddenInput" data-status="${session_status }" data-user="${session_user }">
+<input value="${session_status }" type="hidden" class="adminPageHiddenInput" data-status="${session_status }" data-user="${session_user }">
 	<!-- 왼쪽 사이드바 -->
 	<div class="adminSidebar_wrapper">
 		<div class="adminSidebarMenu" align="center">
@@ -105,15 +108,43 @@ text-decoration: none;
 <script>
 	/*	문서가 로드되면 실행시킬 이벤트들 */
 	$(function(){
-		// 클릭을 했을 때마다 세션값을 체크한다. 세션값 기준에 admin이 아닌 경우 => alert창과 함께 메인페이지로 이동한다.
-		$(document).on("click", function(){
-			var status = $(".adminPageHiddenInput").data("status");
-			console.log("status값 확인: " + status);
-			if(status !== "ADMIN"){
-				alert("세션이 만료되었습니다");
-				location.href="logout.do";
-			}
-		})
+		
+		// 관리자페이지로 이동할 때 session_status값으로 ADMIN을 넘기는데, 이 값을 문서가 로딩되자마자 체크한다. 
+		var checkSession = $(".adminPageHiddenInput").val();
+		console.log("관리자 페이지에서 페이지 이동하자마자 생길 때 세션 체크하는 함수. 현재: " +checkSession);
+		if(checkSession !== "ADMIN"){
+			alert("관리자만 접근할 수 있는 페이지입니다.");
+			location.href="home.do";
+		}
+		
+		// 주기적으로 ajax요청을 통해 세션을 체크하는 함수를 구현해보자.
+		const sessionTime = 1000 * 60 * 5; // 5분
+// 		const sessionTime = 1000 * 5; // 테스트용 5초
+		var session_statusCheck = setInterval(function(){
+				console.log("세션 체크!");
+				var now = new Date();
+				$.ajax({
+					url: "adminSessionCheck.do",
+					method: "GET",
+					dataType: "text",
+					contentType: "application/text; charset=utf-8",
+					success: function(sessionStatus){
+						console.log("현재 세션 Status값: " + sessionStatus);
+						if(sessionStatus !== "ADMIN"){
+							alert("세션이 만료되었습니다. 만료시간: " + now);
+							location.href="loginPage.do";
+						} else {
+							console.log("세션 체크 확인. 체크시간: " + now);
+						}
+					},
+					error: function(){
+						console.log("세션 체크 실패");
+					}
+				})
+		},sessionTime )
+		
+		
+		
 	})
 </script>
 </html>

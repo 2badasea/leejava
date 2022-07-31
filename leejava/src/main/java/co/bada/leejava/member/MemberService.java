@@ -3,6 +3,7 @@ package co.bada.leejava.member;
 import java.util.List;
 
 import co.bada.leejava.AttachImageVO;
+import co.bada.leejava.Search;
 
 public interface MemberService {
 	List<MemberVO> memberSelectList();		// 회원 리스트 나열
@@ -40,4 +41,8 @@ public interface MemberService {
 	boolean ajaxPwdCheck(MemberVO mvo);
 	// 회원의 권한 변경 ( 관리자 화면 ) 
 	int memberStatusUpdate(MemberVO mvo);
+	// 회원리스트와 페이징을 처리하기 위한 총 row데이터 수 구하기 (관리자 화면) 
+	int getMemberListCnt(Search svo);
+	// 검색요소와 페이징처리가 반영된 최종 회원목록 리스트 ( 관리자 화면) 
+	List<MemberVO> memberSearchSelect(Search svo);
 }

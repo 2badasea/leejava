@@ -14,10 +14,13 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -288,8 +291,11 @@ public class HomeController {
 
 	// 관리자 페이지로 이동
 	@RequestMapping("/adminPage.do")
-	public String adminPage(Model model, HttpServletRequest request) {
-
+	public String adminPage(Model model, HttpSession session) {
+		
+		// 관리자 화면으로 넘어갈 때 세션값 session_status값을 넘겨준다
+		model.addAttribute("session_status", (String) session.getAttribute("session_status"));
+		
 		return "home/admin/adminHome";
 	}
 
@@ -424,8 +430,15 @@ public class HomeController {
 			String quiezcard_no = (String) map.get("quizcard_no");
 			logger.info(question_no + " : " + whereQno+ " : " + quizcard_set_no + " : " + quiezcard_no);
 		}
-
 		return "";
 	}
-
+	
+	// 관리자 페이지 세션 체크
+	@ResponseBody
+	@GetMapping(value = "adminSessionCheck.do", produces = "APPLICATION/TEXT; CHARSET=UTF-8")
+	public ResponseEntity<String> adminSessionCheck(HttpSession session){
+		
+		String nowSessionStatus = (String)session.getAttribute("session_status");
+		return new ResponseEntity<String>(nowSessionStatus, HttpStatus.OK);
+	}
 }

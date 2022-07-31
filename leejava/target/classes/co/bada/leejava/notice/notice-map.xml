@@ -61,7 +61,7 @@
 	FROM ( SELECT * 
 	FROM NOTICE
 	<trim prefix="where" prefixOverrides="and | or">
-			<if test="n_title !='' and n_content == ''">AND N_TITLE LIKE '%'||#{n_title}||'%' </if>
+		<if test="n_title !='' and n_content == ''">AND N_TITLE LIKE '%'||#{n_title}||'%' </if>
 		<if test="n_content !='' and n_title == ''">AND N_CONTENT LIKE '%'||#{n_content}||'%'</if>
 		<if test="n_title !='' and n_content !='' ">AND N_TITLE LIKE '%'||#{n_title}||'%' OR N_CONTENT LIKE '%'||#{n_content}||'%'</if>
 		<if test="n_category !='all' ">AND N_CATEGORY LIKE '%'||#{n_category}||'%'</if>

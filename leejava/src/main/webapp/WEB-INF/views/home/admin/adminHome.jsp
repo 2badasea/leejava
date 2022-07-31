@@ -16,7 +16,7 @@
 </body>
 <script>
 	$(document).on("click", function(){
-		console.log("클릭 이벤트 확인");
+		
 	})
 </script>
 </html>

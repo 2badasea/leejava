@@ -27,6 +27,9 @@ public class Search extends Paging {
 	private String m_promotion; // 프로모션 수신 여부
 	/* 이미지 정보 	*/
 	private List<AttachImageVO> imageList; 
+	// 관리자 화면 => 회원검색 기간 달력 2개
+	private String frontCal;
+	private String backCal;
 	
 	/* 프로필 이미지 경로 정보 AttachImageVO */
 	// 경로

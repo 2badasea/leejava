@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import co.bada.leejava.AttachImageVO;
+import co.bada.leejava.Search;
 
 @Repository("memberDao")
 public class MemberServiceImpl implements MemberService {
@@ -160,6 +161,18 @@ public class MemberServiceImpl implements MemberService {
 	public int memberStatusUpdate(MemberVO mvo) {
 		// TODO Auto-generated method stub
 		return map.memberStatusUpdate(mvo);
+	}
+
+	@Override
+	public int getMemberListCnt(Search svo) {
+		// TODO Auto-generated method stub
+		return map.getMemberListCnt(svo);
+	}
+
+	@Override
+	public List<MemberVO> memberSearchSelect(Search svo) {
+		// TODO Auto-generated method stub
+		return map.memberSearchSelect(svo);
 	}
 
 }

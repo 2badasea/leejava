@@ -39,6 +39,7 @@
 		FROM QUIZCARD Q INNER JOIN QUIZCARD_CATEGORY C 
 		ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
 		WHERE Q.QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY Q.QUIZCARD_SET_NO DESC
 	</select>
 	
 	<!--퀴즈카드 첫 생성 이후 기본 question테이블 값. -->
@@ -74,6 +75,7 @@
 		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
 			ON S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
 		WHERE M_EMAIL = #{m_email}
+		ORDER BY S.QUIZCARD_SET_NO DESC
 	</select>
 	
 	<!-- 해당 퀴즈카드 set_no별로 총 문제 갯수 -->
@@ -101,6 +103,7 @@
 		    			INNER JOIN MEMBER M
 							ON S.M_EMAIL = M.M_EMAIL
 		WHERE S.QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY S.QUIZCARD_SET_NO DESC
 	</select>
 	
 	<!-- 퀴즈카드 세트번호별 문제리스트. -->
@@ -151,13 +154,13 @@
 	
 	<!-- 퀴즈카드 삭제후 넘버링 작업 -->
 	<update id="ajaxUpdateQuestionNo" parameterType="co.bada.leejava.quizcard.QuizcardVO">
-		update quizcard_question 
-			set 
-				quizcard_question_no = #{quizcard_question_no},
-				quizcard_no = #{quizcard_no}
-			where 
-				quizcard_set_no = #{quizcard_set_no}  and
-				quizcard_question_no = #{quizcard_question_no} + 1
+		UPDATE QUIZCARD_QUESTION 
+			SET 
+				QUIZCARD_QUESTION_NO = #{quizcard_question_no},
+				QUIZCARD_NO = #{quizcard_no}
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}  AND
+				QUIZCARD_QUESTION_NO = #{quizcard_question_no} + 1
 	</update>
 	
 	<!-- 메인페이지 퀴즈카드 클릭 시 조회수 증가 -->
@@ -279,6 +282,7 @@
 		INNER JOIN QUIZCARD_CATEGORY C 
 			ON Q.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
 		WHERE B.M_EMAIL  = #{m_email}
+		ORDER BY B.QUIZCARD_SET_NO DESC
 	</select>
 	
 	<!-- quizcard_history에 기존에 존재하는 데이터가 존재하는지 -->

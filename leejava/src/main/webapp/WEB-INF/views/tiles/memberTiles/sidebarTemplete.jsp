@@ -36,7 +36,6 @@
 	padding-right: 25px;
 }
 .sidebar_menu {
-	margin-top: 100px;
 }
 
 
@@ -136,7 +135,7 @@
 	min-width: 100px;
 	width: auto; 
 	height: 80px;
-	margin-top: 80%;
+	margin-top: 55%;
 	background-color: white;
 	color: #05AA6D;
 	font-weight: 700;
@@ -654,9 +653,7 @@ text-decoration: none;
 		$('.helpCommentSpan').css("color", "#05AA6D");	
 		$(".helpCommentSpan").text("투두리스트는 최대 5개까지 등록할 수 있습니다.");
 	})
-	
-	
-	
+		
 	// 그리고 업데이트 발생시키기 엔터키 입력하면. 
 	$(document).on("keyup", ".todoInputList", function(e){
 		e.preventDefault();

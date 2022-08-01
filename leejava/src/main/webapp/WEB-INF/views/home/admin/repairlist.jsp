@@ -11,7 +11,15 @@
 <body>
 <div align="center">
 	<h3>유지보수 리스트 확인</h3>
+	<!-- memberNoticeList.xxml =>  -->
 	
 </div>
 </body>
+<script>
+	$(document).on("ready", function(){
+		console.log("페이지 로딩 확인");
+		// 진행상황이나 이런 거 체크하고 나서 페이지를 리로딩 해야 한다. => 완료된 상태의 게시글이 하단으로 가야한다.
+		// console.log("white peopel");
+	})
+</script>
 </html>

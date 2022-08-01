@@ -357,7 +357,7 @@ public class QuizcardRestController {
 			message = "EXIST";
 			return new ResponseEntity<String>(message, HttpStatus.ALREADY_REPORTED);
 		}
-	}
+	} 
 	
 	// 사용자 정보 조회 모달창에 출력할 내용.
 	@GetMapping(value = "ajaxUserInfo.do", produces = MediaType.APPLICATION_JSON_VALUE )

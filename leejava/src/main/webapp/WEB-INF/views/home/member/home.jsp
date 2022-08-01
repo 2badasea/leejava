@@ -7,61 +7,130 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
-	.mainBoards {
-		display: flex;
-	}
-	.mainNoticeList {
-		border: 1px solid black;
-	}
-	td{
-		border-bottom: 0.5px solid gray;
-	}
-	#noticeA{
-		color: #a0a0a0;
-	}
-	thead > tr >td {
-		width: 400px;
-	}
-	#noticeTd {
-		display: flex;
-		justify-content: space-between;
-	}
-	#noticeTitleSpan:hover{
-		cursor: pointer;
-	}
+/*	페이지 내의 공통적인 디자인 요소들 */	
+.mainPageTableThTr{
+	width: 100%;
+	border-bottom: 1px solid black;
+}
+.mainPageTableTdTr{
+	width: 100%;
+	border-bottom: 0.1px solid lightgray;
+}
+.mainBoards {
+	display: flex;
+	margin-left: 5%;
+	margin-top: 5%;
+	width: 70%;
+	height: auto;
+	border-right: 1px solid lightgray;
+}
+.bannerBox{
+	height: 150px;
+	width: 100%;
+	border-bottom: 1px soild coral;
+	background-color: whitesmoke;
+}
+
+.mainPageListBorder {
+	border: 0.1px solid lightgray;
+	border-left: 1px solid #05AA6D;
+	padding: 10px; 
+	background-color: white;
+}
+.mainPageTable{
+	width: 450px;
+}
+/*	******************************	*/
+.tableContentTitle:hover{
+	cursor: pointer;
+	border-bottom: 0.1px solid gray;
+	color: gray;
+}
+.tableContentTitle{
+	margin-left: 10px;
+}
+.mainTipBorder{
+}
 </style>
 </head>
 <body>
-<h1>Hello ${session_nickname }!!</h1>
 <!-- flex박스를 활용해서 메인 페이지에 공지사항 게시글 5개 정도를 노출시킨다. more누르면 이동. -->
-<div class="wrapper">
+<div class="home_wrapper" style="background-color: #F8F8F8;">
 	<div class="bannerBox">
-	
+		<button type="button" style="display: block; margin: auto; width: 100%; height: 98%;">배너가 들어갈 영역</button>
 	</div>
-	<!-- 임시 구분용 선 -->
-	<hr> 
+	
+	<!-- 각종 게시판의 내용들을 간략하게 출력해준다.  -->
 	<div class="mainBoards">
-		<div class="mainNoticeList">
-			<table>
-				<thead>
+		<!-- 첫 번째 공지사항 테이블ㄴ -->
+		<div class="mainPageListBorder mainNoticeBorder">
+			<table class="mainNoticeTable mainPageTable">
 					<tr>
-						<td>
-							<span style="float: left;">공지사항</span>
-							<a href='memberNoticeList.do' id="noticeA"><span style="float: right;">&lt;more&gt;</span></a>
+						<td class="mainPageTableThTr">
+							<h3 style="float: left;"> 공지사항</h3>
+							<a href='memberNoticeList.do'><span style="float: right; color: gray;">&lt;더 보기&gt;</span></a>
 						</td>
 					</tr>
-				</thead>
-				<tbody>
-				<c:forEach items="${notices }" var="notice">
+					<c:forEach items="${notices }" var="notice">
+						<tr>	
+							<td class="mainPageTableTdTr">
+								<h5 class="noticeTitleSpan tableContentTitle" onclick="userNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</h5 >
+								<div style="display:flex;float: right;">
+									<h6 class="mainNoticeWriter">${notice.n_writer }</h6>
+									&nbsp;&nbsp;
+									<h6 class="mainNoticeWdate">${notice.n_wdate }</h6>
+								</div>
+							</td>
+						</tr>
+					</c:forEach>
+			</table>
+		</div>
+		<!-- 두 번째 정보 게시판 테이블 -->
+		<div class="mainPageListBorder mainTipBorder">
+			<table class="mainTipTalbe mainPageTable">
+				<tr>
+					<td class="mainPageTableThTr">
+						<h3 style="float: left;">정보 & 팁 게시판</h3>
+						<a><span style="float: right; color: gray;">&lt;더 보기&gt;</span></a>
+					</td>
+				</tr>
+<%-- 				<c:forEach items="" var=""> --%>
 					<tr>
-						<td id="noticeTd">
-							<span id="noticeTitleSpan" onclick="userNoticeRead(${notice.n_no}, ${notice.n_hit })">${notice.n_title }</span>
-							<span>${notice.n_wdate }</span>
+						<td class="mainPageTableTdTr">
+							<h5 class="tableContentTitle"></h5>
+							<div style="display: flex; float: right;">
+								<h6></h6>
+								&nbsp;&nbsp;
+								<h6></h6>
+							</div>
 						</td>
 					</tr>
-				</c:forEach>
-				</tbody>
+<%-- 				</c:forEach> --%>
+			</table>
+		</div>
+		<!-- 세 번째로 임의로 들어갈 게시판 정보 -->
+		<div class="mainPageListBorder">
+			<table class="mainQnaTable mainPageTable">
+				<tr>
+					<td class="mainPageTableThTr">
+						<h3 style="float: left;">질문 게시판</h3>
+						<a><span style="float: right; color: gray;">&lt;더 보기&gt;</span></a>
+					</td>
+				</tr>
+<%-- 				<c:forEach items="" var=""> --%>
+					<tr>
+						<td class="mainPageTableTdTr">
+							<h5 class="tableContentTitle"></h5>
+							<div style="display: flex; float: right;">
+								<h6></h6>
+								&nbsp;&nbsp;
+								<h6></h6>
+							</div>
+						</td>
+					</tr>
+<%-- 				</c:forEach> --%>
 			</table>
 		</div>
 	</div>

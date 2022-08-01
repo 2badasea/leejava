@@ -469,7 +469,8 @@
 	// 수정완료버튼 (이전 페이지로 돌아가기)
 	$(".updateEndBtn").on("click", function(){
 		console.log("수정완료 클릭");
-		history.back();
+		// 수정완료하고 바로 반영된 데이터를 보려면 => 세트번호와 이메일을 같이 url에 매핑해서 날려야 한다. 
+		location.href = "quizcardBefore.do?set_no=" + quizcard_set_no;
 	})
 	
 	// 세트이름 수정 =>

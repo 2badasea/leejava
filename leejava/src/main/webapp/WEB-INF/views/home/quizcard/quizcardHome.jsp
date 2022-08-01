@@ -693,6 +693,6 @@ fieldset {
 				} else {
 					return false;
 				}
-			})
+	})
 </script>
 </html>

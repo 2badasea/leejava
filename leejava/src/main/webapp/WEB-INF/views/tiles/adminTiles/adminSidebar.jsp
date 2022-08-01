@@ -70,6 +70,7 @@ text-decoration: none;
 .adminSidebarMenu h5{
 	color: whitesmoke;
 }
+
 </style>
 <body>
 <input value="${session_status }" type="hidden" class="adminPageHiddenInput" data-status="${session_status }" data-user="${session_user }">
@@ -142,9 +143,7 @@ text-decoration: none;
 					}
 				})
 		},sessionTime )
-		
-		
-		
 	})
 </script>
+
 </html>

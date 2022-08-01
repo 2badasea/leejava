@@ -104,6 +104,9 @@
 	border-collapse: collapse;
 	border: 1px solid #313348;
 }
+.memberListTr:hover{
+	background-color: lightgray;
+}
 
 .memberListTable select{
 	text-align: center;
@@ -136,6 +139,162 @@
 	font-size: large;
 }
 
+/*	페이징 박스 디자인 요소*/
+.paginationUl > li{
+	list-style-type: none;
+	float: left;
+	padding: 5px;
+}
+.paginationLink{
+	color: #313348;
+	font-size: 20px;
+}
+.paginationBox {
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: center;
+}
+.active a {
+	font-weight: bolder;
+	font-size: large;
+	color: tomato;
+	
+}
+
+/* **************사용자 정보 호출하는 모달창 관련 스타일 정의************88*/
+/* 사용자 정보 조회하는 모달창 */
+.userInfo_modal_container {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	width: 100%;
+	height: 100vh;
+	display: none;
+	z-index: 1;
+}
+
+.userInfo_modal_content {
+	position: absolute;
+	top: 10%;
+	left: 15%;
+	width: 700px;
+	height: auto;
+	z-index: 3;
+	background-color: white;
+	border: 1px solid #313348;
+	border-radius: 20px;
+	padding: 30px;
+}
+
+.userInfo_modal_layer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	background-color: grey;
+	opacity: 0.3;
+	transition: 2s;
+}
+/* 헤더 div */
+.userInfo_modal_header{
+	border-bottom: 1px solid #313348;
+}
+
+.userInfoModalCloseBtn {
+	margin-top: 50px;
+	float: right;
+	width: 100px;
+	height: 50px;
+	border-radius: 20px;
+	background: #313348;
+	color: whitesmoke;
+	border-style: none;
+	font-size: 20px;
+	font-weight: bold;
+}
+.userInfo_imageDiv{
+	margin-top: 20px;
+}
+
+.userInfoModalCloseBtn:hover {
+	cursor: pointer;
+	background-color: whitesmoke;
+	color: #313348;
+	transition: 1s;
+}
+
+.userInfo_modal_body {
+	display: flex;
+	justify-content: space-around;
+}
+
+.profileImg {
+	width: 150px;
+	height: 150px;
+	border-style: none;
+}
+
+.userInfo_quizcardTb {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.userInfo_quizcardTr {
+	border-bottom: 0.5px dashed #313348;
+}
+
+.userInfo_quizcardTr:hover {
+	cursor: pointer; 
+	background-color: whitesmoke ; 
+}
+
+fieldset{
+	border: 1px solid #313348;
+	padding: 5px;
+}
+
+.userInfo_modal_footer {
+	margin-bottom: 10%;
+}
+
+.userInfo_right {
+	width: 60%;
+}
+#userInfoTitle{
+	font-weight: 900;
+	font-size: larger;
+	color: #313348;
+}
+
+.userInfo_right textarea {
+	width: 95%;
+	height: 95%;
+	border-radius: 20px;
+	padding: 15px;
+}
+legend,
+#userIntroLabel{
+	color: #313348;
+	font-weight: 900;
+	font-size: large;
+}
+.userInfo_modal_content input {
+	border-style: none;
+	font-size: 18px;
+	color: #313348;
+	width: 100px;
+	font-weight: bolder;
+}
+
+.userInfo_IntroForm{
+	border-top: 10px;
+}
+#userIntroForm{
+	color: #313348;
+	font-weight: 800;
+}
+
 /*	***************************************************	*/
 </style>
 </head>
@@ -157,7 +316,7 @@
 						</td>
 						<th>닉네임</th>
 						<td style="width: 300px;">
-							<input type="text" id="m_nickname" class="searchInput m_nickname" placeholder="닉네임을 입려해주세요.">
+							<input type="text" id="m_nickname" class="searchInput m_nickname" placeholder="닉네임을 입력해주세요.">
 						</td>
 					</tr>
 					<tr>
@@ -190,6 +349,22 @@
 			<!-- 아래 div는 회원목록을 보여주는 리스트 -->
 			<div class="memberListDiv" align="center">
 				<h2>회원 리스트</h2>
+				<c:choose>
+					<c:when test="${pagination.listCnt lt pagination.end }">
+						<span>( 총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건 )</span>
+					</c:when>
+					<c:otherwise>
+						<span>( 총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건 )</span>
+					</c:otherwise>
+				</c:choose>
+				&nbsp;&nbsp;&nbsp;
+				<select class="paging" name="searchType" id="listSize" onchange="page(1)">
+					<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10명씩 보기</option>
+					<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15명씩 보기</option>
+					<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20명씩 보기</option>
+				</select>				
+				
+				
 				<table class="memberListTable">
 				<!--들어갈 항목 => 이메일, 닉네임, 가입날짜, 가입경로, 상태, 개인정보, 프로로모션 정보-->
 					<tr class="memberListTableThTr">
@@ -203,7 +378,7 @@
 						<th width="100px;">관리</th>
 					</tr>
 				<c:forEach items="${member }" var="member">
-					<tr data-email="${member.m_email }" data-status="${member.m_status }">
+					<tr class="memberListTr" data-email="${member.m_email }" data-status="${member.m_status }">
 						<td>
 							<input type="hidden" class="memberInfoHidden" data-email="${member.m_email }" data-status="${member.m_status }">
 							${member.m_joindate }
@@ -230,15 +405,262 @@
 					</tr>
 				</c:forEach>
 			</table>
+			<br><br> 
+			<!--  페이징 박스가 들어갈 곳  -->
+			<div id="paginationBox" class="paginationBox">
+				 <ul class="paginationUl">
+				 	<c:if test="${pagination.prev }">
+				 		<li class="paginationLi">
+				 			<a class="paginationLink speicalA" onclick="fn_prev('${pagination.page}', '${pagination.range }'
+							 													,'${pagination.rangeSize }', '${pagination.listSize }'
+							 													,'${search.m_joinpath }', '${search.m_email }', '${search.m_nickname }'
+							 													,'${search.frontCal }', '${search.backCal }')">이전</a>
+				 		</li>
+				 	</c:if>
+				 	<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="memberNo">
+				 		<li class="paginationLi <c:out value="${pagination.page == memberNo ? 'active' : '' }" />" >
+				 			<a class="paginationLink specialA" onclick="fn_pagination('${memberNo }', '${pagination.range }', '${pagination.rangeSize }',
+				 											'${pagination.listSize }', '${search.m_joinpath}', '${search.m_email }', '${search.m_nickname }',
+				 											'${search.frontCal }', '${search.backCal }')">${memberNo }</a>
+				 	</c:forEach>
+				 	<c:if test="${pagination.next }">
+				 		<li class="paginationLi">
+				 				<a class="paginationLink speicalA" onclick="fn_prev('${pagination.page}', '${pagination.range }'
+								 													,'${pagination.rangeSize }', '${pagination.listSize }'
+								 													,'${search.m_joinpath }', '${search.m_email }', '${search.m_nickname }'
+								 													,'${search.frontCal }', '${search.backCal }')">다음</a>
+				 		</li>
+				 	</c:if>
+				 </ul>
+			</div>
 			</div>
 		</div>
 	</div>
+<!--  회원정보 조회하는 모달창 (퀴즈카드 페이지에 있는 소스들 훔쳐옴 -->
+	<!-- 사용자 정보 조회하는 모달창  -->
+	<div class="userInfo_modal_container">
+		<div class="userInfo_modal_content">
+			<div class="userInfo_modal_header" align="center">
+				<span id="userInfoTitle"></span>
+			</div>
+			<br>
+			<div class="userInfo_modal_body">
+				<div class="userInfo_left" align="center">
+					<div class="userInfo_imageDiv">
+						<img class="profileImg" alt="사진을 준비중입니다." src="resources/image/userimage.jpg">
+					</div>
+					<div class="userInfo_subInfo">
+						<label for="userInfo_nickname">닉네임</label> 
+						<input type="text" id="userInfo_nickname" value="" readonly="readonly">
+						<br> 
+						<label for="userInfo_joinDate">가입날짜</label> 
+						<input type="text" id="userInfo_joindate" value="" readonly="readonly">
+					</div>
+				</div>
+				<div class="userInfo_right" align="center">
+					<label for="userIntroForm" id="userIntroLabel"></label>
+					<div class="userInfo_IntroForm">
+						<textarea id="userIntroForm" cols="30" rows="15" readonly="readonly"></textarea>
+					</div>
+				</div>
+			</div>
+			<br>
+			<hr>
+			<fieldset class="userInfoFieldset">
+				<legend>작성한 퀴즈카드</legend>
+				<div class="userInfo_quizcard" align="center"></div>
+			</fieldset>
+			<br>
+			<div class="userInfo_modal_footer">
+				<button class="userInfoModalCloseBtn">닫기</button>
+			</div>
+		</div>
+		<div class="userInfo_modal_layer"></div>
+	</div>
 </body>
 <script>
-	/*	문서가 로드되면 실행시킬 이벤트들 */
+	// 사용자 정보 호출하는 모달창 관련 스크립트. 
+		// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
+		// 일단 class값은 memberInfoBtn 이고, 해당 버튼을 클릭했을 때, nickname 값을 가져와본다.
+	
+	// 임시 테스트 버튼. 클릭으로 닉네임 값 찾아보기
+		
+	$(".memberInfoBtn").on("click", function(e) {
+			console.log("유저 닉네임 클릭");
+			// 버튼을 클릭해서 이메일 값과 닉네임 값을 가져와야 한다. "email" 값의 경우, 첫 번째 모달창으로 리턴되는 값으로 대입한다. 바로 밑의 ajax구문에 존재
+			let email;
+			$("body").css("overflow", "hidden"); // 모달창 호출 => body영역 스크롤 방지
+			$(".userInfo_modal_container").css("display", "block");
+			var sendNickname =  $(e.target).closest('tr').find('td').eq(2).text();
+			console.log("닉네임 값 조회: " + sendNickname);
+			// 첫 번째 ajax로 프로필 정보(닉네임, 이메일, 가입날짜, intro + 프로필이미지 정보)		
+			$.ajax({
+				url : "ajaxUserInfo.do?m_nickname=" + sendNickname,
+				type : "GET",
+				dataType : "json",
+				async : false,
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					console.log("호출 성공");
+					console.log(data);
+					email = data.m_email;  
+					$("#userInfo_nickname").val(data.m_nickname);
+					$("#userInfo_joindate").val(data.m_joindate);
+					$("#userIntroForm").val(data.m_intro);
+					$("#userInfoTitle")
+							.html(data.m_nickname + " 님의 사용자 정보");
+					$("#userIntroLabel")
+							.text(data.m_nickname + " 님의 Intro");
+				},
+				error : function(responseText) {
+					console.log("호출 실패");
+					console.log(responseText);
+				} 
+			})
+			// 두 번째 ajax => 작성한 퀴즈카드 정보 넣기. 
+			var tb = $("<table class='userInfo_quizcardTb' />");
+			var emptyMessage;
+			$.ajax({
+				url : "ajaxMyQuizcard.do",
+				type : "GET",
+				dataType : "json",
+				data : {
+					m_email : email
+				},
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					console.log("호출 성공");
+					console.log(data);
+					if( data.length == 0){
+						emptyMessage = "<p>작성한 퀴즈카드가 존재하지 않습니다.</p>";
+						$(".userInfo_quizcard").append(emptyMessage);
+					} else {
+						// json 배열의 타입을 출력시켜야 한다   class="userInfo_quizcard" 여기 공간에 append 시킨다. 
+						$.each(data, function(index, item) {
+							var tr = $("<tr class='userInfo_quizcardTr' />")
+									.append(
+											$("<td />").text(
+													item.quizcard_set_no),
+											$("<td />").text(
+													item.quizcard_set_name),
+											$("<td />").text(
+													item.quizcard_set_cdate),
+											$("<td />").text(
+													item.quizcard_category));
+							tb.append(tr);
+						})
+						$(".userInfo_quizcard").append(tb);
+					}
+				},
+				error : function(responseText) {
+					console.log("호출 실패");
+					console.log(responseText);
+				}
+			})
+		})
+
+	// 모달창 닫기버튼(X) 
+	$(".userInfoModalCloseBtn").on('click', function() {
+		console.log("사용자 정보 창 닫기");
+		$(".userInfo_quizcard").empty(); // div안의 영역을 초기화 시켜준다. 
+		$("body").css("overflow", "unset"); // 모달창 호출 => 스크롤 방지 해제
+		$(".userInfo_modal_container").css('display', 'none');
+	})
+
+	// 외부영역 클릭 모달창 닫기
+	$(document).on(
+			"click",
+			function(e) {
+				if ($(e.target).closest('.userInfo_modal_content').length == 0
+						&& !$(e.target).hasClass('memberInfoBtn')) {
+					$(".userInfo_quizcard").empty();
+					$("body").css("overflow", "unset");
+					$(".userInfo_modal_container").css('display', 'none');
+				}
+			})
+
+	// 동적으로 추가된 tr클릭 => 퀴즈카드 set이동 
+	$(document).on(
+			"click",
+			".userInfo_quizcardTr",
+			function(e) {
+				var check = confirm("해당 퀴즈카드로 이동하시겠습니까?");
+				if (check) {
+					var set_no = $(e.target).parent().find('td').eq(0).text();
+					var email = $("#session_user").val();
+					location.href = 'quizcardBefore.do?set_no=' + set_no
+							+ "&m_email=" + email;
+				} else {
+					return false;
+				}
+	})
+</script>
+<script>
 	const nowDate = new Date().toISOString().substring(0,10);
 	let frontCal;
 	let backCal;
+	
+	/* 페이징 처리와 관려된 이벤ㅌ */ 
+	function page(Paging){
+		var startPage = Paging;
+		var listSize = $("#listSize option:selected").val();
+		// listSize는 10 or 15 or 20의 값이 올 것이다. 
+		var url = "adminMemberList.do?startPage=" + startPage + "&listSize=" + listSize;
+		alert("호출할 URL 확인: " + url);
+		location.href= url;
+	}
+	
+	/*	페이징 박스 내에서의 페이징 이벤트 처리. "이전", "다음", 그리고 페이지넘버값 '*/
+		
+	// 1. "이전" 버튼에 대한 이벤트 정으
+	function fn_prev(page, range, rangeSize, listSize, m_joinpath, m_email, m_nickname, frontCal, backCal){
+		var page = ( (range -2 ) * rangeSize) + 1;
+		var range = range -1 ;
+		var url = "adminMemberList.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize=" + listSize;
+		url = url + "&m_joinpath=" + m_joinpath;
+		url = url + "&m_email=" + m_email;
+		url = url + "&m_nickname=" + m_nickname;
+		url = url + "&frontCal=" + frontCal;
+		url = url + "&backCal=" + backCal;
+		alert("테스트 호출하는 URL 확인: " + url);
+		location.href= url;
+	}
+	
+	// 2. "페이지넘버" 값들에 대한 클릭이벤트 정의
+	function fn_pagination(page, range, rangeSize, listSize, m_joinpath, m_email, m_nickname, frontCal, backCal){
+		console.log("페이징 이벤트 발생");
+		var url = "adminMemberList.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize=" + listSize;
+		url = url + "&m_joinpath=" + m_joinpath;
+		url = url + "&m_email=" + m_email;
+		url = url + "&m_nickname=" + m_nickname;
+		url = url + "&frontCal=" + frontCal;
+		url = url + "&backCal=" + backCal;
+		alert("테스트 호출하는 URL 확인: " + url);
+		location.href= url;
+	}
+	
+	// 3. "다음" 버튼에 대한 이벤트 정의
+	function fn_next(page, range, rangeSize, listSize, m_joinpath, m_email, m_nickanme, frontCal, backCal){
+		console.log("다음 버튼에 대한 클릭이벤트 발생");
+		var page =  parseInt( (range * rangeSize) ) + 1;
+		var range = parseInt( range) + 1;
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		url = url + "&listSize=" + listSize;
+		url = url + "&m_joinpath=" + m_joinpath;
+		url = url + "&m_email=" + m_email;
+		url = url + "&m_nickname=" + m_nickname;
+		url = url + "&frontCal=" + frontCal;
+		url = url + "&backCal=" + backCal;
+		alert("테스트 호출하는 URL 확인: " + url);
+		location.href= url;
+	}
 	
 	// 회원검색 버튼 이벤트 
 	$(".memberSearchBtn").on("click", function(){
@@ -255,8 +677,7 @@
 		url = url + "&m_joinpath=" + joinpath;
 		url = url + "&frontCal=" + frontCal;
 		url = url + "&backCal=" + backCal; 
-		console.log("호출할 최종 URL 값: " + url);
-// 		location.href = url; 
+		location.href = url; 
 	})
 	
 	// 앞뒤 달력에 대한 이벤트를 조정하자.  frontCalendar의 값은 backCalendar보다 높을 수가 없다.
@@ -337,6 +758,11 @@
 	$(function(){
 		// 검색요소의 뒷달력의 기본값을 오늘날짜로 맞춘다. 
 		$(".backCalendar").val(nowDate);
+		$(".m_email").val('');
+		$(".m_nickname").val('');
+		$(".frontCalendar").val('');
+		$(".m_joinpath option[value='ALL']").prop("selected", true);		
+		// 페이지가 리로됭되면 입력값들을 초기화 시킨다. 
 	})
 </script>
 </html>

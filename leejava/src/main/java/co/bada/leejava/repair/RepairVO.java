@@ -12,5 +12,4 @@ public class RepairVO {
 	private String rFdate;			// 유지보수 완료 날짜.
 	private String rStatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
 	private String m_email;			// 유지보수 신청자(기본적으로 관리자 )  ,  외래키로 구성된다.
-	
 }

@@ -142,7 +142,7 @@ public class QuizcardController {
 	@RequestMapping(value = "/quizcardBefore.do" )
 	public String quizcardInfo(HttpServletRequest request, QuizcardVO qvo, Model model,
 			 @RequestParam("set_no") int quizcard_set_no,
-			 @RequestParam("m_email") String m_email) {
+			 @RequestParam(required = false ,value = "m_email") String m_email) {
 		logger.info("=========== view단에서 넘어온 m_email : " + m_email);
 		logger.info("=========== ajax로 넘어온 데이터 세트번호: " + quizcard_set_no);
 		// 총 3개의 쿼리문 결과 보내기(조인문, 댓글갯수, 문제갯수)

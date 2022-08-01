@@ -76,8 +76,8 @@ textarea {
 
 .result_modal_content {
     position: absolute;
-    top: 25%;
-    left: 25%;
+    top: 12%;
+    left: 32%;
     min-width: 700px;
     height: auto;
     z-index: 3;
@@ -180,6 +180,9 @@ textarea {
 	min-width: 100px;
 	width: auto;	
 }
+.answerOpenBtn{
+	display: none;
+}
 #studyHintArea{
 	background-color: whitesmoke;
 	color: black;
@@ -209,6 +212,7 @@ body {
     color: whitesmoke;
     transition: 1s;
 }
+.answerOpenBtn,
 .wrongOpenHintBtn{
 	border-radius: 20px;
     width: auto;
@@ -219,6 +223,7 @@ body {
     border-style: none;
     padding: 10px;
 }
+.answerOpenBtn:hover,
 .wrongOpenHintBtn:hover{
 	cursor: pointer;
     background-color: teal;
@@ -299,11 +304,11 @@ body {
 						</div>
 						<br>
 						<button type="button" class="wrongOpenHintBtn">힌트 확인</button>
+						<button type="button" class="answerOpenBtn">답안 확인</button>
 						<div class="wrongQuestionHint">
 							<h4>힌트</h4>
 							<textarea name="" id="wrongHintArea" cols="50" rows="12" readonly="readonly"></textarea>
 							<br>
-							<button class="wrongHintBtn">닫기</button>
 						</div>
 						<br>
 						<div class="wrongQuestionAnswer">
@@ -659,13 +664,24 @@ body {
 		
 		// 틀린문제 조회 힌트창 열기
 		$(".wrongOpenHintBtn").on("click", function(){
-			$(".wrongQuestionHint").toggle();
+			$(".wrongQuestionHint").css("display", "block");
+			$(".wrongOpenHintBtn").css("display", "none");
+			$(".answerOpenBtn").css("display", "block");
+			$(".wrongQuestionAnswer").css("display", "none");
 		})
 		
-		// 틀린문제 조회 힌트창 닫기
-		$(".wrongHintBtn").on("click", function(){
+		// 답안창 보기 클릭
+		$(".answerOpenBtn").on("click", function(){
 			$(".wrongQuestionHint").css("display", "none");
+			$(".wrongOpenHintBtn").css("display", "block");
+			$(".answerOpenBtn").css("display", "none");
+			$(".wrongQuestionAnswer").css("display", "block");
 		})
+		
+// 		// 틀린문제 조회 힌트창 닫기
+// 		$(".wrongHintBtn").on("click", function(){
+// 			$(".wrongQuestionHint").css("display", "none");
+// 		})
 		
 		// 학습종료 버튼 구현. 
 		$("#studyEndBtn").on("click", function(){

@@ -147,6 +147,9 @@ legend{
 	font-size: 20px;
 	font-weight: bold;
 }
+#quizcardDate{
+	color: teal;
+}
 /* 사용자 정보 조회하는 모달창 */
 .userInfo_modal_container {
     position: fixed;
@@ -240,6 +243,7 @@ legend{
 	color: teal;
 	font-weight: bolder;
 }
+.quizcardMainGoBtn,
 .studyType_modal_container button {
 	border-radius: 20px;
     width: auto;
@@ -250,11 +254,17 @@ legend{
     border-style: none;
     padding: 10px;
 }
+.quizcardMainGoBtn:hover,
 .studyType_modal_container button:hover {
 	cursor: pointer;
     background-color: teal;
     color: whitesmoke;
     transition: 1s;
+}
+.quizcardMainGoBtn{
+	height: auto;
+	width: auto;
+	margin-left: 50px;
 }
 </style>
 </head>
@@ -263,19 +273,20 @@ legend{
 <div class="quizcardInfoWrapper">
         <div class="quizcardInfo">
             <h1>${qvo.quizcard_set_name }</h1>
-            <p>
-                <span id="category"><b>카테고리</b> -  ${qvo.quizcard_category }</span>&nbsp;&nbsp;
-                <span><b>문제유형</b> - ${qvo.quizcard_type }</span>&nbsp;&nbsp;&nbsp;
-                <br>
-                <label for="bookmark"><b>즐겨찾기 여부</b></label>
-                <a id="starClick" class="beforeA bookmark">
-                	<i id="addStar" class="fa-solid fa-star add" ></i>
-                	<i id="emptyStar" class="fa-regular fa-star empty"></i>
-                </a>
-                <br>
-                <label for="quizcardDate" class="quizcardDate"><b>생성 날짜/마지막 업데이트</b></label>
-                <span id="quizcardDate"class="quizcardDate">${qvo.quizcard_set_cdate } / ${qvo.quizcard_set_udate }</span>
-            </p>
+	            <p>
+	                <span id="category"><b>카테고리</b> -  ${qvo.quizcard_category }</span>&nbsp;&nbsp;
+	                <span><b>문제유형</b> - ${qvo.quizcard_type }</span>&nbsp;&nbsp;&nbsp;
+	                <br>
+	                <label for="bookmark"><b>즐겨찾기 여부</b></label>
+	                <a id="starClick" class="beforeA bookmark">
+	                	<i id="addStar" class="fa-solid fa-star add" ></i>
+	                	<i id="emptyStar" class="fa-regular fa-star empty"></i>
+	                </a>
+	                <br>
+	                <label for="quizcardDate" class="quizcardDate"><b>생성 날짜/마지막 업데이트</b></label>
+	                <span id="quizcardDate"class="quizcardDate">${qvo.quizcard_set_cdate } / ${qvo.quizcard_set_udate }</span>
+	           		<button type="button" class="quizcardMainGoBtn">돌아가기</button>
+	            </p>
         </div>
         <div class="quizcardQuestion">
             <div class="questionNameBox">
@@ -291,8 +302,8 @@ legend{
                 <button id="quizcardStartBtn">학습하기</button>
                 <input type="hidden" id="dataInput" data-setno="${qvo.quizcard_set_no }" data-questioncount="${quizcardQuestionCount }">
                 <c:if test="${session_user eq qvo.m_email }">
-				<button id="updateQuizcardBtn">수정 / 단어추가</button>
-			</c:if>
+					<button id="updateQuizcardBtn">수정 / 단어추가</button>
+				</c:if>
             </div>
         </div>
         <br>
@@ -559,6 +570,12 @@ legend{
 	})
 </script>
 <script>
+	// 이전 퀴즈카드 메인페이지로 돌아가는 이벤트 버튼
+	$(".quizcardMainGoBtn").on('click', function(){
+		alert("메인 페이지로 이동합니다.");
+		location.href = "quizcard.do";
+	})
+
 	// 학습모드 선택 모달창 활성화
 	$("#quizcardStartBtn").on("click", function(){
 		$(".studyType_modal_container").css("display", "block");

@@ -9,7 +9,6 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
 .mainSearchWrapper {
-	margin-left: 10%;
 	margin-top: 10%;
 }
 .searchTh {
@@ -39,7 +38,7 @@ tr > td {
 	cursor: pointer;
 }
 .noticeListTr:hover {
-	background-color: #F0FFF0;
+	background-color: lightgray;
 }
 .noticeListTitleTd {
 	text-overflow: ellipsis;
@@ -63,15 +62,15 @@ input[type="checkbox"]{
 	margin-top: 2%;
 	text-align: center;
 	border-collapse: collapse;
-	border: 1px solid #05AA6D; 
+	border: 1px solid #313348; 
 }
 .noticeSearchTable tr{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 }
 .noticeSearchTable th{
 	font-size: 18px;
 	height: 30px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #313348;
 	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -79,9 +78,9 @@ input[type="checkbox"]{
 	font-weight: 900;
 }
 .noticeSearchTable td{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 	height: 20px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #313348;
 	padding: 5px;
 }
 #n_category,
@@ -94,7 +93,7 @@ input[type="checkbox"]{
 }
 #n_category,
 .noticeSearchTable input{
-	border-bottom: 0.5px dashed #05AA6D;
+	border-bottom: 0.5px dashed #313348;
 }	
 /*	***********************  */ 
 /* 공지사항 리스트 테이블 디자인*/
@@ -102,29 +101,29 @@ input[type="checkbox"]{
 	margin-top: 2%;
 	text-align: center;
 	border-collapse: collapse;
-	border: 1px solid #05AA6D; 
+	border: 1px solid #313348; 
 }
 .noticeListTableThTr{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 }
 .noticeListTable th{
 	font-size: 18px;
 	height: 30px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #313348;
 	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
 	height: 30px;
 	font-weight: 900;
-}
+  }
 .noticeListTable td{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 	height: 20px;
 	border-left: 1px solid #05AA6D;
 	padding: 5px;
 }
 .noticeListTable a{
-	color: #05AA6D;
+	color: #313348;
 	font-weight: bold;
 }
 .active a{
@@ -140,14 +139,14 @@ input[type="checkbox"]{
 	padding: 5px;
 	width: auto;
 	height: auto;
-	color: 	#05AA6D;
-	background-color: whitesmoke;
+	color:  whitesmoke;
+	background-color: #313348;
 	font-weight: 900;
 }
 .mainSearchWrapper button:hover {
 	cursor: pointer;
-	background-color: #05AA6D;
-	color: whitesmoke;
+	background-color: whitesmoke;
+	color: #313348;
 	transition: 0.5s;
 }
 .noticeListTable button{
@@ -183,8 +182,6 @@ input[type="checkbox"]{
 <body>
 	<div class="adminNoticeList_wrapper">
 		<div class="mainSearchWrapper">
-			<h3>공지사항 관리</h3>
-			<br>
 			<!--검색 공간이 들어가야 하는 곳. ( 검색항목: 카테고리, 제목, 내용, 작성일자  )-->
 				<div class="noticeSearch" align="center">
 					<table class="noticeSearchTable">
@@ -223,8 +220,8 @@ input[type="checkbox"]{
 			<hr>
 			<br>
 			<!---------------실질적인 공지사항 리스트들의 목록 --------------------->
-			<div class="noticeListWrapper">
-				<h3>공지사항 리스트</h3>
+			<div class="noticeListWrapper" align="center">
+				<h2>공지사항 리스트</h2>
 				<c:choose>
 					<c:when test="${pagination.listCnt lt pagination.end }">
 						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
@@ -394,7 +391,6 @@ input[type="checkbox"]{
 		url = url + "&n_category=" + $('#n_category').val();
 		url = url + "&n_content=" + $('#n_content').val();
 		url = url + "&n_writer=" + $('#n_writer').val();
-		alert("테스트 alert. 정상적으로 넘겨지는 url 값: " +  url);
 		console.log("전달되는 값들 목록: " + $('#n_title').val() + ", " + $('#n_category').val() +  ", " + $('#n_content').val() + ", " + $('#n_writer').val());
 		location.href = url;
 	});

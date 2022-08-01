@@ -193,12 +193,12 @@ resultType="co.bada.leejava.member.MemberVO">
 		FROM MEMBER M INNER JOIN JOINTERMS J
 					ON M.M_EMAIL = J.M_EMAIL	
 		<trim prefix="where" prefixOverrides="and | or">
-			<if test="m_joinpath !='ALL' ">AND M.M_JOINPATH LIKE '%'||#{m_joinpath}||'%'</if>	
-			<if test="m_email != null ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
-			<if test="m_nickname != null ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
-			<if test="frontCal != null and backCal != null ">
-				AND M.M_JOINDATE BETWEEN REPLACE(#{frontCal},'-','/') AND REPLACE(#{backCal},'-','/') 
-			</if>			
+				<if test="m_joinpath !='ALL' ">AND M.M_JOINPATH LIKE '%'||#{m_joinpath}||'%'</if>	
+				<if test="m_email != null and m_email !=''  ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+				<if test="m_nickname != null and m_nickname != '' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+				<if test="frontCal != null and frontCal != '' and backCal != null and  backCal != '' ">
+					AND M.M_JOINDATE BETWEEN REPLACE(#{frontCal},'-','/') AND REPLACE(#{backCal},'-','/') 
+				</if>		
 		</trim>
 </select>
 
@@ -212,9 +212,9 @@ resultType="co.bada.leejava.member.MemberVO">
 					ON M.M_EMAIL = J.M_EMAIL			
 				<trim prefix="where" prefixOverrides="and | or">
 					<if test="m_joinpath !='ALL' ">AND M.M_JOINPATH LIKE '%'||#{m_joinpath}||'%'</if>	
-					<if test="m_email != null ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
-					<if test="m_nickname != null ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
-					<if test="frontCal != null and backCal != null ">
+					<if test="m_email != null and m_email !=''  ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+					<if test="m_nickname != null and m_nickname != '' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+					<if test="frontCal != null and frontCal != '' and backCal != null and  backCal != '' ">
 						AND M.M_JOINDATE BETWEEN REPLACE(#{frontCal},'-','/') AND REPLACE(#{backCal},'-','/') 
 					</if>		
 				</trim>

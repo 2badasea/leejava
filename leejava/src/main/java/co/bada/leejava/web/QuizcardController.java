@@ -35,7 +35,6 @@ public class QuizcardController {
 			,@RequestParam(required = false) String quizcard_set_name
 			,@RequestParam(required = false) String m_nickname
 			,Search svo) throws Exception {
-		
 		// 지금 전달하는 svo는 아무런 값이 들어있지 않은 svo객체의 필드값들이다.
 			// 페이징박스(prev, 페이지넘버, next 버튼의 이벤트 파라미터로 사용된다. 검색항목이3개니, 총 9개 "serrch"값 정의)
 		model.addAttribute("search", svo);

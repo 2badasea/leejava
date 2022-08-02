@@ -107,7 +107,8 @@ public class HomeController {
 				session.setAttribute("session_user", email);
 				session.setAttribute("session_nickname", nickname);
 				logger.info("===============세션에 담은 이메일: " + email + ", 그리고 닉네임" + nickname);
-				responseText = "YES";
+				// 로그인을 했는데, 계정이 관리자라면 바로 관리자화면으로 간다.
+				responseText = mstatus;  
 			} else {
 				// salt값은 있는데, 암호화한 비밀번호가 틀리 경우
 				responseText = "NO";

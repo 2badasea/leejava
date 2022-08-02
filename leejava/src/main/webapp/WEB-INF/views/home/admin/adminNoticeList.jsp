@@ -28,12 +28,6 @@ tr > td {
 .noticeListBtns button { 
 	margin-right: 10px;
 }
-#noticeNumber {
-	width: 50px;
-	border: none;
-	text-align: center;
-	
-}
 .noticeListTitleTd:hover{
 	cursor: pointer;
 }
@@ -190,7 +184,7 @@ input[type="checkbox"]{
 							<td style="width: 200px">
 								<input type="text" id="n_title" class="searchInput" placeholder="제목을 입력해주세요."></td>
 							<th class="searchTh">내용</th>
-							<td style="width: 400px">
+							<td style="width: 300px">
 								<input type="text" id="n_content" class="searchInput" placeholder="내용을 입력해주세요.">
 							</td>
 						</tr>

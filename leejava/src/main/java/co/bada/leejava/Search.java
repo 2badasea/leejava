@@ -101,7 +101,7 @@ public class Search extends Paging {
 	private String rWdate;			// 작성날짜
 	private String rFdate;			// 유지보수 완료 날짜.
 	private String rStatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
-
+	private String rGrade;			// 유지보수 우선순위 
 	// ======================================================================
 
 }	

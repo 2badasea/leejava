@@ -496,11 +496,13 @@
 
 	// 로그인 처리 시작
 	$("#loginBtn").on("click", function() {
-		alert("로그인 처리 시작");
-
 		var email = $("#email").val();
 		var password = $("#password").val();
 		var url = $("#login_url").val();
+		// 로그인창에서 로그인창으로 가는 것 방지.
+		if(url == "http://localhost:8000/leejava/loginPage.do"){
+			url = "home.do";
+		}
 		console.log("url확인: " + url);
 		if (email == "" || password == "") {
 			alert("아이디 또는 비밀번호를 제대로 입력하세용");
@@ -519,8 +521,13 @@
 					$("#password").val('').focus();
 
 				} else {
-					alert("로그인 성공");
-					location.href = url; // request.getHeader()값으로 url명시. 
+					if(responseText === "ADMIN"){
+						alert("관리자님 반값습니다. 일좀 하세요.");
+						location.href= "adminPage.do";
+					} else {
+						alert("로그인 성공");
+						location.href = url; // request.getHeader()값으로 url명시. 
+					}
 				}
 			}
 		})

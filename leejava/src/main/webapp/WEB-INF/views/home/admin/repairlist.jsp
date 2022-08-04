@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <title>페이지 유지보수 리스트 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style type="text/css">
 /* ********** 공통 ***************/
 .repairList_wrapper textarea{
@@ -136,21 +137,25 @@
 }
 /*  유지보수 리스트 등록하는 폼 디자인 끝나면 다시 block으로 */ 
 .repairSearch{
-	margin-left: 20%;
+	margin-left: 25%;
+	display: none;
 }
 /*	유지보수 작성 폼 디자인 */
 .repairForm{
-	margin-left: 20%;
+	margin-left: 25%;
 	border: 0.5px solid #313348;
 	border-radius: 20px;
 	width: 40%;
 	min-height: 200px;
 	height: auto;
 	padding: 10px;
- 	display: none;   
+ 	display: display;   
+}
+.repairFormOpenBtn{
+	display: none;
 }
 .repairSearchOpenBtn{
-	display: none;
+	display: block;
 }
 .repairForm input{
 	border-style: none;
@@ -158,8 +163,30 @@
 .repairForm span{
 		
 }
+textarea:focus, 
 .repairForm input:focus {
-	outline-color: #313348;	
+	outline-color: #6482B9;	
+}
+.rcontentLabel:hover{
+	cursor: pointer;
+}
+.rcontentInput{
+	display: none;
+}
+.minusicon{
+	display: none;
+}
+.repairFormBtns{
+	margin-top: 10px;
+}
+.show{
+	display: block;
+}
+.hidden{
+	display: none;
+}
+.rcontentLabel{
+	
 }
 </style>
 </head>
@@ -177,24 +204,30 @@
 	            <div class="repairFormHeader">
 	                <!--들어가는 요소 글번호, 중요도, 카테고리, 우선순위   -->
 	                <label for="repairNo">No</label>
-	                <input type="text" id="repairNo" class="rnoInput" value="">
+	                <input type="text" id="repairNo" class="rnoInput" value="" readonly="readonly">
+	                <div style="display: inline; margin-left: 50px;">
+	                    <label for="rwdate" style="font-size: small;">작성일</label>   
+	                    <span class="rwdate" style="font-size: small;"></span>
+	                    <label for="rfdate" style="font-size: small;">완료일</label>   
+	                    <span class="rfdate" style="font-size: small;">/ - </span>
+	                </div>
 	                <br>
-	                <label for="rCategory">분류</label>
-	                <select id="rCategory" class="rCategoryInput">
+	                <label for="rcategory">분류</label>
+	                <select id="rcategory" class="rcategoryInput">
 	                    <option value="ALL" selected>선택</option>
 	                    <option value="ADMIN" >관리자</option>
 	                    <option value="QUiZCARD">퀴즈카드</option>
 	                    <option value="USER">사용자</option>
 	                </select>
-	                <label for="rGrade">중요도</label>
-	                <select id="rGrade" class="rGradeInput">
+	                <label for="rgrade">중요도</label>
+	                <select id="rgrade" class="rgradeInput">
 	                    <option value="ALL" selected>분류</option>
 	                    <option value="A">상</option>
 	                    <option value="B">중</option>
 	                    <option value="C">하</option>
 	                </select>
-	                <label id="rStatus">진행상황</label>
-	                <select id="rStatus" class="rStatusInput">
+	                <label id="rstatus">진행상황</label>
+	                <select id="rstatus" class="rstatusInput">
 	                    <option value="ALL" selected>시작전</option>
 	                    <option value="FIXING">진행중</option>
 	                    <option value="FIXED">완료</option>
@@ -203,18 +236,17 @@
 	                <input type="text" id="m_email" class="m_emailInput" value="" readonly="readonly">
 	            </div>
 	            <div class="repairFormTitle" >
-	                <label for="rTitle">제목</label>
-	                <input type="text" id="rTitle" class="rTitleInput" placeholder="제목을 입력해주세요" maxlength="20" style="min-width: 150px;">
-	                <div class="addInfo" style="display: inline;">
-	                    <label for="repairDate">작성일/완료일</label>   
-	                    <span class="rWdate" ></span>
-	                    <span class="rFdate">/ - </span>
-	                </div>
+	                <label for="rtitle">제목</label>
+	                <input type="text" id="rtitle" class="rtitleInput" placeholder="제목을 입력해주세요" maxlength="20" style="min-width: 150px;">
 	            </div>
 	            <div class="repairFormContent">
-	                <label for="repairContent">상세 내용</label>
+	                <label for="repairContent" class="rcontentLabel">
+	                	상세 내용 입력
+	                	 <i class="fa-solid fa-circle-plus plusicon" ></i>
+		                <i class="fa-solid fa-circle-minus minusicon"></i>
+	                </label>
 	                <br>
-	                <textarea name="" id="repairContent" class="rContentInput" cols="30" rows="4"></textarea>
+	                <textarea name="" id="repairContent" class="rcontentInput" cols="30" rows="4"></textarea>
 	            </div>
 	        <div class="repairFormBtns">
 	            <button type="button" class="repairFormBtn">Enroll</button>
@@ -227,27 +259,27 @@
    			$(".repairFormBtn").on("click", function(){
    				console.log("등록 버튼 클릭");
    				var m_email = $(".adminPageHiddenInput").data('user');
-   				var rCategory = $(".rCategoryInput").val();
-   				var rTitle = $(".rTitleInput").val();
-   				var rContent = $(".rContentInput").val();
-   				var rStatus = $(".rStatusInput").val();
-   				var rGrade = $('.rGradeInput').val();
-   				if(rTitle === "" || rContent === ""){
+   				var rcategory = $(".rcategoryInput").val();
+   				var rtitle = $(".rtitleInput").val();
+   				var rcontent = $(".rcontentInput").val();
+   				var rstatus = $(".rstatusInput").val();
+   				var rgrade = $('.rgradeInput').val();
+   				if(rtitle === "" || rcontent === ""){
    					alert("제목 또는 내용은 반드시 입력하셔야 합니다.");
    					return false;
    				}
    				var data = {
    						m_email : m_email,
-   						rcategory : rCategory,
-   						rtitle : rTitle,
-   						rcontent : rContent,
-   						rstatus : rStatus, 
-   						rgrade : rGrade 
+   						rcategory : rcategory,
+   						rtitle : rtitle,
+   						rcontent : rcontent,
+   						rstatus : rstatus, 
+   						rgrade : rgrade 
    				};
    				console.log("데이터 조회!"); // view단에서 보내는 데이터는 6개. 나머지느 DB상에서 처리를 한다. 
    				console.log(data);
    				console.log(JSON.stringify(data));
-   				$.ajax({
+   				$.ajax({ 
    					url: "repairList.do",
    					type: "POST",
    					dataType: "text",
@@ -255,12 +287,25 @@
    					data: JSON.stringify(data),
    					success: function(message){
    						console.log("호출 성공");
-   						console.log(message);
+   						alert(message);
+   						location.reload();
    					},
    					erorr: function(){
    						console.log("호출 실패");
    					}
    				})
+   			})
+   			
+   			$(".rcontentLabel").on("click", function(){
+   				if($('.rcontentInput').is(":visible")){
+   					$(".rcontentInput").css("display", "none");
+   					$(".plusicon").css("display", "inline");
+   					$('.minusicon').css("display", "none");
+   				} else {
+   					$(".rcontentInput").css("display", "block");
+   					$(".plusicon").css("display", "none");
+   					$('.minusicon').css("display", "inline");
+   				}
    			})
    		</script>
    		

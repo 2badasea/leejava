@@ -102,6 +102,7 @@ public class Search extends Paging {
 	private String rfdate;			// 유지보수 완료 날짜.
 	private String rstatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
 	private String rgrade;			// 유지보수 우선순위 
+	private String rtimeorder;		// 유지보수 게시판= => 시간순서에 대한 필드값(DB에 저장되는 값은 아님)
 	// ======================================================================
 
 }	

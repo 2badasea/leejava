@@ -24,11 +24,16 @@ public class RepairRestController {
 	
 	@PostMapping(value = "repairList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> repairList(@RequestBody RepairVO rvo){
-		logger.info("rvo값 조회: " + rvo);
-		
-		String message = "YES";
-		return new ResponseEntity<String> (message , HttpStatus.OK);
-		
+		logger.info("view단에서 넘어온 rvo값 조회: " + rvo);
+		int n = repairDao.repairInsert(rvo);
+		String message = "";
+		if(n != 1) {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		} else {
+			message = "YES";
+			return new ResponseEntity<String> (message , HttpStatus.OK);
+		}
 //		return ResponseEntity.ok().body(rvo); => 리턴타입만 바꾸면 이렇게도 리턴이 가능하다.
 	}
 	

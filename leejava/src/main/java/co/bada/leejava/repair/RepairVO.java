@@ -13,4 +13,5 @@ public class RepairVO {
 	private String rstatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
 	private String m_email;			// 유지보수 신청자(기본적으로 관리자 )  ,  외래키로 구성된다.
 	private String rgrade;			// 유지보수 우선순위 상중하 = radio버튼으로 구현하는 게 맞을까?
+	private String rtimeorder; 		// 시간순서에 관한 값. => 디비에 저장되는 값은 아니다.
 }

@@ -15,5 +15,11 @@ public class RepairServiceImpl implements RepairService {
 		// TODO Auto-generated method stub
 		return map.getRepairListCnt(svo);
 	}
+
+	@Override
+	public int repairInsert(RepairVO rvo) {
+		// TODO Auto-generated method stub
+		return map.repairInsert(rvo);
+	}
 	
 }

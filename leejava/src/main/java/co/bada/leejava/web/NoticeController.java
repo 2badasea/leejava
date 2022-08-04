@@ -396,7 +396,7 @@ public class NoticeController {
 	// 공지사항 선택 삭제
 	@ResponseBody
 	@RequestMapping("/ajaxNoticeSelectDelete.do")
-	public String ajaxNoticeSelectDelete(Model model, HttpServletRequest request, NoticeVO nvo
+	public String ajaxNoticeSelectDelete(NoticeVO nvo
 			// ajax를 통해서 받은 배열형태의 데이터 => List형 자료구조에 담는다. 그리고 각 데이터는 String타입. 
 			,@RequestParam("checkedArray[]") List<String> checkedArray) {
 		logger.info("==============삭제할 글번호(data-value) 값들이 담긴 List형 배열 checkArray : " + checkedArray);

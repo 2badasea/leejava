@@ -95,13 +95,13 @@ public class Search extends Paging {
 	
 	// Repair 유지보수 관리 테이블
 	private int rno;				// 글번호  
-	private String rCategory;		// 카테고리(게시판 영역 select태그로 모든 페이지 선택) 
-	private String rTitle;			// 제목 
-	private String rContent;		// 내용
-	private String rWdate;			// 작성날짜
-	private String rFdate;			// 유지보수 완료 날짜.
-	private String rStatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
-	private String rGrade;			// 유지보수 우선순위 
+	private String rcategory;		// 카테고리(게시판 영역 select태그로 모든 페이지 선택) 
+	private String rtitle;			// 제목 
+	private String rcontent;		// 내용
+	private String rwdate;			// 작성날짜
+	private String rfdate;			// 유지보수 완료 날짜.
+	private String rstatus; 		// 유지보수 진행상황 ( 완료(초록)/ 진행중(노란색/ 시작전(회색 또는 빨강)() 
+	private String rgrade;			// 유지보수 우선순위 
 	// ======================================================================
 
 }	

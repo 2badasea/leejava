@@ -30,6 +30,7 @@
 .repairSearch{
 	padding-right: 15%;
 }
+.repairFormBtns button,
 .repairSearchWrapper button{
 	border-radius: 20px;
 	border-style: none;
@@ -40,6 +41,7 @@
 	background-color: #313348;
 	font-weight: 900;
 }
+.repairFormBtns button:hover,
 .repairSearchWrapper button:hover {
 	cursor: pointer;
 	background-color: whitesmoke;
@@ -111,7 +113,8 @@
 }
 
 .repairListTr:hover{
-	background-color: lightgray;
+	background-color: #B8D7FF;
+	
 }
 
 .repairListTableThTr{
@@ -137,16 +140,14 @@
 }
 /*  유지보수 리스트 등록하는 폼 디자인 끝나면 다시 block으로 */ 
 .repairSearch{
-	margin-left: 25%;
 	display: none;
+	padding-right: 100px;
 }
 /*	유지보수 작성 폼 디자인 */
 .repairForm{
-	margin-left: 25%;
 	border: 0.5px solid #313348;
 	border-radius: 20px;
-	width: 40%;
-	min-height: 200px;
+	width: 50%;
 	height: auto;
 	padding: 10px;
  	display: display;   
@@ -172,72 +173,366 @@ textarea:focus,
 }
 .rcontentInput{
 	display: none;
+	margin-bottom: 10px;
 }
 .minusicon{
 	display: none;
 }
-.repairFormBtns{
-	margin-top: 10px;
-}
 .show{
 	display: block;
-}
+} 
 .hidden{
 	display: none;
 }
-.rcontentLabel{
-	
+.repairFormSearchBtns {
+	margin-top: 30px;
 }
+.repairListTable td{
+	border-left: 1px solid #313348;
+}
+.repairFormHeader,
+.repairFormTitle{
+	border-bottom: 0.1px dotted lightgray;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.repairSearchWrapperTop{
+	margin-top: 5%;
+	margin-left: 20%; 
+}
+.rtitleInput{
+	width: 80%;
+	font-weight: 700;
+	font-size: medium;
+	padding: 5px;
+	margin-left: 10px;
+}
+.repairListTitleTd:hover{
+	cursor: pointer;
+}
+.repairListTitleTd{
+	font-weight: 700;
+	color: teal;
+}
+.repairFormHeader {
+	display: flex;
+	justify-content: space-around;
+}
+/* **********	유지보수 게시글 rowdatㅁ 조회 모달창 디자인 ******* */
+   .repair_modal_container {
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+        width: 100%;
+        height: 100vh;
+        display: none;
+        z-index: 1;
+    }
+
+    .repair_modal_content {
+        position: absolute;
+        top: 30%;
+        left: 20%;
+        width: 35%;
+        height: auto;
+        z-index: 3;
+        background-color: white;
+        border: 0.5px solid #313348;
+        border-radius: 30px;
+        padding: 20px;
+    }
+
+    .repair_modal_layer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        background-color: gray;
+        opacity: 0.5;
+        transition: 2s;
+    }
+    .model_rtitleInput{
+    width: 80%;
+    font-weight: 700;
+    font-size: medium;
+    padding: 5px;
+    margin-left: 10px;
+    color: teal;
+    }
+
+    .model_repairForm{
+    border: 0.5px solid #313348;
+    border-radius: 20px;
+    width: 97%;
+    height: auto;
+    padding: 10px;
+    display: display;   
+    }
+    .model_repairForm label{
+        font-weight: 900;
+    }
+    .model_repairForm input{
+        border-style: none;
+    }
+    textarea:focus, 
+    .model_repairForm input:focus {
+        outline-color: #6482B9;	
+    }
+    .model_rcontentInput{
+        margin-bottom: 10px;
+        color: teal;
+    }
+    .model_repairForm textarea{
+        resize: vertical;
+        border-radius: 20px;
+        padding: 15px;
+        font-weight: 800;
+        font-size: large;
+        width: 95%;    
+    }
+    .repairModelCloseBtn {
+    	margin-left: 15px;
+    	min-width: 80px;
+    	width: auto;
+    }
+    .repairUpdateBtn{
+    	min-width: 100px;
+    	width: auto;
+    }
+    .model_m_emailInput, 
+    .rnoInput{
+    	text-align: center;
+    	font-weight: 600;
+    	font-size: medium;
+    	width: 100px;
+    	color: teal;
+    }
+    
+    .repairListBtns{
+    	margin-left: 40%;
+    }
+    .repairListDiv input[type='checkbox']{
+    	width: 20px;
+    	height: 20px;
+    }
 </style>
 </head>
 <body>
-<div class="repairList_wrapper">
-    <!-- 검색요소 중에 입력해야 할 요소가 있나>? 카테고리(selectbox), 제목 내용, 진행상태, 기간? -->
-   <div class="repairSearchWrapper">	
-   		<div class="repairForm&SearchBtns">
-	   		<button class="repairFormOpenBtn">유지보수 사항 추가</button>
-	   		<button class="repairSearchOpenBtn">유지보수 리스트 검색</button>
-   		</div>
-   		<!-- 유지보수 입력창을 호출하는 폼을 호출한다. --> 
-   		<form id="frm">
-   		<div class="repairForm">
-	            <div class="repairFormHeader">
+<!-- 유지보수 게시판 개별 데이터 조회 모달창  -->
+    <!--유지보수 개별 리스트 조회하는 모달창-->
+     <div class="repair_modal_container">
+        <div class="repair_modal_content">
+                <!-- 여기가 대입한 공간 -->
+        <div class="model_repairForm">
+   			<form id="frm">
+	            <div class="model_repairFormHeader">
 	                <!--들어가는 요소 글번호, 중요도, 카테고리, 우선순위   -->
 	                <label for="repairNo">No</label>
 	                <input type="text" id="repairNo" class="rnoInput" value="" readonly="readonly">
 	                <div style="display: inline; margin-left: 50px;">
 	                    <label for="rwdate" style="font-size: small;">작성일</label>   
-	                    <span class="rwdate" style="font-size: small;"></span>
-	                    <label for="rfdate" style="font-size: small;">완료일</label>   
-	                    <span class="rfdate" style="font-size: small;">/ - </span>
+	                    <label for="rfdate" style="font-size: small;">/ 완료일 :</label>   
+	                    <span id="rwdate" class="model_rwdate" style="font-size: small;"></span>
+	                    <span id="rfdate" class="model_rfdate" style="font-size: small; color: tomato;"></span>
 	                </div>
 	                <br>
-	                <label for="rcategory">분류</label>
-	                <select id="rcategory" class="rcategoryInput">
+	                <label for="model_rcategory">카테고리</label>
+	                <select id="model_rcategory" class="model_rcategoryInput">
 	                    <option value="ALL" selected>선택</option>
 	                    <option value="ADMIN" >관리자</option>
 	                    <option value="QUiZCARD">퀴즈카드</option>
 	                    <option value="USER">사용자</option>
 	                </select>
-	                <label for="rgrade">중요도</label>
-	                <select id="rgrade" class="rgradeInput">
+	                <label for="model_rgrade">중요도</label>
+	                <select id="model_rgrade" class="model_rgradeInput">
 	                    <option value="ALL" selected>분류</option>
 	                    <option value="A">상</option>
 	                    <option value="B">중</option>
 	                    <option value="C">하</option>
 	                </select>
-	                <label id="rstatus">진행상황</label>
-	                <select id="rstatus" class="rstatusInput">
+	                <label id="model_rstatus">진행상황</label>
+	                <select id="model_rstatus" class="model_rstatusInput">
 	                    <option value="ALL" selected>시작전</option>
 	                    <option value="FIXING">진행중</option>
 	                    <option value="FIXED">완료</option>
 	                </select>
-	                <label for="m_email">작성자</label>
-	                <input type="text" id="m_email" class="m_emailInput" value="" readonly="readonly">
+	                <label for="model_m_email">작성자</label>
+	                <input type="text" id="model_m_email" class="model_m_emailInput" value="" readonly="readonly">
+	            </div>
+	            <div class="model_repairFormTitle" >
+	                <label for="model_rtitle">제목</label>
+	                <input type="text" id="model_rtitle" class="model_rtitleInput" placeholder="제목을 입력해주세요(최대 25자)" maxlength="25" style="min-width: 150px;">
+	            </div>
+	            <div class="model_repairFormContent">
+	                <label for="model_repairContent" class="model_rcontentLabel">
+	                	상세 내용
+	                </label>
+	                <br>
+	                <textarea name="" id="model_repairContent" class="model_rcontentInput" cols="30" rows="4"></textarea>
+	            </div>
+   			</form>
+		    <div class="repairFormBtns" style="display: flex; justify-content: flex-end; border: 3%; margin-right: 5%;">
+		      <button type="button" class="repairUpdateBtn">수정 하기</button>
+              <button type="button" class="repairModelCloseBtn">닫기</button>
+	        </div>
+   		</div>
+        </div> <!-- repair_model_content 영역 끝. -->
+        <div class="repair_modal_layer"></div>
+    </div> 
+<script>
+	// selectbox의 항목은 개별적으로 바로 업데이트 되도록 하고, 제목과 내용의 경우 "수정완료"를 눌러야 변경되도로고 한다. 
+	// 그리고 변경된 사항이 있으면 button의 value값에 1을 줄 것이고, 닫기를 클릭할 때, 해당 버튼의 value값에 따라 새로고침 유무를 결정한다.
+	
+	// 카테고리 업데이트
+	$(".model_rcategoryInput").on("change", function(){
+		console.log("선택한 값: " + $(this).val());
+		console.log("글번호 값: " + $('.rnoInput').val());
+		var rcategory = $(this).val();
+		var rno = $('.rnoInput').val();
+		// rest api 방식으로 업데이트 가능. 
+		var data = {
+				rcategory : rcategory,
+				rno : rno
+		};
+		$.ajax({
+			url: "repairListUpdate.do",
+			data: JSON.stringify(data),
+			type: "PUT",
+			dataType: "text",
+			contentType: "application/json; charset=utf-8",
+			success: function(message){
+				console.log("호출 성공");
+				alert(message);
+				if(message !== "실패"){
+					$(".repairModelCloseBtn").val('new');
+				}
+			},
+			error: function(){
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	// 중요도 업데이트
+	$(".model_rgradeInput").on("change", function(){
+		console.log("선택한 값: " + $(this).val());
+		console.log("글번호 값: " + $('.rnoInput').val());
+		var rgrade = $(this).val();
+		var rno = $('.rnoInput').val();
+		// rest api 방식으로 업데이트 가능. 
+		var data = {
+				rgrade : rgrade,
+				rno : rno
+		};
+		$.ajax({
+			url: "repairListUpdate.do",
+			data: JSON.stringify(data),
+			type: "PUT",
+			dataType: "text",
+			contentType: "application/json; charset=utf-8",
+			success: function(message){
+				console.log("호출 성공");
+				alert(message);
+				if(message !== "실패"){
+					$(".repairModelCloseBtn").val('new');
+				}
+			},
+			error: function(){
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	// 진행상황 업데이트
+	$(".model_rstatusInput").on("change", function(){
+		console.log("선택한 값: " + $(this).val());
+		console.log("글번호 값: " + $('.rnoInput').val());
+		var rstatus = $(this).val();
+		var rno = $('.rnoInput').val();
+		// rest api 방식으로 업데이트 가능. 
+		var data = {
+				rstatus : rstatus,
+				rno : rno
+		};
+		$.ajax({
+			url: "repairListUpdate.do",
+			data: JSON.stringify(data),
+			type: "PUT",
+			dataType: "text",
+			contentType: "application/json; charset=utf-8",
+			success: function(message){
+				console.log("호출 성공");
+				alert(message);
+				if(message !== "실패"){
+					$(".repairModelCloseBtn").val('new');
+				}
+				if(rstatus !== 'FIXED'){
+					$('.model_rfdate').text('');
+				}
+			},
+			error: function(){
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	// 모달창 닫기 이벤트
+	$(".repairModelCloseBtn").on("click", function(){
+		$(".repair_modal_container").css("display", "none");
+		$('body').css("overflow", "unset");
+	})
+	
+	// 외부영역 클릭으로 모달창 닫기
+	$(document).on("click", function(e){
+		if( $(e.target).closest(".repair_modal_content").length === 0 &&  
+			$(e.target).closest(".repairListTr").length === 0 ) {
+				$(".repair_modal_container").css("display", "none");
+				$('body').css("overflow", "unset");
+		}
+	})
+	
+</script> 
+
+<!-- -------  모달창 끝  ------------------->
+
+<div class="repairList_wrapper">
+    <!-- 검색요소 중에 입력해야 할 요소가 있나>? 카테고리(selectbox), 제목 내용, 진행상태, 기간? -->
+  <div class="repairSearchWrapper">	
+   		<!-- 유지보수 입력창을 호출하는 폼을 호출한다. --> 
+	<div class="repairSearchWrapperTop">
+   		<div class="repairForm">
+   			<form id="frm">
+	            <div class="repairFormHeader">
+					<div>
+		                <label for="rcategory">카테고리</label>
+		                <select id="rcategory" class="rcategoryInput">
+		                    <option value="ALL" selected>선택</option>
+		                    <option value="ADMIN" >관리자</option>
+		                    <option value="QUiZCARD">퀴즈카드</option>
+		                    <option value="USER">사용자</option>
+		                </select>
+	                </div>
+	                <div>
+	              		<label for="rgrade">중요도</label>
+	       	     	    <select id="rgrade" class="rgradeInput">
+		                    <option value="ALL" selected>분류</option>
+		                    <option value="A">상</option>
+		                    <option value="B">중</option>
+		                    <option value="C">하</option>
+		                </select>
+	                </div>
+	                <div>
+		                <label id="rstatus">진행상황</label>
+		                <select id="rstatus" class="rstatusInput">
+		                    <option value="ALL" selected>시작전</option>
+		                    <option value="FIXING">진행중</option>
+		                    <option value="FIXED">완료</option>
+		                </select>
+	                </div>
 	            </div>
 	            <div class="repairFormTitle" >
 	                <label for="rtitle">제목</label>
-	                <input type="text" id="rtitle" class="rtitleInput" placeholder="제목을 입력해주세요" maxlength="20" style="min-width: 150px;">
+	                <input type="text" id="rtitle" class="rtitleInput" placeholder="제목을 입력해주세요(최대 20자)" maxlength="20" style="min-width: 150px;">
 	            </div>
 	            <div class="repairFormContent">
 	                <label for="repairContent" class="rcontentLabel">
@@ -248,69 +543,13 @@ textarea:focus,
 	                <br>
 	                <textarea name="" id="repairContent" class="rcontentInput" cols="30" rows="4"></textarea>
 	            </div>
-	        <div class="repairFormBtns">
-	            <button type="button" class="repairFormBtn">Enroll</button>
-	            <button type="button" class="repairFormCloseBtn">Close</button>
+   			</form>
+		    <div class="repairFormBtns" style="display: flex; justify-content: flex-end; border: 3%; margin-right: 5%;">
+		      <button type="button" class="repairFormBtn">등록하기</button>
 	        </div>
    		</div>
-   		</form>
-   		<script>
-   			// 유지보수 사항을 등록하는 이벤트. (이때 등록자는 세션값의 이메일이다 )
-   			$(".repairFormBtn").on("click", function(){
-   				console.log("등록 버튼 클릭");
-   				var m_email = $(".adminPageHiddenInput").data('user');
-   				var rcategory = $(".rcategoryInput").val();
-   				var rtitle = $(".rtitleInput").val();
-   				var rcontent = $(".rcontentInput").val();
-   				var rstatus = $(".rstatusInput").val();
-   				var rgrade = $('.rgradeInput').val();
-   				if(rtitle === "" || rcontent === ""){
-   					alert("제목 또는 내용은 반드시 입력하셔야 합니다.");
-   					return false;
-   				}
-   				var data = {
-   						m_email : m_email,
-   						rcategory : rcategory,
-   						rtitle : rtitle,
-   						rcontent : rcontent,
-   						rstatus : rstatus, 
-   						rgrade : rgrade 
-   				};
-   				console.log("데이터 조회!"); // view단에서 보내는 데이터는 6개. 나머지느 DB상에서 처리를 한다. 
-   				console.log(data);
-   				console.log(JSON.stringify(data));
-   				$.ajax({ 
-   					url: "repairList.do",
-   					type: "POST",
-   					dataType: "text",
-   					contentType: "application/json; charset=utf-8",
-   					data: JSON.stringify(data),
-   					success: function(message){
-   						console.log("호출 성공");
-   						alert(message);
-   						location.reload();
-   					},
-   					erorr: function(){
-   						console.log("호출 실패");
-   					}
-   				})
-   			})
-   			
-   			$(".rcontentLabel").on("click", function(){
-   				if($('.rcontentInput').is(":visible")){
-   					$(".rcontentInput").css("display", "none");
-   					$(".plusicon").css("display", "inline");
-   					$('.minusicon').css("display", "none");
-   				} else {
-   					$(".rcontentInput").css("display", "block");
-   					$(".plusicon").css("display", "none");
-   					$('.minusicon').css("display", "inline");
-   				}
-   			})
-   		</script>
    		
-   		
-   
+	<!-- repairForm, repairSearch 이렇게 두 개 존재  -->   
    		<div class="repairSearch">
 	       <table class="repairSearchTable">
 	           <tr>
@@ -344,6 +583,11 @@ textarea:focus,
 	           <button type="button" class="repairSearchBtn">검색</button>
 	       </div>
        </div>
+        <div class="repairFormSearchBtns" align="center">
+	   		<button class="repairFormOpenBtn">유지보수 사항 추가</button>
+	   		<button class="repairSearchOpenBtn">유지보수 리스트 검색</button>
+   		</div>
+   	</div>  <!-- repairSearchWrapperTop 부분 끝 -->
 		<br>
 		<br>
 		<hr>
@@ -351,38 +595,202 @@ textarea:focus,
   		<!-- 유지보수 리스트 -->
 	   <div class="repairListDiv" align="center">
 	    <!--한 페이지에 몇 개의 rowdate를 출력시킬지에 대한 구성요소-->
-	    
-	    <!--버튼이 들어가는  공간-->
+	    	<div class="repairListBtns">
+	    		<button type="button" class="selectDeleteBtn">선택 삭제</button>
+	    		<button type="button" class="selectFinishBtn">선택 완료</button>
+	    	</div>
 	        <table class="repairListTable">
 	            <tr class="repairListTableThTr">
-	                <th class="listTh">
+	                <th class="listTh" style="width: 30px;">
 	                    <input type="checkbox" class="allCheckBtn">
 	                </th>
 	                <th class="listTh">No.</th>
 	                <th class="listTh">중요도</th>
 	                <th class="listTh">카테고리</th>
-	                <th class="listTh">제목</th>
+	                <th class="listTh" style="width: 350px">제목</th>
 	                <th class="listTh">진행상황</th>
 	                <th class="listTh">작성일/완료일</th>
 	            </tr> 
-<%-- 	            <c:forEach items="" var=""> --%>
+	            <c:forEach items="${repair }" var="repair">
 	            	<tr class="repairListTr">
-		                <td><input type="checkbox" class="subCheckBtn" data-value="${repair.rno}"></td>
+		                <td>
+		                	<input type="checkbox" class="subCheckBtn" data-value="${repair.rno}" 
+		                		data-status="${repair.rstatus }" value="${repair.rno}" data-rgrade="${repair.rgrade }">
+		                </td>
 		                <td>${repair.rno}</td>
-		                <td>${repair.rGrade}</td>
-		                <td>${repair.rCategory}</td>
-		                <td>${repair.rTitle}</td>
-		                <td>${repair.rStatus}</td>
-		                <td>${repair.rWdate} // ${repair.rFdate}</td>
+		                <td>
+		                	<c:choose>
+		                		<c:when test="${repair.rgrade == 'A' }">상</c:when>
+		                		<c:when test="${repair.rgrade == 'B'}">중</c:when>
+		                		<c:when test="${repair.rgrade == 'C' }">하</c:when>
+		                		<c:otherwise>하</c:otherwise>
+		                	</c:choose>
+		                </td>
+		                <td>
+		                	<c:choose>
+		                		<c:when test="${repair.rcategory == 'ALL' }">공통</c:when>
+		                		<c:when test="${repair.rcategory == 'ADMIN'}">관리자</c:when>
+		                		<c:when test="${repair.rcategory == 'QUIZCARD' }">퀴즈카드</c:when>
+		                		<c:when test="${repair.rcategory == 'USER' }">사용자</c:when>
+		                		<c:otherwise>공통</c:otherwise>
+		                	</c:choose>
+		                </td>
+		                <td class="repairListTitleTd">
+		                	${repair.rtitle}
+		                </td>
+		                <td class="repairListStatusTd">
+		           	   	 	<c:choose>
+		                		<c:when test="${repair.rstatus == 'ALL' }">시작전</c:when>
+		                		<c:when test="${repair.rstatus == 'FIXING'}">진행중</c:when>
+		                		<c:when test="${repair.rstatus == 'FIXED' }">완료</c:when>
+		                		<c:otherwise>시작전</c:otherwise>
+		                	</c:choose>
+		                </td>
+		                <td>
+		                	<span style="font-size: small;">${repair.rwdate}</span>  
+		                	<br>
+		                	<c:if test="${repair.rfdate != null }">
+		                		<span style="font-size: small; color: coral;">/ ${repair.rfdate}</span>
+		                	</c:if>
+		                </td>
 		            </tr>
-<%-- 		        </c:forEach> --%>
+		        </c:forEach>
 	        </table>
 		
 		</div>
-   </div>
+  </div>	<!--  repairSearchWrapper 부분 끝 -->
 </div>
 </body>
 <script>
+	//
+
+	// 선택 삭제 구현 
+	$(".selectDeleteBtn").on("click", function(){
+			var checkedLength = $(".subCheckBtn:checked").length;
+			if(checkedLength === 0){
+				alert("선택한 게 없습니다.");
+				return false;
+			}
+			var checkedArray = [];
+			var deleteCheck= confirm("정말 삭제하시겠습니까?");
+			if(!deleteCheck){
+				alert("취소되었습니다.");
+				return false;
+			} else {
+				$(".subCheckBtn:checked").each(function(){
+					checkedArray.push($(this).data('value'));
+				})
+				console.log("배열 확인: " + checkedArray);	
+				$.ajax({
+					url: "repairListcheckedAryDelete.do",
+					dataType : "TEXT",
+					data: {
+						checkedArray : checkedArray
+					},
+					contentType: "application/x-www-form-urlencoded",
+					type: "POST",
+					success: function(text){
+						console.log("호출 성공");
+						alert(text);
+						location.reload();
+					},
+					error: function(){
+						console.log("호출 실패");
+					}
+				})
+				
+			}
+	})
+
+
+	// 선택 완료 업데이트 시킥 => 그전에 우선 체크박스를 통해 체크시킨 게 있는지 체크를 해야 함. 
+	$(".selectFinishBtn").on("click", function(){
+			var checkedLength = $(".subCheckBtn:checked").length;
+			if(checkedLength === 0){
+				alert("선택한 게 없습니다.");
+				return false;
+			}
+			var finishCheck = confirm("확인없이 일괄적으로 완료처리 하시겠습니까?");
+			var checkedAry = [];
+			var rstatus = "FIXED";
+			if(!finishCheck){
+				return false;
+			} else {
+				$(".subCheckBtn:checked").each(function(){
+					checkedAry.push( $(this).data('value') );
+				})
+			}
+			console.log("확인: " + checkedAry);
+			var data = {
+					checkedAry : checkedAry,
+					rstatus : rstatus
+			};
+			// ajax로 처리한다. 
+			$.ajax({
+				url: "repairListcheckedAry.do",
+				type: "POST",
+				dataType: "text",
+				data: data,
+				success: function(message){
+					console.log("호출 성공");
+					console.log(message);
+					var check = confirm("새로고침?");
+					if(check){
+						location.reload();
+					} else {
+						return false;
+					}
+				},
+				erorr: function(){
+					console.log("호출 실패");
+				}
+			})
+	})
+
+	// 리스트르 클릭하면 해당 글의 내용 조회
+	$(".repairListTitleTd").on("click", function(e){
+		console.log("게시글 확인 이벤트 발생");
+		// 우선적으로 모달창부터 활성화 시킨다. 
+		$(".repair_modal_container").css("display", "block");
+		$('body').css("overflow", "hidden");
+		// 글번호르 던져서 해당 값을 가져온다 ajax를 통해
+		var no = $(e.target).closest('tr').children().eq(1).text();
+		console.log("이 라인의 글 번호 확인: " + no);
+		// ajax를 호출한다 (json으로 데이터를 받아서 받아온 데이터를 화면에 노출시킨다. )
+		$.ajax({  	
+			url: "repairList.do",
+			method: "GET",
+			dataType: "JSON",
+			contentType: "application/text; charset=utf-8",
+			data : {
+				rno : no
+			},
+			success: function(data){
+				console.log("호출 성공");
+				console.log(data);
+				$(".rnoInput").val(data.rno);
+				$(".model_rwdate").text(data.rwdate);
+				// 완료일에 대한 데이터가 없는 경우 => 화면에 데이터 뿌리지 않기
+				if( data.rfdate !== null ){  
+					$(".model_rfdate").text(" / " + data.rfdate);
+				};
+				$('.model_m_emailInput').val(data.m_email);
+				$('.model_rtitleInput').val(data.rtitle);
+				$(".model_rcontentInput").val(data.rcontent);
+				$(".model_rcategoryInput").val(data.rcategory);
+				$(".model_rgradeInput").val(data.rgrade);
+				$(".model_rstatusInput").val(data.rstatus);
+			},
+			error: function(){
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	
+	
+	
+	
 	//임시 스크림트 영역. 검색창이랑 등록하는 창 작업 끝나면 => 스크립트 하단으로 내리기
 	$(".repairFormOpenBtn").on("click", function(){
 		console.log("등록하는 폼 호출");
@@ -401,12 +809,91 @@ textarea:focus,
 		$('.repairSearch').css("display", "block");
 		$("#frm")[0].reset();
 	})
+	
+	// 유지보수 사항을 등록하는 이벤트. (이때 등록자는 세션값의 이메일이다 )
+	$(".repairFormBtn").on("click", function(){
+		console.log("등록 버튼 클릭");
+		var m_email = $(".adminPageHiddenInput").data('user');
+		var rcategory = $(".rcategoryInput").val();
+		var rtitle = $(".rtitleInput").val();
+		var rcontent = $(".rcontentInput").val();
+		var rstatus = $(".rstatusInput").val();
+		var rgrade = $('.rgradeInput').val();
+		if(rtitle === "" ){
+			alert("제목은 필수입력 항목입니다.");
+			return false;
+		}
+		var data = {
+				m_email : m_email,
+				rcategory : rcategory,
+				rtitle : rtitle,
+				rcontent : rcontent,
+				rstatus : rstatus, 
+				rgrade : rgrade 
+		};
+		console.log("데이터 조회!"); // view단에서 보내는 데이터는 6개. 나머지느 DB상에서 처리를 한다. 
+		console.log(data);
+		console.log(JSON.stringify(data));
+			$.ajax({ 
+			url: "repairList.do",
+			type: "POST",
+			dataType: "text",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(data),
+			success: function(message){
+				console.log("호출 성공");
+				alert(message);
+				location.reload();
+			},
+			erorr: function(){
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	$(".rcontentLabel").on("click", function(){
+		if($('.rcontentInput').is(":visible")){
+			$(".rcontentInput").css("display", "none");
+			$(".plusicon").css("display", "inline");
+			$('.minusicon').css("display", "none");
+		} else {
+			$(".rcontentInput").css("display", "block");
+			$(".plusicon").css("display", "none");
+			$('.minusicon').css("display", "inline");
+		}
+	})
+	
+	// 체크박스 전체 선택
+	$(".allCheckBtn").on("click", function(){
+		if( $(".allCheckBtn").is(":checked")){
+			$(".subCheckBtn").prop("checked", true);
+		} else {
+			$(".subCheckBtn").prop("checked", false);
+		}
+	})
+	
+	// 체크박스 부분 선택
+	$(".subCheckBtn").on("click", function(){
+		if( $(".allCheckBtn").is(":checked")){
+			$(".allCheckBtn").prop("checked", false);
+		}
+	})
 </script>
 <script>
 	$(document).on("ready", function(){
 		// 유지보수 등록하는 폼에 현재 시각 추가  ( 보여지는 것과 실제 DB에 저장되는 데이터는 다름. )
 		const now = new Date().toISOString().substring(0,10);
 		$(".rWdate").text(now);
+		
+		// status값이 fixed(완료)인 경우 => 해당 게시글의 제목의 스타일을 바꾼다. 
+		$(".subCheckBtn").each(function(){
+			if( $(this).data('status') === 'FIXED'){
+				$(this).closest('tr').find('td').eq(4).css("color", "lightgray").css("text-decoration", "line-through");
+			}
+			if( $(this).data('rgrade') === 'A'){
+				$(this).closest('tr').find('td').eq(2).css('font-size', 'large').css("color", "tomato").css('font-weight', '700');
+			}
+		})
 		
 	})
 </script>

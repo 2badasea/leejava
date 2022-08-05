@@ -1,9 +1,10 @@
 package co.bada.leejava.web;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,8 @@ public class RepairController {
 			, @RequestParam(required = false, defaultValue = "DESC") String rtimeorder // 필드에서 클릭하면 ASC값으로 넘어온다. 
 			, Search svo) {
 		
+		// 페이지에 검색요소로서 보낸다 
+		model.addAttribute("search", svo);
 		// 이제 페이징 처리를 해야 한다 => 쿼리문 짜서 우선 데이터가 총 몇개인지 listCnt를 출력한다. 
 		svo.setRcategory(rcategory);
 		svo.setRtitle(rtitle);
@@ -43,20 +46,15 @@ public class RepairController {
 		svo.setM_email(m_email);
 		svo.setRgrade(rgrade);
 		svo.setRstatus(rstatus);
+		svo.setRtimeorder(rtimeorder);
 		int listCnt = repairDao.getRepairListCnt(svo);
 		logger.info("게시글 총 개숫 조회 확인: " + listCnt);
 		
-		
-//		model.addAttribute("search", svo);
-//		svo.setRCategory(rCategory);
-//		svo.setRTitle(rTitle);
-//		svo.setRContent(rContent);
-//		svo.setM_email(m_email);
-//		svo.setRGrade(rGrade);
-//		svo.setRStatus(rStatus);
-//		int listCnt = repairDao.getRepairListCnt(svo);
-//		svo.pageinfo(page, range, listCnt);
-		
+		svo.pageinfo(page, range, listCnt);
+		List<RepairVO> list = repairDao.repairSearchSelect(svo); 
+		model.addAttribute("pagination", svo);
+		model.addAttribute("repair", list);
+		logger.info("list 값: " + list);
 //		model.addAttribute("pagination", svo);
 		return "home/admin/repairlist"; 
 	}

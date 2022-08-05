@@ -478,16 +478,28 @@ textarea:focus,
 	
 	// 모달창 닫기 이벤트
 	$(".repairModelCloseBtn").on("click", function(){
-		$(".repair_modal_container").css("display", "none");
-		$('body').css("overflow", "unset");
+		if( $(".repairModelCloseBtn").val() == 'new'){
+			$(".repair_modal_container").css("display", "none");
+			$('body').css("overflow", "unset");
+			location.reload();
+		} else {
+			$(".repair_modal_container").css("display", "none");
+			$('body').css("overflow", "unset");
+		}
 	})
 	
 	// 외부영역 클릭으로 모달창 닫기
 	$(document).on("click", function(e){
 		if( $(e.target).closest(".repair_modal_content").length === 0 &&  
 			$(e.target).closest(".repairListTr").length === 0 ) {
+			if( $(".repairModelCloseBtn").val() == 'new'){
 				$(".repair_modal_container").css("display", "none");
 				$('body').css("overflow", "unset");
+				location.reload();
+			} else {
+				$(".repair_modal_container").css("display", "none");
+				$('body').css("overflow", "unset");
+			}
 		}
 	})
 	

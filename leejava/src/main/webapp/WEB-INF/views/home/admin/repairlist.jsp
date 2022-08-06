@@ -34,7 +34,7 @@
 .repairSearchWrapper button{
 	border-radius: 20px;
 	border-style: none;
-	padding: 5px;
+	padding: 10px;
 	width: auto;
 	height: auto;
 	color: whitesmoke;
@@ -315,11 +315,15 @@ textarea:focus,
     	width: 20px;
     	height: 20px;
     }
+    .repairListSpan{
+    	color: #313348;
+    	font-weight: 800;
+    }
 </style>
 </head>
 <body>
 <!-- 유지보수 게시판 개별 데이터 조회 모달창  -->
-    <!--유지보수 개별 리스트 조회하는 모달창-->
+    <!--유지보수 개별 데이터 조회하는 모달창-->
      <div class="repair_modal_container">
         <div class="repair_modal_content">
                 <!-- 여기가 대입한 공간 -->
@@ -361,14 +365,14 @@ textarea:focus,
 	            </div>
 	            <div class="model_repairFormTitle" >
 	                <label for="model_rtitle">제목</label>
-	                <input type="text" id="model_rtitle" class="model_rtitleInput" placeholder="제목을 입력해주세요(최대 25자)" maxlength="25" style="min-width: 150px;">
+	                <input type="text" id="model_rtitle" class="model_rtitleInput" readonly="readonly" placeholder="제목을 입력해주세요(최대 25자)" maxlength="25" style="min-width: 150px;">
 	            </div>
 	            <div class="model_repairFormContent">
 	                <label for="model_repairContent" class="model_rcontentLabel">
 	                	상세 내용
 	                </label>
 	                <br>
-	                <textarea name="" id="model_repairContent" class="model_rcontentInput" cols="30" rows="4"></textarea>
+	                <textarea name="" id="model_repairContent" class="model_rcontentInput" readonly="readonly" cols="30" rows="4"></textarea>
 	            </div>
    			</form>
 		    <div class="repairFormBtns" style="display: flex; justify-content: flex-end; border: 3%; margin-right: 5%;">
@@ -380,9 +384,47 @@ textarea:focus,
         <div class="repair_modal_layer"></div>
     </div> 
 <script>
-	// selectbox의 항목은 개별적으로 바로 업데이트 되도록 하고, 제목과 내용의 경우 "수정완료"를 눌러야 변경되도로고 한다. 
-	// 그리고 변경된 사항이 있으면 button의 value값에 1을 줄 것이고, 닫기를 클릭할 때, 해당 버튼의 value값에 따라 새로고침 유무를 결정한다.
+	/* 모달창의 제목과 내용부분의 경우 기본값 readonly => 더블클릭이 일어나면 readonly가 해제되고, blur이벤트가 발생하면 알아서 업데이트 되도록 한다. */
+	// 1. 더블클릭(dblclick) 이벤트 정의
+	$(".model_rtitleInput, .model_rcontentInput").on("dblclick", function(){
+		$(this).prop("readonly", false);
+	})
+	// 2. blur업데이트 처리
+	$(".model_rtitleInput, .model_rcontentInput").on("blur", function(e){
+		// blur가 발생한 것들에 대해서만 readonly속성이 false인 경우에만 blur에 의한 업데이트가 일어나도록 정의
+		if ($(this).attr('readonly') !=  'readonly'){
+			var data;
+			var rtitle;
+			var rcontent;
+			var rno = $('.rnoInput').val();
+			if( $(this).hasClass('model_rtitleInput') ){
+				rtitle = $(this).val();
+				data = { rtitle : rtitle, rno: rno };
+			} else if ($(this).hasClass('model_rcontentInput')){
+				rcontent = $(this).val();
+				data = { rcontent : rcontent, rno: rno };
+			}
+			$.ajax({
+				url: "repairListUpdate.do",
+				method : "PUT",
+				contentType: "application/json; charset=utf-8",
+				dataType: "text",
+				data : JSON.stringify(data),
+				success: function(message){
+					console.log("호출 성공");
+					if(message !== "실패"){
+						$(".repairModelCloseBtn").val('new');
+					}
+				},
+				error: function(){
+					console.log("호출 실패");
+				}
+			}) // ajax 끝
+		} // if문 끝 
+	})	// blue업데이트 이벤트 정의 끝.
 	
+	
+
 	// 카테고리 업데이트
 	$(".model_rcategoryInput").on("change", function(){
 		console.log("선택한 값: " + $(this).val());
@@ -402,7 +444,6 @@ textarea:focus,
 			contentType: "application/json; charset=utf-8",
 			success: function(message){
 				console.log("호출 성공");
-				alert(message);
 				if(message !== "실패"){
 					$(".repairModelCloseBtn").val('new');
 				}
@@ -432,7 +473,6 @@ textarea:focus,
 			contentType: "application/json; charset=utf-8",
 			success: function(message){
 				console.log("호출 성공");
-				alert(message);
 				if(message !== "실패"){
 					$(".repairModelCloseBtn").val('new');
 				}
@@ -462,7 +502,6 @@ textarea:focus,
 			contentType: "application/json; charset=utf-8",
 			success: function(message){
 				console.log("호출 성공");
-				alert(message);
 				if(message !== "실패"){
 					$(".repairModelCloseBtn").val('new');
 				}
@@ -563,6 +602,7 @@ textarea:focus,
    		
 	<!-- repairForm, repairSearch 이렇게 두 개 존재  -->   
    		<div class="repairSearch">
+   		  <form id="searchForm">
 	       <table class="repairSearchTable">
 	           <tr>
 	               <th>제목</th>
@@ -590,23 +630,58 @@ textarea:focus,
 	               </td>
 	           </tr>
 	       </table>
+	       </form>
 	       <div class="repairSearchBtns">
 	           <button type="button" class="clearBtn">초기화</button>
 	           <button type="button" class="repairSearchBtn">검색</button>
 	       </div>
        </div>
         <div class="repairFormSearchBtns" align="center">
-	   		<button class="repairFormOpenBtn">유지보수 사항 추가</button>
-	   		<button class="repairSearchOpenBtn">유지보수 리스트 검색</button>
+	   		<button type="button" class="repairFormOpenBtn">유지보수 사항 추가</button>
+	   		<button type="button" class="repairSearchOpenBtn">유지보수 리스트 검색</button>
    		</div>
    	</div>  <!-- repairSearchWrapperTop 부분 끝 -->
+   	<script>
+   		/*	검색창 이벤트 정리 */
+   		// 1. 검색창 입력요소 초기화
+   		$(".clearBtn").on("click", function(){
+   			console.log("초기화 버튼 클릭");
+   			$("#searchForm")[0].reset();
+   		})
+   		
+   		// 2. 검색버튼 구현 
+   		$(".repairSearchBtn").on("click", function(){
+   			var url = "adminRepair.do";
+   			var rcategory = $(".rCategory").val();
+   			var rtitle = $(".rTitle").val();
+   			var rcontent = $(".rContent").val();
+   			var m_email = $(".m_email").val();
+   			url = url + "?rcategory=" + rcategory;
+   			url = url + "&rtitle=" + rtitle;
+   			url = url + "&rcontent" + rcontent;
+   			url = url + "&m_email" + m_email;
+   			location.href = url;
+   		})
+   	</script>
+   	
 		<br>
 		<br>
 		<hr>
 		<br>
-  		<!-- 유지보수 리스트 -->
+  		<!----- 유지보수 리스트 ------>
 	   <div class="repairListDiv" align="center">
 	    <!--한 페이지에 몇 개의 rowdate를 출력시킬지에 대한 구성요소-->
+	    	<div class="repairListCntBox">
+		    	<c:choose>
+		    		<c:when test="${pagination.listCnt lt pagination.end }">
+		    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
+		    		</c:when>
+		    		<c:otherwise>
+		    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.end }건)</span>
+		    		</c:otherwise>
+		    	</c:choose>
+	    	<br>
+	    	</div>
 	    	<div class="repairListBtns">
 	    		<button type="button" class="selectDeleteBtn">선택 삭제</button>
 	    		<button type="button" class="selectFinishBtn">선택 완료</button>
@@ -640,11 +715,11 @@ textarea:focus,
 		                </td>
 		                <td>
 		                	<c:choose>
-		                		<c:when test="${repair.rcategory == 'ALL' }">공통</c:when>
+		                		<c:when test="${repair.rcategory == 'ALL' }">전체</c:when>
 		                		<c:when test="${repair.rcategory == 'ADMIN'}">관리자</c:when>
 		                		<c:when test="${repair.rcategory == 'QUIZCARD' }">퀴즈카드</c:when>
 		                		<c:when test="${repair.rcategory == 'USER' }">사용자</c:when>
-		                		<c:otherwise>공통</c:otherwise>
+		                		<c:otherwise>전체</c:otherwise>
 		                	</c:choose>
 		                </td>
 		                <td class="repairListTitleTd">

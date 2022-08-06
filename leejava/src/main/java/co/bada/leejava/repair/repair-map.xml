@@ -7,13 +7,12 @@
 		SELECT COUNT(*) 
 			FROM REPAIR 
 			<trim prefix="where" prefixOverrides="and | or">
-				<if test="rcategory != 'ALL' ">AND LIKE '%'||#{rcategory}||'%' </if>
-				<!-- 밑의 중요도(rgrade)와 진행상태(rstatus)의 경우=> 검색차에는 없지만 별도의 select박스에서 보낸다. -->
-				<if test="rgrade != 'ALL' ">AND LIKE '%'||#{rgrade}||'%'</if>
-				<if test="rstatus != 'ALL' ">AND LIKE '%'||#{rstatus}||'%'</if>
-				<if test="rtitle != '' and rtitle != null ">AND LIKE '%'||#{rtitile}||'%'</if>
-				<if test="rcontent !='' and rcontent != null">AND LIKE '%'||#{rcontent}||'%'</if>
-				<if test="m_email !='' and m_email != null ">AND LIKE '%'||#{m_email}||'%'</if>
+				<if test="rcategory != 'ALL' ">AND RCATEGORY LIKE '%'||#{rcategory}||'%' </if>
+				<if test="rgrade != 'ALL' ">AND RGRADE LIKE '%'||#{rgrade}||'%'</if>
+				<if test="rstatus != 'ALL' ">AND RSTATUS LIKE '%'||#{rstatus}||'%'</if>
+				<if test="rtitle != '' and rtitle != null ">AND RTITLE LIKE '%'||#{rtitle}||'%'</if>
+				<if test="rcontent !='' and rcontent != null">AND RCONTENT LIKE '%'||#{rcontent}||'%'</if>
+				<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
 			</trim>
 			<trim prefix="ORDER BY">
 				<if test="rtimeorder != 'DESC' ">RWDATE #{rtimeorder}</if>
@@ -26,12 +25,12 @@
 			SELECT ROWNUM AS RN, A.* FROM (
 					SELECT * FROM REPAIR 
 				<trim prefix="where" prefixOverrides="and | or">
-					<if test="rcategory != 'ALL' ">AND LIKE '%'||#{rcategory}||'%'</if>
-					<if test="rgrade != 'ALL' ">AND LIKE '%'||#{rgrade}||'%'</if>
-					<if test="rstatus != 'ALL' ">AND LIKE '%'||#{rstatus}||'%'</if>
-					<if test="rtitle != '' and rtitle != null ">AND LIKE '%'||#{rtitle}||'%'</if>
-					<if test="rcontent != '' and rcontent != null ">AND LIKE '%'||#{rcontent}||'%'</if>
-					<if test="m_email != '' and m_email != null ">AND LIKE '%'||#{m_email}||'%'</if>
+					<if test="rcategory != 'ALL' ">AND RCATEGORY LIKE '%'||#{rcategory}||'%' </if>
+					<if test="rgrade != 'ALL' ">AND RGRADE LIKE '%'||#{rgrade}||'%'</if>
+					<if test="rstatus != 'ALL' ">AND RSTATUS LIKE '%'||#{rstatus}||'%'</if>
+					<if test="rtitle != '' and rtitle != null ">AND RTITLE LIKE '%'||#{rtitle}||'%'</if>
+					<if test="rcontent !='' and rcontent != null">AND RCONTENT LIKE '%'||#{rcontent}||'%'</if>
+					<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
 				</trim>
 				<trim prefix="order by">
 					<if test="rtimeorder == 'DESC'"> RWDATE DESC</if>
@@ -75,7 +74,7 @@
 						<when test="rstatus == 'FIXED' ">
 							RFDATE = to_char(sysdate, 'YY-MM-DD HH24:MI:SS'),
 						</when>
-						<when test="rgrade == 'FIXING' or rgrade =='ALL' ">
+						<when test="rstatus == 'FIXING' or rstatus =='ALL' ">
 							RFDATE = '',
 						</when>
 						<otherwise>

@@ -92,7 +92,7 @@ public class RepairRestController {
 	// 유지보수 게시글 개별 업데이트
 	@PutMapping(value = "repairListUpdate.do", produces = "application/text; charset=utf-8")
 	public ResponseEntity<String> repairListUpdate(@RequestBody RepairVO rvo){
-		logger.info("넘어온 값: " + rvo);
+		System.out.println("넘어온 값: " + rvo );
 		int n = repairDao.repairListUpdate(rvo);
 		String message = "업데이트 되었습니다.";
 		if(n != 1) {

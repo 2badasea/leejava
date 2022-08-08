@@ -201,18 +201,22 @@
 	            			}
 	            	}
 	            }
-	        }; 
-	    $('#summernote').summernote(setting);
-	    
-	  	// 이미지업로드 콜백함수 정의
+	   	};
+	    // 위 설정대로 summernote를 <textarea> 부분에 호출시킨다. 
+	  	$('#summernote').summernote(setting);
+	  	
+	    // 이미지업로드 콜백함수 정의
 	  	function uploadSummernoteImageFile(file, el) {
-			data = new FormData();
+			// 이때 파라미터로 되어있는 el의 값은 이미지 업로드가 발생한 <textarea>태그를 의미한다. 
+	    	console.log("file값: ");
+			console.log(file);
+	    	data = new FormData();
 			data.append("file", file);
 			$.ajax({
 				data : data,
 				type : "POST",
 				url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
-				contentType : false,
+				contentType : false, // multipart/form-data 형식으로 보낼 때는 contentType:을 false로. 
 				enctype : 'multipart/form-data',
 				processData : false,
 				success : function(responseData) {

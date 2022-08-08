@@ -30,13 +30,14 @@ label {
 	border: none;
 }
 /*	업로드한 이미지 공간을 위한 스타일 by kimvampa 	*/ 
-#result_card img{
- 	max-width: 100%; 
-    height: auto;
+#uploadResult img{
     display: block;
     padding: 5px;
-    margin-top: 10px;
     margin: auto;	
+    min-width: 100px;
+    min-height: 100px;
+	width: auto;
+    height: auto;
 }
 #result_card {
 	position: relative;
@@ -339,8 +340,8 @@ label {
 /* **************************************** */
 .form_section{
 	border: 1px dotted lightgray;
-	min-height: 200px;    
 	height: auto;
+	width: auto;
 }
 
 .myBasicInfo input, #email{
@@ -377,7 +378,8 @@ label {
 								</div>
 								<br>
 								<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
-								<label for="m_profilefile" class="speicalTitle">이미지 선택</label>
+								<label for="m_profilefile" class="speicalTitle" style="color: black; font-size: small; padding: 5px; border: 1px solid lightgray; 
+										border-radius: 20px; font-weight: 600;" >이미지 선택</label>
 								<br>
 								<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
 								<br>
@@ -1299,13 +1301,13 @@ label {
 			})
 		})
 
-		// 프로필 이미지 DB 등록 버튼 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. 
+		/* 프로필 이미지 실제 DB 등록 부분 => <form>태그의기본 이벤트를 지우고 ajax를 통해서 한다. */ 
 		var $frm = $("#frm");
 		$frm.on("submit", function(e){
 			// button 눌렀을 때 기본 이벤트인 submit() 차단. ajax로 처리하기 위함.
 			e.preventDefault();
 			// ajax로 전해줄 데이터 4개 (m_email, uuid, uploadPath, fileName) 정의
-			// m_email을 제외하 나머지 3개는 프로필 이미지를 선택했을 때 동적으로 추가되는 태그요소들의 value 값.
+			// m_email을 제외하 나머지 3개는 프로필 이미지를 선택했을 때 동적으로 추가되는 태그요소들의 value 값.=> AttachImageVO 클래스의 필드값과 일치해야 함. 
 			var m_email = $("#m_email").val();
 			var uuid = $("input[name='imageList[0].uuid']").val();
 			var fileName = $("input[name='imageList[0].fileName']").val();
@@ -1328,30 +1330,22 @@ label {
 						location.reload();
 					} else {
 						console.log("에러");
-						
 					}
-					
 				}
 			})
 		})
 	
-		// kimvampa // 첨부파일 이미지 업로드 다시 확인
-		// 프로필 이미지 업로드를 위한 스크립트 작성문. => 나중에 테스트 하고 불필요한 console.log나 alert() 지우기
+		
+		/* 첨부파일 이미지 업로드 선택해서 물리파일을 생성하는 부분  => 실제 바로 DB에 넣는 부분은 아님. */
 		$("input[type='file']").on('change', function(e){ 
-			
-			// 메모 108. 이미지가 등록될 때 파일이 이미 존재를 한다면 삭제를 처리한 후 서버에 이미지 업로드 요청을 수행하도록 한다. 
-				// 기존 이미지 파일이 저장되었을 때 삭제 요청 => 업로드가 앞서 이루어졌는지 어떻게 판단? => 
-				// 미리 보기 태그가 존재하는지를 통해서 판단가능. if문을 활용하여 이미지 태그의 존재 유무에 따라 deleteFile()
-				// 메서드를 호출하도록 한다. 
-			/* 이미지 존재시 삭제 */
+			/* 기존에 이미지 존재 시 삭제 */
 			if( $(".imgDeleteBtn").length > 0){ 
 				deleteFile();
 			}
-				
 			// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
 				// 화면 전환 없이 FromData객체에 담아서 ajax로 보내는 방식.
 			let formData = new FormData();
-			let fileInput = $("input[name='m_profilefile']"); // label태그에서 선택한 요소를 가져온 것 
+			let fileInput = $("input[name='m_profilefile']"); 
 			// 사용자가 파일을 선택하면, 선택된 파일의 목록이 FileList객체 형태로 files속성에 저장된다. 
 				// 즉, 선택된 파일 목록을 가져오려면 files속성을 참조(호출)하면 된다( .files 형태로 호출)
 			let fileList = fileInput[0].files; 
@@ -1370,27 +1364,26 @@ label {
 			if(!fileCheck(fileObj.name, fileObj.size)){
 				return false;
 			}
-			// 기존의 key가 있는 상태에서 동일한 key로 데이터를 추가하면 기존 값을 덮어쓰지 않고 기존 값 집합의 끝에 
-				// 새로운 값을 추가한다. (서버에서는 배열 타입으로 데이터를 전달받기 때문);
 			formData.append("uploadFile", fileObj);
-				// 데이터에 파일객체를 넣어주었다 => ajax를 통해서 여러 개일 경우 개별적으로 이미지 업로드 되도록.
 				// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
 				// 		for(let i = 0; i < fileList.length; i++){
 				// 			formData.append("uploadFile", fileList[i]);
 				// 		}
-			// 첨부파일 서버전송 by ajax
+			
 			$.ajax({
 				url: 'ajaxProfileUpdate.do',
-		    	processData : false, // 서버로 전송할 데이터를 queryString 형태로 변환활지 여부
-		    	contentType : false, // 서버로 전성되는 데이터의 content type
+				// processData : 서버로 전송할 데이터를 queryString 형태로 변환활지 여부
+		    	processData : false, 
+		    	// 서버로 전송하는 데이터의 타입. 'false'로 지정해주어야 multipart/formdata 속성으로 전송이 된다. 
+		    	contentType : false, 
 		    	data : formData,
 		    	type : 'POST',
-		    	dataType : 'json',  // 서버로부터 반환받을 데이터타입
+		    	dataType : 'json',  // 서버로부터 반환받을 데이터타입 => 컨트롤러에서 json으로 반환해야 함. 
 		    	success: function(result){
 		    		// 여긴 profilePath, uuid, uploadFileName이 담겨져 있음. 
 		    			// 서버단에서는 위 세 값과 "_"를 통해 물리파일명을 생성해놓음. 경로에. 
 		    			// ajax로 넘겨받은 정보들을 통해 화면에 이미지를 호출한다.
-		    		console.log("서버로부터 돌아온 ajax 통신 result값: " + result);
+		    		console.log("서버로부터 돌아온 ajax 통신 result값: ");
 		    		console.log(result);
 		    		showUploadImage(result);
 		    	},
@@ -1399,7 +1392,7 @@ label {
 		    	}
 			});	
 		})
-		
+	
 		// 업로드할 이미지 파일의 형식과 용량이 알맞은지 체크. 만약 아니라면 경고창과 함께 onchage이벤트에서 벗어나도록
 		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
 		let maxSize = 1048576; //1MB
@@ -1421,7 +1414,9 @@ label {
 			// success콜백함수가 실행됐다는 건 업로드 이미지 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
 				// 가능성이 낮지만 혹여나 데이터를 전달받지 못 했을 경우를 가정하여 데이터를 검증하는 코드를 추가
 			/* 전달받은 데이터 검증*/ 
-			if(!uploadResultArr || uploadResultArr.length == 0){ return }; 
+			if(!uploadResultArr || uploadResultArr.length == 0){ 
+					return false;
+			}; 
 			
 			// 이미지가 들어갈 공간 div태그
 			let uploadResult = $("#uploadResult");
@@ -1441,7 +1436,7 @@ label {
 					// 같은 메서드가 없기 때문에 replace메서드의 인자 값으로 정규표현식을 사용하여 
 					// 치환 대상 모든 문자를 지정할 수 있다. 
 					// 그리고 UTF-8로 인코딩을 자동으로 해주지 않는 웹브라우저가 있기에 encodeURIComponent()메서드를 활용. 
-					// 덧붙여서, encodeURIComponent() 메서든느 '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
+					// 덧붙여서, encodeURIComponent() 메서드의 경우, '/'와 '\'문자 또한 인코딩을 하기 때문에 replace()를 
 					// 사용 안 해도 해당 URI로 동작이 된다. 
 			let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
 			console.log("display.do로 보내는 view창에서의 fileCallPath값 : " + fileCallPath);
@@ -1467,7 +1462,7 @@ label {
 		
 		/* 이미지 삭제 버튼 동작 */ 
 		// 스크립트에 의해 동적으로 추가된 .imgDeleteBtn 이기에 라이브이벤트 메소드 등록을 한다.  
-			// 참고로 삭제를 버튼해서 클릭하는 경우와 기존에 이미 프로필을 선택하여 'x'표시가 있는 경우 새로운 프로필을 선택하면 기존 값은 지워진다.
+			// 참고로 버튼을 클릭해서 삭제하는 경우와 기존에 이미 프로필을 선택하여 'x'표시가 있는 경우 새로운 프로필을 선택하면 기존 값은 지워진다.
 		$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
 			deleteFile();
 			$("#basic_result_card").show();
@@ -1477,7 +1472,8 @@ label {
 		function deleteFile(){
 			// 두 개의 변수 선언. 하나는 <div>태그에 심어둔 썸네일 파일 경로데이터('fileCallPath') 대입. 
 				// 나머지 하나는 이미지 파일 업로드 시 출력되는 미리 보기 이미지를 감싸고 있는 result_card<div>태그
-			let targetFile = $(".imgDeleteBtn").data("file"); // 해당 태그의 data-file속성의 값 fileCallPath 을 호출하여 대입. 썸네일이미지정보임.
+				// 해당 태그의 data-file속성의 값 fileCallPath 을 호출하여 대입. 썸네일이미지정보임.
+			let targetFile = $(".imgDeleteBtn").data("file"); 
 			let targetDiv = $("#result_card");
 			// 메모 105. 파일 삭제를 요청하는 ajax 코드를 작성한다.
 			$.ajax({
@@ -1502,8 +1498,8 @@ label {
 		
 		}
 			
-		/* 이미지 정보 호출 */ 
-		let m_email = '<c:out value="${member.m_email}"/>';
+		/*  페이지가 로딩되자마자 해당 프로필 이미지 정보를 호출하여 프로필이미지 부분에 출력시킨다.  */ 
+		let m_email = '<c:out value="${member.m_email}" />';
 		let uploadResult = $("#uploadResult");
 		// 서버로부터 이미지 정보 요청을 위해서 getJSON메서드를 작성. get방식으로 요청 및 응답하는
 			// 서버로부터 JSON으로 인코딩 된 데이터를 전달받기 위해 사용되는 메서드. 
@@ -1511,7 +1507,7 @@ label {
 			// url: 서버에 요청할 get방식의 url, data: 서버에 요청을 할 때 전달할 데이터
 			// success: 성공적으로 서버로부터 데이터를 전달받았을 때 실행할 콜백함수. 
 		$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
-			console.log("getJSON 성공?");
+			console.log("getJSON 호출 성공");
 			// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
 			console.log("데이터 길이: " + arr.length);
 			if(arr.length === 0){
@@ -1530,7 +1526,7 @@ label {
 			// List자료구조의 객체배열 상태로 반환받으니깐 반환한 데이터 갯수와 무관하게 []형태의 인덱스로 참조한다. 
 			let obj = arr[0]; 
 			console.log("obj의 값: " + obj);
-			console.log(obj)    // .replace(/\\/g,'/')  (/\//g, '\')
+			console.log(obj);    // .replace(/\\/g,'/')  (/\//g, '\')
 			console.log("obj.uploadPath의 값: " + obj.uploadPath);
 	// 		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
 			// 현재 프로필을 선택해서 display.do로 보내는 정보와 프로필을 등록하고 db에서 get.JSOO으로 읽어들인 정보를 비교했을 때 전해지는
@@ -1544,15 +1540,13 @@ label {
 			console.log("기존 이미지가 존재하는 경우, display.do로 보내는 fileCallPath값: " + fileCallPath);
 			// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
 			str += "<div id='basic_result_card'";
-			str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename'" + obj.fileName + "'";
+			str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename='" + obj.fileName + "'";
 			str += ">";
-			str += "<img src='/display.do?fileName=" + fileCallPath  +"'>";
+			str += "<img src='display.do?fileName=" + fileCallPath  +"'>";
 			str += "</div>";
 			// html()메서드를 사용해서 str변수에 저장된 값들이 uploadResult태그 내부에 추가되도록 해준다. 
 			uploadResult.html(str);
-			
 		}) // get.JSON 메서드 영역
-		
 	})
 
 </script>

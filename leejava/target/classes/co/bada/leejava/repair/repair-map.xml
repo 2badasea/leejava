@@ -15,7 +15,9 @@
 				<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
 			</trim>
 			<trim prefix="ORDER BY">
-				<if test="rtimeorder != 'DESC' ">RWDATE #{rtimeorder}</if>
+				<!-- 여기서 파라미터에 따른 출력되는 순서에 영향을 주는 필드값의 족너을 더 걸어준다.  -->
+				<if test="rtimeorder == 'DESC' ">RWDATE DESC</if>
+				<if test="rtimeorder != 'DESC'  ">RWDATE ASC</if>
 			</trim>
 	</select>
 	

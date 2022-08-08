@@ -392,6 +392,13 @@ input[type="checkbox"]{
 	// 선택 삭제 구현
 	$(".selectDeleteBtn").on("click", function(){
 		var deleteCheck = confirm("정말 삭제하시겠습니까?");
+		// 체크된 게 없으면 return 
+		var checkedLength = $(".subCheckBtn:checked").length;
+		console.log("체크된 것 개수 : " + checkedLength);
+		if(checkedLength === 0){
+			alert("선택한 항목이 없습니다.");
+			return false;
+		}
 		// 삭제할 대상들을 담을 배열 생성
 		var checkedArray = [];
 		if(deleteCheck){

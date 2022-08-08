@@ -104,22 +104,25 @@ public class NoticeController {
 		JsonObject jsonObject = new JsonObject();
 
 		/*
-		 * String fileRoot = "C:\\summernote_image\\"; // 외부경로로 저장을 희망할때.
+		 * String fileRoot = "C:\leejava\summernoteimageupload"; // 외부경로로 저장을 희망할때.
 		 */
 
 		// 내부경로로 저장하는 경우. => 난 bean에 등록한 외부경로를 사용
 //		String contextRoot = new HttpServletRequestWrapper(request).getRealPath("/"); // 말그대로 root경로 '/' 를 의미한다.
 		String contextRoot = request.getServletContext().getRealPath(""); // webapp경로 가리키는 곳 말그대로 root경로 '/' 를 의미한다.
-		String fileRoot = contextRoot + "resources/summernoteimage/";
+		String fileRoot = contextRoot + "resources\\summernoteimage\\";
+		// 아래 경로는 하드코딩으로 summernote로 업로드한 이미지의 경로를 지정한 것.  웹에서 로컬영역에 접근하는 것이 금지되어 있다. 그래서 server로 올리고 테스트를 해야 함. 
+//		String fileRoot = "C:\\leejava\\summernoteimageupload\\";
 //		String fileRoot = summernoteImageUploadPath;  외부이미지 경로, 일단 다음에 도전
-
+		System.out.println("fileRoot 경로: " + fileRoot);
 		String originalFileName = multipartFile.getOriginalFilename(); // 오리지날 파일명
 		// substring의 경우, 대상 인덱스 위치의 문자부터 '포함해서' 그 뒤의 문자까지 통째로 리턴한다.
 		String extension = originalFileName.substring(originalFileName.lastIndexOf(".")); // 파일 확장자
 		String savedFileName = UUID.randomUUID() + extension; // 물리적으로 저장될 이미지 파일명
-
+		System.out.println("물리적으로 저장될 이미지 파일명: " + savedFileName);
 		// file 객체 생성. 설정한 경로와 파일이름으로 파일을 생성해줄 객체.
 		File targetFile = new File(fileRoot + savedFileName);
+		System.out.println("최종적으로 File 객체가 향하는 곳의 디렉토리와 파일 이름 명 " + targetFile);
 		try {
 			// 스트림 생성. 내가 summernote이미지 업로드한 것을 읽어줄 스트림
 			InputStream fileStream = multipartFile.getInputStream();
@@ -136,7 +139,7 @@ public class NoticeController {
 			FileUtils.deleteQuietly(targetFile); // 실패했을 경우 저장된 파일 삭제
 			jsonObject.addProperty("responseCode", "error");
 			e.printStackTrace();
-		}
+		}  
 		String responseData = jsonObject.toString();
 		logger.info("===============responseData 확인: " + responseData);
 		return responseData;

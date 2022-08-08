@@ -447,7 +447,7 @@ legend,
 			<div class="userInfo_modal_body">
 				<div class="userInfo_left" align="center">
 					<div class="userInfo_imageDiv">
-						<img class="profileImg" alt="사진을 준비중입니다." src="resources/image/userimage.jpg">
+						<!-- 사용자 프로필 이미지 또는 기본 이미지가 출력되는 공간  -->
 					</div>
 					<div class="userInfo_subInfo">
 						<label for="userInfo_nickname">닉네임</label> 
@@ -557,7 +557,38 @@ legend,
 					console.log(responseText);
 				}
 			})
-		})
+			
+			// 첫 번째 ajax가 동기방식으로 닉네임을 통해 우선적으로 email값을 읽어옴. email. 이걸로 해당 회원의 이미지를 호출한다.
+			var uploadResult = $(".userInfo_imageDiv");
+			$.getJSON("getAttachList.do", { m_email : email}, function(arr){
+				console.log("getJSON 호출 성공");
+				console.log("데이터의 길이: " + arr.length);
+				if(arr.length === 0){
+					// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
+					console.log("이미지가 없음");
+					let str = "";
+					str += "<div id='basic_result_card'>";
+					str += "<img src='resources/image/userimage.jpg'>";
+					str += "</div>";
+					uploadResult.html(str);
+					return;
+				}
+				// 반대로 호출되는 이미지 정보가 있는 경우. 
+				let str = "";
+				let obj = arr[0];
+				console.log("obj의 값: ");
+				console.log(obj);
+				console.log("obj.uploadPath 값: " + obj.uploadPath);
+				let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+				console.log("fileCallPath 값: " + fileCallPath);
+				str += "<div id='basic_result_card'";
+				str += " data-path='" +  obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" +  obj.fileName + "'";
+				str += ">";
+				str += "<img src='display.do?fileName=" + fileCallPath + "'>";
+				str += "</div>";
+				uploadResult.html(str);
+			}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
+		}) // 개볋 회원정보 호출하는 이벤트 정의 끝
 
 	// 모달창 닫기버튼(X) 
 	$(".userInfoModalCloseBtn").on('click', function() {
@@ -647,9 +678,9 @@ legend,
 	
 	// 3. "다음" 버튼에 대한 이벤트 정의
 	function fn_next(page, range, rangeSize, listSize, m_joinpath, m_email, m_nickanme, frontCal, backCal){
-		console.log("다음 버튼에 대한 클릭이벤트 발생");
 		var page =  parseInt( (range * rangeSize) ) + 1;
 		var range = parseInt( range) + 1;
+		var url = "adminMemberList.do";
 		url = url + "?page=" + page;
 		url = url + "&range=" + range;
 		url = url + "&listSize=" + listSize;
@@ -763,6 +794,7 @@ legend,
 		$(".frontCalendar").val('');
 		$(".m_joinpath option[value='ALL']").prop("selected", true);		
 		// 페이지가 리로됭되면 입력값들을 초기화 시킨다. 
+		
 	})
 </script>
 </html>

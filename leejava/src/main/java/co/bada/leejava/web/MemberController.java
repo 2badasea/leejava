@@ -103,9 +103,7 @@ public class MemberController {
 		return "home/member/memberMyInfo";
 	}
 	   
-	// 개인정보 페이지 프로필 이미지 사진 변경을 클릭하여 이미지를 선택했을 대 발생하는 url
 	// 서버에서 뷰로 반환되는 정보가 한글일 경우 데이터가 깨질 수 있어서 produces속성을 추가하여 뷰로 전해줄 데이터를 utf8로 인코딩 해주는 작업을 한다. 
-	// ajax호출의 경우 1. @ResponseBody 어노테이션을 사용하거나, 리턴타입이 ResponseEntity객체를 보내는 경우 두 가지 존재.
 	@PostMapping(value = "/ajaxProfileUpdate.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> ajaxProfileUpdate(MultipartFile[] uploadFile) {
 			// MultipartFile[] => 여러 파일을 받을 때 사용. 이렇게 해놓고 한 개만 업로드 해도 상관없다. 
@@ -116,9 +114,8 @@ public class MemberController {
 		
 		/* 이미지 파일 체크 */ 
 		for(MultipartFile multipartFile : uploadFile) {
-			// 전달받은 파일을 File객체로 만들어주고 File 참조 변수에 대입 
 			File checkfile = new File(multipartFile.getOriginalFilename());
-			// MIME TYPE을 저장할 String타입의 type변수를 선언하고  null로 초기화
+			// MIME TYPE을 저장할 String타입의 "type" 변수를 선언하고  null로 초기화
 			String type = null;
 			// Files의 probeContenttype()메서드를 호출하여 반환하는 MIME TYPE 데이터를 type변수에 대입
 				// probeContentType은 파라미터로 전달받은 파일의 MIME TYPE을 문자열로 반환해주는 메서드.
@@ -134,15 +131,10 @@ public class MemberController {
 			
 			// 반환되는 MIME TYPE에 대한 정보가 image로 시작하는지 판단한다. 
 			if( !type.startsWith("image")) {
-				// 이 부분이 실행되었다는 것은 image가 아니라는 것. -> 메서드를 끝내도록 할 것이다. 
-					// 전달받은 파일이 image가 아니기 때문에 파일에 대한 정보를 뷰에 전달해줄 필요는 없다. 
-					// 하지만 명령이 잘못되었단 것을 알려주기 위해 response의 상태코드(status)를 400으로 반환
-					// 전달 해줄 파일의 정보는 없지만, 반환타입이 ResponseEntity<List<AttachImageVO>> 이기에 
+				// 전달 해줄 파일의 정보는 없지만, 반환타입이 ResponseEntity<List<AttachImageVO>> 이기에 
 					// ResponseEntity 객체에 첨부해줄 값이 null인 List<AttachImageVO> 타입의 참조 변수를 선언
 				List<AttachImageVO> list = null; 
-				// 상태코드가 400인 ResponseEntity 객체를 인스턴스화 하여 이를 반환해주는 코드를 작성. 
 				return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
-					// view단에 가서 ajax속성으로 error와 콜백함수 추가.
 			}
 			
 		} // view에서 넘어오는 파일 객체들에 대해 반복문을 통하여 타입체크 끝
@@ -157,21 +149,16 @@ public class MemberController {
 		// sdf가 가지고 있는 format()메서드를 사용 => 인스턴스를 생성할 때 어떤 형식으로 날짜 정보를 제공할지 설정해놓음
 		String str = sdf.format(date); 
 		logger.info("===============경로구분자로 가공되기 전 str의 값: " + str);
-		// 현재 str변수에는 날짜 사이에 '-'문자열 데이터가 저장되어 있음. replace()로 교체
-		// File클래스에서 실행되는 운영체제 환경에 따라 그에 맞는 경로 구분자를 반환하는 정적(static) 변수인
-		// separator가 존재. => '-' 문자열을 String클래스의 replace() 메서드를 이용하여
-		// File.separator로 변경해준다.  / 경로구분자를 말한다. 
+		// File클래스에서 실행되는 운영체제 별로 사용되는 구분자를 반환하는 정적(static) 변수인
+			// separator가 존재. => '-' 문자열을 String클래스의 replace() 메서드를 이용하여
+			// File.separator로 변경해준다.  ( "/" 경로구분자를 의미 ).
 		String profilePath = str.replace("-", File.separator);
 		logger.info("==============='-'을 경로구분자로 변환 후 str의 값: " + profilePath);
 		// File타입의 uploadPath 변수를 통하여 우리가 원하는 경로에 날짜별로 디렉토리를 생성하는 객체를 생성한다.
 		File uploadPath = new File(uploadFolder,profilePath);
-		
 		// 그럼 폴더를 생성한다. 폴더를 생성하는 메서드로 mkdir()과 mkdirs() 메서드가 존재하는데,
 			// 후자의 경우 여러 개의 폴더를 생성한다. => 전자의 경우 선행하는 디렉토리가 없으면 만들어지지 않는다.  
-		logger.info("===============kim vam pa 쩐다...");
-		// 날짜 정보가 담긴 디렉토리를 생성한다. 
-		
-		// 요청이 있을 때마다 새로운 폴더를 생성하는 것을 방지하기 위함 => File객체에서 제공하는 exist()메서드. 
+			// 요청이 있을 때마다 새로운 폴더를 생성하는 것을 방지하기 위함 => File객체에서 제공하는 exist()메서드. 
 		if(uploadPath.exists() == false) {
 			// 요청이 있는 날짜 기준으로 폴더가 생성되었다. 
 				// File.separator() 메서드를 통해 경로구분자(\) 기준으로 디렉토리 생성됨.
@@ -189,7 +176,7 @@ public class MemberController {
 		// MultipartFile.transferTo(File detination); 대충 이런 형태 
 		
 		// 본격적으로 업로드한 파일에 대해 다루기 시작. 앞서 있었던 향상된 for문의 경우는 해당 이미지 파일의 유효성 검사용.
-		// 향상된 for문 // 첨부파는 이미지가 여러 개일 경우=> for문으 동시에 업로드 처리한다.
+		// 향상된 for문  첨부파는 이미지가 여러 개일 경우 => for문으 동시에 업로드 처리한다.
 		for(MultipartFile multipartFile : uploadFile) {
 			
 			// 이미지 정보 객체 
@@ -207,15 +194,16 @@ public class MemberController {
 			avo.setUuid(uuid);
 			logger.info("===============avgo객체에 담은 uuid명 : " + uuid);
 			uploadFileName = uuid + "_" + uploadFileName; // uuid+"_"+원본파일 => 물리파일명 생성
-			// 파일 위치, 파일 이름을 합친 File 객체 
+			// 첫 번째 파라미터는 경로(c:\\leejava\\prifile\\2022\\08\\08)
+				// 두 번째 파라미터 "uploadFileName"은  uuid를 포함한 물리적으로 저장된 파일 이름.
 			File saveFile = new File(uploadPath, uploadFileName);
 			// 실제 파일 저장이 일어나는 곳.
 			try {
-				// transperTo()의 경우 IOException, IllegalStateException을 일으킬 가능성이 있어서 
-				// 이클립에서 try-catch 문을 사용하라는 경고 문이 뜬다. 
+				// transperTo()의 경우 IOException, IllegalStateException를 일으킬 수 있어 try-catch문을 사용! 
+					// 우선 물리파일명 하나를 생성하고, 밑에서 썸네일 이미지도 따로 가공하여 생성한다. 
 				multipartFile.transferTo(saveFile);
 				
-				/* 썸네일 이미지 생성(ImageIO) */
+				/* 썸네일 이미지 생성(ImageIO  => java 자체적으로 제공하는 클래스) */
 				// ImageIO를 통해 썸네일 이미지를 생성하기 위해 원본 파일과 썸네일 파일 객체가 필요
 					// 썸네일 파일 객체는 원본 파일과 구분하기 위해 앞에 's_'를 붙이고 생성함.
 //				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
@@ -264,17 +252,11 @@ public class MemberController {
 					// 두 번째 인자는 어떠한 이미지 형식으로 저장할 것인지 String타입으로 작성한다. 
 					// 세 번째 인자는 우리가 앞서 썸네일 이미지가 저장될 경로와 이름으로 생성된 File객체(thumbnailFile) 객체를 부여
 				
-				// 복잡해 보이지만 전체적인 과정은 java내에서 크기를 지정한 이미지를 만들고, 그 이미지에 맞게 원본 이미지를
-				// 그려 놓은 다음 해당 이미지를 파일로 저장한 것이다. 
-//				logger.info("===============성공");
-				
-				
 				/* 방법 2 썸네일 라이브러리를 pom.xml에 추가하여 활용하는 방식*/
 				// 두 방법 중 하나를 주석처리해서 사용. 
 					// 썸네일 파일의 이름은 uuid+"_"+원본파일명 형태의 물리파일명에서 앞에 "s_"를 붙였다. 
 				File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);
-				
-				// 마찬가지로 BufferImage 공간에 싣는다.
+				// 마찬가지로 BufferImage 객체에 담아준다.
 				BufferedImage bo_image = ImageIO.read(saveFile);
 				
 					// 비율
@@ -291,15 +273,12 @@ public class MemberController {
 				logger.info("===============실패");
 				e.printStackTrace();
 			}
-			// 이미지 정보가 저장된 AttachImageVO객체를 List의 요소로 추가해준다. 
+			// 이미지 정보가 저장된 AttachImageVO객체를 List의 요소로 추가해준다. 이때 추가된 정보는 썸네일 이미지 정보가 아닌 가공된 물리적 파일
 				// 뷰로부터 전달받은 만큼 AttachImageVO 객체가 생성되어 각 정보를 저장한 후 해당 객체가
 				// List의 요소로 추가되게 된다. 
 			list.add(avo);
-			
 		}
-		
 		// ResponseEntity 참조 변수를 선언하고 생성자로 초기화한다. 
-			// Http의 body에 추가될 데이터는 List<AttachImageVO> 이고, 상태코드가 OK(200)인 ResponseEntity객체가 생성된다. 
 		ResponseEntity<List<AttachImageVO>> result = new ResponseEntity<List<AttachImageVO>>(list, HttpStatus.OK);
 			return result;
 		
@@ -317,8 +296,8 @@ public class MemberController {
 //			logger.info("===============파일 타입 : " + uploadFile[i].getContentType());
 //			logger.info("===============파일 크기 : " + uploadFile[i].getSize());
 //		}
-		
-	} // url매핑 끝 부분. 
+	} // url매핑( "ajaxProfileUpdate.do" ) 부분 끝  
+	
 	
 	// 업로드 이미지 출력 구현 부분을 위한 메서드. by 김밤파
 		// ResponseEntity 객체를 통해 body에 byte[]배열을 보내야 하기 때문에 다음과 같은 반환타입으로 작성.
@@ -329,7 +308,7 @@ public class MemberController {
 		logger.info("===============fileName의 값: " +fileName);
 		File file = new File("c:\\leejava\\profile\\" + fileName); 
 		logger.info("===============File객체의 값: " + file);
-		ResponseEntity<byte[]> result = null;
+		ResponseEntity<byte[]> result = null;  
 		try {
 			// 대상 이미지 파일의 MIME TYPE을 얻기 위해 이전 포스팅에서 사용한 Files 클래스의 
 				//proveContentType() 메서드를 사용한다. => 해당 메서드의 경우 IOExeption을 일으킬 가능성이 큰 메서드이기에
@@ -337,7 +316,7 @@ public class MemberController {
 				// ResponseEntity에 Response의 header와 관련된 설정의 객체를 추가해주기 위해서 
 				// HttpHeaders를 인스턴스화 한 후 참조 변수를 선언하여 대입한다.
 			HttpHeaders header = new HttpHeaders();
-			// header의 'Content-type' 속성 값에 이미지 파이 MIME TYPE을 추가해주기 위해서 HttpHeader클래스에 있는 add()메서드 사용2
+			// header의 'Content-type' 속성 값에 이미지 파일 MIME TYPE을 추가해주기 위해서 HttpHeader클래스에 있는 add()메서드 사용2
 				// add() 메서드의 첫 번째 파라미터에는 Response header의 '속성명', 두 번째 파라미터에는 해당 '속성명'에 부여할 값(value)를 삽입한다. 
 			header.add("Content-type", Files.probeContentType(file.toPath()));
 			// 대상 이미지 파일, header객체, 상태 코드를 인자 값으로 부여한 생성자를 통해 ResponseEntity 객체를 생성하여
@@ -346,10 +325,12 @@ public class MemberController {
 				// FileCoyUtils 클래스는 파일과 stream 복사에 사용할 수 있는 메서드를 제공하는 클래스다. 
 				// 해당 클래스 중에서 copyToByteArray() 메서드는 파라미터로 부여한는 File객체 즉, 대상 파일을 복사하여
 				// Byte배열로 변환해주는 메서드다.   // 추가 설명은 메모 80번. 
+			System.out.println("header 값: " + header);
 			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("result 값 : " + result);
 		return result; 
 	}
 	/* 이미지 파일 삭제*/

@@ -13,10 +13,10 @@
 .repairList_wrapper textarea{
 	resize: vertical;
 	border-radius: 20px;
-	padding: 15px;
 	font-weight: 800;
 	font-size: large;
 	width: 95%;
+	padding: 15px;
 }
 .repairList_wrapper label{
 	font-weight: 900;
@@ -285,10 +285,10 @@ textarea:focus,
     .model_repairForm textarea{
         resize: vertical;
         border-radius: 20px;
-        padding: 15px;
         font-weight: 800;
         font-size: large;
-        width: 95%;    
+        width: 95%;   
+        padding: 15px;
     }
     .repairModelCloseBtn {
     	margin-left: 15px;
@@ -308,9 +308,6 @@ textarea:focus,
     	color: teal;
     }
     
-    .repairListBtns{
-    	margin-left: 40%;
-    }
     .repairListDiv input[type='checkbox']{
     	width: 20px;
     	height: 20px;
@@ -319,6 +316,29 @@ textarea:focus,
     	color: #313348;
     	font-weight: 800;
     }
+    .paginationBox {
+		margin-bottom: 20px;
+		display: flex;
+		justify-content: center;
+	}
+	.paginationUl > li{
+		list-style-type: none;
+		float: left;
+		padding: 5px;
+	}
+	.paginationLink{
+		color: #313348;
+		font-size: 20px;
+	}
+	.active a {
+		font-weight: bolder;
+		font-size: large;
+		color: tomato;
+	}	
+	.repairListOptions{
+		display: flex; 
+		justify-content: space-around;
+	}
 </style>
 </head>
 <body>
@@ -365,7 +385,7 @@ textarea:focus,
 	            </div>
 	            <div class="model_repairFormTitle" >
 	                <label for="model_rtitle">제목</label>
-	                <input type="text" id="model_rtitle" class="model_rtitleInput" readonly="readonly" placeholder="제목을 입력해주세요(최대 25자)" maxlength="25" style="min-width: 150px;">
+	                <input type="text" id="model_rtitle" class="model_rtitleInput" readonly="readonly" placeholder="제목을 입력해주세요(최대 25자)" maxlength="40" style="min-width: 150px;">
 	            </div>
 	            <div class="model_repairFormContent">
 	                <label for="model_repairContent" class="model_rcontentLabel">
@@ -376,8 +396,7 @@ textarea:focus,
 	            </div>
    			</form>
 		    <div class="repairFormBtns" style="display: flex; justify-content: flex-end; border: 3%; margin-right: 5%;">
-		      <button type="button" class="repairUpdateBtn">수정 하기</button>
-              <button type="button" class="repairModelCloseBtn">닫기</button>
+              <button type="button" class="repairModelCloseBtn">수정&닫기</button>
 	        </div>
    		</div>
         </div> <!-- repair_model_content 영역 끝. -->
@@ -422,7 +441,6 @@ textarea:focus,
 			}) // ajax 끝
 		} // if문 끝 
 	})	// blue업데이트 이벤트 정의 끝.
-	
 	
 
 	// 카테고리 업데이트
@@ -583,7 +601,7 @@ textarea:focus,
 	            </div>
 	            <div class="repairFormTitle" >
 	                <label for="rtitle">제목</label>
-	                <input type="text" id="rtitle" class="rtitleInput" placeholder="제목을 입력해주세요(최대 20자)" maxlength="20" style="min-width: 150px;">
+	                <input type="text" id="rtitle" class="rtitleInput" placeholder="제목을 입력해주세요(최대 20자)" maxlength="45" style="min-width: 150px;">
 	            </div>
 	            <div class="repairFormContent">
 	                <label for="repairContent" class="rcontentLabel">
@@ -670,21 +688,28 @@ textarea:focus,
 		<br>
   		<!----- 유지보수 리스트 ------>
 	   <div class="repairListDiv" align="center">
-	    <!--한 페이지에 몇 개의 rowdate를 출력시킬지에 대한 구성요소-->
-	    	<div class="repairListCntBox">
-		    	<c:choose>
-		    		<c:when test="${pagination.listCnt lt pagination.end }">
-		    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
-		    		</c:when>
-		    		<c:otherwise>
-		    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.end }건)</span>
-		    		</c:otherwise>
-		    	</c:choose>
-	    	<br>
-	    	</div>
-	    	<div class="repairListBtns">
-	    		<button type="button" class="selectDeleteBtn">선택 삭제</button>
-	    		<button type="button" class="selectFinishBtn">선택 완료</button>
+	    	<div class="repairListOptions">
+	    			    <!--한 페이지에 몇 개의 rowdate를 출력시킬지에 대한 구성요소-->
+		    	<div class="repairListCntBox">
+			    	<c:choose>
+			    		<c:when test="${pagination.listCnt lt pagination.end }">
+			    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
+			    		</c:when>
+			    		<c:otherwise>
+			    			<span class="repairListSpan">(총 ${pagination.listCnt}건 중 ${pagination.start } ~ ${pagination.end }건)</span>
+			    		</c:otherwise>
+			    	</c:choose>
+			    	<br>
+			    	<select class="paging" name="searchType" id="listSize" onchange="page(1)">
+			    		<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건씩 보기</option>
+			    		<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건씩 보기</option>
+			    		<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건씩 보기</option>
+			    	</select>
+		    	</div>
+		    	<div class="repairListBtns">
+		    		<button type="button" class="selectDeleteBtn">선택 삭제</button>
+		    		<button type="button" class="selectFinishBtn">선택 완료</button>
+		    	</div>
 	    	</div>
 	        <table class="repairListTable">
 	            <tr class="repairListTableThTr">
@@ -692,7 +717,14 @@ textarea:focus,
 	                    <input type="checkbox" class="allCheckBtn">
 	                </th>
 	                <th class="listTh">No.</th>
-	                <th class="listTh">중요도</th>
+	                <th class="listTh">
+	                	중요도
+	                	<select class="rgradeSelect" id="rgradeSelect" onchange="rgradeSelect()">
+	                		<option value="A">상</option>
+	                		<option value="B">중</option>
+	                		<option value="C">하</option>
+	                	</select>
+	                </th>
 	                <th class="listTh">카테고리</th>
 	                <th class="listTh" style="width: 350px">제목</th>
 	                <th class="listTh">진행상황</th>
@@ -743,13 +775,105 @@ textarea:focus,
 		            </tr>
 		        </c:forEach>
 	        </table>
-		
+	       	<br><br>
+	       	<!-- 페이징 박스가 들어갈 곳 -->
+	        <div id="paginationBox" class="paginationBox">
+	        	<ul class="paginationUl">
+	        	<!-- 기본적인 페이지 호출 파라미터 갯수에 rangeSize와 listSize가 추가된다. 해당 paging정보가 반영되는 게 우선순위ㄱ이기 때문.  -->
+	        		<c:if test="${pagination.prev }">
+	        			<li class="paginationLi">
+	        				<a class="paginationLink specialA" onclick="fn_prev('${pagination.page}','${pagination.range}', '${pagination.rangeSize }','${pagination.listSize }',
+	        																	'${search.rcategory }','${search.rtitle }','${search.rcontent }','${search.m_email }',
+	        																	'${search.rgrade }', '${search.rstatus }','${search.rtimeorder }')">
+	        				이전</a>
+	        			</li>
+	        		</c:if>
+	        		<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="repairNo">
+	        			<!-- 화면에 출력되는 페이지 넘버링과 실제 현재 출력되고 있는 페이징 넘버값이 같다면 class속성에 'active' 속성값 추가 -->
+	        			<li class="paginationLi <c:out value="${pagination.page == repairNo ? 'active' : '' }" />" >
+	        				<a class="paginationLink specialA" onclick="fn_pagination('${repairNo}', '${pagination.range}', '${pagination.rangeSize }','${pagination.listSize }',
+	        																	'${search.rcategory }','${search.rtitle }','${search.rcontent }','${search.m_email }',
+	        																	'${search.rgrade }', '${search.rstatus }','${search.rtimeorder }')">
+	        				
+	        				${repairNo }</a>
+	        			</li>
+	        		</c:forEach>
+	        		<c:if test="${pagination.next }">
+	        			<li class="paginationLi">
+	        				<a class="paginationLink specialA" onclick="fn_next('${pagination.page}','${pagination.range}', '${pagination.rangeSize }','${pagination.listSize }',
+																				'${search.rcategory }','${search.rtitle }','${search.rcontent }','${search.m_email }',
+																				'${search.rgrade }', '${search.rstatus }','${search.rtimeorder }')">
+	        				다음</a>
+	        			</li>
+	        		</c:if>
+	        	</ul>
+	        </div>
 		</div>
   </div>	<!--  repairSearchWrapper 부분 끝 -->
 </div>
 </body>
 <script>
-	//
+	function page(Paging){
+		var startPage = Paging;
+		var listSize = $("#listSize option:selected").val();
+		// 기본적인 값에다가 startPage와 listSize만 추가돈 페이징 정보가 화면에 출력된다. 
+		var url = "adminRepair.do?startPage=" + startPage + "&listSize=" + listSize;
+		location.href = url;
+	}
+	
+	// 현재 listSize의 기본값은 10, rangeSize의 기본값은 5로 설정된 상태. 
+	function fn_prev(page, range, rangeSize, listSize, rcategory, rtitle, 
+			rcontent, m_email, rgrade, rstatus, rtimeorder){
+		var page = ( (range - 2) * rangeSize ) + 1;
+		var range = range - 1; 
+		var url = "adminRepair.do";
+		url = url += "?page=" + page;
+		url = url += "&range=" + range;
+		url = url += "&listSize=" + listSize;
+		url = url += "&rcategory=" + rcategory;
+		url = url += "&rtitle=" + rtitle;
+		url = url += "&rcontent=" + rcontent;
+		url = url += "&m_email=" + m_email;
+		url = url += "&rgrade=" + rgrade;
+		url = url += "&rstatus=" + rstatus;
+		url = url += "&rtimeorder=" + rtimeorder;
+		location.href = url;
+	}
+	
+	function fn_pagination(page, range, rangeSize, listSize, rcategory, rtitle,
+			rcontent, m_email, rgrade, rstatus, rtimeorder) {
+		var url = "adminRepair.do";
+		url = url += "?page=" + page;
+		url = url += "&range=" + range;
+		url = url += "&listSize=" + listSize;
+		url = url += "&rcategory=" + rcategory;
+		url = url += "&rtitle=" + rtitle;
+		url = url += "&rcontent=" + rcontent;
+		url = url += "&m_email=" + m_email;
+		url = url += "&rgrade=" + rgrade;
+		url = url += "&rstatus=" + rstatus;
+		url = url += "&rtimeorder=" + rtimeorder;
+		location.href= url;
+	}
+	
+	function fn_next(page, range, rangeSize, listSize, rcategory, rtitle,
+			rcontent, m_email, rgrade, rstatus, rtimeorder){
+		var page =  parseInt( (range * rangeSize) ) + 1;
+		var range = parseInt(range) + 1; 
+		var url = "adminRepair.do";
+		url = url += "?page=" + page;
+		url = url += "&range=" + range;
+		url = url += "&listSize=" + listSize;
+		url = url += "&rcategory=" + rcategory;
+		url = url += "&rtitle=" + rtitle;
+		url = url += "&rcontent=" + rcontent;
+		url = url += "&m_email=" + m_email;
+		url = url += "&rgrade=" + rgrade;
+		url = url += "&rstatus=" + rstatus;
+		url = url += "&rtimeorder=" + rtimeorder;
+		location.href = url;
+		
+	}
 
 	// 선택 삭제 구현 
 	$(".selectDeleteBtn").on("click", function(){
@@ -873,9 +997,6 @@ textarea:focus,
 			}
 		})
 	})
-	
-	
-	
 	
 	
 	//임시 스크림트 영역. 검색창이랑 등록하는 창 작업 끝나면 => 스크립트 하단으로 내리기

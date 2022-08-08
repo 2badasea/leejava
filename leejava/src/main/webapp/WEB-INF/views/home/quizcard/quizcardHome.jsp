@@ -136,7 +136,20 @@ fieldset {
 	border-bottom: 0.5px dashed teal;
 	margin-top: 3px;
 }
-
+#basic_result_card{
+	display: flex;
+	justify-content: center;	
+	border: 0.2px solid lightgray;
+	width: 80%;
+	height: 200px;
+}
+.userInfo_image img{
+	text-align: center;
+	min-width: 100px;
+	min-height: 100px;
+	width: auto;
+	height: auto;
+}
 .userInfo_quizcardTr:hover {
 	cursor: pointer;
 }
@@ -440,7 +453,7 @@ fieldset {
 			<div class="userInfo_modal_body">
 				<div class="userInfo_left">
 					<div class="userInfo_image">
-						<img class="profileImg" alt="사진을 준비중입니다." src="resources/image/loopy.jpeg">
+<!-- 						<img class="profileImg" alt="사진을 준비중입니다." src="resources/image/loopy.jpeg"> -->
 					</div>
 					<div class="userInfo_subInfo">
 						<label for="m_nickname">닉네임</label> 
@@ -590,9 +603,7 @@ fieldset {
 	})
 
 	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
-	$(".quizcardTable td:nth-child(6)").on(
-			"click",
-			function(e) {
+	$(".quizcardTable td:nth-child(6)").on("click", function(e) {
 				console.log("유저 닉네임 클릭");
 				let email;
 				console.log($(e.target).text());
@@ -657,7 +668,38 @@ fieldset {
 						console.log(responseText);
 					}
 				})
-			})
+				
+			// email값을 이용하여 get.JSON url을 호출하여 db에 있는 프로필 이미지 정보를 가져와서 화면에 뿌려준다.
+			var uploadResult = $(".userInfo_image");
+			$.getJSON("getAttachList.do", { m_email : email}, function(arr){
+				console.log("getJSON 호출 성공");
+				console.log("데이터의 길이: " + arr.length);
+				if(arr.length === 0){
+					// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
+					console.log("이미지가 없음");
+					let str = "";
+					str += "<div id='basic_result_card'>";
+					str += "<img src='resources/image/userimage.jpg'>";
+					str += "</div>";
+					uploadResult.html(str);
+					return;
+				}
+				// 반대로 호출되는 이미지 정보가 있는 경우. 
+				let str = "";
+				let obj = arr[0];
+				console.log("obj의 값: ");
+				console.log(obj);
+				console.log("obj.uploadPath 값: " + obj.uploadPath);
+				let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+				console.log("fileCallPath 값: " + fileCallPath);
+				str += "<div id='basic_result_card'";
+				str += " data-path='" +  obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" +  obj.fileName + "'";
+				str += ">";
+				str += "<img src='display.do?fileName=" + fileCallPath + "'>";
+				str += "</div>";
+				uploadResult.html(str);
+			}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
+	})
 
 	// 모달창 닫기버튼(X) 
 	$(".userInfoModalCloseBtn").on('click', function() {

@@ -261,7 +261,7 @@ td > input:not(#addressBtn)  {
 			$('#email').focus();
 			return false;
 		} else if (regEmail.test(email)) {
-			alert("이메일 정규식 통과");
+			console.log("이메일 정규식 통과");
 		} else {
 			alert("입력하신 이메일 양식이 올바르지 않습니다.");
 			$('#email').val('').focus();

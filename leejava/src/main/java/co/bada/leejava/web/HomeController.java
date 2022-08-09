@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.CoolSMS;
@@ -69,8 +70,11 @@ public class HomeController {
 
 	// 로그인 창으로 이동
 	@RequestMapping("/loginPage.do")
-	public String loginPage(Model model, HttpServletRequest request) {
+	public String loginPage(Model model, HttpServletRequest request, 
+								@RequestParam(required = false ,value = "message") String message) {
 		logger.info("어디 페이지에서 로그인 요청이 날라왔는지 확인하는 request.getHeader('referer')" + request.getHeader("Referer"));
+		logger.info("회원가입 완료 url에서 redirectAttribute로 넘긴 파라미터 값 확인: " + message);
+		model.addAttribute("message", message);
 		// 로그인 요청이 온 페이지의 URI를 받아서, login입력창의 input요소에 부여한다.
 		// 로그인이 성공하면 해당 uri정보가 담긴 태그의 value값을 받아서 location.href로 넘긴다.
 		String referer = request.getHeader("Referer");
@@ -219,7 +223,7 @@ public class HomeController {
 
 	// 회원가입 요청
 	@RequestMapping("/memberJoin.do")
-	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model, AttachImageVO ivo) {
+	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model, AttachImageVO ivo, RedirectAttributes reattr) {
 
 		// 일단 모든 넘어온 값들 확인ㄱㄱ
 		logger.info("===========Eamil 값: " + request.getParameter("email"));
@@ -285,9 +289,10 @@ public class HomeController {
 				logger.info("===========가입약관 정상 반영");
 			}
 		}
-
-		model.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
-		return "home/member/loginPage";
+		
+		// redirect로 보내주고, 받는 쪽에서 다시 model로 최종적인 페이지에 뿌려주어야 한다. loginPage.do 매핑부분으로 가서 reattr로 보낸 파라미터를 받으러 ㄱㄱ
+		reattr.addAttribute("message", message); // 스크립트로 message내용을 alert로 보여줘보기
+		return "redirect:loginPage.do";
 	}
 
 	// 관리자 페이지로 이동

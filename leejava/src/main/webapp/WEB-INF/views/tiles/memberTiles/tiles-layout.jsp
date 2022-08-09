@@ -19,14 +19,16 @@
 }
 .memberTilesSideWrapper {
 	width: 12%;
+	position: fixed;
 
 }
 .memberTilesMainWrapper {
- 	width: 100%;  
+ 	width: 88%; 
+ 	margin-left: 12%; 
 }
 .memberTilesHeaderWrapper {
-	width: 100%; 	
-	height: 2%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
+	width: 70%; 	
+	height: 30%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
 	background-color: whitesmoke;
 }
 .memberTilesBodyWrapper{

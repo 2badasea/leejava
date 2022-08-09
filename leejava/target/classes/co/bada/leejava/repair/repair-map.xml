@@ -15,9 +15,33 @@
 				<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
 			</trim>
 			<trim prefix="ORDER BY">
-				<!-- 여기서 파라미터에 따른 출력되는 순서에 영향을 주는 필드값의 족너을 더 걸어준다.  -->
+				<!-- 'ASC'값 말고는 조건과 함께 기본적으로 최신 순으로 나열한다.   -->
 				<if test="rtimeorder == 'DESC' ">RWDATE DESC</if>
-				<if test="rtimeorder != 'DESC'  ">RWDATE ASC</if>
+				<if test="rtimeorder == 'ASC'  ">RWDATE ASC</if>
+				<if test="rtimeorder == 'RGRADEORDER' ">
+					(
+					 CASE RGRADE 
+					 WHEN 'A' THEN 0
+					 WHEN 'B' THEN 1
+					 WHEN 'C' THEN 2
+					 ELSE 3
+					 END
+					),RWDATE ASC
+				</if>
+				<if test="rtimeorder == 'RSTATUSORDER' ">
+					(
+					CASE RSTATUS 
+					WHEN 'ALL' THEN 0
+					WHEN 'FIXING' THEN 1
+					WHEN 'FIXED' THEN 2
+					ELSE 3
+					END
+					)
+					,RWDATE ASC
+				</if>
+				<if test="rtimeorder != 'DESC' and rtimeorder != 'ASC' and rtimeorder != 'RGRADEORDER' and rtimeorder != 'RSTATUSORDER' ">
+					RWDATE DESC	
+			    </if>
 			</trim>
 	</select>
 	
@@ -36,7 +60,31 @@
 				</trim>
 				<trim prefix="order by">
 					<if test="rtimeorder == 'DESC'"> RWDATE DESC</if>
-					<if test="rtimeorder != 'DESC'  ">RWDATE ASC</if>
+					<if test="rtimeorder == 'ASC'  ">RWDATE ASC</if>
+					<if test="rtimeorder == 'RGRADEORDER' ">
+						(
+						 CASE RGRADE 
+						 WHEN 'A' THEN 0
+						 WHEN 'B' THEN 1
+						 WHEN 'C' THEN 2
+						 ELSE 3
+						 END
+						),RWDATE DESC
+					</if>
+					<if test="rtimeorder == 'RSTATUSORDER' ">
+						(
+						CASE RSTATUS 
+						WHEN 'ALL' THEN 0
+						WHEN 'FIXING' THEN 1
+						WHEN 'FIXED' THEN 2
+						ELSE 3
+						END
+						)
+						,RWDATE DESC
+					</if>
+					<if test="rtimeorder != 'DESC' and rtimeorder != 'ASC'  and rtimeorder != 'RGRADEORDER' and rtimeorder != 'RSTATUSORDER' ">
+						RWDATE DESC	
+					</if>
 				</trim>
 			) A 
 		) 

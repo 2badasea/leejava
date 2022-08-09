@@ -709,22 +709,37 @@ textarea:focus,
 		    	<div class="repairListBtns">
 		    		<button type="button" class="selectDeleteBtn">선택 삭제</button>
 		    		<button type="button" class="selectFinishBtn">선택 완료</button>
-		    	</div>
+		    		<br>
+		    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			    	<select name="rtimeorder" id="rtimeorder" class="rtimeorder" onchange="fn_rtimeorder()">
+			    		<option value="DESC" <c:if test="${pagination.getRtimeorder() == 'DESC' }">selected="selected"</c:if>>최신 순</option>
+			    		<option value="ASC" <c:if test="${pagination.getRtimeorder() == 'ASC' }">selected="selected"</c:if>>작성 순</option>
+			    		<option value="RGRADEORDER" <c:if test="${pagination.getRtimeorder() == 'RGRADEORDER' }">selected="selected"</c:if>>중요도 순</option>
+			    		<option value="RSTATUSORDER" <c:if test="${pagination.getRtimeorder() == 'RSTATUSORDER' }">selected="selected"</c:if> >진행상황 순</option>
+		    		</select>
+		    		<input type="hidden" class="hiddenInputTest" id="hiddenInputTest" data-rtimeorder="${search.getRtimeorder() }" 
+		    								data-timeorder="${pagination.getRtimeorder() }">
+				</div>
 	    	</div>
+	    	<script>
+	    		// onchange 이벤틀 정의함으로써 변경되어 선택하 값을 가져온다. 
+	    		function fn_rtimeorder(){
+	    			var rtimeorder = $(".rtimeorder").val();
+	    			// rtimeorder의 값이 여러가지. 
+	    			var url = "adminRepair.do";
+	    			// rtimeorder 값으로 가질 수 있는 것(DESC, ASC, RGRADEORDER, RSTATUSORDER)
+	    			url = url += "?rtimeorder=" + rtimeorder;
+	    			location.href = url;
+	    		}
+	    	
+	    	</script>
 	        <table class="repairListTable">
 	            <tr class="repairListTableThTr">
 	                <th class="listTh" style="width: 30px;">
 	                    <input type="checkbox" class="allCheckBtn">
 	                </th>
 	                <th class="listTh">No.</th>
-	                <th class="listTh">
-	                	중요도
-	                	<select class="rgradeSelect" id="rgradeSelect" onchange="rgradeSelect()">
-	                		<option value="A">상</option>
-	                		<option value="B">중</option>
-	                		<option value="C">하</option>
-	                	</select>
-	                </th>
+	                <th class="listTh">중요도</th>
 	                <th class="listTh">카테고리</th>
 	                <th class="listTh" style="width: 350px">제목</th>
 	                <th class="listTh">진행상황</th>
@@ -732,7 +747,7 @@ textarea:focus,
 	            </tr> 
 	            <c:forEach items="${repair }" var="repair">
 	            	<tr class="repairListTr">
-		                <td>
+		                <td>  
 		                	<input type="checkbox" class="subCheckBtn" data-value="${repair.rno}" 
 		                		data-status="${repair.rstatus }" value="${repair.rno}" data-rgrade="${repair.rgrade }">
 		                </td>
@@ -1096,6 +1111,8 @@ textarea:focus,
 		// status값이 fixed(완료)인 경우 => 해당 게시글의 제목의 스타일을 바꾼다. 
 		$(".subCheckBtn").each(function(){
 			if( $(this).data('status') === 'FIXED'){
+				var thisTr = $(this).closest('tr');
+				thisTr.css("backgroundColor", "#FFE6E6");
 				$(this).closest('tr').find('td').eq(4).css("color", "lightgray").css("text-decoration", "line-through");
 			}
 			if( $(this).data('rgrade') === 'A'){
@@ -1103,6 +1120,9 @@ textarea:focus,
 			}
 		})
 		
+		var firstTest = $("#hiddenInputTest").data('rtimeorder');
+		var secondTest = $("#hiddenInputTest").data('timeorder');
+		console.log("firstTest: " + firstTest + ",   secondTest: " + secondTest);
 	})
 </script>
 </html>

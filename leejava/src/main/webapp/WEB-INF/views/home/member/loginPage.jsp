@@ -500,7 +500,7 @@
 		var password = $("#password").val();
 		var url = $("#login_url").val();
 		// 로그인창에서 로그인창으로 가는 것 방지.
-		if(url == "http://localhost:8000/leejava/loginPage.do"){
+		if( url.includes('login') || url.includes('join') || url.includes('Login') || url.includes('Join') ) {
 			url = "home.do";
 		}
 		console.log("url확인: " + url);

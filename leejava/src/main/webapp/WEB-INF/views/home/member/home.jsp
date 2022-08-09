@@ -21,7 +21,7 @@
 .mainBoards {
 	display: flex;
 	margin-left: 5%;
-	margin-top: 5%;
+	margin-top: 1%;
 	width: 70%;
 	height: auto;
 	border-right: 1px solid lightgray;
@@ -58,10 +58,6 @@
 <body>
 <!-- flex박스를 활용해서 메인 페이지에 공지사항 게시글 5개 정도를 노출시킨다. more누르면 이동. -->
 <div class="home_wrapper" style="background-color: #F8F8F8;">
-	<div class="bannerBox">
-		<button type="button" style="display: block; margin: auto; width: 100%; height: 98%;">배너가 들어갈 영역</button>
-	</div>
-	
 	<!-- 각종 게시판의 내용들을 간략하게 출력해준다.  -->
 	<div class="mainBoards">
 		<!-- 첫 번째 공지사항 테이블ㄴ -->

@@ -14,7 +14,7 @@
 	border-radius: 30px;
 	padding: 50px;
 	width: 50%;
-	margin-top: 8%;	
+	margin-top: 2%;	
 	margin-left: 15%;
 }
 .myInfoDetailTop {
@@ -33,9 +33,9 @@ label {
 #uploadResult img{
     display: block;
     padding: 5px;
-    margin: auto;	
-    min-width: 100px;
-    min-height: 100px;
+    margin: auto;	 			
+    max-width: 100px;
+    max`-height: 100px;
 	width: auto;
     height: auto;
 }
@@ -1515,7 +1515,7 @@ label {
 				console.log("이미지가 없음");
 				let str = "";
 				str += "<div id='basic_result_card'>";
-				str += "<img src='resources/img/s_loopy.jpeg'>";
+				str += "<img src='resources/image/userimage.jpg'>";
 				str += "</div>";
 				uploadResult.html(str); 
 				return; 

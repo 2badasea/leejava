@@ -20,8 +20,8 @@
 	padding: 50px;
 	width: 40%;
 	display: block;
-	margin-top: 10%;
-	margin-left: 20%;
+	margin-top: 3%;
+	margin-left: 15%;
 	margin-bottom: 10%;
 	z-index: 1;
 }

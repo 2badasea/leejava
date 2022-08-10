@@ -12,11 +12,28 @@
 .bannerApply_wrapper{
 	margin-top: 2%;
 }
+.banModalCloseBtn,
+.bannerApply_wrapper button{
+    margin-top: 15px;
+    border-radius: 20px;
+    width: 100px;
+    height: 30px;
+    background-color: #05AA6D;
+    border-style: none;
+    color: whitesmoke;
+}
+.banModalCloseBtn:hover,
+.bannerApply_wrapper button:hover{
+	cursor: pointer;
+	background-color: whitesmoke;
+	color: #05AA6D;
+	transition: 0.5s;
+}
 .bannerApplyForm{
 	margin-top: 2%;
 	margin-left: 5%;
 }
-#banapplycontent{
+#inputBanapplycontent{
 	resize: none;
 	width: 90%;
 	padding: 15px;
@@ -26,7 +43,7 @@
 	font-weight: 500;
 	
 }
-#banapplycontent:focus {
+#inputBanapplycontent:focus {
 	outline-color: coral;
 }
 /*	배너 신청 폼 테이블 디자인	*/
@@ -113,12 +130,217 @@
 	color: #05AA6D;
 	transition: 1s;
 }
+/*	배너신청 현황 조회 모달창 디자인 **************************/
+.banapply_modal_container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.banapply_modal_content {
+    position: absolute;
+    top: 30%;
+    left: 15%;
+    min-width: 600px;
+    width: auto;
+    height: auto;
+    z-index: 3;
+    background-color: white;
+    border: 0.5px solid #05AA6D;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.banapply_modal_layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: gray;
+    opacity: 0.5;
+    transition: 2s;
+}
+.banapplycontent{
+    resize: none;
+    width: 93%;
+    padding: 10px;
+    border-style: none;
+    font-weight: 600;
+    font-size: medium;
+               
+}
+.banapplySelectTable{
+	border-collapse: collapse;
+    text-align: center;
+}
+.banapplySelectTable th{
+	border: 1px solid #05AA6D;
+	padding:5px;
+}	
+.banapplySelectTable td{
+	border: 1px solid #05AA6D;
+	padding:5px;
+}
+.banapplySelectTable label{
+	padding:5px;
+}
+.banapplySelectTable input{
+    border-style: none;       
+    width: 95%;
+    height: 100%;  
+    padding:5px;   
+}
+.banapply_modal_content tr{
+	
+}
+.uploadFileLink:hover {
+	cursor: pointer;
+}
+.uploadFileLink {
+}
+
+
+/*	*************************************************/
 </style>
 </head>
 <body>
-<!-- 간단하게 세션값이 없으면 로그인을 유도하도록 한다.  -->
-<input type="hidden" id="bannerApplyHiddenInput" value="${session_user }">
 <div class="bannerApply_wrapper">
+	<!-- 간단하게 세션값이 없으면 로그인을 유도하도록 한다.  -->
+	<input type="hidden" id="bannerApplyHiddenInput" value="${session_user }">
+	<!-- 배너 신청 현황 모달창 -->
+ 	<div class="banapply_modal_container">
+        <div class="banapply_modal_content">
+            <div class="banapply_modal_header" align="center">
+                  <span style="font-size: 22px;"><b>배너광고 신청 현황</b></span>
+                <hr>
+            </div>
+            <div class="banapply_modal_body">
+                <!--이미지 원본파일명, 그리고 제목, 내용, 신청날짜, 신청유형, 신청상태 -->
+                <!--신청날짜, 신청상태, 신청유형/ 제목 /내용, /첨부파일-->
+                <!-- 기능적인 것에 최대한 초점을 맞추자. -->
+               	<form id="frm">
+                <table class="banapplySelectTable">
+                    <tr>
+                        <th>
+                            <label for="banapplydate">신청일</label>
+                        </th>
+                        <td>
+                            <input type="text" id="banapplydate" class="banapplydate" readonly>
+                        </td>
+                        <th >
+                            <label for="banapplytype">신청유형</label>
+                        </th>
+                        <td>
+                            <input type="text" id="banapplytype" class="banapplytype" readonly>
+                        </td>
+                        <th><label for="banpoststatus">신청상태</label></th>
+                        <td>
+                            <input type="text" class="banpoststatus" id="banpoststatus" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="banapplytitle">제목</label>
+                        </th>
+                        <td colspan="5">
+                            <input type="text" id="banapplytitle" class="banapplytitle" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="banapplycontent">내용</label>
+                        </th>
+                        <td colspan="5">
+                            <textarea rows="6" id="banapplycontent" class="banapplycontent" readonly></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="banfile">배너 이미지</label>
+                        </th>
+                        <td colspan="5">	
+                        	<input type="hidden" id="uploadFileInfo" class="uploadFileInfo">
+                        	<!--  클릭 이벤트로 정의할지. 아니면  -->
+                            <a class="uploadFileLink specialA">
+                            	<span id="banfile" class="banfile"></span>
+                            	<i class="fa-solid fa-file-arrow-down attachedFileIcon"></i>	
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+				</form>
+
+            </div>
+            <br>
+            <div class="banapply_modal_footer">
+                  <button class="banModalCloseBtn" style="float: right;">닫기</button>
+            </div>
+        </div>
+        <div class="banapply_modal_layer"></div>
+    </div>
+	<script>
+		/*	모달창 관련 스크립트 정의 */
+		// 리스트 제목 클릭 => 글번호를 읽어들여 ajax로 데이터를 가져와서 모달창에 데이터를 넣는다. 
+		$(document).on("click", ".bannerapplytitleTd", function(){
+			var banno = $(this).prev().data('banno');
+			console.log("글번호 확인: " + banno);
+			// 해당 번호를 ajax로 넘겨서 데이터를 모두 가져온다. 
+			var data = { banno : banno};
+			$.ajax({
+				url: "bannerApplySelect.do",
+				type: "GET",
+				data: data,
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(data){
+					console.log("호출 성공");
+					console.log("데이터 확인 : "); 
+					console.log(data);
+					$(".banapply_modal_container").css("display", "block");
+					$(".banapplydate").val(data.banapplydate);
+					$(".banapplytype").val(data.banapplytype);
+					$(".banpoststatus").val(data.banpoststatus);
+					$('.banapplytitle').val(data.banapplytitle);
+					$(".banapplycontent").val(data.banapplycontent);
+					$(".banfile").text(data.banfile);
+					$(".uploadFileInfo").data('filename', data.banfile);
+					$(".uploadFileInfo").data('pfilename', data.banpfile);
+					$("body").css("overflow", "hidden");
+				},
+				error: function(){
+					console.log("호출 실패");
+				}
+			})
+			
+		})
+		
+		// 첨부파일 다운로드
+		$(document).on("click", ".uploadFileLink", function(){
+			console.log("첨부파일 다운로드 시작");
+			var filename = $(".uploadFileInfo").data('filename');
+			var pfilename = $(".uploadFileInfo").data('pfilename');
+			// ajax로 첨부파일 다운로드를 구현해보자
+			var url = "bannerDownload.do?filename=" + filename + "&pfilename=" + pfilename;
+			console.log("filename 값:" + filename);
+			console.log("pfilename 값: " + pfilename);
+			console.log("호출할 url값: " + url);
+			location.href = url;
+		})
+		
+		// 모달창 닫기
+		$(".banModalCloseBtn").on("click", function(){
+			$(".banapply_modal_container").css("display", "none");
+			$("#frm")[0].reset();
+			$("body").css("overflow", "unset");
+		})
+	</script>
+	
+<!-- ------------------------------	 -->
+
 	<div class="bannerApplyStatus">
 		<div class="bannerApplyList">
 			<span>신청 현황</span>
@@ -134,10 +356,10 @@
 			<table class="bannerTable">
 				<tr>
 					<th>
-						<label for="banapplytitle">제목</label>
+						<label for="inputBanapplytitle">제목</label>
 					</th>
 					<td>
-						<input type="text" id="banapplytitle" name="banapplytitle" class="banapplytitle">
+						<input type="text" id="inputBanapplytitle" name="inputBanapplytitle" class="inputBanapplytitle">
 					</td>
 				</tr>
 				<tr>
@@ -146,29 +368,29 @@
 					</th>
 					<td>
 						<label for="first">7일</label>
-						<input type="radio" id="first" value="7" name="banapplytype" checked="checked">
+						<input type="radio" id="first" value="7days" name="banapplytype" checked="checked">
 						<label for="second">14일</label>
-						<input type="radio" id="second" value="14" name="banapplytype">
+						<input type="radio" id="second" value="14days" name="banapplytype">
 						<label for="third">30일</label>
-						<input type="radio" id="third" value="30" name="banapplytype">
+						<input type="radio" id="third" value="30days" name="banapplytype">
 						<label for="fourth">180일</label>
-						<input type="radio" id="fourth" value="180" name="banapplytype">
+						<input type="radio" id="fourth" value="180days" name="banapplytype">
 					</td>
 				</tr>
 				<tr>
 					<th>
-						<label for="banapplycontent">신청내용</label>
+						<label for="inputBanapplycontent">신청내용</label>
 					</th>
 					<td>
-						<textarea rows="7" id="banapplycontent" name="banapplycontent" class="banapplycontent" cols="80"></textarea>
+						<textarea rows="7" id="inputBanapplycontent" name="inputBanapplycontent" class="inputBanapplycontent" cols="80"></textarea>
 					</td>
 				</tr>
 				<tr>
 					<th>
-						<label for="imgfile">배너 이미지 첨부</label>
+						<label for="inputBanfile">배너 이미지 첨부</label>
 					</th>
 					<td>
-						<input type="file" name="banfile" id="banfile" class="banfile">
+						<input type="file" name="inputBanfile" id="inputBanfile" class="inputBanfile">
 					</td>
 				</tr>
 			</table>
@@ -182,16 +404,22 @@
 	const $email = $("#bannerApplyHiddenInput").val();
 	$(".bannerApplyBtn").on("click", function(){
 		var formData = new FormData();
-		var $banapplytitle = $(".banapplytitle").val();
-		var $banapplycontent = $(".banapplycontent").val();
-		var $banfile = $(".banfile")[0];
+		var $banapplytitle = $(".inputBanapplytitle").val();
+		var $banapplycontent = $(".inputBanapplycontent").val();
+		var $banfile = $(".inputBanfile")[0];
 		var $banapplytype = $("input[name='banapplytype']").val();
-		if($banfile.files.length === 0){
-			alert("배너로 사용할 이미지를 선택해주세요");
-			return false;
-		}
+		// 제목이랑 내용 입력값 유무 체크 
 		if($banapplytitle == '' || $banapplycontent == '' ){
 			alert("제목과 내용을 입력해주세요");
+			return false;
+		}
+		// 첨부파일의 확장자명 & 존재유무 유효성 체크
+		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
+		if($banfile.files.length === 0  ){
+			alert("배너로 사용할 이미지를 선택해주세요");
+			return false;
+		} else if( !regex.test($banfile.files[0].name) ){
+			alert("올바르지 않은 파일 형식입니다.");
 			return false;
 		}
 		console.log("신청자 이메일: " + $email);
@@ -230,15 +458,21 @@
 			}
 		})
 	})
+	
+		// minusicon,  plusicon 클릭 이벤트에 대한 이벤트 정의
+		$(".minusicon").on("click", function(){
+			$(".bannerListTable").hide();
+			$(this).css("display", "none");
+			$(".plusicon").css("display", "inline");
+		})
 		
-	$(document).on("click", ".bannerapplytitleTd", function(){
-		console.log( $(this).text());
-		var thisNo = $(this).prev().data('bno');
-		console.log("해당 배너신청 게시글의 글번호: " + thisNo);
-	})
-	
-	
-	
+		$(".plusicon").on("click", function(){
+			$(".bannerListTable").show();
+			$(this).css("display", "none");
+			$(".minusicon").css("display", "inline");
+		})
+		
+		
 </script>
 <script>
 	$(document).on("ready", function(){
@@ -280,7 +514,7 @@
 					var $banapplytype = item.banapplytype;
 					var $banpoststatus = item.banpoststatus;
 					var tr = $("<tr />").append(
-						$("<td data-bno='" +  $banno + "' />").text($banapplydate),
+						$("<td data-banno='" +  $banno + "' />").text($banapplydate),
 						$("<td class='bannerapplytitleTd' />").text($banapplytitle),
 						$("<td />").text($banapplytype),
 						$("<td />").text($banfile),

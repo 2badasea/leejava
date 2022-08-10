@@ -23,6 +23,26 @@
 			SELECT * FROM BANNERIMAGE
 				WHERE M_EMAIL = #{m_email}
 		</select>
+		
+		<!-- 사용자뷰, 배너 신청 현황 조회 -->
+		<select id="bannerApplySelect" resultType="co.bada.leejava.banner.BannerVO">
+			SELECT * FROM	BANNERIMAGE 
+				WHERE BANNO = #{banno}
+		</select>
+		
+		<!-- 페이징 처리를 위한 데이터 건수 조회 -->
+		<select id="getListCnt" resultType="int">
+			SELECT COUNT(*) FROM BANNERIMAGE
+		</select>
+		
+		<!-- 실질적으로 화면에 출력시킬 페이지 출력 쿼리문 -->
+		<select id="bannerApplyList" resultType="co.bada.leejava.banner.BannerVO">
+			SELECT * FROM (
+			    SELECT ROWNUM RN, A.* FROM (
+			    	SELECT * FROM BANNERIMAGE
+			        )   A
+			) WHERE RN BETWEEN  #{start} AND #{end}
+		</select>
 	
 	
 </mapper>

@@ -58,11 +58,24 @@ label {
     display: block;
     cursor: pointer;	
 }
+#m_address{
+	resize: none;
+	width: 280px;
+	padding: 10px;
+	font-weight: 900;
+	font-size: medium;
+	margin-top: 10px;
+	border-radius: 20px;
+	border: 0.3px solid #05AA6D;
+}
+#m_address:focus{
+	outline-color: coral;
+}
 .hiddenNickname {
 	display: none;
 } 
 .myInfoDetail_right{
-	margin-left: 100px;
+	margin-left: 60px;
 }
 #m_intro {
 	width: 100%;
@@ -90,7 +103,7 @@ label {
 	width: 250px;
 	font-weight: bolder;
 }
-#m_privacy,
+#m_privacy:focus,
 #m_promotion:focus{
 	outline: none;
 }
@@ -409,7 +422,8 @@ label {
 								<button type="button" class="phoneUpdateBtn">연락처 수정</button>
 							<br>
 							<label for="m_address" class="addressLabel speicalTitle"><b>주소</b></label>
-								<input type="text"  id="m_address" value="${member.m_address }" style="min-width: 300px; width: auto;" readonly="readonly">
+								<textarea rows="3" cols="" id="m_address" style="min-width: 300px;"  readonly="readonly">${member.m_address }</textarea>
+<%-- 								<input type="text"  id="m_address" value="${member.m_address }" style="min-width: 300px; width: auto;" readonly="readonly"> --%>
 								<button type="button" class="addressModalBtn">주소 수정</button>
 					</div>
 					<br>
@@ -1288,7 +1302,7 @@ label {
 			// ajax호출  => 쿼리스트링 방식으로 한번 연습해볼 것
 			$.ajax({
 				url: "ajaxMyIntroUpdate.do?m_email=" + m_email + "&m_intro=" + m_intro,
-				type: "GEt",
+				type: "get",
 				dataType: "text",
 				success: function(result){
 					alert(result);

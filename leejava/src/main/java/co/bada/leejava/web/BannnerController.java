@@ -1,12 +1,17 @@
 package co.bada.leejava.web;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +25,12 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.bada.leejava.Search;
 import co.bada.leejava.banner.BannerService;
 import co.bada.leejava.banner.BannerVO;
 
@@ -104,22 +111,89 @@ public class BannnerController {
 			return new ResponseEntity<List<BannerVO>>(list, HttpStatus.OK);
 		} else { // list변수에 담겨있는 데이터의사이즈 크기 => 0인 경우, null을 리턴.
 			list = null;
-			return new ResponseEntity<List<BannerVO>>(list, HttpStatus.NOT_IMPLEMENTED);
+			// 이렇게 리턴해도 되고, 아니면 HttpStatus.OK로 리턴한 다음, 콜백함수 차원에서 반환된 데이터의 길이에 따른 if문을 정의해도 됨.
+			return new ResponseEntity<List<BannerVO>>(list, HttpStatus.NOT_FOUND);
 		}
 	}
 	
-	// 관리자뷰의 사이드바에서 배너관리 페이지로 이동
-	@RequestMapping(value ="adminBannerManage.do")
-	public String adminBannerManage(Model model, BannerVO bvo) {
+	// 관리자뷰의 사이드바에서 배너관리 페이지로 이동 
+	@RequestMapping(value ="adminBannerManage.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public String adminBannerManage(Model model, BannerVO bvo, Search svo, 
+									@RequestParam(required = false, defaultValue = "1") int page,
+									@RequestParam(required = false, defaultValue = "1") int range) {
 		
-		List<BannerVO> list = new ArrayList<>();
-		// 딱히 파라미터를 넘길 필요는 없을 것 같다. 단순히 모든 데이터를 model에 담아서 뿌려주면 될 듯. 
-//		list = bannerDao.bannerSelectList();
-		
-		// 리스트타입의 컬렉션을 선언 한 다음에 배너이미지 관련 데이터를 모두 model에 담아서 보낸다.
-		// 페이징 처리는 아직 보류.
+		model.addAttribute("search", svo);
+		int listCnt = bannerDao.getListCnt();
+		svo.pageinfo(page, range, listCnt);
+		List<BannerVO> list = bannerDao.bannerApplyList(svo);
+		model.addAttribute("pagination", svo);
+		model.addAttribute("banner", list);
 		
 		return "home/admin/adminBannerManage";
 	}
+	
+	// 사용자뷰 배너 신청 내역 조회
+	@ResponseBody
+	@GetMapping(value = "bannerApplySelect.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<BannerVO> bannerApplySelect(@RequestParam int banno, BannerVO bvo){
+		
+		System.out.println("bvo값 조회: " + banno);
+		bvo.setBanno(banno);
+		bvo = bannerDao.bannerApplySelect(bvo);
+		System.out.println("조회한 bvo값 조회: " + bvo);
+		return new ResponseEntity<BannerVO> (bvo, HttpStatus.OK);
+	}
+	
+	// 첨부파일 이미지 다운로드 
+	@RequestMapping(value = "bannerDownload.do")
+	public void bannerDownload(HttpServletRequest request, HttpServletResponse response,
+				@RequestParam String filename, @RequestParam String pfilename  ) throws Exception{
+		logger.info("원본파일명 확인: " + filename);
+		logger.info("물리파일명 확인: " + pfilename);
+		
+		String savePath = bannerimgUploadPath;
+		String realDownloadName = "";
+		String realPfilePath = savePath + pfilename; 
+		logger.info("업로드 파일의 경로: " + realPfilePath);
+		try {
+			String browser = request.getHeader("User-Agent");
+			// 파일 인코딩 작업 시작
+			if(browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
+				realDownloadName = URLEncoder.encode(filename, "UTF-8").replaceAll("\\+", "%20");
+			} else {
+				realDownloadName = new String(filename.getBytes("UTF-8"), "ISO-8859-1");
+			}
+		} catch(UnsupportedEncodingException e) {
+			logger.info("========================== UnsupportedEncodingException");
+		}
+		logger.info("realDownloadName 값: " + realDownloadName);
+		File file = new File(realPfilePath);
+		if(!file.exists()) {
+			logger.info("=============물리파일이 해당 경로에 존재하지 않음");
+		}
+		logger.info("물리파일이 해당 경로에 존재");
+		response.setContentType("application/octer-stream");
+		response.setHeader("Content-Transfer-Encoding", "binary;");
+		response.setHeader("Content-Disposition", "attachmeent; filename=\"" + realDownloadName + "\""); 
+		
+		try {
+			// 다운로드를 요청한 클라이언트에게 연결하기 위한 출력 스트림 생성
+			OutputStream os = response.getOutputStream();
+			// 실제 서버(로컬)에 저장되어 있는 업로드파일을 가져올 입력스트림 생성
+			FileInputStream fis = new FileInputStream(realPfilePath); 
+			int ncount = 0;
+			byte[] bytes = new byte[512];
+			
+			while((ncount = fis.read(bytes)) != -1){
+				os.write(bytes, 0, ncount);
+			}
+			fis.close();
+			os.close();
+		} catch(Exception e) {
+			logger.info("===============FileNotFoundException : " + e);
+		}
+		
+		
+	} 
 	
 }

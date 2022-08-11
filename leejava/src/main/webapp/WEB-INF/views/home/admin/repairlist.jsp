@@ -104,6 +104,7 @@
 	min-height: 40px;
 } 
 
+
 /*	***	 유지보수 리스트 디자인 	***	*/
 .repairListTable{
 	margin-top: 2%;

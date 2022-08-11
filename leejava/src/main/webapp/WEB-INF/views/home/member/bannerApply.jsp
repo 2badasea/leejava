@@ -368,13 +368,13 @@
 					</th>
 					<td>
 						<label for="first">7일</label>
-						<input type="radio" id="first" value="7days" name="banapplytype" checked="checked">
+						<input type="radio" id="first" value="7" name="banapplytype" checked="checked">
 						<label for="second">14일</label>
-						<input type="radio" id="second" value="14days" name="banapplytype">
+						<input type="radio" id="second" value="14" name="banapplytype">
 						<label for="third">30일</label>
-						<input type="radio" id="third" value="30days" name="banapplytype">
+						<input type="radio" id="third" value="30" name="banapplytype">
 						<label for="fourth">180일</label>
-						<input type="radio" id="fourth" value="180days" name="banapplytype">
+						<input type="radio" id="fourth" value="180" name="banapplytype">
 					</td>
 				</tr>
 				<tr>

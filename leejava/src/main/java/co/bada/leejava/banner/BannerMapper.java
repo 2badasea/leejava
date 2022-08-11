@@ -16,4 +16,6 @@ public interface BannerMapper {
 	int getListCnt();
 	// 실제 페이징 처리 이후에 화면에 뿌려줄 데이터 리스트 조회 
 	List<BannerVO> bannerApplyList(Search svo);
+	// 배너 상태값 변경 이벤트 
+	int bannerUpdate(BannerVO bvo);
 }

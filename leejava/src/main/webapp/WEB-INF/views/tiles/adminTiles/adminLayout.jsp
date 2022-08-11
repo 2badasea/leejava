@@ -17,23 +17,25 @@
 	height: 100%;
 	display: flex;
 }
-.sideWrapper {
-	width: 12%;
+.sideWrapper{
+	width: 11%;
 }
 .mainWrapper {
-	width: 100%;
+	width: 89%;
 }
 .headerWrapper {
 	width: 100%;
-	height: 5%;
+	height: 3%;
 	background-color: whitesmoke;
 }
 .bodyWrapper{
-	min-height: 700px; 
+	width: 100%;
+	height: 89%;
 }
 .footerWrapper{
 	background-color: whitesmoke;
-	height: 70px;
+	width: 100%;
+	height: 8%;
 }
 </style>
 </head>
@@ -46,7 +48,7 @@
 			<div class="headerWrapper">
 				<tiles:insertAttribute name="aheader" />
 			</div>
-			<div class="bodyWrapper">
+			<div class="bodyWrapper">		
 				<tiles:insertAttribute name="abody" />
 			</div>
 			<div class="footerWrapper">

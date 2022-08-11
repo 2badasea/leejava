@@ -21,7 +21,11 @@
 		<!-- 회원별롯 신청한 배너문의 리스트 출력  -->
 		<select id="bannerimageSelect" resultType="co.bada.leejava.banner.BannerVO">
 			SELECT * FROM BANNERIMAGE
-				WHERE M_EMAIL = #{m_email}
+				<trim prefix="WHERE" prefixOverrides="AND | OR">
+					<if test="m_email != null and m_email != '' ">AND M_EMAIL = #{m_email}</if>
+					<if test="banpoststatus == 'PUBLICING' ">AND BANPOSTSTATUS = #{banpoststatus}</if>
+				</trim>
+			ORDER BY BANAPPLYDATE DESC
 		</select>
 		
 		<!-- 사용자뷰, 배너 신청 현황 조회 -->
@@ -39,10 +43,29 @@
 		<select id="bannerApplyList" resultType="co.bada.leejava.banner.BannerVO">
 			SELECT * FROM (
 			    SELECT ROWNUM RN, A.* FROM (
-			    	SELECT * FROM BANNERIMAGE
+			    	SELECT * FROM BANNERIMAGE ORDER BY BANAPPLYDATE DESC
 			        )   A
 			) WHERE RN BETWEEN  #{start} AND #{end}
 		</select>
+		
+		<!-- 배너 상태값 업데이트	 -->
+		<update id="bannerUpdate" parameterType="co.bada.leejava.banner.BannerVO">
+			UPDATE BANNERIMAGE 
+				<trim prefix="SET" suffixOverrides=",">
+					<if test="banfile != null and banfile != '' ">BANFILE = #{banfile},</if>
+					<if test="banpfile != null and banpfile != '' ">BANPFILE = #{banpfile},</if>
+					<if test="banapplytype != null and banapplytype != ''  ">BANAPPLYTYPE = #{banapplytype},</if>
+					<if test="banapplytitle != null and banapplytitle != '' ">BANAPPLYTITLE = #{banapplytitle},</if>
+					<if test="banapplycontent != null and banapplycontent != '' ">BANAPPLYCONTENT = #{banapplycontent},</if>
+					<if test="banpostdate != null and banpostdate != '' ">BANPOSTDATE = #{banpostdate},</if>
+					<!-- 게재상태 4가지 각각에 대한 업데이트에 따른 경우의 수  -->
+					<if test="banpoststatus == 'EXPIRE'">BANPOSTSTATUS = #{banpoststatus}, BANPOSTENDDATE = SYSDATE,</if>
+					<if test="banpoststatus == 'DECLINE' ">BANPOSTSTATUS = #{banpoststatus},</if>
+					<if test="banpoststatus == 'WAITING' ">BANPOSTSTATUS = #{banpoststatus}, BANPOSTDATE = '', BANPOSTENDDATE = '',</if>
+					<if test="banpoststatus == 'PUBLICING' ">BANPOSTSTATUS = #{banpoststatus}, BANPOSTDATE = SYSDATE, BANPOSTENDDATE = ( SYSDATE + #{banapplytype} ),</if>
+				</trim>
+				WHERE BANNO = #{banno}
+		</update>
 	
 	
 </mapper>

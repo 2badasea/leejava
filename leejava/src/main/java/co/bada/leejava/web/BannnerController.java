@@ -24,6 +24,8 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -192,8 +194,47 @@ public class BannnerController {
 		} catch(Exception e) {
 			logger.info("===============FileNotFoundException : " + e);
 		}
-		
-		
 	} 
 	
+	@ResponseBody
+	@PutMapping(value = "bannerUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> bannerUpdate(@RequestBody BannerVO bvo){
+		System.out.println("넘어온 bvo값 확인: " + bvo);
+		
+		int n = bannerDao.bannerUpdate(bvo);
+		String message = null;
+		if(n != 0) {
+			message = "YES";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		}else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+	}
+	
+	// 배너이미지 신청 거절사유 작성하는 폼 팝업 호출
+	@RequestMapping(value = "bannerimageDeclinePop.do", method = RequestMethod.GET)
+	public String bannerimageDeclinePop(Model model, HttpServletRequest request, 
+				@RequestParam("fromUser") String fromUser,
+				@RequestParam("toUser") String toUser) {
+		
+		System.out.println("전달받은 파라미터값: " + fromUser + ", " + toUser);
+		model.addAttribute("toUser", toUser);
+		model.addAttribute("fromUser", fromUser);
+		return "home/popup/bannerimageDeclinePop";
+	}
+	
+	// 배너관리 페이지. 게제중(banpoststatus 값이 'PUBLICING'인 리스트 출력) 
+	@ResponseBody
+	@GetMapping(value = "publicingBannerList.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<BannerVO>> publicingBannerList(BannerVO bvo, 
+				@RequestParam String banpoststatus){
+		
+		List<BannerVO> list = new ArrayList<>();
+		System.out.println("파라미터 값 조회: " + banpoststatus);
+		bvo.setBanpoststatus(banpoststatus);
+		list = bannerDao.bannerimageSelect(bvo);
+		return new ResponseEntity<List<BannerVO>> (list, HttpStatus.OK);
+		// 보통의 경우 메소드이름과 똑같은  쿼리문 id값을 찾지만, 기존의 list를 출력시키는 "bannerimageSelect" 를 활용한다 <trim>을 줘서
+	}
 }

@@ -176,7 +176,7 @@
     font-size: medium;
                
 }
-.banapplySelectTable{
+.banapplySelectTable:not(".banfile"){
 	border-collapse: collapse;
     text-align: center;
 }
@@ -198,9 +198,7 @@
     height: 100%;  
     padding:5px;   
 }
-.newBannerFile{
-	display: none;
-}
+
 .banapplycontent:focus,
 .banapplySelectTable input:focus{
 	outline: none;
@@ -213,7 +211,26 @@
 }
 .uploadFileLink {
 }
-
+.newBannerFile{
+	display: none;
+}
+.newFileLabel{
+	margin-top: 3px;
+	font-size: small;
+	border: 0.3px solid coral;
+	background-color: coral;
+	color: white;
+	margin-bottom: 3px;
+	
+}
+.banUpdateCallBtn:hover,
+.newFileLabel:hover {
+	cursor: pointer;
+	color: #05AA6D;
+	background-color: whitesmoke;
+	border: white;
+	transition: 0.5s;
+}
 /*	*************************************************/
 </style>
 </head>
@@ -281,12 +298,13 @@
                         <td colspan="5">	
                         	<input type="hidden" id="uploadFileInfo" class="uploadFileInfo">
                         	<!--  클릭 이벤트로 정의할지. 아니면  -->
-                            <a class="uploadFileLink specialA">
+                            <a class="uploadFileLink">
                             	<span id="banfile" class="banfile"></span>
                             	<i class="fa-solid fa-file-arrow-down attachedFileIcon"></i>	
                             </a>
-                            <label for="newBannerFile" class="newBannerFile">배너 이미지 변경하기</label>
-                            <input type="file" class="newBannerFile" id="newBannerFile">
+                            <br>
+                            <label for="newBannerFile" class="newBannerFile newFileLabel">배너 이미지 변경</label>
+                            <input type="file" id="newBannerFile" class="newBannerFile" style="width: auto;">
                         </td>
                     </tr>
                 </table>
@@ -314,8 +332,7 @@
 				// 그리고 동적으로 applytype을 선택하는 select박스와 첨부파일 이미지 선택 <file>태그를 생성한다. 
 				$(".banapplytype").css("display", "none");
 				$('.applyTypeUpdate').css("display", "inline");
-				$(".uploadFileLink").hide();
-				$(".newBannerFile").show();
+				$(".newBannerFile").css("display","inline");
 			}
 		})
 		
@@ -329,13 +346,54 @@
 			$(".banapplytitle, .banapplycontent").prop("readonly", true);
 			// 그리고 WAITING인 신청글에 대해 동적으로 생성된 버튼의 경우 삭제시켜준다.
 			$(".banUpdateCallBtn, .banUpdateEndBtn").remove();
-			$(".uploadFileLink").show();
-			$(".newBannerFile").hide();
+			$(".newBannerFile").css("display","none");
+			$('#newBannerFile').val('');
 		})
 		
 		// "수정완료" 버튼 이벤트 정의 => 변경된 값들로 업데이트 시킨다. 변경사항이 일어났다면, 버튼을 닫을 때 새로고침. 
-		$(".banUpdateEndBtn").on("click", function(){
+		$(document).on("click", ".banUpdateEndBtn" ,function(){
+				var formData = new FormData();
 				
+				var banno = $(".uploadFileInfo").data('banno');
+				var newType = $(".applyTypeUpdate").val();
+				var newTitle = $(".banapplytitle").val();
+				var newContent = $(".banapplycontent").val();
+				var newFile = $("#newBannerFile")[0];
+				var existingPfileName = $(".uploadFileInfo").data('pfilename');
+				console.log("인코딩 전: " + existingPfileName );
+				existingPfileName = encodeURIComponent( existingPfileName);
+				console.log("인코딩 후 : " + existingPfileName);
+				var regex = new  RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
+				if( newFile.files.length !== 0){
+					if( !regex.test(newFile.files[0].name) ){
+						alert("올바르지 않은 파일 형식입니다.");
+						$("#newBannerFile").val('');
+						return false;
+					} else {
+						// 새로 선택한 이미지 파일이 존재하고, 유효성 체크를 통과 => 기존배너이미지의 물리명과 새로선택한 파일을 formData에 담는다.
+						formData.append("existingPfilename", existingPfileName);
+						formData.append("newBanfile" ,newFile.files[0]);
+					}
+				} 
+				formData.append("banno", banno);
+				formData.append("banapplytype", newType);
+				formData.append("banapplytitle", newTitle);
+				formData.append("banapplycontent", newContent);
+				$.ajax({
+					url: "newBannerUpdate.do",
+					data: formData,
+					method: "PUT",
+					contentType: false,
+					processData : false,
+					success: function(data){
+						console.log("호출 성공");
+						console.log(data);
+					},
+					error: function(err){
+						console.log("호출 실패");
+						console.log(err);
+					}
+				})
 		})
 		
 		/*	모달창 관련 스크립트 정의 */
@@ -365,6 +423,7 @@
 					$('.banapplytitle').val(data.banapplytitle);
 					$(".banapplycontent").val(data.banapplycontent);
 					$(".banfile").text(data.banfile);
+					$(".uploadFileInfo").data('banno', data.banno);
 					$(".uploadFileInfo").data('filename', data.banfile);
 					$(".uploadFileInfo").data('pfilename', data.banpfile);
 					$("body").css("overflow", "hidden");

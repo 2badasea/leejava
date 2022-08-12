@@ -214,6 +214,30 @@ public class BannnerController {
 		}
 	}
 	
+	// 배너신청 게시글 수정 by(사용자) 
+	@ResponseBody
+	@PutMapping(value = "newBannerUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> newBannerUpdate(BannerVO bvo,
+					HttpServletRequest request, HttpServletResponse response,
+					@RequestParam(required = false, value = "banno") int banno,
+					@RequestParam(required = false, value = "newBanfile") MultipartFile file,
+					@RequestParam(required = false, value = "existingPfilename") String existingPfilename,
+					@RequestParam(required = false, value = "banapplytype") String banapplytype,
+					@RequestParam(required = false, value = "banapplytitle") String banapplytitle,
+					@RequestParam(required = false, value = "banapplycontent") String banapplycontent) throws Exception{
+		
+		System.out.println("file: " + file);
+		System.out.println("exisitngPfileNmae 인코딩 처리 값: " + existingPfilename);
+		System.out.println("type: " + banapplytype);
+		System.out.println("title: " + banapplytitle);
+		System.out.println("content: " + banapplycontent);
+		
+		// existingPfilename 값을 통해서 기존의 저장되어 있던 파일을 삭제한다. 
+		// file  값을 통해서 새롭게 업로드를 구현하여, db값을 업데이트 시킨다. 
+		
+		return new ResponseEntity<String>("OK", HttpStatus.OK);
+	}
+	
 	// 배너이미지 신청 거절사유 작성하는 폼 팝업 호출
 	@RequestMapping(value = "bannerimageDeclinePop.do", method = RequestMethod.GET)
 	public String bannerimageDeclinePop(Model model, HttpServletRequest request, 

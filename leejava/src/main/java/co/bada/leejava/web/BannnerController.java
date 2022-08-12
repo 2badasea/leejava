@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -237,4 +239,25 @@ public class BannnerController {
 		return new ResponseEntity<List<BannerVO>> (list, HttpStatus.OK);
 		// 보통의 경우 메소드이름과 똑같은  쿼리문 id값을 찾지만, 기존의 list를 출력시키는 "bannerimageSelect" 를 활용한다 <trim>을 줘서
 	}
+	
+	
+	// 배너관리 페이지 => 배너 이미지 조회
+	@GetMapping("bannerDisplay.do")
+	public ResponseEntity<byte[]> bannerDisplay(String banpfileName){
+		System.out.println("banpfilename 값 확인: " + banpfileName);
+		File file = new File(bannerimgUploadPath + banpfileName);
+		System.out.println("File 객체의 값 확인: " + file);
+		ResponseEntity<byte[]> resultData = null;
+		try {
+			HttpHeaders header = new HttpHeaders();
+			header.add("Content-type", Files.probeContentType(file.toPath()));
+			System.out.println("header값 조회: " + header);
+			resultData = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file),header,HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("반환할 resultData 확인: " +  resultData);
+		return resultData;
+	}
+	
 }

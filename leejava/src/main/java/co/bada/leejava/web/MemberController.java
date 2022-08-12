@@ -26,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -125,7 +124,6 @@ public class MemberController {
 				type = Files.probeContentType(checkfile.toPath());
 				logger.info("===============MIME TYPE(Files.probeContentType()의 결과) : " + type);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -168,7 +166,7 @@ public class MemberController {
 		
 		// 이미지 정보 담는 객체. 위에 타입체크용 for문 내에서도 한번 선언했음.
 			// 나중에 return타입으로 ResponseEntity로, 이미지 정보가 담긴 list와, HttpStatus 상태값을 담아서 보낸다.
-		List<AttachImageVO> list = new ArrayList();
+		List<AttachImageVO> list = new ArrayList<>();
 		
 		// 실제 파일을 폴더에 저장하기 위해서 transperTo() 메서드를 사용한다. 
 		// 사용방법은 전달받은 파일인 MultipartFile 객체에 저장하고자 하는 위치를 지정한

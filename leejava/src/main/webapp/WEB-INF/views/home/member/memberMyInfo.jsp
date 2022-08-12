@@ -1348,7 +1348,6 @@ label {
 				}
 			})
 		})
-	
 		
 		/* 첨부파일 이미지 업로드 선택해서 물리파일을 생성하는 부분  => 실제 바로 DB에 넣는 부분은 아님. */
 		$("input[type='file']").on('change', function(e){ 
@@ -1382,7 +1381,7 @@ label {
 				// 전송할 파일객체가 여러 개라면 밑에 처럼 처리해준다. 
 				// 		for(let i = 0; i < fileList.length; i++){
 				// 			formData.append("uploadFile", fileList[i]);
-				// 		}
+				// 		}  
 			
 			$.ajax({
 				url: 'ajaxProfileUpdate.do',

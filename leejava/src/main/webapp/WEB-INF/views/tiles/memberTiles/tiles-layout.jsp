@@ -29,7 +29,6 @@
 .memberTilesHeaderWrapper {
 	width: 70%; 	
 	height: 30%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
-	background-color: whitesmoke;
 }
 .memberTilesBodyWrapper{
 	min-height: 700px; 

@@ -91,7 +91,7 @@
 	justify-content: space-between;
 }
 /* 동적으로 추가된 배너 신청 현황 리스트*/  
-.bannerListTable{
+.bannerListTable {
 	margin-left: 5%;
 	width: 50%;
 	text-align: center;
@@ -139,6 +139,9 @@
     height: 100vh;
     display: none;
     z-index: 1;
+}
+.applyTypeUpdate{
+	display: none;
 }
 
 .banapply_modal_content {
@@ -188,11 +191,19 @@
 .banapplySelectTable label{
 	padding:5px;
 }
+.applyTypeUpdate,
 .banapplySelectTable input{
     border-style: none;       
     width: 95%;
     height: 100%;  
     padding:5px;   
+}
+.newBannerFile{
+	display: none;
+}
+.banapplycontent:focus,
+.banapplySelectTable input:focus{
+	outline: none;
 }
 .banapply_modal_content tr{
 	
@@ -202,7 +213,6 @@
 }
 .uploadFileLink {
 }
-
 
 /*	*************************************************/
 </style>
@@ -236,6 +246,12 @@
                         </th>
                         <td>
                             <input type="text" id="banapplytype" class="banapplytype" readonly>
+                            <select class="applyTypeUpdate">
+                            	<option value="7">7일</option>
+                            	<option value="14">14일</option>
+                            	<option value="30">30일</option>
+                            	<option value="180">180일</option>
+                            </select>
                         </td>
                         <th><label for="banpoststatus">신청상태</label></th>
                         <td>
@@ -245,7 +261,7 @@
                     <tr>
                         <th>
                             <label for="banapplytitle">제목</label>
-                        </th>
+                        </th> 
                         <td colspan="5">
                             <input type="text" id="banapplytitle" class="banapplytitle" readonly>
                         </td>
@@ -269,11 +285,12 @@
                             	<span id="banfile" class="banfile"></span>
                             	<i class="fa-solid fa-file-arrow-down attachedFileIcon"></i>	
                             </a>
+                            <label for="newBannerFile" class="newBannerFile">배너 이미지 변경하기</label>
+                            <input type="file" class="newBannerFile" id="newBannerFile">
                         </td>
                     </tr>
                 </table>
 				</form>
-
             </div>
             <br>
             <div class="banapply_modal_footer">
@@ -283,6 +300,44 @@
         <div class="banapply_modal_layer"></div>
     </div>
 	<script>
+		// 동적으로 생성된 "수정하기"버튼 이벤트 정의
+		$(document).on("click", ".banUpdateCallBtn", function(){
+			var updateCheck = confirm("수정하시겠어요? 최종적으로 \"수정완료\" 버튼을 누르셔야 업데이트 됩니다.");
+			if(!updateCheck){
+				return false;
+			} else {
+				$(".banapplytitle, .banapplycontent").prop("readonly", false);
+				$(".banUpdateCallBtn").text('수정완료!!');
+				$(".banUpdateCallBtn").css({"backgroundColor" : "coral", "color" : "white"});
+				$(".banUpdateCallBtn").addClass("banUpdateEndBtn");
+				$(".banUpdateCallBtn").removeClass('banUpdateCallBtn');
+				// 그리고 동적으로 applytype을 선택하는 select박스와 첨부파일 이미지 선택 <file>태그를 생성한다. 
+				$(".banapplytype").css("display", "none");
+				$('.applyTypeUpdate').css("display", "inline");
+				$(".uploadFileLink").hide();
+				$(".newBannerFile").show();
+			}
+		})
+		
+		// 모달창 닫기
+		$(".banModalCloseBtn").on("click", function(){
+			$(".banapply_modal_container").css("display", "none");
+			$("#frm")[0].reset();
+			$("body").css("overflow", "unset");
+			$(".banapplytype").css("display", "inline");
+			$('.applyTypeUpdate').css("display", "none");
+			$(".banapplytitle, .banapplycontent").prop("readonly", true);
+			// 그리고 WAITING인 신청글에 대해 동적으로 생성된 버튼의 경우 삭제시켜준다.
+			$(".banUpdateCallBtn, .banUpdateEndBtn").remove();
+			$(".uploadFileLink").show();
+			$(".newBannerFile").hide();
+		})
+		
+		// "수정완료" 버튼 이벤트 정의 => 변경된 값들로 업데이트 시킨다. 변경사항이 일어났다면, 버튼을 닫을 때 새로고침. 
+		$(".banUpdateEndBtn").on("click", function(){
+				
+		})
+		
 		/*	모달창 관련 스크립트 정의 */
 		// 리스트 제목 클릭 => 글번호를 읽어들여 ajax로 데이터를 가져와서 모달창에 데이터를 넣는다. 
 		$(document).on("click", ".bannerapplytitleTd", function(){
@@ -298,12 +353,15 @@
 				contentType: "application/json; charset=utf-8",
 				success: function(data){
 					console.log("호출 성공");
-					console.log("데이터 확인 : "); 
-					console.log(data);
 					$(".banapply_modal_container").css("display", "block");
 					$(".banapplydate").val(data.banapplydate);
 					$(".banapplytype").val(data.banapplytype);
+					$(".applyTypeUpdate").val(data.banapplytype);
 					$(".banpoststatus").val(data.banpoststatus);
+					if( data.banpoststatus === 'WAITING'){
+						var str = "<button class='banUpdateCallBtn' style='float: right; margin-right:10px;'>수정하기</button>";
+						$(".banapply_modal_footer").append(str);
+					}
 					$('.banapplytitle').val(data.banapplytitle);
 					$(".banapplycontent").val(data.banapplycontent);
 					$(".banfile").text(data.banfile);
@@ -315,7 +373,6 @@
 					console.log("호출 실패");
 				}
 			})
-			
 		})
 		
 		// 첨부파일 다운로드
@@ -330,20 +387,13 @@
 			console.log("호출할 url값: " + url);
 			location.href = url;
 		})
-		
-		// 모달창 닫기
-		$(".banModalCloseBtn").on("click", function(){
-			$(".banapply_modal_container").css("display", "none");
-			$("#frm")[0].reset();
-			$("body").css("overflow", "unset");
-		})
 	</script>
 	
 <!-- ------------------------------	 -->
 
 	<div class="bannerApplyStatus">
 		<div class="bannerApplyList">
-			<span>신청 현황</span>
+			<span>나의 신청 현황</span>
 			<div class="bannerListIcons">
 				<i class="fa-solid fa-circle-plus plusicon"></i>
 				<i class="fa-solid fa-circle-minus minusicon"></i>
@@ -407,7 +457,7 @@
 		var $banapplytitle = $(".inputBanapplytitle").val();
 		var $banapplycontent = $(".inputBanapplycontent").val();
 		var $banfile = $(".inputBanfile")[0];
-		var $banapplytype = $("input[name='banapplytype']").val();
+		var $banapplytype = $("input[name='banapplytype']:checked").val();
 		// 제목이랑 내용 입력값 유무 체크 
 		if($banapplytitle == '' || $banapplycontent == '' ){
 			alert("제목과 내용을 입력해주세요");

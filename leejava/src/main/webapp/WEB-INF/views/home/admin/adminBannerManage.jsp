@@ -11,14 +11,13 @@
 <style>
 /*	전체 페이지 공통 적용 요소*/
 .adminBannerManage_wrapper{
-	border: 0.1px dotted teal;
 	height: 100%;
 	width: 75%;
 }
 /*	배너 이미지 관리창 디자인 */
 .bannerManageForm{
-	border: 0.1px dotted teal;
 	display: flex;
+	min-height: 40%;
 }
 
 
@@ -138,6 +137,54 @@
 .bannerImg:hover {
 	cursor: pointer;
 }
+/*	페이지 상단 PUBLICING 리스트의 박스 디자인 */
+.publicingListBox{
+	margin-left: 25px;
+	width: 40%;
+}
+.bannerimageBox{
+	width: 60%;
+	height: 100%;
+	background-color: whitesmoke;
+}
+.banPublicingList{
+	border: 1px solid #313348;
+	text-align: center;
+}
+.banPublicingList th{
+	border-bottom: 1px solid #313348;
+}
+.banPublicingList td {
+	border-left: 0.3px dotted lightgray;
+	font-size: small;
+}
+.imageFileName {
+	border-style: none;
+	text-align: center;
+	color: teal;
+	font-weight: 600;
+	font-size: medium;
+	background-color: transparent;
+}
+.endDateTd{
+	color: tomato;
+}
+.imageFileName:hover{
+	cursor: pointer;
+}
+.imageFileName:focus {
+	outline: none;
+}
+#bannerImage{
+	width: 500px;	
+	height: 200px;
+}
+.publicingListThTr:hover {
+	background-color: background-color: #B8D7FF;
+}
+.banPublicingList tr:not(.publicingListThTr):hover {
+	background-color: #B8D7FF;
+}
 </style>
 </head>
 <body>
@@ -147,7 +194,6 @@
     <div class="banner_modal_container">
         <div class="banner_modal_content">
             <div class="banner_modal_body">
-            	<button type="button" class="testBtn" onclick="Fnc_BannerDeclinePopup('bada','testUser')">테스트 버튼.</button>
                 <!--테이블 형식으로 배너신청 게시글의 정보를 뿌려준다. -->
                 <form id="bannerSelectForm">
                 <table class="bannerSelectTable">
@@ -220,7 +266,7 @@
     		} else if( selectStatus === 'PUBLICING' ){
     			var publicingCheck = confirm("게재 리스트에 해당 게시물의 배너이미지를 추가할까요?");
     			if(publicingCheck){
-    				data.banpoststatus = "PUBLICING";
+    				data.banpoststatus = "PUBLICING";	
     				data.banapplytype = applytype;
     			} else {
     				$(".statusSelect").val('WAITING');
@@ -238,6 +284,7 @@
     		Fnc_BannerStatusUpdate(data);
     	})
     	
+    	// 게재상태(banpoststatus) 업데이트 이벤트 by modal
     	function Fnc_BannerStatusUpdate(data){
     		console.log("배너 게재상태 업데이트 이벤트 호출");
     		console.log("넘어온 글번호 값: " + data.banno);
@@ -324,14 +371,19 @@
 	<!-- 크게 두 섹션으로 구성 => 실제 배너이미지 조정하는 부분과 배너신청 현황을 조회하는 곳 -->
 	<div class="bannerManageForm" style="height: 40%; border-bottom: 1px solid navy;">
 		<!-- 일단 테이블로 구현한다 => 출력시킬 데이터 항목: 글번호, 이미지파일원본명, 게시시작일, 게시만료일, 게재상태(select) -->
-		<div class="publicingBox">
+		<div class="publicingListBox">
 			<h2>배너이미지 리스트</h2>
+			<br>
 			<div class="resultBox">
 				<!-- 여기에 banpoststatus 값이 publicing인 리스트들이 출력된다. -->
 			</div>
 		</div>
-		<div class="bannerimageBox">
+		<div class="bannerimageBox" align="center">	
+			<h3>이미지 파일 이름: <span class="selectImageName"></span></h3>
 			<!-- 이미지 파일명을 클릭하면 해당 이미지가 출력되는 공간이다.  -->
+			<div class="selectImageBox">
+				
+			</div>
 		</div>
 	</div>
 	<hr>
@@ -416,6 +468,69 @@
 			}
 		})
 	})
+	
+	// 배너관리 메인페이지 상단에 출력시킬 PUBLICING 리스트 출력 함수.
+	function Fnc_bannerListShow(data){
+		var tb = $("<table class='banPublicingList' />");
+		var thTr = $("<tr class='publicingListThTr' />").append(
+			$("<th />").text('No'),
+			$("<th />").text('파일명'),
+			$("<th />").text('시작일'),
+			$("<th />").text('종료일'),
+			$("<th />").text('게재상태')
+		);
+		tb.append(thTr); 
+		$.each(data, function(index, item){
+			// 화면에 출력시킬 요소 (글번호, 이미지파일명, 게시시작일, 게재만료일, 게시상태(select) )
+			var $no = item.banno;
+			var $file = item.banfile;
+			var $pfile = item.banpfile;
+			var $postdate = item.banpostdate;
+			var $postenddate = item.banpostenddate;
+			var $poststatus = item.banpoststatus;
+			var tr = $("<tr class='publicingTr' />").append(
+				$("<td />").text($no),
+				$("<td />").html("<input type='text' class='imageFileName' value='"+$file+"' data-pfile='" + $pfile + "' readonly>"),
+				$("<td />").text($postdate),
+				$("<td class='endDateTd' />").text($postenddate),
+				$("<td />").text($poststatus)
+			);
+			tb.append(tr);
+		})
+		$(".resultBox").append(tb);
+		
+		// 출력시키고 난 뒤, 오늘 날짜와 게재종료일을 비교하는 함수를 실행한다. 
+		Fnc_postenddateCheck();
+	}
+	
+	// 오늘날짜와 게재만료일을 비교하는 함수 정의.
+	function Fnc_postenddateCheck(){
+		var today = new Date().toISOString().substring(2,10);
+		$(".publicingTr").each(function(){
+			var endDate = $(this).find('td').eq(3).text();
+			console.log("endDate 값: " + endDate);
+			if( today > endDate){
+				$(this).css("text-decoration", "line-through");
+				$(this).css("color", "tomato");
+			}
+			
+		})
+		
+	}
+	
+	// 이미지 출력함수 공간의 대상은  selectImageBox  resultBox
+	$(".resultBox").on("click", ".imageFileName", function(){
+		console.log("라이브 이벤트 실행 테스트");
+		console.log( $(this).val());
+		console.log( $(this).data('pfile'));
+		var banfileName = $(this).val();
+		var banpfileName = $(this).data('pfile');
+		var pfileCallPath = encodeURIComponent( banpfileName );
+		console.log("인코딩 결괏값 확인: " + pfileCallPath);
+		var str = "<img id='bannerImage' src='bannerDisplay.do?banpfileName=" + pfileCallPath + "'>";
+		$(".selectImageBox").html(str);
+	})
+	
 </script>
 <script>
 	// 페이지가 로드되자마자 publigin 상태인 데이터들을 화면 상단에 따로 또 노출시킨다. 근데 화면을 새로고침하는 것과 새로 .do를 타는 것은 다른 건가. 
@@ -429,12 +544,15 @@
 			success: function(data){
 				console.log("ajax 호출 성공");
 				console.log(data);
+				Fnc_bannerListShow(data);
 			},
 			error: function(err){
 				console.log("ajx 호출 실패");
 				console.log(err);
 			}
 		})
+		
+		// 그리고 게재만료일과 오늘날짜를 비교하여, 그 값이 커지게 되면, 알아서 expire로 업데이트 시킨다. 
 		
 		
 	})

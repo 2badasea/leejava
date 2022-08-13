@@ -395,32 +395,41 @@ text-decoration: none;
 	//email값을 이용하여 get.JSON url을 호출하여 db에 있는 프로필 이미지 정보를 가져와서 화면에 뿌려준다.
 	var imageemail = $("#m_email").val();
 	var uploadResult = $(".uploadResult");
-	$.getJSON("getAttachList.do", { m_email : imageemail}, function(arr){
-		console.log("getJSON 호출 성공");
-		let obj = arr[0];
-		
-		if(obj.uploadPath == '' || obj.uploadPath == null){
-			// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
-			console.log("이미지가 없음");
+	if(imageemail !== ''){
+		$.getJSON("getAttachList.do", { m_email : imageemail}, function(arr){
+			console.log("getJSON 호출 성공");
+			let obj = arr[0];
+			if(obj.uploadPath == '' || obj.uploadPath == null){
+				// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
+				console.log("이미지가 없음");
+				let str = "";
+				str += "<div id='basic_result_card'>";
+				str += "<img src='resources/image/userimage.jpg'>";
+				str += "</div>";
+				uploadResult.html(str);
+				return;
+			}
+			// 반대로 호출되는 이미지 정보가 있는 경우. 
 			let str = "";
-			str += "<div id='basic_result_card'>";
-			str += "<img src='resources/image/userimage.jpg'>";
+			console.log(obj);
+			let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			console.log("fileCallPath 값: " + fileCallPath);
+			str += "<div id='basic_result_card'";
+			str += " data-path='" +  obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" +  obj.fileName + "'";
+			str += ">";
+			str += "<img src='display.do?fileName=" + fileCallPath + "'>";
 			str += "</div>";
 			uploadResult.html(str);
-			return;
-		}
-		// 반대로 호출되는 이미지 정보가 있는 경우. 
+		}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
+	} else {  
+		// 일단은 임시로 로그인하지 않은 경우 => 기본 이미지를 출력시키도록 한다.
 		let str = "";
-		console.log(obj);
-		let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-		console.log("fileCallPath 값: " + fileCallPath);
-		str += "<div id='basic_result_card'";
-		str += " data-path='" +  obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" +  obj.fileName + "'";
-		str += ">";
-		str += "<img src='display.do?fileName=" + fileCallPath + "'>";
+		str += "<div id='basic_result_card'>";
+		str += "<img src='resources/image/userimage.jpg'>";
 		str += "</div>";
 		uploadResult.html(str);
-	}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
+	}
+		
 
 
 

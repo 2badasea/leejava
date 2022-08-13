@@ -243,18 +243,19 @@
     	// 게재상태값 변경에 따른 이벤트 호출
     	$(".statusSelect").on("change", function(){
     		console.log("변경 이벤트 발생");
-    		var email = $(".bannerEmail").text();
+    		var email = $(".bannerEmail").text();  // 신청자 이메일 => 거절사유 작성하는 폼을 호출하는 함수의 인수로 사용
     		var bno = $(".bannerNo").text();
     		var applytype = $(".bannerType").text();
     		var selectStatus = $(this).val();
     		console.log("선택한 값 조회: " + selectStatus);
-    		var data = { banno : bno };
+    		var data = { banno : bno, email : email };
     		if(selectStatus === "EXPIRE" ){
     			var expireCheck = confirm("해당 신청 항목을 임의로 완료처리를 하시겠습니까?");
     			if(expireCheck){
     				data.banpoststatus = "EXPIRE";
     			} else {
     				$(".statusSelect").val('WAITING');
+    				return false;
     			}
     		} else if (selectStatus === 'DECLINE'){
     			var declineCheck = confirm("해당 신청 항목에 대해 거절 처리를 할까요? 사유를 작성해야 합니다.");
@@ -262,6 +263,7 @@
     				data.banpoststatus = "DECLINE"
     			} else {
     				$(".statusSelect").val('WAITING');
+    				return false;
     			}
     		} else if( selectStatus === 'PUBLICING' ){
     			var publicingCheck = confirm("게재 리스트에 해당 게시물의 배너이미지를 추가할까요?");
@@ -270,6 +272,7 @@
     				data.banapplytype = applytype;
     			} else {
     				$(".statusSelect").val('WAITING');
+    				return false;
     			}
     		} else {
     			var waitingCheck = confirm("해당 게시글에 대하여 다시 대기상태로 변경할까요?");
@@ -277,6 +280,7 @@
     				data.banpoststatus = "WAITING";
     			} else {
     				$(".statusSelect").val('WAITING');
+    				return false;
     			}
     		}
     		console.log(data);
@@ -286,6 +290,7 @@
     	
     	// 게재상태(banpoststatus) 업데이트 이벤트 by modal
     	function Fnc_BannerStatusUpdate(data){
+    		var email = data.email;
     		console.log("배너 게재상태 업데이트 이벤트 호출");
     		console.log("넘어온 글번호 값: " + data.banno);
     		console.log("변경하 게재상태 값: " + data.banpoststatus);
@@ -304,13 +309,7 @@
     					if(statusValue === 'DECLINE'){
 							// 거절사유 작성하는 팝업창을 출력시키는 함수 호출
 							Fnc_BannerDeclinePopup(admin, email);
-    					} else if (statusValue === 'PUBLICING'){
-    						// 게재를 결정하게 되는 경우 => 바로 상단에 해당 리스트가 추가되며, banpostdate, banpostenddate값이 생긴다. 
-    						// 페이지 상단에서 게제될 배너이미지 항목들에 대하여 관리창이 생성된다 
-    						// 그리고 해당 리스트를 클릭하게 되면 => 모달창을 통해 해당 이미지를 조회할 수 있게 된다.
-    						// 
-    						console.log("게재를 설정하는 경우 무슨 이벤트를 호출할 수 있을까? ");
-    					}
+    					} 
     				}
     			},
     			error: function(err){
@@ -328,9 +327,8 @@
     		console.log("fromUser: " + fromUser + ",  toUser: " + toUser);
     		var popUrl = "bannerimageDeclinePop.do";
     		popUrl += "?fromUser=" + fromUser + "&toUser=" + toUser;
-    		var popOption = "width = 400px, height=500px, top=250px, left=300px, scrollbars=no";
+    		var popOption = "width = 450px, height=550px, top=250px, left=300px, scrollbars=no";
     		window.open(popUrl, "배너 거절 사유 작성", popOption);
-    		
     	}
     	
     	// 모달창 닫기 이벤트 ( 업데이트 내역이 있다면, 닫기를 눌렀을 경우 화면 새로고침 이벤트가 발생한다. );

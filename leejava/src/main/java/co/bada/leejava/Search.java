@@ -116,4 +116,13 @@ public class Search extends Paging {
 	private String banpostdate;					// 배너 게시 시작일
 	private String banpostenddate;				// 배너 게시 만료일 ( 게시 시작일 + 신청유형의 값) 
 	private String banpoststatus;				// 배너 게시상태( 게시 or 노게시) 
+	
+	// 메시지 테이블 
+	private int msgno;   			// 인덱스 번호.
+	private String msgdate;			// 메시지 작성날짜
+	private String fromnick;		// 보내는 사람 닉네임
+	private String tonick;			// 받는 사람 닉네임
+	private String msgtitle;		// 메시지 제목
+	private String msgcontent;		// 메시지 내용
+	private int msgcheck;			// 메시지 읽음여부 확인 '0' or '1'
 }	

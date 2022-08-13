@@ -24,7 +24,7 @@
 
 body {
 	font-family:"Open Sans", Helvetica, Arial, sans-serif;
-	font-weight:400;
+	font-weight:500;
 	font-size: 15px;
 	line-height:30px;
 	color:#777;
@@ -36,12 +36,6 @@ body {
 	width:100%;
 	margin:0 auto;
 	position:relative;
-}
-
-#contact input[type="text"], 
-#contact textarea, 
-#contact button[type="submit"] { 
-	font:400 12px/16px "Open Sans", Helvetica, Arial, sans-serif; 
 }
 
 #contact {
@@ -145,8 +139,8 @@ fieldset {
     <fieldset>
       <input type="text" tabindex="2" class="tonick" value="받는 사람: ${toUser }" readonly="readonly">
     </fieldset>
-    <fieldset>
-      <input type="text" placeholder="제목을 작성해주세요." class="msgtitle" tabindex="3" maxlength="15">
+        <fieldset>
+      <input type="text" placeholder="제목을 작성해주세요. (최대 25자)" class="msgtitle" tabindex="3" maxlength="25">
     </fieldset>
     <fieldset>
       <textarea placeholder="메시지 내용을 입력하세요." class="msgcontent" tabindex="4" required></textarea>
@@ -166,10 +160,10 @@ fieldset {
 		// 데이터값 확인
 		var fromnick = $(".fromnick").val();
 		var tonick = $(".tonick").val();
-		var msgtitle =  $(".msgtitle").val();
+		var msgtitle = $(".msgtitle").val();
 		var msgcontent = $(".msgcontent").val();
 		// 유효성 체크
-		if( msgtitle = '' || msgcontent == ''){
+		if( msgtitle == '' || msgcontent == ''){
 			alert("제목과 내용은 반드시 입력해주셔야 합니다.");
 			return false;
 		}
@@ -177,7 +171,6 @@ fieldset {
 		console.log(tonick);
 		console.log(msgtitle);
 		console.log(msgcontent);
-		
 	})
 	
 </script>

@@ -44,6 +44,7 @@ import co.bada.leejava.notice.NoticeService;
 import co.bada.leejava.notice.NoticeVO;
 import co.bada.leejava.totolist.TodoService;
 import net.coobird.thumbnailator.Thumbnails;
+import oracle.jdbc.proxy.annotation.Post;
 
 @Controller
 public class MemberController {
@@ -424,6 +425,22 @@ public class MemberController {
 		}
 		// 프로필 신규추가나 업데이트가 성공했으면 Y값을 가짐
 		return result;
+	}
+	
+	// 개인정보 프로필 이미지 DB값 리셋
+	@ResponseBody
+	@PostMapping(value = "profileImgReset.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> profileImgReset(@RequestBody AttachImageVO ivo){
+		
+		String message = null;
+		int n = memberDao.updateProfileImage(ivo);
+		if(n != 0) {
+			message = "DB값이 초기화 되었습니다.";
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "DB값 업데이트에 실패했습니다.";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_MODIFIED);
+		}
 	}
 	 
 	// 개인정보 페이지에서 닉네임 변경 신청 

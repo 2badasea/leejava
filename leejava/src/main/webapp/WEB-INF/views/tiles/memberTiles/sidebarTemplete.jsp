@@ -397,8 +397,9 @@ text-decoration: none;
 	var uploadResult = $(".uploadResult");
 	$.getJSON("getAttachList.do", { m_email : imageemail}, function(arr){
 		console.log("getJSON 호출 성공");
-		console.log("데이터의 길이: " + arr.length);
-		if(arr.length === 0){
+		let obj = arr[0];
+		
+		if(obj.uploadPath == '' || obj.uploadPath == null){
 			// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
 			console.log("이미지가 없음");
 			let str = "";
@@ -410,10 +411,7 @@ text-decoration: none;
 		}
 		// 반대로 호출되는 이미지 정보가 있는 경우. 
 		let str = "";
-		let obj = arr[0];
-		console.log("obj의 값: ");
 		console.log(obj);
-		console.log("obj.uploadPath 값: " + obj.uploadPath);
 		let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
 		console.log("fileCallPath 값: " + fileCallPath);
 		str += "<div id='basic_result_card'";

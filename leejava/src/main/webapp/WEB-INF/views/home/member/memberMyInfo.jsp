@@ -33,9 +33,11 @@ label {
 #uploadResult img{
     display: block;
     padding: 5px;
-    margin: auto;	 			
-    max-width: 100px;
-    max`-height: 100px;
+    margin: auto;	
+    min-height: 100px;
+    min-wdith:  100px;			
+    max-width: 120px;
+    max`-height: 120px;
 	width: auto;
     height: auto;
 }
@@ -117,7 +119,17 @@ label {
     display: none;
     z-index: 2;
 }
-
+/*	기본프로필 이미지로 수정하는 버튼 */
+.basicProfileUpdateBtn{
+	margin-left: 5px;
+	border-radius: 20px;
+	background-color: white;
+	border: 1px solid lightgray;
+	color: #05AA6D;
+	font-weight: 600;	
+	padding: 5px;
+	font-size: small;
+}
 .nickname_modal_content {
     position: absolute;
     top: 30%;
@@ -367,7 +379,13 @@ label {
 .myInfoWrapper input:focus{
 	outline-color: coral;
 }
-
+.profileLabel:hover,
+.basicProfileUpdateBtn:hover{
+	background-color: #05AA6D;
+	color: white;
+	transition: 0.5s;
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -379,7 +397,7 @@ label {
 				<div class="myInfoDetail_left">	
 					<div class="form_section" align="center">
 						<!-- 여기다가 이미지를 보여준다 -->
-	                    <div class="form_section_content">
+	                    <div class="form_section_content" style="padding-bottom: 10px;">
 							<form id='frm' action="ajaxProfileImgUpdate.do" method="post" enctype="multipart/form-data">
 								<!--form요소로 전달할, 프로필 변경에 필요한 파라미터 1. 사용자 이메일 2. 이미지 파일  -->
 								<div id='uploadResult'>
@@ -391,11 +409,10 @@ label {
 								</div>
 								<br>
 								<input type="file" name="m_profilefile" style="display:none;" id="m_profilefile"></input>
-								<label for="m_profilefile" class="speicalTitle" style="color: black; font-size: small; padding: 5px; border: 1px solid lightgray; 
-										border-radius: 20px; font-weight: 600;" >이미지 선택</label>
-								<br>
+								<label for="m_profilefile" class="speicalTitle profileLabel" style="font-size: small; padding: 5px; border: 1px solid lightgray; 
+										border-radius: 20px; font-weight: 600; display: inline;" >이미지 변경</label>
+								<input type='button' class='basicProfileUpdateBtn' value='기본프로필 사용'>
 								<input type="hidden" name="m_email" id="m_email" value="${member.m_email }">
-								<br>
 							</form>	
 						</div>			
 					</div>
@@ -630,7 +647,6 @@ label {
 	</div> <!-- bodyWrapper 영역 -->
 </body>
 <script>
-
 	//현재 비밀번호 확인부터 하기  => 정상적으로 조회가 되면 => 새로운 패스워드 입력창 박스 보이게 하기
 	$(".beforePwdBtn").on("click", function(){
 	    var email = $("#m_email").val();
@@ -1056,7 +1072,6 @@ label {
     		return false;
     	}
     })
-    
 
     function timerSetting(){
         var time = 10;
@@ -1205,7 +1220,6 @@ label {
 <script>
 	$(document).ready(function(){
 		console.log("페이지 로딩 확인");
-
 			
 		/*페이지 로딩되자마자 프로모션 동의 여부와 개인정보 제공여부 DB값에 따른 체크상태 출력*/
 		// 아래는 개인정보 제공 여부 
@@ -1349,9 +1363,90 @@ label {
 			})
 		})
 		
+		// 기본프로필 이미지 선택하는 이벤트 함수 
+		$(".basicProfileUpdateBtn").on("click", function(){
+			var basicProfileCheck = confirm("기본 프로필로 변경하시겠어요?");
+			if(!basicProfileCheck){
+				return false;
+			}
+			// 기존에 선택한 이미지가 존재하는 경우 해당 이미지를 삭제한다.
+			if( $(".imgDeleteBtn").length !== 0 ){
+				deleteFile();  // result_card헤 해당하는 div까지 remove됨. => 동적으로 생성된 거라, 초기기본이미지와 무관.
+			}
+			// 기본이미지가 존재했던 경우.   
+			var check =  $("#basic_result_cardBox").data('filecallpath'); 
+			if( check != null){
+				existingDelete(check);
+			} else{
+				alert("이미 기본프로필을 사용하고 있어요");
+				return false;
+			}
+		})
+		
+		// 기본적으로 출력되었던 프로필 이미지를 삭제하는 함수 
+		function existingDelete(data){
+			console.log("넘어온 데이터(기존이미지의 fileCallPath 확인: " + data);
+			var targetFile = data;
+			console.log("ajax로 넘길 data최종 확인: " + targetFile);
+			$.ajax({
+				url: "deleteFile.do",
+				data : {
+					fileName : targetFile
+				},
+				dataType : "text",
+				type: "POST",
+				success : function(result){
+					console.log(result);
+					// 파일을 삭제하는 데 성공했다면 db값도 null값으로 초기화 시킨다.
+					Fnc_profileImgReset();
+					
+				},
+				error: function(result){
+					console.log(result); // "fail"이란 값이 날라왔을 것이다.
+					alert("파일을 삭제하지 못 하였습니다.");
+				}
+			})
+		}
+		
+		// 프로필이미지 db null로 처리하는 이벤트
+		function Fnc_profileImgReset(){
+			var resetEmail = $("#m_email").val();
+			var resetFilename =  "";
+			var resetUploadpath = "";
+			var resetUUID = "";
+			var data = {
+					fileName : resetFilename,
+					uploadPath : resetUploadpath,
+					uuid : resetUUID,
+					m_email : resetEmail
+			};
+			$.ajax({
+				url: "profileImgReset.do",
+				method : "POST",
+				data: JSON.stringify(data),
+				dataType: "text",
+				contentType : "application/json; charset=utf-8",
+				success: function(message){
+					console.log("호출성공")
+					alert(message);
+					location.reload();
+				},
+				error: function(err){
+					console.log("호출 실패");
+					console.log(err);
+					var check = confirm("새로고침?");
+					if(check){
+						location.reload();
+					} else{
+						return false;
+					}
+				}
+			})
+		}
+		
 		/* 첨부파일 이미지 업로드 선택해서 물리파일을 생성하는 부분  => 실제 바로 DB에 넣는 부분은 아님. */
 		$("input[type='file']").on('change', function(e){ 
-			/* 기존에 이미지 존재 시 삭제 */
+			/* 기존의 이미지 존재 시 삭제 */
 			if( $(".imgDeleteBtn").length > 0){ 
 				deleteFile();
 			}
@@ -1424,7 +1519,7 @@ label {
 		
 		// 프로필 이미지 출력 메서드 => ajax success속성의 콜백함수에서 호출된다. 
 		function showUploadImage(uploadResultArr){
-			// success콜백함수가 실행됐다는 건 업로드 이미지 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
+			// success콜백함수가 실행됐다는 건 이미지 업로드 메서드가 정상적으로 수행됐다는 뜻. -> result데이터를 못 받았을 
 				// 가능성이 낮지만 혹여나 데이터를 전달받지 못 했을 경우를 가정하여 데이터를 검증하는 코드를 추가
 			/* 전달받은 데이터 검증*/ 
 			if(!uploadResultArr || uploadResultArr.length == 0){ 
@@ -1469,8 +1564,7 @@ label {
 				// html() 메서드를 호출하여 추가해준다. 
 			uploadResult.append(str); 
 			// 선택한 이미지를 화면에 출력함과 동시에, 기본 이미지는 지운다. => 이건 내가 조작해놓은 것
-			$("#basic_result_card").hide();
-				
+			$("#basic_result_cardBox").hide();	
 		}
 		
 		/* 이미지 삭제 버튼 동작 */ 
@@ -1478,7 +1572,7 @@ label {
 			// 참고로 버튼을 클릭해서 삭제하는 경우와 기존에 이미 프로필을 선택하여 'x'표시가 있는 경우 새로운 프로필을 선택하면 기존 값은 지워진다.
 		$("#uploadResult").on("click", ".imgDeleteBtn",function(e){
 			deleteFile();
-			$("#basic_result_card").show();
+			$("#basic_result_cardBox").show();
 		})	
 		
 		/* 업로드 이미지 파일 삭제 메서드 */
@@ -1522,12 +1616,13 @@ label {
 		$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
 			console.log("getJSON 호출 성공");
 			// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
-			console.log("데이터 길이: " + arr.length);
-			if(arr.length === 0){
+			let obj = arr[0]; 	
+			
+			if(obj.uploadPath == null || obj.uploadPath == ''){
 				// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
 				console.log("이미지가 없음");
 				let str = "";
-				str += "<div id='basic_result_card'>";
+				str += "<div id='basic_result_cardBox'>";
 				str += "<img src='resources/image/userimage.jpg'>";
 				str += "</div>";
 				uploadResult.html(str); 
@@ -1537,9 +1632,6 @@ label {
 			// 메모 138. 콜백함수 구현부에 먼저 두 가지 변수를 추가  
 			let str = "";
 			// List자료구조의 객체배열 상태로 반환받으니깐 반환한 데이터 갯수와 무관하게 []형태의 인덱스로 참조한다. 
-			let obj = arr[0]; 
-			console.log("obj의 값: " + obj);
-			console.log(obj);    // .replace(/\\/g,'/')  (/\//g, '\')
 			console.log("obj.uploadPath의 값: " + obj.uploadPath);
 	// 		console.log("수정한 obj.uploadPath 의 값: " + obj.uploadPath.replace(/\//g,'\\') );
 			// 현재 프로필을 선택해서 display.do로 보내는 정보와 프로필을 등록하고 db에서 get.JSOO으로 읽어들인 정보를 비교했을 때 전해지는
@@ -1552,16 +1644,16 @@ label {
 	// 		console.log("문자 수정 한 fileCallPath 값: " + fileCallPath);
 			console.log("기존 이미지가 존재하는 경우, display.do로 보내는 fileCallPath값: " + fileCallPath);
 			// 선언해준 str변수에 uploadResult 태그에 삽입될 코드를 값으로 부여한다.
-			str += "<div id='basic_result_card'";
-			str += " data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename='" + obj.fileName + "'";
+			str += "<div id='basic_result_cardBox' ";
+			str += " data-filecallpath='"+fileCallPath+ "' data-path='" + obj.uploadPath + "' data-uuid='"+ obj.uuid + "' data-filename='" + obj.fileName + "'";
 			str += ">";
 			str += "<img src='display.do?fileName=" + fileCallPath  +"'>";
-			str += "</div>";
+			str += "</div>";	
 			// html()메서드를 사용해서 str변수에 저장된 값들이 uploadResult태그 내부에 추가되도록 해준다. 
 			uploadResult.html(str);
 		}) // get.JSON 메서드 영역
 	})
-
+	
 </script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>

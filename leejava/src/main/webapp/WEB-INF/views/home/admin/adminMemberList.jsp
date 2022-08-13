@@ -215,6 +215,10 @@
 .userInfo_imageDiv{
 	margin-top: 20px;
 }
+.userInfo_imageDiv img{
+	max-width: 150px;
+	max-height: 150px;
+}
 
 .userInfoModalCloseBtn:hover {
 	cursor: pointer;
@@ -561,9 +565,8 @@ legend,
 			// 첫 번째 ajax가 동기방식으로 닉네임을 통해 우선적으로 email값을 읽어옴. email. 이걸로 해당 회원의 이미지를 호출한다.
 			var uploadResult = $(".userInfo_imageDiv");
 			$.getJSON("getAttachList.do", { m_email : email}, function(arr){
-				console.log("getJSON 호출 성공");
-				console.log("데이터의 길이: " + arr.length);
-				if(arr.length === 0){
+				let obj = arr[0];
+				if(obj.uploadPath == null || obj.uploadPath == ''){
 					// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
 					console.log("이미지가 없음");
 					let str = "";
@@ -575,9 +578,6 @@ legend,
 				}
 				// 반대로 호출되는 이미지 정보가 있는 경우. 
 				let str = "";
-				let obj = arr[0];
-				console.log("obj의 값: ");
-				console.log(obj);
 				console.log("obj.uploadPath 값: " + obj.uploadPath);
 				let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
 				console.log("fileCallPath 값: " + fileCallPath);

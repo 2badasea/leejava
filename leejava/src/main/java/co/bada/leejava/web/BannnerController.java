@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -220,22 +221,61 @@ public class BannnerController {
 	public ResponseEntity<String> newBannerUpdate(BannerVO bvo,
 					HttpServletRequest request, HttpServletResponse response,
 					@RequestParam(required = false, value = "banno") int banno,
-					@RequestParam(required = false, value = "newBanfile") MultipartFile file,
+					@RequestParam(required = false, value = "newBanfile") MultipartFile newFile,
 					@RequestParam(required = false, value = "existingPfilename") String existingPfilename,
 					@RequestParam(required = false, value = "banapplytype") String banapplytype,
 					@RequestParam(required = false, value = "banapplytitle") String banapplytitle,
 					@RequestParam(required = false, value = "banapplycontent") String banapplycontent) throws Exception{
 		
-		System.out.println("file: " + file);
-		System.out.println("exisitngPfileNmae 인코딩 처리 값: " + existingPfilename);
-		System.out.println("type: " + banapplytype);
-		System.out.println("title: " + banapplytitle);
-		System.out.println("content: " + banapplycontent);
+		System.out.println("새로 선택한 file: " + newFile);
+		System.out.println("기존에 업로드한, exisitngPfileNmae 인코딩 처리 값: " + existingPfilename);
+		System.out.println("새로 선택한 기간 유형 type: " + banapplytype);
+		System.out.println("새로운 title: " + banapplytitle);
+		System.out.println("새로운 content: " + banapplycontent);
 		
-		// existingPfilename 값을 통해서 기존의 저장되어 있던 파일을 삭제한다. 
-		// file  값을 통해서 새롭게 업로드를 구현하여, db값을 업데이트 시킨다. 
+		bvo.setBanno(banno);
+		bvo.setBanapplytype(banapplytype);
+		bvo.setBanapplytitle(banapplytitle);
+		bvo.setBanapplycontent(banapplycontent);
+		// existingPfilename => 기존의 파일을 삭제하고 삭제가 됐다면~ 새로운 파일을 업로드 시키기
+		if( existingPfilename != null) {
+			File file = null;
+			try {
+				file = new File(bannerimgUploadPath + URLDecoder.decode(existingPfilename, "UTF-8"));
+				System.out.println("URLDecoder.decoe() 결괏값: " + file);
+				Boolean b =  file.delete();
+				if(b) {
+					System.out.println("기존의 배너 이미지 파일 삭제 성공");
+					// 새로 첨부한 파일을 가지고 다시 작업.
+					String banfile = newFile.getOriginalFilename();
+					String banpfile = null;
+					if( banfile != "") {
+						 banpfile = uploadFile(banfile, newFile.getBytes(), request);
+					}
+					System.out.println("새롭게 가공되어 생성된 물리파읾명: " + banpfile);
+					bvo.setBanfile(banfile);
+					bvo.setBanpfile(banpfile);
+					
+				}
+				
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//  글번호, 타입, 제목, 내용, 새로원이미지파일원본명, 새로운이미지파일물리명  bvo객체에 담고 업데이트 시작. 
+		String updateResult = null;
+		System.out.println("항목이 담긴 데이터 bvo객체 확인: " + bvo);
+		int n = bannerDao.bannerUpdate(bvo);
+		if(n != 0) {
+			System.out.println("업데이트 성공");
+			updateResult = "YES";
+			return new ResponseEntity<String>(updateResult, HttpStatus.OK);
+		} else {
+			System.out.println("업데이트 실패");
+			updateResult = "NO";
+			return new ResponseEntity<String>(updateResult, HttpStatus.NOT_MODIFIED);
+		}
 		
-		return new ResponseEntity<String>("OK", HttpStatus.OK);
 	}
 	
 	// 배너이미지 신청 거절사유 작성하는 폼 팝업 호출

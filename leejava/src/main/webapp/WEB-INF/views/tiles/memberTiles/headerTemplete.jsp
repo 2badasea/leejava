@@ -47,7 +47,7 @@
 		width: auto;
 		padding: 16px;
 		margin-top: -22px;
-		color: coral;
+		color: coral;	 
 		font-weight: bold;
 		font-size: 18px;
 		transition: 0.6s ease;
@@ -55,18 +55,18 @@
 	}
 	
 	.next{
-		right: 0;
+		right: 6px;
 		border-radius: 3px 0 0 3px;
 	}
 	.prev:hover, .next:hover {
 		background-color: rgba(0, 0, 0, 0.8);
 	}
 	.bannerSlideBox{
-		width: 1172px;
+		max-width: 1172px;
 		height: 300px;
 	}
 	.bannerSlideBox img{
-		min-width: 950px;
+		min-width:  1000px;
 		max-width: 1172px;
 		max-height: 300px;
 	}

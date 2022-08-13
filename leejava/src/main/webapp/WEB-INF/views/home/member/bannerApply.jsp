@@ -388,10 +388,16 @@
 					success: function(data){
 						console.log("호출 성공");
 						console.log(data);
+						if(data == "YES"){
+							alert("성공적으로 수정되었습니다.");
+							location.reload();
+						}
+						// 그리고 업데이트 되었다면 자동으로 화면 새로고침을 호출한다. 
 					},
 					error: function(err){
 						console.log("호출 실패");
 						console.log(err);
+						location.reload();
 					}
 				})
 		})

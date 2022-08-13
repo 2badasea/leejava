@@ -464,11 +464,8 @@ legend{
 		// email값을 이용하여 get.JSON url을 호출하여 db에 있는 프로필 이미지 정보를 가져와서 화면에 뿌려준다.
 			var uploadResult = $(".userInfo_image");
 			$.getJSON("getAttachList.do", { m_email : email}, function(arr){
-				console.log("getJSON 호출 성공");
-				console.log("데이터의 길이: " + arr.length);
-				if(arr.length === 0){
-					// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
-					console.log("이미지가 없음");
+				let obj = arr[0];
+				if(obj.uploadPath == '' || obj.uploadPath == null){
 					let str = "";
 					str += "<div id='basic_result_card'>";
 					str += "<img src='resources/image/userimage.jpg'>";
@@ -478,9 +475,6 @@ legend{
 				}
 				// 반대로 호출되는 이미지 정보가 있는 경우. 
 				let str = "";
-				let obj = arr[0];
-				console.log("obj의 값: ");
-				console.log(obj);
 				console.log("obj.uploadPath 값: " + obj.uploadPath);
 				let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
 				console.log("fileCallPath 값: " + fileCallPath);

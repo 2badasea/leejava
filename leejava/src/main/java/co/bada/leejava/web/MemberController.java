@@ -511,8 +511,9 @@ public class MemberController {
 	
 	// 사용자뷰 공지사항 조회
 	@RequestMapping("/memberNoticeRead.do")
-	public String memberNoticeRead(Model model, HttpServletRequest request
-			, NoticeVO nvo, @RequestParam("n_no") int n_no , @RequestParam(value= "n_hit", required = false) int n_hit ){
+	public String memberNoticeRead(Model model, HttpServletRequest request, NoticeVO nvo
+			, @RequestParam("n_no") int n_no 
+			, @RequestParam(value= "n_hit", required = false) int n_hit ){
 		
 		logger.info("===========view단에서 넘어온 조회할 글 번호: " + n_no);
 		logger.info("===========view단에서 넘어온 조회수 확인: " + n_hit);

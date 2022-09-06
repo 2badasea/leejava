@@ -203,8 +203,8 @@
 .userInfoModalCloseBtn {
 	margin-top: 50px;
 	float: right;
-	width: 100px;
-	height: 50px;
+	width: 80px;
+	height: 40px;
 	border-radius: 20px;
 	background: #313348;
 	color: whitesmoke;
@@ -225,6 +225,10 @@
 	background-color: whitesmoke;
 	color: #313348;
 	transition: 1s;
+}
+
+#userInfo_joindate:focus, #userInfo_nickname:focus {
+	outline-style: none;
 }
 
 .userInfo_modal_body {
@@ -297,6 +301,22 @@ legend,
 #userIntroForm{
 	color: #313348;
 	font-weight: 800;
+}
+
+.msgBtn{
+	width: auto;
+	height: auto;
+	border-radius: 20px;
+	padding: 5px;
+	background-color: #313348;
+	color: white;
+}
+.msgBtn:hover {
+	cursor: pointer;
+}
+/*	닉네임 클릭시 메뉴 활성화 구현 */
+.memberNickname{
+	
 }
 
 /*	***************************************************	*/
@@ -388,7 +408,7 @@ legend,
 							${member.m_joindate }
 						</td>
 						<td>${member.m_email }</td>
-						<td>${member.m_nickname }</td>
+						<td class="memberNickname">${member.m_nickname }</td>
 						<td>${member.m_joinpath }</td>
 						<td>
 							<c:if test="${session_user == 'bada' }">
@@ -446,6 +466,7 @@ legend,
 		<div class="userInfo_modal_content">
 			<div class="userInfo_modal_header" align="center">
 				<span id="userInfoTitle"></span>
+				<button type="button" id="msgBtn" class="msgBtn" style="float: right;">쪽지 보내기</button>
 			</div>
 			<br>
 			<div class="userInfo_modal_body">
@@ -483,12 +504,22 @@ legend,
 	</div>
 </body>
 <script>
+	// 닉네임 클릭 => 쪽지보내기 메뉴 구현
+	$(".memberNickname").on("mouseover", function(){
+		$(this).css("cursor", "pointer");
+	})
+	
+	$(".memberNickname").on("click", function(){
+		console.log("클릭 이벤트 발생");
+	})
+</script>
+<script>
 	// 사용자 정보 호출하는 모달창 관련 스크립트. 
 		// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
 		// 일단 class값은 memberInfoBtn 이고, 해당 버튼을 클릭했을 때, nickname 값을 가져와본다.
 	
-	// 임시 테스트 버튼. 클릭으로 닉네임 값 찾아보기
 		
+	// 임시 테스트 버튼. 클릭으로 닉네임 값 찾아보기
 	$(".memberInfoBtn").on("click", function(e) {
 			console.log("유저 닉네임 클릭");
 			// 버튼을 클릭해서 이메일 값과 닉네임 값을 가져와야 한다. "email" 값의 경우, 첫 번째 모달창으로 리턴되는 값으로 대입한다. 바로 밑의 ajax구문에 존재
@@ -499,7 +530,7 @@ legend,
 			console.log("닉네임 값 조회: " + sendNickname);
 			// 첫 번째 ajax로 프로필 정보(닉네임, 이메일, 가입날짜, intro + 프로필이미지 정보)		
 			$.ajax({
-				url : "ajaxUserInfo.do?m_nickname=" + sendNickname,
+				url : "ajaxUserInfo.do?m_nickname=" + sendNickname, // (QuizcardRestController)
 				type : "GET",
 				dataType : "json",
 				async : false,
@@ -511,8 +542,7 @@ legend,
 					$("#userInfo_nickname").val(data.m_nickname);
 					$("#userInfo_joindate").val(data.m_joindate);
 					$("#userIntroForm").val(data.m_intro);
-					$("#userInfoTitle")
-							.html(data.m_nickname + " 님의 사용자 정보");
+					$("#userInfoTitle").html(data.m_nickname + " 님의 사용자 정보");
 					$("#userIntroLabel")
 							.text(data.m_nickname + " 님의 Intro");
 				},

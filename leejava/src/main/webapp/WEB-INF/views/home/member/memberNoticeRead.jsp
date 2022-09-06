@@ -131,7 +131,7 @@ img,
                     <div class="noticeFormHeader">
                    		<div class="noticeFormHeaderLeft" style="display: flex;">
                    			<div class="userImageBox">
-	                   			<img alt="" src="resources/image/loopy.jpeg" class="noticeUserImage" onclick="fn_userInfo('${notice.n_writer}')">
+	                   			<img src="resources/image/loopy.jpeg" class="noticeUserImage" onclick="fn_userInfo('${notice.n_writer}')">
                    			</div>
                    			<div class="userNameWdateBox" style="margin-left: 10px;">
                            		<a class="noticeWriter" onclick="fn_userInfo('${notice.n_writer}')">${notice.n_writer }</a>

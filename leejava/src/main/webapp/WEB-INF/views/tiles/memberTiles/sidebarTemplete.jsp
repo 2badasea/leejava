@@ -347,9 +347,7 @@ text-decoration: none;
 					<li><a href="boardList.do" class="sideMenu community">자유게시판</a></li>
 					<li><a href="#" class="sideMenu community">QNA</a></li>
 					<li><a href="#" class="sideMenu community">정보/팁</a></li>
-					<li><a href="#" class="sideMenu community">읽을거리</a></li>
 					<li><a href="#" class="sideMenu community">스터디/정기모임</a></li>
-					<li><a href="#" class="sideMenu community">책/인강 리뷰</a></li>
 			</ul>
 		<!-- 로그인해서 세션값이 존재하는 유저만 button이 보이도록 한다. -- -->
 		<c:if test="${not empty session_user }">
@@ -440,8 +438,12 @@ text-decoration: none;
 	 
 	// 로그아웃 처리   click function 			
 	$(".logoutBtn").click(function(){
-		alert("로그아웃 합니다.");
-		location.href="logout.do";
+		var logoutCheck = confirm("로그아웃 하시겠어요?");
+		if(logoutCheck){
+			location.href="logout.do";
+		} else {
+			return false;
+		}
 	})
 	
 	// 회원가입 페이지 이동 

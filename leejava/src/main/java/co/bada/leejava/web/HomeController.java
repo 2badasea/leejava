@@ -53,7 +53,6 @@ public class HomeController {
 	// 홈으로 이동
 	@RequestMapping(value = "/home.do", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-//		logger.info("==========Welcome home! The client locale is {}.", locale);
 
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
@@ -64,19 +63,16 @@ public class HomeController {
 		model.addAttribute("notices", noticeDao.mainNoticeSelectList());
 
 		return "home/member/home";
-
-		// private int memberInsert(memberVO mvo)
 	}
 
 	// 로그인 창으로 이동
 	@RequestMapping("/loginPage.do")
 	public String loginPage(Model model, HttpServletRequest request, 
 								@RequestParam(required = false ,value = "message") String message) {
-		logger.info("어디 페이지에서 로그인 요청이 날라왔는지 확인하는 request.getHeader('referer')" + request.getHeader("Referer"));
-		logger.info("회원가입 완료 url에서 redirectAttribute로 넘긴 파라미터 값 확인: " + message);
+		logger.info("어디 페이지에서 로그인 요청이 발생했는지 확인: " + request.getHeader("Referer"));
+		logger.info("회원가입 완료 페이지에서 redirectAttribute로 넘긴 파라미터 값 확인: " + message);
 		model.addAttribute("message", message);
-		// 로그인 요청이 온 페이지의 URI를 받아서, login입력창의 input요소에 부여한다.
-		// 로그인이 성공하면 해당 uri정보가 담긴 태그의 value값을 받아서 location.href로 넘긴다.
+		// login창을 호출한 url 정보를 login페이지에 넘겨, 로그인에 성공하면 해당 url값을 location.href 식을 통해 호출시킨다.
 		String referer = request.getHeader("Referer");
 		System.out.println("referer값:" + referer);
 		model.addAttribute("url", referer);

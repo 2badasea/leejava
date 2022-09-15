@@ -189,6 +189,7 @@
 </head>
 <body>
 <input type="hidden" class="bannerManageHidden" value="${session_user }">
+
 <div class="adminBannerManage_wrapper">
 	 <!--아래는 배너신청 조회하는 모달창 공간-->
     <div class="banner_modal_container">
@@ -246,12 +247,13 @@
     		var email = $(".bannerEmail").text();  // 신청자 이메일 => 거절사유 작성하는 폼을 호출하는 함수의 인수로 사용
     		var bno = $(".bannerNo").text();
     		var applytype = $(".bannerType").text();
-    		var selectStatus = $(this).val();
+    		var selectStatus = $(this).val(); // 선택한 상태값.
     		console.log("선택한 값 조회: " + selectStatus);
     		var data = { banno : bno, email : email };
     		if(selectStatus === "EXPIRE" ){
     			var expireCheck = confirm("해당 신청 항목을 임의로 완료처리를 하시겠습니까?");
     			if(expireCheck){
+    				// 객체형태의 값을 가지는 변수 'data'에 키값쌍의 데이터를 추가한다. 
     				data.banpoststatus = "EXPIRE";
     			} else {
     				$(".statusSelect").val('WAITING');
@@ -293,7 +295,7 @@
     		var email = data.email;
     		console.log("배너 게재상태 업데이트 이벤트 호출");
     		console.log("넘어온 글번호 값: " + data.banno);
-    		console.log("변경하 게재상태 값: " + data.banpoststatus);
+    		console.log("변경 이후 게재상태 값: " + data.banpoststatus);
     		var statusValue = data.banpoststatus;  // DECLINE, WAITING, PUBLICING, EXPIRE
     		$.ajax({
     			url: "bannerUpdate.do",
@@ -319,7 +321,6 @@
 					$(".statusSelect").val('WAITING')
     			}
     		})
-    	
     	}
     	
     	// 거절 사유 작성하는 팝업창 호출.

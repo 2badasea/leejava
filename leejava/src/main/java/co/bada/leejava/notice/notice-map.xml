@@ -73,7 +73,7 @@
 	WHERE RN BETWEEN #{start} AND #{end} 
 </select>
 
-<!-- 메인페이지에 노출시킬 공지사항 시간순 6가지 -->
+<!-- 메인페이지에 노출시킬 공지사항 시간순 5가지 -->
 <select id="mainNoticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 
 	FROM 

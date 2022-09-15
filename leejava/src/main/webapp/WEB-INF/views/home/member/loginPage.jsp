@@ -202,13 +202,9 @@
 }
 #forgotPasswordBtn:hover {
 	cursor: pointer;
-
-	
 }
 </style>
 </head>
-<body>
-<input type="hidden" id="message" value="${message }">
 <script>
 	$(document).ready(function(){
 		var message = $('#message').val();
@@ -218,7 +214,10 @@
 		}
 	})
 </script>
-
+<body>
+<input type="hidden" id="message" value="${message }">
+<!-- 로그인 창을 호출한 페이지의 url정보를 컨트롤러를 통해 받음. => 로그인 후 해당 url값으로 페이지가 리턴된다. -->
+<input type="hidden" id="login_url" value="${url }">
 
 <!-- 비밀번호 찾기 모달창 생성 -->
 <div class="modal_container">
@@ -232,7 +231,6 @@
 			<div class="inputEmailBox">
 				<label for="inputEmail" id="inputEmailLabel">이메일 입력</label>
 				<input type="text" id="inputEmail" name="inputEmail" placeholder="이메일을 입력해주세요">
-				<input type="hidden" id="login_url" value="${url }">
 				<button id="emailSendBtn">인증번호 전송</button>
 				<input type="text" id="inputCheckNum" placeholder="인증코드 입력">
 				<button id="sendInputCheckNum">확인</button>
@@ -249,12 +247,11 @@
 			</div>
 		</div>
 	</div>
-	
 	<div class="modal_layer"></div>
 </div>  
 <!-- 비밀번호 찾기 모달창 끝  -->
 <script>
-	// 비밀번호 찾기 모달창 관련 스크립트 작성 => 다 작성 후 밑으로 보내기
+	/* 비밀번호 찾기 모달창 관련 스크립트 작성 => 다 작성 후 밑으로 보내기 */
 	$("#emailSendBtn").on("click", function(){
 		// 버튼 클릭하자마자 이메일 정규식이랑 null값인지 아닌지 먼저 확인 후에 진행하기
 		// 이메일 정규식 체크 ( 혹시나 해서 올바르게 작성했느지 체크하기 위함)
@@ -300,7 +297,6 @@
 					message = "YES";
 				} 
 			}
-			
 		})
 		// 이 메시지를 리턴해서 체크한다. 존재하는 계정인 경우, YES
 		console.log("존재유무 체크 콘솔창 확인: " + message );
@@ -322,7 +318,6 @@
 				// 난 '확인'버튼에 코드값을 넣어서 일치여부를 비교하도록 했다. 
 				$("#sendInputCheckNum").val(responseCode);
 			}
-			
 		})
 	}
 	
@@ -338,7 +333,6 @@
 			// 새로운 비밀번호를 입력하는 공간을 활성화 시켜야 함.
 			$(".inputEmailBox").css("display", "none");
 			$(".newPasswordBox").css("display", "block");
-			
 		} else {
 			console.log("인증실패");
 			alert("인증번호가 일치하지 않습니다.");
@@ -346,10 +340,7 @@
 		
 	})
 	
-	// newPassword   newPasswordCheck 
-	// <span>의 id값: passwordRegMessage
 	// 패스워드 입력칸 실시간 유효성 검증 영문/숫자/특수문자 합쳐서 최소 8자리 이상
-	// text('')과 html('')의 차이.  그리고 innerHTML('')과 innerText('')의 차이
 	$("#newPassword").keyup(function(){
 		var newPassword = $("#newPassword").val();
 		var regPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%^*#?&])[A-Za-z\d@$!%^*#?&]{8,15}$/;
@@ -393,7 +384,7 @@
 			return false;
 		} else {
 			// ajax처리를 통해 새로운 비밀번호값으로 변경시켜야 한다. 컨트롤러에서 새로운 salt값도 업데이트 해야 함. 
-			// 생각해보니깐 비밀번호만 넘기는 게 아니라, 이메일 주소도 필요하다. 
+			// 생각해보니깐 비밀번호만 넘기는 게 아니라, 이메일 주소도 필요하다. => "var inputEmail"을 위에 다시 정의
 			var newPassword = $("#newPassword").val();
 			$.ajax({
 				type: "POST",
@@ -464,8 +455,7 @@
 		$(".modal_container").css("display", "none");
 		$("#inputEmail").val('');
 		location.reload();
-		$("body").css("overflow", "auto"); // auto의 경우 => 넘치는 컨텐츠의 경우 자동으로 스크롤바가 생긴다.
-		
+		$("body").css("overflow", "unset"); // auto의 경우 => 넘치는 컨텐츠의 경우 자동으로 스크롤바가 생긴다.
 	})
 
 	// 비밀번호 분실 클릭
@@ -477,7 +467,6 @@
 	// 비밀번호 입력란 text타입으로 보이게 설정
 	$("#showComment").on("click", function(e){
 		e.preventDefault();
-		
 		if( $("#password").attr("type") === 'password' ) {
 			$("#password").attr("type", "text");
 	     	$("#showComment").text('<비밀번호 가리기>');
@@ -506,6 +495,7 @@
 		console.log("url확인: " + url);
 		if (email == "" || password == "") {
 			alert("아이디 또는 비밀번호를 제대로 입력하세용");
+			return false;
 		}
 
 		$.ajax({
@@ -519,7 +509,6 @@
 				if (responseText == "NO") {
 					alert("아이디 또는 비밀번호가 틀렸습니다.");
 					$("#password").val('').focus();
-
 				} else {
 					if(responseText === "ADMIN"){
 						alert("관리자님 반값습니다. 일좀 하세요.");

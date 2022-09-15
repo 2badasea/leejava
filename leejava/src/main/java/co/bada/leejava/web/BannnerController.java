@@ -202,6 +202,7 @@ public class BannnerController {
 	@ResponseBody
 	@PutMapping(value = "bannerUpdate.do", produces = "application/text; charset=utf-8")
 	public ResponseEntity<String> bannerUpdate(@RequestBody BannerVO bvo){
+		// 스크립트 단에서 전달받은 데이터의 타입이 json이기에 @RequestBody 어노테이션을 이용하여 데이터를 받았음.
 		System.out.println("넘어온 bvo값 확인: " + bvo);
 		
 		int n = bannerDao.bannerUpdate(bvo);

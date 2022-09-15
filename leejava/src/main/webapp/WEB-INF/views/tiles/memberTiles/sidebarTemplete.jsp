@@ -427,8 +427,6 @@ text-decoration: none;
 		str += "</div>";
 		uploadResult.html(str);
 	}
-		
-
 
 
 	// 로그인 페이지 띄우기

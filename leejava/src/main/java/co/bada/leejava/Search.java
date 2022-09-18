@@ -52,14 +52,14 @@ public class Search extends Paging {
 	private String n_fixed;		// 게시글 상단 고정여부
 	
 	// 자유게시판 board
-	private int b_no;  /// primary key. 일련번호.  시퀀스 board_seq 의 대상이다.
-	private String b_category;   // 카테고리
-	private String b_title;  // 글제목
-	private String b_content; // 글내용
-	private Date b_wdate;   // 시분초까지의 데이터를 가져오려면 java.util을 사용해야 한다. 
-	private String b_writer; // 작성자
-	private int b_hit; // 조회수
-	private int b_like;  // 좋아요 수
+	private int boardNo;			// 글번호, 기본키. 
+	private String boardWdate;		// 작성일 
+	private String boardRdate;		// 최근수정일
+	private String boardWriter;		// Member테이블의 m_nickname 컬럼참조
+	private String boardTitle; 		// 글제목 
+	private String boardContents;	// 글내용
+	private int boardHit;			// 조회수
+	private int boardLikeit;		// 추천수(좋아요 수)
 	
 	
 	// QuizcardVO 클래스에 선언되어 있는 filed 값들. ================================

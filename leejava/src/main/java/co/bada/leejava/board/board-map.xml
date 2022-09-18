@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.board.BoardMapper">
+
+	<select id="boardSelectList" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM BOARD
+	</select>
+	
+	<select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM BOARD
+		WHERE BOARDNO = #{boardNo}
+	</select>
+	
+	<insert id="boardInsert" parameterType="co.bada.leejava.board.BoardVO">
+		INSERT INTO BOARD 
+	</insert>
+	
+	<delete id="boardDelete" parameterType="co.bada.leejava.board.BoardVO">
+		DELETE FROM BOARD 
+		WHERE BOARDNO = #{boardNo}
+	</delete>
+
+</mapper>

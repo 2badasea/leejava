@@ -54,9 +54,9 @@
     display: none;
 }
 .noticeSearchWrapper{
-	margin-top: 50px;
-	display: flex;
-	justify-content: center;
+	margin-top: 30px;
+	margin-left: 300px;
+/* 	justify-content: center; */
 }
 .searchInputBox{
 	min-width: 200px;
@@ -97,9 +97,10 @@
 	font-size: 20px;
 }
 .paginationBox{
-	margin-bottom: 20px;
 	display: flex;
 	justify-content: center;
+	margin-right: 500px;
+	margin-top: 20px;
 }
 .active a{
 	font-weight: bolder;
@@ -199,7 +200,7 @@
 					</c:if>
 				</ul>
 			</div>
-			<div class="noticeSearchWrapper" align="center">
+			<div class="noticeSearchWrapper"  >
 				<select id="noticeSearchSelect" class="noticeSearchSelect" onchange="fn_selectBox()">
 		            <option value="category">카테고리</option>
 		            <option value="title">제목</option>

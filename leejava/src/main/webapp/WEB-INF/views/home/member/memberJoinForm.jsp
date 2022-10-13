@@ -117,7 +117,7 @@ td > input:not(#addressBtn)  {
 
 	<div class="joinFormWrapper">
 		<div>
-			<h3 id="title">자바이야기 회원가입</h3>
+			<h3 id="title">코더 그라운드 회원가입</h3>
 			<hr>
 		</div>
 		<div class="joinform">

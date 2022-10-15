@@ -19,7 +19,7 @@ public class BoardController {
 	@RequestMapping(value = "boardList.do", method = { RequestMethod.GET, RequestMethod.POST} )
 	public String boardList(Model model, BoardVO bvo, Search svo) {
 		
-		return "home/member/boardList";
+		return "home/member/memberBoardList";
 	}
 	
 }

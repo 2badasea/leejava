@@ -13,4 +13,5 @@ public class BoardVO {
 	private String boardContents;	// 글내용
 	private int boardHit;			// 조회수
 	private int boardLikeit;		// 추천수(좋아요 수)
+	private int bfileCheck; 		// 첨부파일 존재 유무(0 또는 1의 값을 가지도록)
 }

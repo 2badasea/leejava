@@ -8,9 +8,9 @@
 <title>공지사항 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
-.mainSearchWrapper {
+.mainWrapper {
 	margin-left: 15%;
-	margin-top : 10%;
+	margin-top : 1%;
 }
 /*	공지사항 테이블 디자인 */
 .noticeTable{
@@ -21,6 +21,7 @@
 }
 .noticeTableThTr{
 	border-bottom: 1px solid #05AA6D;
+	background-color: lightgreen;
 }
 .noticeTable th{
 	font-size: 18px;
@@ -35,7 +36,7 @@
 .noticeTable td {
 	border-bottom: 1px solid #05AA6D;
 	height: 20px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #05AA6D	;
 	padding: 5px;
 }
 .noticeTable a {
@@ -111,24 +112,28 @@
 </head>
 <body>
 	<div class="memberNoticeList_wrapper">
-		<div class="mainSearchWrapper">
+		<div class="mainWrapper">
 			<div class="noticeListWrapper">
-				<h3>공지사항 리스트</h3>
-				<c:choose>
-					<c:when test="${pagination.listCnt lt pagination.end }">
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
-					</c:when>
-					<c:otherwise>
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
-					</c:otherwise>
-				</c:choose>
-				&nbsp;&nbsp;&nbsp;
-				<select class="paging" name="searchType" id="listSize" onchange="page(1)">
-					<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if> >10건 보기</option>
-					<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if> >15건 보기</option>
-					<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if> >20건 보기</option>
-				</select>
-				
+				<div style="margin-left: 30%;">
+					<h1>공지사항</h1>
+				</div>
+				<br>
+				<div style="margin-left: 55%;">
+					<c:choose>
+						<c:when test="${pagination.listCnt lt pagination.end }">
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
+						</c:when>
+						<c:otherwise>
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
+						</c:otherwise>
+					</c:choose>
+					<br>
+					<select class="paging" name="searchType" id="listSize" onchange="page(1)" style="margin-left: 10%;">
+						<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if> >10건 보기</option>
+						<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if> >15건 보기</option>
+						<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if> >20건 보기</option>
+					</select>
+				</div>
 				<div class="noticeList">
 					<!--체크박스 공간,  글번호, 작성날짜, 카테고리, 제목, 상단 고정, 관리( 수정, 삭제, 고정or고정취소)  -->
 					<table class="noticeTable">

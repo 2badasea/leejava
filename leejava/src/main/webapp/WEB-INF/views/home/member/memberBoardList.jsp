@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>자유 게시판</title>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 .mainWrapper {
 	margin-left: 15%;
@@ -49,35 +50,61 @@
 .boardListTr:hover {
 	background-color: #F0FFF0;
 }
+.paginationBox{
+	display: flex;
+	justify-content: center;
+	margin-right: 500px;
+	margin-top: 20px;
+}
+.paginationUl > li{
+	list-style-type: none;
+	float: left;
+	padding: 5px;
+}
+.paginationLink {
+	color: teal;
+	font-size: 20px;
+}
+.active a{
+	font-weight: bolder;
+	color: tomato;
+	font-size: large;
+} 
 </style>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+	// 화면에 문서가 모두 출력된 다음에 실행시킬 이벤트
+	$(document).on("ready", function(){
+		console.log("자유 게시판 출력");
+	})
+</script>
+
 </head>
 <body>
 	<div class="memberBoardList_wrapper">
 		<div class="mainWrapper">
 			<div class="boardListWrapper">
-				<div style="margin-left: 30%;">
+				<div style="margin-left: 28%;">
 					<h1>자유게시판</h1>
 				</div>
 				<br>
-<!-- 				<div style="margin-left: 55%;"> -->
-<%-- 					<c:choose> --%>
-<%-- 						<c:when test="${pagination.listCnt lt pagination.end }"> --%>
-<%-- 							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ --%>
-<%-- 								${pagination.listCnt }건)</span> --%>
-<%-- 						</c:when> --%>
-<%-- 						<c:otherwise> --%>
-<%-- 							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ --%>
-<%-- 								${pagination.end }건)</span> --%>
-<%-- 						</c:otherwise> --%>
-<%-- 					</c:choose> --%>
-<!-- 					<br>  -->
-<!-- 					<select class="paging" name="searchType" id="listSize" onchange="page(1)" style="margin-left: 10%;"> -->
-<%-- 						<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건 보기</option> --%>
-<%-- 						<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option> --%>
-<%-- 						<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option> --%>
-<!-- 					</select> -->
-<!-- 				</div> -->
+				<div style="margin-left: 55%;">
+					<c:choose>
+						<c:when test="${pagination.listCnt lt pagination.end }">
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~
+								${pagination.listCnt }건)</span>
+						</c:when>
+						<c:otherwise>
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~
+								${pagination.end }건)</span>
+						</c:otherwise>
+					</c:choose>
+					<br> 
+					<select class="paging" name="searchType" id="listSize" onchange="page(1)" style="margin-left: 10%;">
+						<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건 보기</option>
+						<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option>
+						<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option>
+					</select>
+				</div>
 			</div>
 			<div class="boardList">
 				<table class="boardTable">
@@ -89,21 +116,67 @@
 						<th style="width: auto;" class="listTh">조회수</th>
 						<th style="width: auto;" class="listTh">추천수</th>
 					</tr>
-					<tr class="boardListTr">
-						<td>no</td>
-						<td>title</td>
-						<td>wdate</td>
-						<td>writer</td>
-						<td>hit</td>
-						<td>likeit</td>
-					</tr>
+					<c:forEach items="${board }" var="board">
+						<tr class="boardListTr">
+							<td>${board.boardNo }</td>
+							<td>${board.boardTitle }</td>
+							<td>${board.boardWdate }</td>
+							<td>${board.boarTitle }</td>
+							<td>${board.boardHit }</td>
+							<td>${board.boardLikeit }</td>
+						</tr>
+					</c:forEach>
 				</table>
+				<button class="boardWritingBtn">글쓰기</button>
 			</div>
+		</div>
+		
+		<!-- paging 박스가 들어갈 곳  -->
+		<div id="paginationBox" class="paginationBox">
+			<ul class="paginationUl">
+				<c:if test="${pagination.prev }">
+					<li class="paginationLi">
+						<a class="paginationLink specialA" onclick="fn_prev('${pagination.page}', '${pagination.range }',
+																	'${pagination.rangeSize }','${pagination.listSize }',
+																	'${search.boardWriter }', '${search.boardTitle }',
+																	'${search.boardContents }')">이전</a>
+					</li>
+				</c:if>
+				<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="boardNo">
+					<li class="paginationLi <c:out value="${pagination.page == boardNo ? 'active' : '' }" />" >
+						<a class="paginationLink specialA" onclick="fn_pagination('${noticeNo}', '${pagination.range }',
+																		'${pagination.rangeSize }', '${pagination.listSize }',
+																		'${search.boardWriter }', '${search.boardTitle }',
+																		'${search.boardContents }')">${noticeNo }</a>
+					</li> 
+				</c:forEach>
+				<c:if test="${pagination.next }">
+					<li class="paginationLi">
+						<a class="paginationLink specialA" onclick="fn_next('${pagination.page}', '${pagination.range }',
+																	'${pagination.rangeSize }', '${pagination.listSize }',
+																	'${search.boardWriter }', '${search.boardTitle }',
+																	'${search.boardContents }')">다음</a>
+					</li>
+				</c:if>
+			</ul>
+		</div>
+		<div class="boardSearchWrapper"  >
+			<select id="boardSearchSelect" class="boardSearchSelect" onchange="fn_selectBox()">
+	            <option value="writer">작성자</option>
+	            <option value="title">제목</option>
+	            <option value="content">내용</option>
+	            <option value="titleAndContent" selected>제목 + 내용</option>
+	        </select>
+   			<input type="text" class="searchInputBox">
+   			<button class="boardSearchBtn">검색</button>
 		</div>
 	</div>
 </body>
 <script>
-	// 스크립트 작성하는 곳.
-	console.log("테스트 용도의 자유게시판");
+	// 자유게시판 작성폼으로 이동
+	$(".boardWritingBtn").on("click", function(){
+		console.log("자유게시판 작성 폼으로 이동하자.");
+		location.href = "boardWritingForm.do";
+	})
 </script>
 </html>

@@ -13,7 +13,7 @@ public interface RepairService {
 	List<RepairVO> repairSearchSelect(Search svo);
 	// 유지보수 리스트 개별 데이터 조회
 	RepairVO repairList(RepairVO rvo);
-	// 유지보수 게시판 개별 삭제
+	// 유지보수 게시판 개별 수정
 	int repairListUpdate(RepairVO rvo);
 	// 유지보수 게시판 개별 삭제
 	int repairListDelete(RepairVO rvo);

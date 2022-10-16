@@ -1,23 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.board.BoardMapper">
-
-	<select id="boardSelectList" resultType="co.bada.leejava.board.BoardVO">
-		SELECT * FROM BOARD
+	
+	<!-- 페이징&검색  처리를 하기 위한 사전 정보. 게시글의 총 갯수 구하기 -->
+	<select id="getBoardListCnt" resultType="int">
+		SELECT COUNT(*) 
+			FROM BOARD
+			<!-- 검색항목은 작성자(boardWriter), 제목(boardTitle), 내용(boardContents)  -->
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="boardWriter != null and boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+				<if test="boardTitle != null and boardTitle != '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+				<if test="boardContents != null and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+			</trim>
 	</select>
 	
-	<select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
-		SELECT * FROM BOARD
-		WHERE BOARDNO = #{boardNo}
+	<!-- 페이징&검색 처리한 게시글 리스트 -->
+	<select id="boardSearchSelect" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM (
+			SELECT ROWNUM AS RN, A.* FROM (
+				SELECT * FROM BOARD 
+				<trim prefix="where" prefixOverrides="and | or">
+					<if test="boardWriter != '' and boardWriter != null">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+					<if test="boardTitle != '' and boardTitle != null">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+					<if test="boardContents != '' and boardContents != null">AND BOARDCONTENTS LIKE '%'||#{boardContents||'%'</if>
+				</trim>
+				ORDER BY BOARDWDATE DESC
+				) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
+	<!-- 자유게시판 게시글 등록 -->
 	<insert id="boardInsert" parameterType="co.bada.leejava.board.BoardVO">
 		INSERT INTO BOARD 
+			VALUES( 
+				BOARD_NO_SEQ.NEXTVAL,  
+				TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
+				'',
+				#{boardWriter},
+				#{boardTitle},
+				#{boardContents},
+				0,
+				0,
+				#{bfileCheck}
+			)
 	</insert>
-	
-	<delete id="boardDelete" parameterType="co.bada.leejava.board.BoardVO">
-		DELETE FROM BOARD 
-		WHERE BOARDNO = #{boardNo}
-	</delete>
+		
 
 </mapper>

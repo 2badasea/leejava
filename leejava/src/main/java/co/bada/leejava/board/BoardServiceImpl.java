@@ -5,16 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import co.bada.leejava.Search;
+
 @Repository("boardDao")
 public class BoardServiceImpl implements BoardService {
 	@Autowired
 	BoardMapper map;
-	
-	@Override
-	public List<BoardVO> boardSelectList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public BoardVO boardSelect(BoardVO bvo) {
@@ -38,6 +34,18 @@ public class BoardServiceImpl implements BoardService {
 	public int boardDelete(BoardVO bvo) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public int getBoardListCnt(Search svo) {
+		// TODO Auto-generated method stub
+		return map.getBoardListCnt(svo);
+	}
+
+	@Override
+	public List<BoardVO> boardSearchSelect(Search svo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -21,7 +21,6 @@ public class RepairController {
 	@Autowired
 	RepairService repairDao;
 	
-	// rest api 방식으로 구성해야 함.
 	private static final Logger logger = LoggerFactory.getLogger(RepairController.class);
 	
 	@RequestMapping(value = "adminRepair.do" , method = { RequestMethod.POST , RequestMethod.GET} )
@@ -55,9 +54,6 @@ public class RepairController {
 		model.addAttribute("pagination", svo);
 		model.addAttribute("repair", list);
 		logger.info("list 값: " + list);
-//		model.addAttribute("pagination", svo);
 		return "home/admin/repairlist"; 
 	}
-	// 유지보수 관리 게시판으로 이동하기 ( 관리자 화면의 사이드바 메뉴를 통해서 이동된다.) 
-	// 일단 jeninks
 }

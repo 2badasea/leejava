@@ -9,7 +9,7 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 .mainWrapper {
-	margin-left: 15%;
+	margin-left: 13%;
 	margin-top: 1%;
 }
 .boardTable{
@@ -70,6 +70,25 @@
 	color: tomato;
 	font-size: large;
 } 
+.boardWritingBtn{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 100px;
+	min-height: 40px;
+	margin-right: 40px;
+}
+.boardWritingBtn:hover {
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
 </style>
 <script>
 	// 화면에 문서가 모두 출력된 다음에 실행시킬 이벤트
@@ -127,7 +146,9 @@
 						</tr>
 					</c:forEach>
 				</table>
-				<button class="boardWritingBtn">글쓰기</button>
+				<c:if test="${session_nickname ne null }">
+					<button class="boardWritingBtn">글쓰기</button>
+				</c:if>
 			</div>
 		</div>
 		
@@ -175,8 +196,12 @@
 <script>
 	// 자유게시판 작성폼으로 이동
 	$(".boardWritingBtn").on("click", function(){
-		console.log("자유게시판 작성 폼으로 이동하자.");
-		location.href = "boardWritingForm.do";
+		let boardWritingCheck = confirm("게시글을 작성하시겠어요?");
+		if(boardWritingCheck){
+			location.href = "boardWritingForm.do";
+		} else {
+			return false;
+		}
 	})
 </script>
 </html>

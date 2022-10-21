@@ -20,6 +20,10 @@
 		<constructor-arg value="C:\leejava\noticeuploadfiles\" />
 	</bean>
 	
+	<bean id="fileUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\uploadFile\" />
+	</bean>
+	
 	<!-- 자바 SMTP를 활용한 이메일 보내기 (by 구글)  -->
 	<!-- 지메일의 경우 22년 5월 30일부터 smtp를 사용하는 데 있어서 제한이 생겼다.  -->
 	<!-- gmail설정 -->

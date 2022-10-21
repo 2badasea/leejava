@@ -6,7 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>사용자뷰 배너 페이지</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 	.headerTemplete_wrapper{
 		width: 100%;

@@ -8,11 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.bada.leejava.Search;
 import co.bada.leejava.board.BoardService;
@@ -53,10 +58,29 @@ public class BoardController {
 	}
 	
 	// 자유게시판 작성폼으로 이동
-	@RequestMapping(value = "boardWritingForm.do")
+	@RequestMapping(value = "boardWritingForm.do" )
 	public String boardWritingForm(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		return "home/member/boardWritingForm";
+	}
+	
+	// insert 데이터 테스트
+	@ResponseBody
+	@PostMapping(value ="/boardInsert.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> boardInsert(@RequestBody BoardVO bvo) {
+		
+		logger.info("ajax 넘어온 값 확인: " + bvo);
+		int n = 1;
+//		int n = boardDao.boardInsert(bvo);
+		String message ="OK";
+		
+		if(n == 1) {
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		} else {
+			message = "NO";
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+		
 	}
 	
 }

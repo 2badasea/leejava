@@ -7,4 +7,10 @@ import org.springframework.stereotype.Repository;
 public class UploadfileServiceImpl implements UploadfileService {
 	@Autowired
 	UploadfileMapper map;
+
+	@Override
+	public int uploadfileInsert(UploadfileVO uvo) {
+		// TODO Auto-generated method stub
+		return map.uploadfileInsert(uvo);
+	}
 }

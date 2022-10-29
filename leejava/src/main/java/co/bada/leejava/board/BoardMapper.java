@@ -17,4 +17,6 @@ public interface BoardMapper {
 	int boardUpdate(BoardVO bvo); 
 	// 자유게시판 삭제
 	int boardDelete(BoardVO bvo);
+	// 파일업로드 테이블에 전달할 최근에 생성된 게시글 번호
+	int getBno();
 }

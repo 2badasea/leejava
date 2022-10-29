@@ -62,12 +62,13 @@ public class Search extends Paging {
 	private int boardLikeit;		// 추천수(좋아요 수)
 	private int bfileCheck; 		// 첨부파일 존재 유무(0 또는 1의 값을 가지도록)
 	
-	// 첨부파일 업로드(자유게시판, Qna, 정보, 모임 등)
-	private int whatB;					// 게시판 구분(자유게시판1, qna2, 정보3, 모임4);
-	private int whatB_no;				// 해당 게시판에서의 글번호
-	private String whatB_uuid; 			// 고유넘버
-	private String whatB_uploadPath;	// 업로브 경로(년,월,일)
-	private String whatB_ofile; 		// 업로드 파일의 원본명
+	// 첨부파일 업로드(자유게시판(1), Qna(2), 정보(3), 모임 등)
+	private int fileBoard;			// 업로드 파일 게시판 종류
+	private int fileBno; 			// 업로드 파일 게시글 번호
+	private String fileUuid;		// 업로드 파일 UUID
+	private String fileUploadpath;	// 업로드 파일 경로 
+	private String fileOriginname;	// 업로드 파일 원본명 
+	private boolean fileType; 		// 업로드 파일 유형(확장자)
 	
 	// QuizcardVO 클래스에 선언되어 있는 filed 값들. ================================
 	private int quizcard_set_no; 				// 퀴즈카드 세트번호

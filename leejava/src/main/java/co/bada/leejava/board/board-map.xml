@@ -45,6 +45,11 @@
 				#{bfileCheck}
 			)
 	</insert>
+	
+	<!-- 마지막으로 생성된 게시글 번호 조회 (파일 업로드 테이블을 위한 데이터 -->
+	<select id="getBno" resultType="int">
+		SELECT MAX(BOARDNO) FROM BOARD
+	</select>
 		
 
 </mapper>

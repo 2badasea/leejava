@@ -21,7 +21,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int boardInsert(BoardVO bvo) {
 		// TODO Auto-generated method stub
-		return 0;
+		return map.boardInsert(bvo);
 	}
 
 	@Override
@@ -46,6 +46,12 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVO> boardSearchSelect(Search svo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int getBno() {
+		// TODO Auto-generated method stub
+		return map.getBno();
 	}
 
 }

@@ -70,13 +70,21 @@ public class BoardController {
 	public ResponseEntity<String> boardInsert(@RequestBody BoardVO bvo) {
 		
 		logger.info("ajax 넘어온 값 확인: " + bvo);
-		int n = 1;
-//		int n = boardDao.boardInsert(bvo);
-		String message ="OK";
+		logger.info("업로드 파일 숫자: " + bvo.getBfileCheck());
+		int filesCount = bvo.getBfileCheck();
+		int n = boardDao.boardInsert(bvo);
+		String message;
 		
 		if(n == 1) {
-			return new ResponseEntity<String>(message, HttpStatus.OK);
-		} else {
+			if(filesCount == 0) {	// 게시글 등록 성공 & 첨부파일 미존재
+				message = "NOFILE";
+				return new ResponseEntity<String>(message, HttpStatus.OK);
+			} else {	
+				// 게시글 등록 성공 & 첨부파일 존재 => 글번호를 리턴시킨다.
+				message = String.valueOf(boardDao.getBno());
+				return new ResponseEntity<String>(message, HttpStatus.OK);
+			}
+		} else {					// 게시글 등록 실패
 			message = "NO";
 			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
 		}

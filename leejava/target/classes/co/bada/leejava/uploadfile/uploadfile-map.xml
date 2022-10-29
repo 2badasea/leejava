@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.uploadfile.UploadfileMapper">
-
+	
+	<insert id="uploadfileInsert" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		insert into uploadfile values(
+								#{fileBoard},
+								#{fileBno},
+								#{fileUuid},
+								#{fileUploadpath},
+								#{fileOriginname},
+								#{fileType}
+								)
+	</insert>
 
 </mapper>

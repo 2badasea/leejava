@@ -107,7 +107,7 @@
 						<th>첨부파일</th>
 						<td class="uploadFileTd">
 							<!-- 다중 파일 업로드를 구현해야 한다.-->
-							<input type="button" style="display: flex; margin: auto;" onclick="Fnc_addFile()" value="업로드 파일 추가">
+							<input class="fileAddBtn" type="button" style="display: flex; margin: auto;" onclick="Fnc_addFile()" value="업로드 파일 추가">
 						</td>
 					</tr>
 				</table>
@@ -121,6 +121,22 @@
 	</div>
 </body>
 <script>
+	// 업로드 파일을 대상으로 정규식을 활용하여 확장자나 크기의 사전 처리
+	const fileRegExp = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+	const fileMaxSize = 5242880; // 5MB
+	
+	function checkExtension(fileName, fileSize){
+		if(fileSize >= fileMaxSize){
+			alert(fileName + " 파일 사이즈 초과");
+			return false;
+		}
+		if(fileRegExp.test(fileName)){
+			alert(fileName + " 해당 파일은 업로드 할 수 없습니다.");
+			return false;
+		}
+		return true;
+	}
+
 	// 등록하기 버튼 구현
 	$(".boardWritingBtn").on("click", function(){
 		// 작성자 내용으로 들어갈 닉네임은 session값에서 불러오면 된다. session이 널이 됐으면 return 시키기
@@ -134,6 +150,11 @@
 		if(inputFile.length !== 0){
 			for(var i = 0; i < inputFile.length; i++ ){
 				if(inputFile[i].files.length !== 0){
+					
+					if(!checkExtension(inputFile[i].files[0].name, inputFile[i].files[0].size )){
+						return false;
+					}
+					
 					formData.append("uploadFile", inputFile[i].files[0]);
 					inputFileCnt++;
 				}
@@ -146,6 +167,8 @@
 			alert("제목과 내용을 입력해주세요.");
 			return false;
 		}
+		
+		// 작성 중에 세션이 만료된 경우, 다시 로그인 하도록. => 스프링시큐리티 공부하고 세션으로 제어할 수 있도록 수정하기		
 		if(inputNickname  == undefined || inputNickname == null ){
 			alert("세션이 만료되었습니다. 다시 로그인해주세요");
 			location.href="loginPage.do";
@@ -167,9 +190,14 @@
 			contentType: "application/json; charset=utf-8",
 			dataType: "text",
 			success: function(message){
-				console.log(message);
-				if(inputFileCnt !== 0){
-					Fnc_fileUpload(formData);
+				if(message === "NOFILE"){
+					// 첨부파일 없는 게시글의 경우.
+					alert("정상적으로 등록되었습니다.");
+					location.href = "boardList.do";
+				} else {
+					// 첨부파일이 존재하는 경우(문자열 타입의 숫자를 숫자형으로 형변환 후 리턴)
+					message = message * 1; 
+					Fnc_fileUpload(formData, message);
 				}
 			},
 			error: function(error){
@@ -179,23 +207,31 @@
 	})
 	
 	// 파일 업로드 ajax 콜백함수 정의
-	function Fnc_fileUpload(formData){
+	function Fnc_fileUpload(formData, fileBno){
+		// 첨부파일 업로드 게시판 유형 구분 => 자유게시판 번호 1 
+		const inputFilebno = $("#fileboardInput").data('board');
+		
+		console.log("게시판 유형: " + inputFilebno + ", 게시글 번호: " + fileBno);
+		let url = "ajaxFileUpload.do?fileBoard=" + inputFilebno + "&fileBno=" + fileBno;
 		$.ajax({
-			url : "ajaxFileUpload.do",
+			url : url,
 			processData : false,
 			contentType : false,
 			data : formData,
 			type : "POST",
 			success: function(result){
+				console.log("ajax 파일 업로드 완료");
 				console.log(result);
+				
 			}, 
 			error: function(error){
+				console.log("ajax 파일 업로드 완료, but 실패");
 				console.log(error);
 			}
 		})
 	}
 	
-	
+	// 업로드 가능한 <input type="file"> 개수 추가 
 	function Fnc_addFile(){
 		var fileTagCnt = $("input[name='uploadFile']").length;
 		console.log("첨부파일 갯수: " + fileTagCnt);
@@ -203,6 +239,7 @@
 			alert("최대 3개만 업로드 할 수 있습니다.");
 			return false;
 		}
+		// 아직 <input> 요소가 3개가 아니라면,
 		var addFileTag = "<div style='display: flex; justify-content: space-between; margin-bottom: 8px;'>";
 		addFileTag += "<input type='file' name='uploadFile'><input class='fileCancelBtn' type='button' value='취소'></div>";
 		$(".uploadFileTd").prepend(addFileTag);
@@ -212,7 +249,7 @@
 	$(".historyBackBtn").on("click", function(){
 		let historyBackCheck = confirm("작성 중인 글을 멈추고 돌아가시겠어요?");
 		if(historyBackCheck){
-			history.back();
+			location.href = "boardList.do";
 		} else{
 			return false;
 		}
@@ -223,17 +260,18 @@
 		console.log("클릭 확인");
 		// <div>태그 통째로 삭제
 		var selectDiv = $(this).parent();
-		console.log(selectDiv);
 		selectDiv.remove();
 	})
-	
-
 	
 </script>
 <script>
 var newJquery = $.noConflict(true);
 //화면에 문서가 모두 출력되면 아래 정의한 이벤트를 실행시킨다. 
 $(document).ready(function(){
+		// 자유게시판 번호 조회(바닐라 JS)
+		const fileboardNum = document.getElementById('fileboardInput').dataset.board;	
+// 		const fileboardNum = $("#fileboardInput").data('board');  // 제이쿼리 방식의 data 어트리뷰트 값 조회
+		console.log("자유게시판 번호: " + fileboardNum);
 	
 		// 새로고침 했을 때 세션값이 존재하지 않는다면, login창으로 옮기기. 
 		const sessionCheck = $(".sessionCheck").val();

@@ -21,7 +21,7 @@
 	</bean>
 	
 	<bean id="fileUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\uploadFile\" />
+		<constructor-arg value="C:\leejava\upload" />
 	</bean>
 	
 	<!-- 자바 SMTP를 활용한 이메일 보내기 (by 구글)  -->

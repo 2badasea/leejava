@@ -92,7 +92,7 @@
 		</dependency>
 
 		<!-- commons-fileupload -->
-		<!-- multipart등을 사용할수 있음 -->
+		<!-- CommonsMultipartResolver 구현체인 multipart등을 사용할수 있음 -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>

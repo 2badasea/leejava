@@ -178,34 +178,30 @@ img,
 	</div>
 </body>
 <script>
-	// 이전 페이지로 돌아가는 버튼  
+	// 이전 페이지 이동
 	$(".noticeReadFormBackBtn").on("click", function(){
-		console.log('뒤로가기 버튼 클릭');
-		// 뒤로 가기 메소드를 활용. 
 		history.back(); 
-	})
+	});
 	
-	// 첨부파일 아이콘 클릭해도 첨부파일 다운로드 되도록
+	// 첨부파일 아이콘 클릭 => 첨부파일 다운로드 
 	$(".attachedFileIcon").on("click", function(){
 		// attr()메서드를 통해 해당 속성값을 가져와서 페이지 이동시킴 
 		var url = $('.noticeFileName').attr("href");
 		location.href = url;
 	})
 	
-	// 작성자 정보 조회하는 이벤트 정의 => 하지만, 공지사항의 경우 작성자는 운영자. 최소한의 정보는 제공할 것. 
+	/**
+	 * 작성자 정보 조회 이벤트 핸들러 => 아직 미구현(모달창 활용하여 사용자 정보를 출력시키기)
+	 * @Param userNickname(사용자 닉네임)
+	 */
 	function fn_userInfo(userNickname){
 		console.log("해당 유저의 이름: "  + userNickname);
-		console.log("추후에 해당 유저의 정보를 호출하는 모달창 생성해서 구현");
-		// 추후에 해당 유저의 정보를 호출하는 모달창 생성해서 구현
 	}
-	
-
 </script>
 <script>	
-	// 문서가 로드되면 자동으로 실행시킬 이벤트들 정의
 	$(document).ready(function(){
 		
-		/*	카테고리 우리말로 변환	*/
+		// 카테고리 우리말로 변환	
 		var category = $(".noticeCategory").text();
 		// 경우의수는 all, emergency, event 3가지다. 
 		var fixedCategory;
@@ -220,14 +216,12 @@ img,
 		}
 		$(".noticeCategory").text(fixedCategory);
 		
-		/* 첨부파일 존재유무에 따른 아이콘 활성화 유무 */ 
+		// 첨부파일 존재유무에 따른 아이콘 활성화 유무 
 		var fileName = $(".noticeInputData").data('file');
 		if( fileName == ""){
 			$(".attachedFileIcon").css("display", "none");
 			$(".emptyFileMessage").css("display", "block");			
 		}
-		
-		
 	})
 </script>
 </html>

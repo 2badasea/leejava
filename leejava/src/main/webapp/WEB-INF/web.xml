@@ -2,22 +2,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	version="3.1">
+	
+	<!-- web.xml은 DD(Deploy Descriptor, 배포 설명자)이다. 그리고 DD는 Web Application 실행 시 메모리에 로드-->
 
-	<!-- The definition of the Root Spring Container shared by all Servlets 
-		and Filters -->
+	<!-- 'ContextLoaderListener'는 web application context 단위의 설정파일. appli. -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/spring/root-context.xml</param-value>
 	</context-param>
-
-	<!-- Creates the Spring Container shared by all Servlets and Filters -->
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
+	
 	<!-- Processes application requests -->
 	<servlet>
-		<!-- <multipart-config></multipart-config> -->
+		<!-- 'DispatcherServlet'는 클라이언트읭 요청을 어떻게 처리할지에 대한 설정이다. -->
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
@@ -47,9 +47,10 @@
 		</welcome-file>
 	</welcome-file-list>
 
-
-	<!-- 한글깨짐 방지 필터 -->
+	
+	<!-- 'filter' 부분은 앱을 실행시키는 데 있어서 꼭 거쳤으면 하는 사항. -->
 	<filter>
+		<!-- 한글깨짐 방지 필터 -->
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
 		<init-param>

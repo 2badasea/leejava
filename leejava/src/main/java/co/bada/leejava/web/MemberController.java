@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -510,25 +511,19 @@ public class MemberController {
 	} 
 	
 	// 사용자뷰 공지사항 조회
-	@RequestMapping("/memberNoticeRead.do")
-	public String memberNoticeRead(Model model, HttpServletRequest request, NoticeVO nvo
+	@RequestMapping(value = "memberNoticeRead.do", method = RequestMethod.GET)
+	public String memberNoticeRead(Model model, NoticeVO nvo
 			, @RequestParam("n_no") int n_no 
 			, @RequestParam(value= "n_hit", required = false) int n_hit ){
 		
-		logger.info("===========view단에서 넘어온 조회할 글 번호: " + n_no);
-		logger.info("===========view단에서 넘어온 조회수 확인: " + n_hit);
-		
-		// 공지사항 클릭하면 조히수도 올리도록 한다. update
+		// 공지사항 클릭 => 조회수(n_hit)+ 1 update
 		n_hit += 1;
-		logger.info("===========업데이트할 조회수 값은 얼마? " + n_hit);
 		nvo.setN_hit(n_hit);
 		nvo.setN_no(n_no);
 		int n = noticeDao.noticeHitUpdate(nvo);
-		if( n != 0) {
-			logger.info("===========조회수 업뎃 성공");
-		} else {
+		if( n == 0) {
 			logger.info("===========조회수업뎃 실패");
-		}
+		};
 		
 		model.addAttribute("notice", noticeDao.noticeSelect(nvo));
 		// 조회수 count되게 만들어야 함 클릭했을 때, 

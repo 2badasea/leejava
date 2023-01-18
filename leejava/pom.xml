@@ -63,7 +63,7 @@
 			<version>2.4.3</version>
 		</dependency>
 
-		<!-- @Resource 어노테이션 사용을 위해 추가. 자바 9이후로는 지원이 안 됨. -->
+		<!-- @Resource 어노테이션 사용을 위해 추가. 자바 9이후로는 지원이 안 되기 때문 -->
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>

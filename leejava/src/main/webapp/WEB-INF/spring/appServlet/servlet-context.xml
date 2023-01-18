@@ -42,10 +42,10 @@
 		</beans:property>
 	</beans:bean>
 
-	<!-- 공지사항 등록 summernote 구현 과정에서 추가함. -->
-	<!-- 스프링에서 기본으로 제공하는 multipartResolver는 CommonsMultipartResolver 이므로, 순수한 
-		multipartResolver를 사용하기 위해 빈 이름으로 "multipartResolver"를 등록해야함 + 프로퍼티를 이용 최대 
-		가능한 업로드 사이즈 지정함 -->
+	<!-- 공지사항 등록 summernote 구현 과정에서 추가-->
+	<!-- 스프링에서 기본으로 제공하는 multipartResolver는 CommonsMultipartResolver.  
+		순수한  multipartResolver를 사용하기 위해 빈 이름으로 "multipartResolver"를 등록
+		beans:property를 통해 최대 업로드 가능 사이즈 지정 --> 
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="maxUploadSize" value="100000000" />
 	</beans:bean>
@@ -54,9 +54,6 @@
 <!-- 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> -->
 <!-- 	</beans:bean> -->
 
-
 	<context:component-scan base-package="co.bada.leejava" />
-
-
 
 </beans:beans>

@@ -5,8 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class SHA256Util {
-	
-	
 	// sha-256 암호화 함. 매개변수 source는 뷰에서 넘어온 password 값이다.
 	public static String getEncrypt(String source, String salt) {
 		return getEncrypt(source, salt.getBytes());
@@ -44,7 +42,6 @@ public class SHA256Util {
 		}
 		return result;
 	}
-	
 	
 	// salt를 얻어온다. 
 	public static String generateSalt() {

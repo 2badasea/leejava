@@ -207,9 +207,11 @@
 </head>
 <script>
 	$(document).ready(function(){
+		/**
+		 * '회원가입' 이후, 로그인 페이지 출력할 때 alert시킬 메시지(가입환영)
+		 */
 		var message = $('#message').val();
 		if( message != ""){
-			console.log("가입완료 메시지 출력되나? " + message);
 			alert(message);
 		}
 	})
@@ -250,164 +252,6 @@
 	<div class="modal_layer"></div>
 </div>  
 <!-- 비밀번호 찾기 모달창 끝  -->
-<script>
-	/* 비밀번호 찾기 모달창 관련 스크립트 작성 => 다 작성 후 밑으로 보내기 */
-	$("#emailSendBtn").on("click", function(){
-		// 버튼 클릭하자마자 이메일 정규식이랑 null값인지 아닌지 먼저 확인 후에 진행하기
-		// 이메일 정규식 체크 ( 혹시나 해서 올바르게 작성했느지 체크하기 위함)
-		var inputEmail = $("#inputEmail").val();
-		console.log("입력한 메일 확인: " + inputEmail);
-		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-		if(inputEmail !== "" && regEmail.test(inputEmail) ){
-				// ajax로 일단 해당 계정이 존재하는지 체크한다. => 따로 이벤트로 정의했다. 코드가 길어질까봐
-				if( emailExistCheck(inputEmail) === "YES" ){
-					alert("이메일을 전송했습니다.");
-					$("#inputEmail").attr("readonly", "readonly");
-					$("#emailSendBtn").css("display", "none");
-					$("#inputCheckNum").css("display", "block");
-					$("#sendInputCheckNum").css("display", "block");
-					// ajax까지 포함하면 함수가 코드가 복잡해지니까 따로 function정의하기
-					emailSend(inputEmail);
-				} else {
-					alert("가입된 이메일이 아닙니다. 이메일을 확인해주세용");
-					$("#inputEmail").focus();	
-					return false;
-				}
-			} else{ 
-				alert("올바른 이메일 형식이 아닙니다.");
-				$("#inputEmail").val('').focus();	
-				return false;
-			}
-	})
-	
-	// 이메일 존재하는지 체크. 리턴값 받도록 해본다
-	function emailExistCheck(inputEmail){
-		console.log("이메일 존재유무 체크 콘솔창 확인: " + inputEmail);
-		var message;
-		$.ajax({
-			url: 'ajaxEmailCheck.do',
-			type: "POST",
-			async: false,  // success문보다 밑에 console창이 먼저 실행되는 문제 해결 console창 추가
-			data: {
-				email : inputEmail
-			},
-			success: function(responseText){
-				if(responseText === "NO"){
-					console.log("여기는 왔니?");
-					message = "YES";
-				} 
-			}
-		})
-		// 이 메시지를 리턴해서 체크한다. 존재하는 계정인 경우, YES
-		console.log("존재유무 체크 콘솔창 확인: " + message );
-		return message;
-	}
-	
-	// 입력한 이메일을 통해 ajax로 인증코드를 받기 위한 함수
-	function emailSend(inputEmail){
-		console.log("여기까지 왔니?" + inputEmail);
-		$.ajax({
-			url: "ajaxEmailCheckForgotPassword.do",
-			type: "POST",
-			data : {
-				inputEmail : inputEmail
-			},
-			success: function(responseCode){
-				console.log("인증코드 확인: " + responseCode);
-				// 입력한 이메일로 인증번호를 보내는 경우. 넘어온 인증코드 값을 통해 확인을 받는다.
-				// 난 '확인'버튼에 코드값을 넣어서 일치여부를 비교하도록 했다. 
-				$("#sendInputCheckNum").val(responseCode);
-			}
-		})
-	}
-	
-	// 인증코드 일치여부 확인버튼 
-	$("#sendInputCheckNum").on("click", function(){
-		var storedCheckNum = $("#sendInputCheckNum").val();
-		console.log("버튼에 담긴 인증코드 값: " + storedCheckNum);
-		// 사용자가 입력한 값
-		var inputCheckNum = $("#inputCheckNum").val(); 
-		if( inputCheckNum === storedCheckNum){
-			console.log("인증성공");
-			alert("인증되었습니다. 새로운 비밀번호로 변경해주세요");
-			// 새로운 비밀번호를 입력하는 공간을 활성화 시켜야 함.
-			$(".inputEmailBox").css("display", "none");
-			$(".newPasswordBox").css("display", "block");
-		} else {
-			console.log("인증실패");
-			alert("인증번호가 일치하지 않습니다.");
-		}
-		
-	})
-	
-	// 패스워드 입력칸 실시간 유효성 검증 영문/숫자/특수문자 합쳐서 최소 8자리 이상
-	$("#newPassword").keyup(function(){
-		var newPassword = $("#newPassword").val();
-		var regPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%^*#?&])[A-Za-z\d@$!%^*#?&]{8,15}$/;
-		var message = "";
-		if( regPassword.test(newPassword) ){
-			message = "사용가능한 비밀번호 입니다."
-			// 비밀번호 입력칸 밑의 <span>요소에 해당 message가 출력되도록 한다. keyup()이벤트가 발생할 때마다.
-			$("#passwordRegMessage").text(message);
-			$("#passwordRegMessage").css("color", "#05AA6D");
-		} else {
-			message = "영문, 숫자, 특수문자 최소 1개씩 포함한 8~15자리 이상이어야 합니다.";
-			$("#passwordRegMessage").text(message);
-			$("#passwordRegMessage").css("color", "tomato"); 
-		}
-	})
-	
-	// <span>의 id값 passwordCheckMessage 
-	// 패스워드 확인칸 실시간 검증 by 바닐라자바스크립트
-	document.getElementById('newPasswordCheck').onkeyup = function() {
-		var newPassword = document.getElementById('newPassword').value;
-		var newPasswordCheck = document.getElementById('newPasswordCheck').value;
-		var message = "";
-		if( newPassword != newPasswordCheck){
-			message = "비밀번호가 일치하지 않습니다.";
-			document.getElementById('passwordCheckMessage').innerHTML = message;
-			document.getElementById('passwordCheckMessage').style.color = "tomato";
-		} else {
-			message = "비밀번호가 일치합니다!";
-			document.getElementById('passwordCheckMessage').innerHTML = message;
-			document.getElementById('passwordCheckMessage').style.color =  "#05AA6D";
-		}
-	}
-	
-	// 비밀번호 변경버튼 클릭
-	$("#changeNewPasswordBtn").on("click", function(){
-		// 입력했던 이메일 값도 정의해놓는다. => ajax때 같이 넘겨야 비밀번호 업데이트 가능.
-		var inputEmail = $("#inputEmail").val();
-		console.log("이메일 확인: " + inputEmail);
-		if( $("#newPassword").val() !== $("#newPasswordCheck").val() ){
-			alert("비밀번호가 일치하지 않습니다.");
-			return false;
-		} else {
-			// ajax처리를 통해 새로운 비밀번호값으로 변경시켜야 한다. 컨트롤러에서 새로운 salt값도 업데이트 해야 함. 
-			// 생각해보니깐 비밀번호만 넘기는 게 아니라, 이메일 주소도 필요하다. => "var inputEmail"을 위에 다시 정의
-			var newPassword = $("#newPassword").val();
-			$.ajax({
-				type: "POST",
-				async : false,
-				url: "ajaxNewPasswordUpdate.do",
-				data: {
-					m_password : newPassword,
-					m_email : inputEmail
-				},
-				success: function(responseText){
-					if( responseText === "YES"){
-						alert("비밀번호가 변경되었습니다. 로그인창으로 이동합니다.");
-						location.href='loginPage.do';
-					}else {
-						alert("비밀번호 변경 실패");
-					}
-				}
-			})
-		}
-	})
-</script>
-<!-- 부트스트랩 모달창 부분 끝 -->
-
 
  <div class="loginWrapper">
         <div class="loginFrame">
@@ -520,6 +364,157 @@
 				}
 			}
 		})
+	})
+	
+		/* 
+	 * 비밀번호 찾기 Modal창 스크립트
+	 */
+	$("#emailSendBtn").on("click", function(){
+		// 버튼 클릭하자마자 이메일 정규식이랑 null값인지 아닌지 먼저 확인 후에 진행하기
+		// 이메일 정규식 체크 ( 혹시나 해서 올바르게 작성했는지 체크하기 위함)
+		var inputEmail = $("#inputEmail").val();
+		console.log("입력한 메일 확인: " + inputEmail);
+		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		if(inputEmail !== "" && regEmail.test(inputEmail) ){
+				// ajax로 일단 해당 계정이 존재하는지 체크한다. => 따로 이벤트로 정의했다. 코드가 길어질까봐
+				if( emailExistCheck(inputEamil) === "YES" ){
+					alert("이메일을 전송했습니다.");
+					$("#inputEmail").attr("readonly", "readonly");
+					$("#emailSendBtn").css("display", "none");
+					$("#inputCheckNum").css("display", "block");
+					$("#sendInputCheckNum").css("display", "block");
+					// ajax까지 포함하면 함수가 코드가 복잡해지니까 따로 function정의하기
+					emailSend(inputEmail);
+				} else {
+					alert("가입된 이메일이 아닙니다. 이메일을 확인해주세용");
+					$("#inputEmail").focus();	
+					return false;
+				}
+			} else{ 
+				alert("올바른 이메일 형식이 아닙니다.");
+				$("#inputEmail").val('').focus();	
+				return false;
+			}
+	})
+	
+	// 이메일 존재하는지 체크. 리턴값 받도록 해본다
+	function emailExistCheck(inputEmail){
+		var message;
+		$.ajax({
+			url: 'ajaxEmailCheck.do',
+			type: "POST",
+			async: false,  // success문보다 밑에 console창이 먼저 실행되는 문제 해결 console창 추가
+			data: {
+				email : inputEmail
+			},
+			success: function(responseText){
+				if(responseText === "NO"){
+					message = "YES";
+				} 
+			}
+		})
+		// 이 메시지를 리턴해서 체크한다. 존재하는 계정인 경우, YES
+		console.log("존재유무 체크 콘솔창 확인: " + message );
+		return message;
+	}
+	
+	// 입력한 이메일을 통해 ajax로 인증코드를 받기 위한 함수
+	function emailSend(inputEmail){
+		$.ajax({
+			url: "ajaxEmailCheckForgotPassword.do",
+			type: "POST",
+			data : {
+				inputEmail : inputEmail
+			},
+			success: function(responseCode){
+				console.log("인증코드 확인: " + responseCode);
+				// '확인'버튼에 인증코드값 할당 후 일치여부를 비교. 
+				$("#sendInputCheckNum").val(responseCode);
+			}
+		})
+	}
+	
+	// 인증코드 일치여부 확인버튼 
+	$("#sendInputCheckNum").on("click", function(){
+		var storedCheckNum = $("#sendInputCheckNum").val();
+		console.log("버튼에 담긴 인증코드 값: " + storedCheckNum);
+		// 사용자가 입력한 값
+		var inputCheckNum = $("#inputCheckNum").val(); 
+		if( inputCheckNum === storedCheckNum){
+			console.log("인증성공");
+			alert("인증되었습니다. 새로운 비밀번호로 변경해주세요");
+			// 새로운 비밀번호를 입력하는 공간을 활성화 시켜야 함.
+			$(".inputEmailBox").css("display", "none");
+			$(".newPasswordBox").css("display", "block");
+		} else {
+			console.log("인증실패");
+			alert("인증번호가 일치하지 않습니다.");
+		}
+		
+	})
+	
+	// 패스워드 입력칸 실시간 유효성 검증 영문/숫자/특수문자 합쳐서 최소 8자리 이상
+	$("#newPassword").keyup(function(){
+		var newPassword = $("#newPassword").val();
+		var regPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%^*#?&])[A-Za-z\d@$!%^*#?&]{8,15}$/;
+		var message = "";
+		if( regPassword.test(newPassword) ){
+			message = "사용가능한 비밀번호 입니다."
+			// 비밀번호 입력칸 밑의 <span>요소에 해당 message가 출력되도록 한다. keyup()이벤트가 발생할 때마다.
+			$("#passwordRegMessage").text(message);
+			$("#passwordRegMessage").css("color", "#05AA6D");
+		} else {
+			message = "영문, 숫자, 특수문자 최소 1개씩 포함한 8~15자리 이상이어야 합니다.";
+			$("#passwordRegMessage").text(message);
+			$("#passwordRegMessage").css("color", "tomato"); 
+		}
+	})
+	
+	// <span>의 id값 passwordCheckMessage 
+	// 패스워드 확인칸 실시간 검증 by 바닐라자바스크립트
+	document.getElementById('newPasswordCheck').onkeyup = function() {
+		var newPassword = document.getElementById('newPassword').value;
+		var newPasswordCheck = document.getElementById('newPasswordCheck').value;
+		var message = "";
+		if( newPassword != newPasswordCheck){
+			message = "비밀번호가 일치하지 않습니다.";
+			document.getElementById('passwordCheckMessage').innerHTML = message;
+			document.getElementById('passwordCheckMessage').style.color = "tomato";
+		} else {
+			message = "비밀번호가 일치합니다!";
+			document.getElementById('passwordCheckMessage').innerHTML = message;
+			document.getElementById('passwordCheckMessage').style.color =  "#05AA6D";
+		}
+	}
+	
+	// 비밀번호 변경버튼 클릭
+	$("#changeNewPasswordBtn").on("click", function(){
+		// 이메일 값도 불러옴 => ajax때 같이 넘겨야 비밀번호 업데이트 가능.
+		var inputEmail = $("#inputEmail").val();
+		if( $("#newPassword").val() !== $("#newPasswordCheck").val() ){
+			alert("비밀번호가 일치하지 않습니다.");
+			return false;
+		} else {
+			// ajax처리 => 'SHA-256 암호화 처리된 비밀번호값' 생성 + '컨트롤러에서 새로운 salt값' DB update.  
+			var newPassword = $("#newPassword").val();
+			$.ajax({
+				type: "POST",
+				async : false,
+				url: "ajaxNewPasswordUpdate.do",
+				data: {
+					m_password : newPassword,
+					m_email : inputEmail
+				},
+				success: function(responseText){
+					if( responseText === "YES"){
+						alert("비밀번호가 변경되었습니다. 로그인창으로 이동합니다.");
+						location.href='loginPage.do';
+					}else {
+						alert("비밀번호 변경 실패");
+					}
+				}
+			})
+		}
 	})
 </script>
 

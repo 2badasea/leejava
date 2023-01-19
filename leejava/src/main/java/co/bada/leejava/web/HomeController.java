@@ -1,7 +1,5 @@
 package co.bada.leejava.web;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -63,14 +61,12 @@ public class HomeController {
 	@RequestMapping("/loginPage.do")
 	public String loginPage(Model model, HttpServletRequest request, 
 								@RequestParam(required = false ,value = "message") String message) {
-		logger.info("어디 페이지에서 로그인 요청이 발생했는지 확인: " + request.getHeader("Referer"));
-		logger.info("회원가입 완료 페이지에서 redirectAttribute로 넘긴 파라미터 값 확인: " + message);
+		logger.info("회원가입 완료 페이지 redirectAttribute로 넘긴 파라미터 값 확인: " + message);
+		
 		model.addAttribute("message", message);
-		// login창을 호출한 url 정보를 login페이지에 넘겨, 로그인에 성공하면 해당 url값을 location.href 식을 통해 호출시킨다.
+		// login창을 호출한 url를 받아, 로그인에 성공 이후 해당 url로 이동.(로그인 후 이전 페이지로 이동)
 		String referer = request.getHeader("Referer");
-		System.out.println("referer값:" + referer);
 		model.addAttribute("url", referer);
-//		return "redirect:" + referer;
 		return "home/member/loginPage";
 	}
 
@@ -81,15 +77,13 @@ public class HomeController {
 
 		String email = request.getParameter("email");
 		String formPassword = request.getParameter("password");
-		logger.info("===============확인 Email: " + email + " Password: " + formPassword);
 
 		mvo.setM_email(email);
 		String m_salt = memberDao.selectSalt(mvo);
 		String responseText = null;
 		if (m_salt != null) {
-			// m_salt값과 입력한 패스워드값을 getEncrypt( ) 메소드의 인자로 넘겨서 넘어오는 다이제스트값과 db상의
-			// m_password비교.
-			// salt값은 정해져 있다. 그래서 전달하는 정보가 같다면 해당 salt값을 통한 다이제스트 값도 동일하다.
+			// m_salt값과 입력한 패스워드값을 getEncrypt( ) 메소드의 인자로 넘겨서 넘어오는 다이제스트값과 db상의  m_password비교.
+			// salt값은 고정. => salt에 전달하는 인수의 값이 같다면 난수화된 암호 값도 동일.
 			String m_password = SHA256Util.getEncrypt(formPassword, m_salt);
 			mvo.setM_password(m_password);
 			mvo = memberDao.memberSelect(mvo); // 이메일 아이디와 다이제스트 비밀번호를 넘겨서 조회
@@ -111,7 +105,6 @@ public class HomeController {
 			// m_salt값을 조회할 수 없었던 경우.
 			responseText = "NO";
 		}
-
 		return responseText;
 	}
 
@@ -136,7 +129,8 @@ public class HomeController {
 	// 회원가입 양식으로 이동
 	@RequestMapping("/memberJoinForm.do")
 	public String memberJoinForm(Model model, HttpServletRequest request) {
-
+		
+		// 가입 약관 페이지의 '개인정보 유효기간', '프로모션 수신 여부' 항목 값 확인
 		String privacy = request.getParameter("privateTerms");
 		String promotion = request.getParameter("promotionTerms");
 		logger.info("===========개인정보 유효기간 선택사항 확인: " + privacy);
@@ -155,21 +149,16 @@ public class HomeController {
 	public String ajaxEmailCheck(Model model, HttpServletRequest request, MemberVO mvo) {
 
 		String email = request.getParameter("email");
-		logger.info("===========ajax로 넘어온 이메일 값: " + email);
 		String responseText = null;
 
 		mvo.setM_email(email);
 
-		// count값이 0이면 true를 반환
 		boolean b = memberDao.memberEmailCheck(mvo);
 		if (b) {
-			// 입력한 이메일이 중복으로 존재하지 않음 => 사용가능한 이메일
 			responseText = "YES";
 		} else {
-			// 중복 이메일 존재 => 사용불가
 			responseText = "NO";
 		}
-		logger.info("===========컨트롤러, 이메일 존재여부 체크 값 YES 여야 함" + responseText);
 		return responseText;
 	}
 
@@ -177,7 +166,8 @@ public class HomeController {
 	@ResponseBody
 	@RequestMapping("/ajaxNicknameCheck.do")
 	public String ajaxNicknameCheck(HttpServletRequest request, MemberVO mvo) {
-
+		
+		// request.getParameter() 보다는 @RequestParam이 spring 방식에 가깝다.
 		String nickname = request.getParameter("nickname");
 		logger.info("===========ajax로 넘어온 닉네임 값: " + nickname);
 
@@ -213,17 +203,8 @@ public class HomeController {
 
 	// 회원가입 요청
 	@RequestMapping("/memberJoin.do")
-	public String memberJoin(HttpServletRequest request, MemberVO mvo, Model model, AttachImageVO ivo, RedirectAttributes reattr) {
-
-		// 일단 모든 넘어온 값들 확인ㄱㄱ
-		logger.info("===========Eamil 값: " + request.getParameter("email"));
-		logger.info("===========nickname 값: " + request.getParameter("nickname"));
-		logger.info("===========password 값: " + request.getParameter("password"));
-		logger.info("===========phone 값: " + request.getParameter("phone"));
-		logger.info("===========address 값: " + request.getParameter("address"));
-		logger.info("===========birthdate 값: " + request.getParameter("birthdate"));
-		logger.info("===========privacy 값: " + request.getParameter("m_privacy"));
-		logger.info("===========promotion 값: " + request.getParameter("m_promotion"));
+	public String memberJoin(HttpServletRequest request, MemberVO mvo
+							,Model model, RedirectAttributes reattr) {
 
 		// 추가적으로 넣어야 하는 값들 sysdate, joinpath(가입경로), status(권한/상태 : USER) , m_into
 		String m_email = request.getParameter("email");
@@ -239,12 +220,10 @@ public class HomeController {
 		String m_promotion = request.getParameter("promotion");
 		String m_intro = "";
 
-		/* 패스워드 암호화 부분 */
-		// salt 생성. salt값도 db에 들어간다.
+		// salt 생성 
 		String m_salt = SHA256Util.generateSalt();
-		logger.info("===========salt 값 조회: " + m_salt);
+		// salt를 활용한 암호 난수화 
 		String m_password = SHA256Util.getEncrypt(password, m_salt);
-		logger.info("===========암호화된 m_password : " + m_password);
 
 		mvo.setM_email(m_email);
 		mvo.setM_nickname(m_nickname);
@@ -304,7 +283,7 @@ public class HomeController {
 		logger.info("===========ajax로 입력한 이메일 넘어왔니? " + m_email);
 		// 인증번호(난수) 생성
 		Random random = new Random();
-		int checkNum = random.nextInt(8888) + 1111; // 1111~9999 범위의 숫자를 얻기 위함.
+		int checkNum = random.nextInt(8888) + 1111; // 1111~9999 범위의 숫자.
 		logger.info("===========인증번호" + checkNum); // 콘솔창에 인증번호 나오는지 확인.
 
 		/************** 이메일 인증 일단 보류 **************/
@@ -313,10 +292,9 @@ public class HomeController {
 		String toMail = m_email; // 수신받을 이메일. view로부터 받은 이메일 주소인 변수 email을 사용
 		String title = "비밀번호 분실 인증 이메일 입니다."; // 자신이 보낼 이메일 제목
 		String content = // 자신이 보낼 이메일 내용
-				"javastory를 이용해주셔서 감사합니다." + "<br><br>" + "인증번호는 " + checkNum + " 입니다." + "<br>"
+				"Coder Ground를 이용해주셔서 감사합니다." + "<br><br>" + "인증번호는 " + checkNum + " 입니다." + "<br>"
 						+ "해당 인증번호를 인증번호 확인란에 입력해주세요.";
 
-		logger.info("===========실제 시작하는 부분. try시작 부분");
 		try {
 			// 이메일을 보낼 수 있는 객체 생성
 			MimeMessage message = mailSender.createMimeMessage();
@@ -331,29 +309,27 @@ public class HomeController {
 			e.printStackTrace();
 			logger.info("============== 메일 전송 실패============");
 		}
-
-		// 생성한 인증번호 변수를 view로 반환. 생성한 인증번호의 경우 int 타입. ajax를 통한 요청으로 인해 view로 다시 반환할 때
-		// 데이터 타입은 String만 가능.
-		String responseCode = Integer.toString(checkNum); // return타입도 void에서 String으로 수정. 테스트는 끝났으니깐.
+		
+		// ajax요청 url의 return 타입 String. int형 => String으로 변환. 
+		String responseCode = Integer.toString(checkNum); 
 		logger.info("===========컨트롤러에서 넘어가는 인증코드 : " + responseCode);
-		return responseCode; // ajax를 요청한 view페이지로 num데이터(인증번호)를 전달한다. => 해당 view의 ajax구문으로 ㄱㄱ
+		return responseCode; 
 	}
 
 	// ajax로 새로운 비밀번호로 업데이트 시키기 ( 비밀번호를 찾는 과정에서 새롭게 업데이트 ) 
 	@ResponseBody
 	@RequestMapping("/ajaxNewPasswordUpdate.do")
-	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, MemberVO mvo,
-			@RequestParam("m_email") String m_email, @RequestParam("m_password") String password) {
+	public String ajaxNewPasswordUpdate(Model model, HttpServletRequest request, MemberVO mvo
+							, @RequestParam("m_email") String m_email
+							, @RequestParam("m_password") String password) {
 
-		logger.info("===========ajax로 넘어온 이메일이랑 새로운 비밀번호 조회: " + m_email + " : " + password);
+		logger.info("===========ajax로 넘어온 이메일이랑 새로운 비밀번호: " + m_email + " : " + password);
 
 		// 새로운 salt값과 다이제스트 암호 생성
 		String m_salt = SHA256Util.generateSalt();
-		logger.info("===========새로운 salt 값 조회: " + m_salt);
+		// salt를 통한 난수화된 암호 생성
 		String m_password = SHA256Util.getEncrypt(password, m_salt);
-		logger.info("===========새로운 암호화된 m_password : " + m_password);
 
-		// mapper를 통해 새로운 비밀번호를 DB에 update시킨다.
 		mvo.setM_email(m_email);
 		mvo.setM_salt(m_salt);
 		mvo.setM_password(m_password);
@@ -362,9 +338,7 @@ public class HomeController {
 		if (n != 0) {
 			logger.info("===========새로운 비밀번호 변경 성공");
 			responseText = "YES";
-		} else {
-			logger.info("===========비밀번호 변경 실패");
-		}
+		} 
 		return responseText;
 	}
 

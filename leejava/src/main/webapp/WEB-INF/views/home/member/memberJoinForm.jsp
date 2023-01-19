@@ -188,7 +188,7 @@ td > input:not(#addressBtn)  {
 					</tr>
 				</table>
 				<br>
-				<!--  jointerms 뷰에 있던 값들이 컨트롤러를 경유하여 가입페이지로 넘어왔다. -->
+				<!--  jointerms.jsp 에 있던 값들이 컨트롤러를 경유하여 가입페이지로 넘어옴. -->
 				<input type="hidden" id="privacy" name="m_privacy" value="${privacy }">
 				<input type="hidden" id="promotion" name="m_promotion" value="${promotion }">
 			</form>
@@ -199,7 +199,9 @@ td > input:not(#addressBtn)  {
 
 </body>
 <script>
-	/*  회원 가입 버튼 => 모든 입력요소의 유효성 체크여부를 점검한다.   */
+	/*
+     * 회원 가입 버튼 => 모든 입력요소의 유효성 검사  
+	 */
 	$('#joinBtn').on('click', function() {
 		// 1. 이메일 중복체크 여부 검사
 		if( $('#emailCheckBtn').val() != 'Y'){
@@ -238,18 +240,14 @@ td > input:not(#addressBtn)  {
 		var sendAddresss = doroAddress + '(' + jibunAddress + ') ' + detailAddress;
 		$('#address').val(sendAddresss);  
 		
-		// 6. 생년 월일 넘기기
-		//"birthdate"
+		// 6. 생년 월일 넘기기 "birthdate"
 		var sendBirthdate = $('#year').val() + $('#month').val() + $('#day').val();
 		$('#birthdate').val(sendBirthdate);
 		
-		// 폼 요소의 유효성 검사들이 모두 끝나면 action속성의 속성값 url( memberJoin.do )로 전송하기
+		// 폼 요소의 유효성 검사들이 모두 끝나면 action 속성값 url( memberJoin.do )로 전송하기
 		$('#frm').submit();
 	
 	})
-	
-	
-	 
 
 	// 이메일 중복체크 확인
 	$("#emailCheckBtn").on("click", function(){
@@ -264,7 +262,7 @@ td > input:not(#addressBtn)  {
 			console.log("이메일 정규식 통과");
 		} else {
 			alert("입력하신 이메일 양식이 올바르지 않습니다.");
-			$('#email').val('').focus();
+			$('#email').val('').focus(); 
 			return false;
 		}
 		
@@ -278,7 +276,7 @@ td > input:not(#addressBtn)  {
 			success: function(responseText){
 				if( responseText == "YES") {
 					alert("가입할 수 있는 이메일 입니다.");
-					$("#emailCheckBtn").val('Y'); // 버튼에 value값 추가 => 중복확인 거쳤는지 체크용
+					$("#emailCheckBtn").val('Y'); // button태그 value값 추가 => 중복확인 거쳤는지 체크 용도
 				} else if( responseText == "NO"){
 					alert("중복된 이메일입니다.");
 					$("#email").val('').focus();
@@ -315,9 +313,11 @@ td > input:not(#addressBtn)  {
 			}
 		})
 	})
-	// <span>의 id값: passwordRegMessage
-	// 패스워드 입력칸 실시간 유효성 검증 영문/숫자/특수문자 합쳐서 최소 8자리 이상
-	// text('')과 html('')의 차이.  그리고 innerHTML('')과 innerText('')의 차이
+	
+	/**
+	 *	패스워드 입력칸 실시간 유효성 검증 영문/숫자/특수문자 합쳐서 최소 8자리 이상
+	 *  text('')과 html('')의 차이.  그리고 innerHTML('')과 innerText('')의 차이
+	 */ 
 	$("#password").keyup(function(){
 		var password = $("#password").val();
 		var regPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%^*#?&])[A-Za-z\d@$!%^*#?&]{8,15}$/;
@@ -334,8 +334,10 @@ td > input:not(#addressBtn)  {
 		}
 	})
 	
-	// <span>의 id값 passwordCheckMessage 
-	// 패스워드 확인칸 실시간 검증 by 바닐라자바스크립트
+	/**
+	 *	<span>의 id값 passwordCheckMessage 
+ 	 *	패스워드 확인칸 실시간 검증 by 바닐라자바스크립트
+	 */ 
 	document.getElementById('passwordCheck').onkeyup = function() {
 		var password = document.getElementById('password').value;
 		var passwordCheck = document.getElementById('passwordCheck').value;
@@ -389,7 +391,8 @@ td > input:not(#addressBtn)  {
 	}
 
 	function startTimer(count, display){
-		var minutes, seconds;
+		var minutes;
+		var seconds;
 		timer = setInterval(function(){
 			minutes = parseInt(count/ 60, 10); 
 			seconds = parseInt(count %60, 10);
@@ -435,8 +438,6 @@ td > input:not(#addressBtn)  {
         document.getElementById("container").style.display="none";
         $('#backPhone').val('');
     }
-	
-	
 </script>
 
 <!-- 밑은 주소 API 스크립트 적용 부분 -->

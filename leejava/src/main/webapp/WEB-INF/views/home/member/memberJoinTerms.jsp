@@ -93,7 +93,7 @@
     </div>
 </body>
 <script>
-	// jquery를 활용하여 checkbox 다중선택 / 해제
+	// jquery를 활용 checkbox 다중선택/해제
 	$(".allCheck").on("click", function () {
 	    if ($(".allCheck").is(":checked")) {
 	        $(".subCheck").prop("checked", true);
@@ -110,17 +110,14 @@
 	
 	// 바닐라자바스크립트를 활용하여 checkbox 다중선택 / 해제 => 스프링에선 화살표함수가 적용 안 되는 듯? 
 // 	function selectAll(selectAll) {
-// 	    const checkboxes = document.getElementsByClassName('subCheck');
+// 	    const checkboxes = document.querySelector('.subCheck');
 		
 // 	    checkboxes.forEach((checkbox) => {
 // 	        checkbox.checked = selectAll.checked;
 // 	    })
 // 	}
 	
-	// '가입 계속' 버튼 클릭 시 => 필수항목 체크했는지 검사 후 다음 페이지 전환
-	// 그리고 동의했던 항목은 당연히 회원가입 폼으로 넘긴다. 
-	// 필수항목에 대해선 체크했는지 유효성 검증. 
-	// 선택항목에 대해서만 선택유무에 대한 값을 서버로 넘기면 될 것 같다. 
+	// '가입 계속' 버튼 클릭 시 => 필수항목 확인 후 다음 페이지 전환
 	$("#nextBtn").on("click", function () {
 	    if( $("#privateTerms").is(":checked") ){
 	    	$("#privateTerms").val('YES');
@@ -130,8 +127,8 @@
 	    }
 	    
 	    if ($(".required1").is(":checked") && $(".required2").is(":checked")) {
-	    	alert("필수항목 확인 완료. \n회원가입 화면으로 이동하겠습니다.");
-	    	// form태그를 submit하면 action속성에 명시한 url로 form내부의 name속성값들이 넘어간다.
+	    	alert("필수항목 확인 완료. \n회원가입 상세 화면으로 이동하겠습니다.");
+	    	// <form>태그 submit()호출 => action속성에 명시한 url로 <form> 내의 name속성의 값들이 서버로 전달.
 	    	frm.submit();
 	    } else {
 	        alert("필수항목은 반드시 체크해주셔야 합니다.");

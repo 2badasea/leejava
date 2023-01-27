@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> boardSearchSelect(Search svo) {
 		// TODO Auto-generated method stub
-		return null;
+		return map.boardSearchSelect(svo);
 	}
 
 	@Override

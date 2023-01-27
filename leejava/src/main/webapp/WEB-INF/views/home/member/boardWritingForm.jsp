@@ -186,7 +186,7 @@
 			url: $("#frm").attr("action"),
 			data: JSON.stringify(data),
 			type: "POST",
-			async: true,
+			async: true,  // false로 수정 => 적어도 이미지 한 개는 썸네일을 정상적으로 생성된 것을 확인.
 			contentType: "application/json; charset=utf-8",
 			dataType: "text",
 			success: function(message){
@@ -198,6 +198,7 @@
 					// 첨부파일이 존재하는 경우(문자열 타입의 숫자를 숫자형으로 형변환 후 리턴)
 					message = message * 1; 
 					Fnc_fileUpload(formData, message);
+					location.href = "boardList.do";
 				}
 			},
 			error: function(error){

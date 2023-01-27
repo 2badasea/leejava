@@ -140,7 +140,7 @@
 							<td>${board.boardNo }</td>
 							<td>${board.boardTitle }</td>
 							<td>${board.boardWdate }</td>
-							<td>${board.boarTitle }</td>
+							<td>${board.boardWriter }</td>
 							<td>${board.boardHit }</td>
 							<td>${board.boardLikeit }</td>
 						</tr>
@@ -165,10 +165,10 @@
 				</c:if>
 				<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="boardNo">
 					<li class="paginationLi <c:out value="${pagination.page == boardNo ? 'active' : '' }" />" >
-						<a class="paginationLink specialA" onclick="fn_pagination('${noticeNo}', '${pagination.range }',
+						<a class="paginationLink specialA" onclick="fn_pagination('${boardNo}', '${pagination.range }',
 																		'${pagination.rangeSize }', '${pagination.listSize }',
 																		'${search.boardWriter }', '${search.boardTitle }',
-																		'${search.boardContents }')">${noticeNo }</a>
+																		'${search.boardContents }')">${boardNo }</a>
 					</li> 
 				</c:forEach>
 				<c:if test="${pagination.next }">

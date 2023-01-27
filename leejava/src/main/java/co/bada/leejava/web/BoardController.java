@@ -41,9 +41,8 @@ public class BoardController {
 				, @RequestParam(required = false) String boardContents
 				, Search svo) {
 		
-		// 검색요소 => view단에서 입력한 검색 항목이 svo객체에 담긴 것을 통해 처리하는 방식
 		model.addAttribute("search", svo); 
-		// 실질적인 페이징 처리 => 그전에 게시글의 총 갯수를 구한다. 
+		// 페이징 처리에 사용되는 값 3개 => 검색 기능.
 		svo.setBoardWriter(boardWriter);
 		svo.setBoardTitle(boardTitle);
 		svo.setBoardContents(boardContents); 
@@ -58,8 +57,8 @@ public class BoardController {
 	}
 	
 	// 자유게시판 작성폼으로 이동
-	@RequestMapping(value = "boardWritingForm.do" )
-	public String boardWritingForm(Model model, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "boardWritingForm.do", method = { RequestMethod.GET} )
+	public String boardWritingForm() {
 		
 		return "home/member/boardWritingForm";
 	}

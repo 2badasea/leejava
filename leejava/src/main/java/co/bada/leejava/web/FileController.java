@@ -82,7 +82,6 @@ public class FileController {
 				if(checkImageType(saveFile)) {
 					uvo.setFileType(true);								// DTO setter
 					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-					// 뒤의 숫자는 width와 height를 지정하는 파라미터.
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
 					thumbnail.close();
 				}

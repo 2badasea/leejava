@@ -193,11 +193,11 @@
 	            focus : true,
 	            lang : 'ko-KR',
 	            toolbar : toolbar, // toolbar 설정은 위에서 해놓음. 
-	            callbacks : { //여기 부분이 이미지를 첨부하는 부분
-	            	// summernote에서 제공하는 콜백함수 중 하나. onImageUpload
+	            callbacks : { 
 	            	onImageUpload : function(files, editor, welEditable) {
-	            			for (var i = files.length - 1; i >= 0; i--) {
-	            					uploadSummernoteImageFile(files[i], this);
+	            			// 다중 파일 업로드를 위한 for문
+	            			for(var i = files.length - 1; i >= 0; i--){
+	            				uploadSummernoteImageFile(files[i], this);
 	            			}
 	            	}
 	            }
@@ -207,22 +207,18 @@
 	  	
 	    // 이미지업로드 콜백함수 정의
 	  	function uploadSummernoteImageFile(file, el) {
-			// 이때 파라미터로 되어있는 el의 값은 이미지 업로드가 발생한 <textarea>태그를 의미한다. 
-	    	console.log("file값: ");
-			console.log(file);
 	    	data = new FormData();
 			data.append("file", file);
 			$.ajax({
 				data : data,
 				type : "POST",
 				url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
-				contentType : false, // multipart/form-data 형식으로 보낼 때는 contentType:을 false로. 
-				enctype : 'multipart/form-data',
+				contentType : false, // multipart/form-data => contentType, processData 모두 false
 				processData : false,
+				enctype : 'multipart/form-data',
 				success : function(responseData) {
-					console.log("responseData 확인: " + responseData);
 					console.log("responseDate.url 확인: " + responseData.url);
-					$(el).summernote('insertImage', responseData.url);
+					$(el).summernote('editor.insertImage', responseData.url);
 				}
 			});
 		}

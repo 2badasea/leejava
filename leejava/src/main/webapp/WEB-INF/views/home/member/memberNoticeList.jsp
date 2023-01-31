@@ -55,9 +55,12 @@
     display: none;
 }
 .noticeSearchWrapper{
+	display: flex;
 	margin-top: 30px;
 	margin-left: 300px;
-/* 	justify-content: center; */
+}
+.noticeSearchWrapper > select, input {
+	margin-right: 0.5%;
 }
 .searchInputBox{
 	min-width: 200px;
@@ -70,6 +73,7 @@
 	color: white;
 	padding: 5px;
 	font-weight: 900;
+	border-style: none;
 }
 .noticeSearchBtn:hover{
 	cursor: pointer;
@@ -205,7 +209,7 @@
 					</c:if>
 				</ul>
 			</div>
-			<div class="noticeSearchWrapper"  >
+			<div class="noticeSearchWrapper">
 				<select id="noticeSearchSelect" class="noticeSearchSelect" onchange="fn_selectBox()">
 		            <option value="category">카테고리</option>
 		            <option value="title">제목</option>
@@ -226,7 +230,6 @@
 	</div>
 </body>
 <script>
-	
 	// 페이징 function  "이전" 구현.
 	function fn_prev(page, range, rangeSize, listSize, n_title, n_category, n_content, n_writer){
 		var page = ( (range - 2) * rangeSize) + 1;
@@ -354,7 +357,6 @@
 			$('.noticeSearchBtn').click();
 		}
 	});
-	
 </script>
 <script>
 	$(document).ready(function(){
@@ -368,8 +370,6 @@
 		if( $('.noticeSearchSelect option:selected').val() === "titleAndContent"){
              $(".searchInputBox").attr("placeholder", "제목 또는 내용을 입력하세요");
         }
-		
-		// 그리고 공지사항의 카테고리값도 영어가 아닌 한글로 출력할 수 있도록 할 것.
 	})
 </script>
 </html>

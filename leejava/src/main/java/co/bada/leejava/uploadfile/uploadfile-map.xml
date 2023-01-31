@@ -12,5 +12,10 @@
 								#{fileType}
 								)
 	</insert>
+	
+	<!-- 게시글 업로드 파일 조회 -->
+	<select id="uploadfileSelect" resultType="co.bada.leejava.uploadfile.UploadfileVO">
+		SELECT * FROM UPLOADFILE WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
+	</select>
 
 </mapper>

@@ -168,7 +168,7 @@
 					<c:forEach items="${board }" var="board">
 						<tr class="boardListTr">
 							<td>${board.boardNo }</td>
-							<td>${board.boardTitle }</td>
+							<td class="boardListTitleTd" onclick="Fn_boardRead(${board.boardNo},${board.boardHit })">${board.boardTitle }</td>
 							<td style="font-size: small;">${board.boardWdate }</td>
 							<td>${board.boardWriter }</td>
 							<td>${board.boardHit }</td>
@@ -224,6 +224,14 @@
 	</div>
 </body>
 <script>
+	// 자유게시판 게시글 조회
+	function Fn_boardRead(boardNo, boardHit){
+		console.log("번호:" + boardNo);
+		console.log("조회수: " + boardHit);
+		location.href = "boardRead.do?boardNo=" + boardNo + "&boardHit=" + boardHit;
+	}
+
+
 	// 자유게시판 작성폼으로 이동
 	$(".boardWritingBtn").on("click", function(){
 		let boardWritingCheck = confirm("게시글을 작성하시겠어요?");

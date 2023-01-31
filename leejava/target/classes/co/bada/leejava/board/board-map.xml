@@ -46,10 +46,20 @@
 			)
 	</insert>
 	
+	<!-- 자유게시판 개별 게시글 조회 -->
+	<select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM BOARD WHERE BOARDNO = #{boardNo}
+	</select>
+	
 	<!-- 마지막으로 생성된 게시글 번호 조회 (파일 업로드 테이블을 위한 데이터 -->
 	<select id="getBno" resultType="int">
 		SELECT MAX(BOARDNO) FROM BOARD
 	</select>
+	
+	<!-- 자유게시판 조회수 업데이트  -->
+	<update id="boardHitUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET BOARDHIT = #{boardHit} WHERE BOARDNO = #{boardNo}
+	</update>
 		
 
 </mapper>

@@ -39,15 +39,15 @@ public class NoticeController {
 	NoticeService noticeDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
-
-	// summernote image upload 경로 bean 등록 root-context.xml에 등록했음.
+	
+	// 에디터 이미지 업로드 경로.
 	@Resource(name = "summernoteImageUploadPath")
-	private String summernoteImageUploadPath; // 이 이름으로 업로드 경로 사용
-	// 공지사항 첨부파일 업로드 경로 bean 등록 root-context.xml에 설정함.
-	@Resource(name = "noticeUploadPath")
+	private String summernoteImageUploadPath; 
+	// 공지사항 업로드 파일 경로
+	@Resource(name = "noticeUploadPath")  
 	private String noticeUploadPath;
-
-	// 관리자 공지사항 페이지로 이동. 검색요소로는 작성자(n_writer), 카테고리(n_category), 제목, 내용
+	
+	// 공지사항 리스트 이동
 	@RequestMapping("/adminNoticeList.do")
 	public String adminNoticeList(Model model
 			,@RequestParam(required = false, defaultValue = "1") int page
@@ -59,28 +59,18 @@ public class NoticeController {
 			,Search svo
 		) throws Exception {
 		
-		// 전달하는 페이지에서 search클래스의 필드값에 다가 데이터를 담아 다시 페이징처리된 url을 호출하기 위해서 보냄. 
 		model.addAttribute("search", svo);
-		// 아래 svo객체에 settter메서드로 담는 것들은 @RequestParam으로 지정한 파라미터값들이다. 
+		
 		svo.setN_category(n_category);
 		svo.setN_title(n_title);
 		svo.setN_content(n_content);
 		svo.setN_writer(n_writer);
-		// 페이징Info를 위해서 구한다. 총 게시글 갯수.
+		
 		int listCnt = noticeDao.getNoticeListCnt(svo);
 
-		// Search클래스의 객체 svo 자체가 부모클래스 Paging을 extends하고 있기 때문에 svo로 접근가능.
-		// 현재 페이지, 현재 속한 페이지 범위, 총 게시글 갯수를 인자로 가진다.
-			// 디폴트값은 page = 1, range =1 이다. 
 		svo.pageinfo(page, range, listCnt);
-		// pageInfo()메서드를 통해 추출한 정보들을 통해 해당 데이터를 mapper를 통해 호출 
-			// 그리고 list에 담아서 페이지에 뿌려준다. 그래서 제네릭타입이 NoticeVO인 것이다. 
 		List<NoticeVO> list = noticeDao.noticeSearchSelect(svo);
-		logger.info(" ======================= 페이지에 전달해줄 list ??? : " + list);
 		
-		// 앞서 위의 "Search"라는 변수로 보낸 svo객체는 검색용도로 필터링하기 위한 필드값들을 의미하고
-			// 아래 "Pagination"이란 변수명으로 보내는 건, pageInfo()처리된 정보를 보내는 것이다
-			// svo객체가 Paging클래스를 상속하고 있기 때문에 가능하다.
 		model.addAttribute("pagination", svo); // 페이징 처리 
 		model.addAttribute("notice", list); // 기존의 공지사항 리스트 대신
 		
@@ -99,71 +89,51 @@ public class NoticeController {
 	@RequestMapping(value = "/ajaxUploadSummernoteImageFile.do", produces = "application/json; charset=utf8")
 	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
 			HttpServletRequest request) {
-		// 호출한 view로 데이터를 String타입으로 보내야 하는데, json타입으로 변환하여 보내기 위해 JsonObject객체 생성했다. 
-			// json객체로 스크립트문에 반환하면, 스크립트 단에어서 데이터를 다루기 편하다. 전달된 데이터에 (.) 참조연산자를 통해 접근 가능. 
+		
 		JsonObject jsonObject = new JsonObject();
-
-		/*
-		 * String fileRoot = "C:\leejava\summernoteimageupload"; // 외부경로로 저장을 희망할때.
-		 */
-
-		// 내부경로로 저장하는 경우. => 난 bean에 등록한 외부경로를 사용
-//		String contextRoot = new HttpServletRequestWrapper(request).getRealPath("/"); // 말그대로 root경로 '/' 를 의미한다.
-		String contextRoot = request.getServletContext().getRealPath(""); // webapp경로 가리키는 곳 말그대로 root경로 '/' 를 의미한다.
-		String fileRoot = contextRoot + "resources\\summernoteimage\\";
-		// 아래 경로는 하드코딩으로 summernote로 업로드한 이미지의 경로를 지정한 것.  웹에서 로컬영역에 접근하는 것이 금지되어 있다. 그래서 server로 올리고 테스트를 해야 함. 
-//		String fileRoot = "C:\\leejava\\summernoteimageupload\\";
-//		String fileRoot = summernoteImageUploadPath;  외부이미지 경로, 일단 다음에 도전
-		System.out.println("fileRoot 경로: " + fileRoot);
-		String originalFileName = multipartFile.getOriginalFilename(); // 오리지날 파일명
-		// substring의 경우, 대상 인덱스 위치의 문자부터 '포함해서' 그 뒤의 문자까지 통째로 리턴한다.
+		// C:\leejava\summernoteimageupload
+//		String contextRoot = request.getSession().getServletContext().getRealPath("/");
+//		logger.info("================contextRoot 확인 => " + contextRoot);
+		
+		String fileRoot = "C:\\leejava\\summernoteimageupload\\";
+		String originalFileName = multipartFile.getOriginalFilename(); 
 		String extension = originalFileName.substring(originalFileName.lastIndexOf(".")); // 파일 확장자
 		String savedFileName = UUID.randomUUID() + extension; // 물리적으로 저장될 이미지 파일명
-		System.out.println("물리적으로 저장될 이미지 파일명: " + savedFileName);
-		// file 객체 생성. 설정한 경로와 파일이름으로 파일을 생성해줄 객체.
+		
 		File targetFile = new File(fileRoot + savedFileName);
-		System.out.println("최종적으로 File 객체가 향하는 곳의 디렉토리와 파일 이름 명 " + targetFile);
+		
 		try {
-			// 스트림 생성. 내가 summernote이미지 업로드한 것을 읽어줄 스트림
 			InputStream fileStream = multipartFile.getInputStream();
-			// 실제 경로에 파일 저장이 시작되는 부분
 			FileUtils.copyInputStreamToFile(fileStream, targetFile);
-			// 이클립스 내부경로로 사용했을 때의 경로명.
-//			jsonObject.addProperty("url", "/resources/summernoteimage/"+savedFileName); // contextroot + resources + 저장할 내부 폴더명
-			// 실제 톰캣 경로. summernote 이미지를 업로드 하면 이쪽 공간에 저장된다.
-			jsonObject.addProperty("url", fileRoot + savedFileName); // contextroot + resources + 저장할 내부 폴더명
-//			jsonObject.addProperty("url", summernoteImageUploadPath + savedFileName); // contextroot + resources + 저장할 내부 폴더명
+			jsonObject.addProperty("url", fileRoot + savedFileName); 
 			jsonObject.addProperty("responseCode", "success");
 			logger.info("===============targetFile의 정체: " + targetFile);
 		} catch (IOException e) {
-			FileUtils.deleteQuietly(targetFile); // 실패했을 경우 저장된 파일 삭제
+			FileUtils.deleteQuietly(targetFile); 
+			logger.info("예외처리가 되었나?");
 			jsonObject.addProperty("responseCode", "error");
 			e.printStackTrace();
 		}  
 		String responseData = jsonObject.toString();
-		logger.info("===============responseData 확인: " + responseData);
 		return responseData;
 	}
 
 	// 공지사항 등록하기( 첨부파일 업로드 작업도 포함)
 	@RequestMapping("/noticeRegister.do")
-	public String noticeRegister(Model model, HttpSession session, HttpServletRequest request,
-			HttpServletResponse response, NoticeVO nvo, @RequestParam("filename") MultipartFile file) throws Exception {
-		// vo객체에 실어야 하는 것: 작성자, 카테고리, 제목, 내용, 첨부파일명, 물리파일명, 조회수, 고정여부
-		logger.info("===============제목 들어왔니? " + request.getParameter("n_title"));
-		logger.info("===============카테고리 들어왔니? " + request.getParameter("n_category"));
-		logger.info("===============내용 들어왔니? : " + request.getParameter("n_content"));
-		logger.info("===============@requestparam 첨부파일 이름이랑 같니? " + file);
+	public String noticeRegister(Model model, HttpSession session, HttpServletRequest request, NoticeVO nvo 
+					, @RequestParam(value = "filename", required = false) MultipartFile file ) throws Exception {
 
 		// 첨부파일 업로드 작업
-		String n_file = file.getOriginalFilename(); // 원본파일명
-		logger.info("===============첨부파일 이름 확인: " + n_file);
-		String n_pfile = null; // 중복 가공된 파일. 실제 물리파일.
-		if (n_file != "") { // 첨부한 게 없다면 pfilename컬럼에 값이 안 들어가도록.
-			n_pfile = uploadFile(n_file, file.getBytes(), request); // 첨부파일명 랜덤생성하는 메소드. 밑에 정의되어 있음.
-		}
-		logger.info("===============물리파일명 확인: " + n_pfile);
-
+		String n_file = "";
+		String n_pfile = "";
+		if(!file.isEmpty()) {
+			n_file = file.getOriginalFilename(); 
+			// 물리파일 생성.
+			n_pfile = uploadFile(n_file, file.getBytes(), request); 
+		} 
+		nvo.setN_file(n_file);
+		nvo.setN_pfile(n_pfile);
+		
 		String n_writer = (String) session.getAttribute("session_nickname");
 		String n_category = request.getParameter("n_category");
 		String n_title = request.getParameter("n_title");
@@ -176,34 +146,25 @@ public class NoticeController {
 		nvo.setN_category(n_category);
 		nvo.setN_title(n_title);
 		nvo.setN_content(n_content);
-		nvo.setN_file(n_file);
-		nvo.setN_pfile(n_pfile);
+
 		nvo.setN_hit(n_hit);
 		nvo.setN_fixed(n_fixed);
 		int n = noticeDao.noticeInsert(nvo);
 		if (n != 0) {
-			logger.info("===============공지사항 등록 성공~");
+			logger.info("===============Notice Insert Success");
 		} else {
-			logger.info("===============설마 ㅋㅋ?");
+			logger.info("===============Fail to insert notice");
 		}
-		// 이건 테스트용. 일반 resolver경로가 아닌 redirect를 하더라도 model값이 넘어가는지.
-		model.addAttribute("n_file", n_file);
-
 		return "redirect:adminNoticeList.do";
 	}
 
 	// 첨부파일 업로드 작업 메소드 upLoadFile(() 정의
 	private String uploadFile(String originalName, byte[] fileData, HttpServletRequest request) throws Exception {
-		// uuid 생성
 		UUID uuid = UUID.randomUUID();
-		// 업로드 경로의 경우, 로컬로 해보았다. 기존코드는 주석처리
-//		String SAVE_PATH = uploadpath + "/noticeattach/"; //webapp 아래부터 경로를 작성
-		String SAVE_PATH = noticeUploadPath; // 로컬경로(C:\leejava\noticeuploadfiles\ ). 이건 외부경로로 설정했다.
-		// 랜덤생성 + 파일이름 저장
-		String savedName = uuid.toString() + "_" + originalName; // 가공된 파일이름.
-		File target = new File(SAVE_PATH, savedName); // 가공된 파일이름을 servlet-context.xml에 등록한 bean의 경로에 저장.
-		// 임시디렉토리에 저장된 업로드된 파일을 지정된 디렉토리로 복사. 실제 프로젝트 시연할 때는 uploadPath 의 경로를 변경해야 함(
-		// servlet-context.xml)
+		// 로컬경로(C:\leejava\noticeuploadfiles\ )
+		String SAVE_PATH = noticeUploadPath; 
+		String savedName = uuid.toString() + "_" + originalName; 
+		File target = new File(SAVE_PATH, savedName); 
 		FileCopyUtils.copy(fileData, target);
 		return savedName;
 	}
@@ -216,13 +177,10 @@ public class NoticeController {
 		// root-context.xml에 <bean>으로 정의해놓은 경로가 있음. 등록했던 <bean>의 id값이 "noticeUploadPath"을 컨트롤러 상단에 @autowired 
 		String SAVE_PATH = noticeUploadPath;
 		// 원본파일명
-		String filename = request.getParameter("filename"); // noticeRead.jsp에서 get방식으로 보낸 name속성값이 filename임.
+		String filename = request.getParameter("filename"); 
 		String encodingFilename = ""; // 원본명으로 다운받기 위함.
-		logger.info("===============1. filename: " + filename);
 		String realFilename = ""; // 실제 경로와 물리적 파일이름이 매핑될 곳
-		// 실제 bean에 등록했던 경로에 존재하는, uuid가 적용된 물리적 파일
-		String pfilename = request.getParameter("pfilename"); // noticeRead.jsp에서 get방식으로 보냄
-		logger.info("===============pfilename 확인 : " + pfilename);
+		String pfilename = request.getParameter("pfilename");
 
 		try {
 			String browser = request.getHeader("User-Agent");
@@ -274,13 +232,11 @@ public class NoticeController {
 	@RequestMapping("/adminNoticeRead.do")
 	public String adminNoticeRead(Model model, @RequestParam("n_no") int n_no, NoticeVO nvo) {
 
-		logger.info("===============글번호 값 들어왔니? : " + n_no);
 		nvo.setN_no(n_no);
 		nvo = noticeDao.noticeSelect(nvo);
 		if (nvo != null) {
-			logger.info("===============글조회 성공~");
 		} else {
-			logger.info("===============글조회 실패;;");
+			logger.info("===============글조회 오류");
 			return "redirect:adminNoticeList.do";
 		}
 		model.addAttribute("notice", nvo);
@@ -292,20 +248,18 @@ public class NoticeController {
 	public String noticeFormUpdate(Model model, NoticeVO nvo,
 				@RequestParam("n_no") int n_no) {
 
-		logger.info("===============글번호 들어왔니?" + n_no);
 		nvo.setN_no(n_no);
 		nvo = noticeDao.noticeSelect(nvo);
-		if (nvo != null) {
-			logger.info("===============성공여부 판단 후 삭제.");
-		} else {
+		if (nvo == null) {
 			logger.info("===============글번호 조회 실패");
 			return "redirect:adminNoticeList.do";
-		}
+		} 
+		// 조회 성공 시
 		model.addAttribute("notice", nvo);
 		return "home/admin/noticeUpdateForm";
 	}
 
-	// 공지사항 수정한 것 등록 //
+	// 공지사항 수정한 것 등록 => <form>값으로 넘기지 않아도 스크립트 단에서 FormData()객체를 생성해서 해당 객체를 통해 전달 => @RequestBody
 	@RequestMapping("/noticeUpdate.do")
 	public String noticeUpdate(Model model, HttpServletRequest request, NoticeVO nvo
 			,@RequestParam(value = "n_no") int n_no
@@ -316,18 +270,12 @@ public class NoticeController {
 		String n_category = request.getParameter("n_category");
 		String n_content = request.getParameter("n_content");
 
-		System.out.println("===============수정할 제목 들어왔니? " + n_title);
-		System.out.println("===============수정할 카테고리 값 들어왔니? " + n_category);
-		System.out.println("===============수정할 내용은 들어왔니? " + n_content);
-		System.out.println("===============@requestparam 첨부파일 이름이랑 같니? " + file);
-		System.out.println("=============== n_message의 값은 어떻게 들어왔니? " + n_message);
-
 		nvo.setN_no(n_no);
 		if(n_message != "") {
+			// 단순히 DB값(원본, 물리) null로 처리 => 실제 해당 경로 파일 삭제도 고민해야 함.
 			noticeDao.ajaxNoticeFileDelete(nvo);
 		}
 		// 새로운 첨부파일 업로드 작업하기
-			// form에서 값이 넘어왔을 때만 vo객체에 담는다.
 		if (file.getSize() != 0) {
 			String n_file = file.getOriginalFilename(); // 원본파일명
 			logger.info("===============첨부파일 원본명 최종 확인: " + n_file);
@@ -354,7 +302,6 @@ public class NoticeController {
 		} else {
 			logger.info("===============업데이트 실패");
 		}
-
 		return "redirect:adminNoticeList.do";
 	}
 

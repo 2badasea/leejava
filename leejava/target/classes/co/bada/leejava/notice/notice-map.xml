@@ -37,8 +37,6 @@
 	) A
 	)
 	WHERE RN BETWEEN #{start} AND #{end} 
-		<!-- start, end는 paging클래스에서 쿼리문을 위해 선언됐던 것 -->
-		<!-- 내용이 ull인경우 조회가 되장ㄶㅇㅁ.  -->
 </select>
 
 <!-- 전체 게시글 갯수를 조회하는 쿼리 => 페이징 처리를 하는  데 사용된다.-->
@@ -73,7 +71,7 @@
 	WHERE RN BETWEEN #{start} AND #{end} 
 </select>
 
-<!-- 메인페이지에 노출시킬 공지사항 시간순 5가지 -->
+<!-- 메인페이지에 노출시킬 공지사항 상단고정 게시글 포함 최근작성 순으로 5가지 -->
 <select id="mainNoticeSelectList" resultType="co.bada.leejava.notice.NoticeVO">
 	SELECT * 
 	FROM 
@@ -142,6 +140,7 @@
 	WHERE N_NO = #{n_no}
 </update>
 
+<!-- 공지사항 조회수 업데이트 -->
 <update id="noticeHitUpdate" parameterType="co.bada.leejava.notice.NoticeVO">
 	UPDATE NOTICE 
 		SET N_HIT = #{n_hit} 

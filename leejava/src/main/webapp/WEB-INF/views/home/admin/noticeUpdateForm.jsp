@@ -181,8 +181,7 @@ a:hover {
 	
 	// 첨부파일 변경 버튼
 	$(".changeFileBtn").on("click", function(){ 
-		// 1. 체크확인을 먼저 한다. => 최종적으로 "수정완료" 버튼을 누르지 않으면 그대로 유지. 
-			// 2. 여튼 ok하면 input창 활성화 시키기 => 그리고 name값이 "n_file"인 input태그에 value값으로 우선 
+		// ok하면 input창 활성화 => name값이 "n_file"인 input태그에 value값으로 우선 
 		var check = confirm("\"수정 완료\" 버튼을 누르면 기존에 업로드된 첨부파일이 삭제됩니다.")
 		if(check){
 			$(".n_message").val("YES");
@@ -193,9 +192,7 @@ a:hover {
 		} else {
 			return false;
 		}
-			
 	})
-
 
 	// 돌아가기 버튼 
 	$(".goBackBtn").on("click", function(){ 
@@ -212,13 +209,12 @@ a:hover {
 		}
 	})
 	
-	
 </script>
 <script>
 	$(document).ready(function(){
 		
 		// 기존에 첨부파일이 존재했던 경우 "첨부파일 수정"버튼은 비활성화 시키고, 기본 <input type="file">을 활성화 시킨다. 
-		var existingFileCheck = $(".hiddenNoticeInput").data('file');
+		const existingFileCheck = $(".hiddenNoticeInput").data('file');
 		if(existingFileCheck){
 			// 첨부파일이 존재하는 경우 => "첨부파일 수정"버튼을 숨긴다. 그리고 기본 <input type="file">을 활성화 시킴.
 			$(".changeFileBtn").css("display", "block");
@@ -263,7 +259,6 @@ a:hover {
 		    // 코드보기, 확대해서보기, 도움말
 		    ['view', ['codeview','fullscreen', 'help']]
 		  ];
-		
 	  	// 객체형식으로 설정을 구성.
 		var setting = {
 	            height : 300,

@@ -44,6 +44,9 @@
 }
 
 /*	********************	*/
+.boardList{
+	width: 70%;
+}
 .boardListTitleTd:hover{
 	cursor: pointer;
 }
@@ -53,8 +56,8 @@
 .paginationBox{
 	display: flex;
 	justify-content: center;
-	margin-right: 500px;
-	margin-top: 20px;
+	margin-left: 10%;
+	margin-top: 3%;
 }
 .paginationUl > li{
 	list-style-type: none;
@@ -81,13 +84,40 @@
 	font-weight: 900;	
 	min-width: 100px;
 	min-height: 40px;
-	margin-right: 40px;
+	margin-right: 8%;
+	float: right;
+	margin-top: 1%;
 }
 .boardWritingBtn:hover {
 	cursor: pointer;
 	background-color: #05AA6D;
 	color: whitesmoke;
 	transition: 0.5s;
+}
+.boardSearchBtn{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 600;	
+	min-width: 50px;
+	min-height: 20px;
+}
+.boardSearchBtn:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
+.boardSearchWrapper{
+	margin-left: 20%;
+	margin-top: 1%;
+}
+.boardSearchWrapper select, option, input{
+	height: 20px;
 }
 </style>
 <script>
@@ -129,7 +159,7 @@
 				<table class="boardTable">
 					<tr class="boardTableThTr">
 						<th style="width: auto;" class="listTh">글번호</th>
-						<th style="width: 400px;" class="listTh">제목</th>
+						<th style="width: 450px;" class="listTh">제목</th>
 						<th style="width: 100px;" class="listTh">작성일</th>
 						<th style="width: 100px;" class="listTh">작성자</th>
 						<th style="width: auto;" class="listTh">조회수</th>
@@ -139,7 +169,7 @@
 						<tr class="boardListTr">
 							<td>${board.boardNo }</td>
 							<td>${board.boardTitle }</td>
-							<td>${board.boardWdate }</td>
+							<td style="font-size: small;">${board.boardWdate }</td>
 							<td>${board.boardWriter }</td>
 							<td>${board.boardHit }</td>
 							<td>${board.boardLikeit }</td>
@@ -150,47 +180,47 @@
 					<button class="boardWritingBtn">글쓰기</button>
 				</c:if>
 			</div>
-		</div>
-		
-		<!-- paging 박스가 들어갈 곳  -->
-		<div id="paginationBox" class="paginationBox">
-			<ul class="paginationUl">
-				<c:if test="${pagination.prev }">
-					<li class="paginationLi">
-						<a class="paginationLink specialA" onclick="fn_prev('${pagination.page}', '${pagination.range }',
-																	'${pagination.rangeSize }','${pagination.listSize }',
-																	'${search.boardWriter }', '${search.boardTitle }',
-																	'${search.boardContents }')">이전</a>
-					</li>
-				</c:if>
-				<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="boardNo">
-					<li class="paginationLi <c:out value="${pagination.page == boardNo ? 'active' : '' }" />" >
-						<a class="paginationLink specialA" onclick="fn_pagination('${boardNo}', '${pagination.range }',
+			<!-- paging 박스가 들어갈 곳  -->
+			<div id="paginationBox" class="paginationBox">
+				<ul class="paginationUl">
+					<c:if test="${pagination.prev }">
+						<li class="paginationLi">
+							<a class="paginationLink specialA" onclick="fn_prev('${pagination.page}', '${pagination.range }',
+																		'${pagination.rangeSize }','${pagination.listSize }',
+																		'${search.boardWriter }', '${search.boardTitle }',
+																		'${search.boardContents }')">이전</a>
+						</li>
+					</c:if>
+					<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="boardNo">
+						<li class="paginationLi <c:out value="${pagination.page == boardNo ? 'active' : '' }" />" >
+							<a class="paginationLink specialA" onclick="fn_pagination('${boardNo}', '${pagination.range }',
+																			'${pagination.rangeSize }', '${pagination.listSize }',
+																			'${search.boardWriter }', '${search.boardTitle }',
+																			'${search.boardContents }')">${boardNo }</a>
+						</li> 
+					</c:forEach>
+					<c:if test="${pagination.next }">
+						<li class="paginationLi">
+							<a class="paginationLink specialA" onclick="fn_next('${pagination.page}', '${pagination.range }',
 																		'${pagination.rangeSize }', '${pagination.listSize }',
 																		'${search.boardWriter }', '${search.boardTitle }',
-																		'${search.boardContents }')">${boardNo }</a>
-					</li> 
-				</c:forEach>
-				<c:if test="${pagination.next }">
-					<li class="paginationLi">
-						<a class="paginationLink specialA" onclick="fn_next('${pagination.page}', '${pagination.range }',
-																	'${pagination.rangeSize }', '${pagination.listSize }',
-																	'${search.boardWriter }', '${search.boardTitle }',
-																	'${search.boardContents }')">다음</a>
-					</li>
-				</c:if>
-			</ul>
+																		'${search.boardContents }')">다음</a>
+						</li>
+					</c:if>
+				</ul>
+			</div>
+			<div class="boardSearchWrapper">
+				<select id="boardSearchSelect" class="boardSearchSelect" onchange="fn_selectBox()">
+		            <option value="writer">작성자</option>
+		            <option value="title">제목</option>
+		            <option value="content">내용</option>
+		            <option value="titleAndContent" selected>제목 + 내용</option>
+		        </select>
+	   			<input type="text" class="searchInputBox">
+	   			<button class="boardSearchBtn">검색</button>
+			</div>
 		</div>
-		<div class="boardSearchWrapper"  >
-			<select id="boardSearchSelect" class="boardSearchSelect" onchange="fn_selectBox()">
-	            <option value="writer">작성자</option>
-	            <option value="title">제목</option>
-	            <option value="content">내용</option>
-	            <option value="titleAndContent" selected>제목 + 내용</option>
-	        </select>
-   			<input type="text" class="searchInputBox">
-   			<button class="boardSearchBtn">검색</button>
-		</div>
+		
 	</div>
 </body>
 <script>

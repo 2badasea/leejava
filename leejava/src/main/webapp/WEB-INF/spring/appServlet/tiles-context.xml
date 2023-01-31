@@ -45,13 +45,6 @@
 		<put-attribute name="abody" value="/WEB-INF/views/home/admin/{1}.jsp" />
 	</definition>
 	
-	
-	
-	
-	
-	
-	
-	
 </tiles-definitions>
 
 

@@ -1,8 +1,10 @@
 package co.bada.leejava.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class FileController {
 		File uploadPath = new File(fileUploadPath, uploadFolderPath);
 		logger.info("upload path: " + uploadPath);
 		
-		if(uploadPath.exists() == false) {
+		if(!uploadPath.exists()) {
 			uploadPath.mkdirs();
 		}
 		
@@ -77,22 +79,22 @@ public class FileController {
 				
 				uvo.setFileUuid(uuid.toString());						// DTO setter
 				uvo.setFileUploadpath(uploadFolderPath);				// DTO setter
-				
 				// 이미지 파일 검사 
 				if(checkImageType(saveFile)) {
 					uvo.setFileType(true);								// DTO setter
+					FileInputStream fis = new FileInputStream(saveFile);
 					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
+					Thumbnailator.createThumbnail(fis, thumbnail, 100, 100);
 					thumbnail.close();
+					fis.close();
 				}
-				logger.info("====================uvo 확인: " + uvo);
 				// UPLOADFILE 테이블에 INSERT 
 				int n = uploadfileDao.uploadfileInsert(uvo);
 				logger.info("첨부파일 등록 처리 결과: " + n); 
 				// DTO 객체를 브라우저 화면에 리턴시킬 list에 담는다. 
 				list.add(uvo);
 			} catch (Exception e) {
-				logger.info("====================2222222222222222222222222222");
+				logger.info("이미지 타입 파일 업로드 에러");
 				logger.info(e.getMessage());
 			} // end catch 
 			

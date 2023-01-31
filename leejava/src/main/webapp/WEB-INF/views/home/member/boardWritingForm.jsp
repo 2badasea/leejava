@@ -154,7 +154,6 @@
 					if(!checkExtension(inputFile[i].files[0].name, inputFile[i].files[0].size )){
 						return false;
 					}
-					
 					formData.append("uploadFile", inputFile[i].files[0]);
 					inputFileCnt++;
 				}
@@ -162,7 +161,7 @@
 		}
 		console.log("FormData에 담긴 파일 숫자: " + inputFileCnt);
 
-		// 제목이나 내용이 널값이거나, 작성하는 중에 세션이 사라졌을 경우. 
+		// 제목이나 내용이 null or 0인 경우 return false;
 		if(inputTitle.length === 0 || inputContents.length === 0){
 			alert("제목과 내용을 입력해주세요.");
 			return false;
@@ -173,6 +172,7 @@
 			alert("세션이 만료되었습니다. 다시 로그인해주세요");
 			location.href="loginPage.do";
 		}
+		
 		
 		// ajax에 실어서 보낼 데이터
 		let data = {
@@ -186,7 +186,6 @@
 			url: $("#frm").attr("action"),
 			data: JSON.stringify(data),
 			type: "POST",
-			async: true,  // false로 수정 => 적어도 이미지 한 개는 썸네일을 정상적으로 생성된 것을 확인.
 			contentType: "application/json; charset=utf-8",
 			dataType: "text",
 			success: function(message){
@@ -211,9 +210,10 @@
 	function Fnc_fileUpload(formData, fileBno){
 		// 첨부파일 업로드 게시판 유형 구분 => 자유게시판 번호 1 
 		const inputFilebno = $("#fileboardInput").data('board');
-		
 		console.log("게시판 유형: " + inputFilebno + ", 게시글 번호: " + fileBno);
 		let url = "ajaxFileUpload.do?fileBoard=" + inputFilebno + "&fileBno=" + fileBno;
+		
+		// ajax를 반복문으로 호출하는 방법 => formData value값 루프 + 배열로 받아도 상관없음 1개만 날라가기에. 
 		$.ajax({
 			url : url,
 			processData : false,
@@ -223,13 +223,12 @@
 			success: function(result){
 				console.log("ajax 파일 업로드 완료");
 				console.log(result);
-				
 			}, 
 			error: function(error){
 				console.log("ajax 파일 업로드 완료, but 실패");
 				console.log(error);
 			}
-		})
+		}) // End of Ajax
 	}
 	
 	// 업로드 가능한 <input type="file"> 개수 추가 

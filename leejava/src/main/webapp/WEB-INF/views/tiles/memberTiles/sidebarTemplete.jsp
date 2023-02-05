@@ -458,7 +458,6 @@ text-decoration: none;
 	})
 	
 	/***************  <To Do List> Modal Script ***************/
-	
 	// todolist 입력창에 포커스를 주면, 테두리 색깔 coral로 변경시키기
 	
 	
@@ -494,7 +493,7 @@ text-decoration: none;
 	// ajaxInsert(m_email, $todoInput) 함수 정의
 	function ajaxInsert(m_email, todo_content){
 		console.log("입력값 확인: " + m_email + ", " + todo_content);
-		// ajax를 호출한다. => 콜백함수를 통해서 값을 받아와서 넣어야 할지 모르겠다. 
+		// ajax를 호출한다.
 		$.ajax({
 			url: "ajaxInsert.do",
 			data: {
@@ -571,7 +570,7 @@ text-decoration: none;
 	// 외부입력으로 todolist모달창 닫을 수 있도록 구현하기
 	$(document).on("click", function(e){
 		if( $(e.target).closest('.todo_modal_content').length == 0  && !$(e.target).hasClass("todoBoxCloseBtn")
-				&& !$(e.target).hasClass("modalOpen") ){
+				&& !$(e.target).hasClass("modalOpen") && !$(e.target).hasClass("todoDeleteBtn") ){
 			$('.todoBoxCloseBtn').click();
 		}
 	})

@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -133,6 +136,71 @@ public class FileController {
 		return false;
 	}
 	
+	
+	// 첨부파일 다운로드
+	@ResponseBody
+	@RequestMapping(value = "boardFileDown.do", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void boardFileDown(HttpServletRequest request, HttpServletResponse response, UploadfileVO uvo
+						, @RequestParam String fileUuid
+						, @RequestParam String fileUploadpath
+						, @RequestParam String fileOriginname) throws Exception {
+		logger.info("================ fileUuid: " + fileUuid);
+		logger.info("================ fileUploadpath: " + fileUploadpath);
+		logger.info("================ fileOriginname: " + fileOriginname);
+		String SAVE_PATH = fileUploadPath;
+
+		String fileName = fileOriginname;
+		String realFileName = "";
+		String encodingFileName = "";
+		String pfileName = fileUuid + "_" + fileOriginname;
+		
+		try {
+			String browser = request.getHeader("User-Agent");
+			// 파일 인코딩
+			if (browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
+				encodingFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+			} else {
+				encodingFileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			}
+		} catch (UnsupportedEncodingException ex) {
+			logger.info("===============UnsupportedEncodingException");
+		}
+		
+		realFileName = SAVE_PATH + fileUploadpath + "\\" +  pfileName;
+		System.out.println("===================== encodingFileName : " + encodingFileName);
+		System.out.println("===================== realFileName : " +  realFileName);
+		File file  = new File(realFileName);
+		if (!file.exists()) {
+			// 해당 대상 파일이 정상적으로 존재하지 않으면 return된다. 
+			logger.info("===============존재하지 않음 확인 ~=================");
+			return;
+		}
+		// 파일명 지정
+		response.setContentType("application/octer-stream");
+		response.setHeader("Content-Transfer-Encoding", "binary;");
+		response.setHeader("Content-Disposition", "attachmeent; filename=\"" + encodingFileName + "\"");
+		
+		try {
+			OutputStream os = response.getOutputStream();
+			// 현재 경로에 있는 파일을 가져올 입력스트림 생성. 입력스트림으로 받은 후 출력스트림으로 유저에게 전해준다.
+			FileInputStream fis = new FileInputStream(realFileName);
+			
+			int ncount = 0;
+			byte[] bytes = new byte[512];
+
+			// -1이면 더이상 읽어들일 게 없다는 것. => 다 읽어들였다는 의미.
+			while ((ncount = fis.read(bytes)) != -1) {
+				// 출력스트림 시작 => 실제 유저 '다운로드' 폴더에 해당 파일이 생성되기 시작하는 부분
+				os.write(bytes, 0, ncount);
+			}
+			// 입출력 스트림 닫아주고 끝
+			fis.close();
+			os.close();
+		} catch (Exception e) {
+			logger.info("===============FileNotFoundException : " + e);
+		}
+		
+	}
 
 	
 	

@@ -181,7 +181,8 @@ public class NoticeController {
 		String encodingFilename = ""; // 원본명으로 다운받기 위함.
 		String realFilename = ""; // 실제 경로와 물리적 파일이름이 매핑될 곳
 		String pfilename = request.getParameter("pfilename");
-
+		System.out.println("================ filename: " + filename);
+		System.out.println("================ pfilename: " + pfilename);
 		try {
 			String browser = request.getHeader("User-Agent");
 			// 파일 인코딩
@@ -196,6 +197,7 @@ public class NoticeController {
 		// 경로+물리파일명 => 해당 데이터정보를 통해 File객체를 생성하여, 입출력스트림을 생성하여 다운로드를 구현한다. 
 		realFilename = SAVE_PATH + pfilename;
 		logger.info("===============3. realfilename: " + realFilename);
+		logger.info("===============4. encodingFilename: " + encodingFilename);
 		File file = new File(realFilename); // 해당 경로의 물리파일을 대상으로 파일객체 생성
 		if (!file.exists()) {
 			// 해당 대상 파일이 정상적으로 존재하지 않으면 return된다. 

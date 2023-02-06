@@ -75,6 +75,18 @@
 	color: whitesmoke;
 	transition: 0.5s;
 }
+
+.fileListLi{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-decoration: underline;
+}
+
+.fileListA:hover{
+	color: coral;
+	cursor: pointer;
+	font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -129,7 +141,9 @@
 	            		<c:if test="${not empty fileList }">
 	            			<ul>
 	            				<c:forEach items="${fileList}" var="file">
-	            					<li style="list-style: none;">${file.fileOriginname }</li>
+	            					<li class="fileListLi" style="list-style: none;">
+	            						<a class="fileListA" data-uuid="${file.fileUuid }" data-path="${file.fileUploadpath }">${file.fileOriginname }</a>
+	            					</li>
 	            				</c:forEach>
 	            			</ul>
 	            		</c:if>
@@ -150,6 +164,29 @@
 	const boardWriter = $(".boardReadFormHidden").data('nickname');
 	const boardNo = $('.boardReadFormHidden').data('no');
 	const bfileCheck = $(".boardReadFormHidden").data('file');
+	
+	// 첨부파일 다운로드
+	$('.fileListA').on('click', function(e){
+		const fileUuid = $(e.target).data('uuid');
+		const uploadPath = $(e.target).data('path');
+		const originName = $(e.target).text();
+		$.ajax({
+			url: "boardFileDown.do",
+			data: {
+				fileUuid: fileUuid,
+				fileUploadpath : uploadPath,
+				fileOriginname : originName
+			},
+			type: "POST",
+			success: function(res){
+				console.log("성공"  );
+			},
+			error: function(res){
+				console.log("실패");
+			}
+			
+		})
+	})
 	
 	// 게시글 삭제하기
 	$(".boardDeleteBtn").on("click", function(){
@@ -207,7 +244,6 @@
 				}
 			})
 		}
-		
 	})
 	
 	// 추천수 -

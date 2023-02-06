@@ -119,9 +119,7 @@ public class BoardController {
 			uvo.setFileBno(boardNo);
 			list = uploadfileDao.uploadfileSelect(uvo);
 			model.addAttribute("fileList", list);
-			System.out.println("===========================list 값 조회: " + list);
 		}
-		System.out.println("======================bvo 값 조회: " + bvo);
 		// 본인이 작성한 게시글일 경우 => 수정하기 버튼도 view단에서 같이 구현한다. 
 		return "home/member/boardRead";
 	}

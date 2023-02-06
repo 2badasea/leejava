@@ -1,102 +1,229 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style type="text/css">
-.mainFormWrapper{
-	margin-left: 13%;
-	margin-top: 1%;
-	max-width: 1000px;
+.boardReadFormWrapper{
+    margin-top: 1%;
+    margin-left: 15%;
+    width: 55%;
 }
-.boardFormTable{
-	border-collapse: collapse;
-	border: 1px solid #05AA6D; 
+.boardReadFrom_buttons{
+	margin-bottom: 1%;
 }
-.boardFormTableThTr{
-	border-bottom: 1px solid #05AA6D;
-	background-color: lightgreen;
+.boardReadFrom_buttons {
+	display: flex;
+	justify-content: flex-end;
 }
-.boardFormTable th{
-	font-size: 18px;
-	height: 30px;
-	border-left: 1px solid #05AA6D;
+.boardReadFrom_buttons button:not(:last-child){
+	margin-right: 2%;	
+}
+.boardRead_header_right{
+	border: 1px solid lightgray;
+	border-radius: 10px;
+	width: 15%;
+	display: flex;
+	align-items: center;
+}
+.boardRead_header_right div{
+	width: 33%;
+	height: 50%;
+	text-align: center;
+}
+.boardLikeItCount{
+	border-left: 0.5px solid lightgray;
+	border-right: 0.5px solid lightgray;
+}
+.boardReadForm_title{
+	padding-bottom: 5px;
+	border-bottom: 0.5px solid lightgrey;
+}
+.boardReadForm_contents{
 	padding: 5px;
-	padding-left: 10px;
-	padding-right: 10px;
-	height: 30px;
-	font-weight: 900;
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 0.5px solid lightgrey;
+	min-height: 450px;
+	height: auto;
 }
-.boardFormTable td {
-	border-bottom: 1px solid #05AA6D;
-	height: 20px;
-	border-left: 1px solid #05AA6D	;
-	padding: 5px;
+
+.boardReadForm_file{
+	display: flex;
+	align-items: center;
+	border-bottom: 0.5px solid lightgrey;
 }
-.boardTitle{
+.boardReadFormWrapper button{
+	border-radius: 20px;
 	border-style: none;
-	width: 100%;
-	height: 100%;
-	font-size: 15px;
+	padding: 5px;
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 70px;
+	min-height: 30px;
 }
-.boardTitle:focus {
-	outline: none;
+
+.boardReadFormWrapper button:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
 }
 </style>
 </head>
 <body>
-	<h2>1. 게시글을 조회할 때는 제목이나 내용과 같은 타이틀은 제외할 것.</h2> 
-	<h2>2. 내용물만 조회하는 데 있어서 굳이 summernote cdn을 받아서 사용해야 하는지 알아볼 것.</h2>
-	<h2>3. 현재 로그인한 세션값과 작성자가 동일하면 "수정하기" 버튼 활성화 시키기</h2>
-	<h2>4. 첨부파일 목록 썸네일도 노출시킬지는 고민해보기</h2>
-	<h2>5. 자유게시판 부터는 댓글기능이 활성화 되어야 한다 => restful 방식으로 RestControler를 통해서 관련된 기능 구현하기</h2>
-	<h2>6. 추천수 올리기 버튼 구현해서 db상태 업데이트 하도록 구현하기. </h2>
-<div class="boardWritingForm_wrapper">
-		<div class="mainFormWrapper">
-			<div align="center">
-				<h2>게시글 작성</h2>
-			</div>
-			<br>
-			<!-- 테이블 형식으로 제목과 내용, 그리고 첨부파일 업로드 칸을 구현한다. -->
-			<form id="frm" action="boardInsert.do" method="post" enctype="multipart/form-data">
-				<table class="boardFormTable">
-					<tr class="boardTableThTr">
-						<th width="150">제목</th>
-						<td width="800">
-							<input type="text" class="boardTitle" maxlength="50" placeholder="제목은 최대 50자 까지 작성할 수 있습니다.">
-						</td>
-					</tr>
-					<tr class="boardTableThTr">
-						<th>내용</th>
-						<td>
-							<textarea rows="" cols="" id="summernote" class="boardContents" ></textarea>
-						</td>
-					</tr>
-					<tr class="boardTableThTr">
-						<th>첨부파일</th>
-						<td class="uploadFileTd">
-							<!-- 다중 파일 업로드를 구현해야 한다.-->
-						</td>
-					</tr>
-				</table>
-			</form>
-			<br>
-			<div class="borarWritingBtns" style="float: right;">
-				<button class="historyBackBtn">목록보기</button>
-				<button class="boardWritingBtn">등록하기</button>
-			</div>
-		</div>
-	</div>
+<div class="boardReadForm_wrapper">
+<input type="hidden" class="boardReadFormHidden" data-nickname="${board.boardWriter	}" data-no="${board.boardNo }" data-file="${board.bfileCheck }">
+    <!--모든 내용들이 들어가는 공간.-->
+    <div class="boardReadFormWrapper">
+        <!-- 읽기 폼 메인 -->
+        <div class="boardReadForm">
+            <div class="boardReadFrom_buttons">
+                <button type="button" class="boardListBackBtn">목록보기</button>
+                <c:if test="${session_nickname eq board.boardWriter }">
+	                <button type="button" class="boardUpdateBtn">수정</button>
+	                <button type="button" class="boardDeleteBtn">삭제</button>
+                </c:if>
+            </div>
+            <div class="boardReadForm_header">
+                <div style="display: flex; justify-content: space-between;">
+                	<div class="boardRead_header_left" style="display: flex;">
+                		<img src="resources/image/userimage.jpg" style="width: 5%; height:100%; border-radius: 25%;">
+                		<div style="margin-left: 5px;">
+	                		<span><b>${board.boardWriter }</b></span>
+	                		<br>
+	                		<span>${board.boardWdate }</span>
+	                		&nbsp;&nbsp;
+	                		<i class="fa-solid fa-eye"></i>
+	                		<span>${board.boardHit}</span>
+                		</div>
+               		</div>
+                	<div class="boardRead_header_right">
+               			<div class="boardLikeitDown"><i class="fa-solid fa-arrow-down"></i></div>
+               			<div class="boardLikeItCount">${board.boardLikeit }</div>
+               			<div class="boardLikeitUp"><i class="fa-solid fa-arrow-up"></i></div>
+                	</div>
+                </div>
+            </div>
+            <!-- 내용 폼(제목, 내용)-->
+            <div class="boardReadForm_body">
+            	<br>
+             	<div class="boardReadForm_title">
+             		<h2>${board.boardTitle }</h2>
+             	</div>
+             	<br>
+             	<div class="boardReadForm_contents">
+             		${board.boardContents }
+             	</div>
+	            <div class="boardReadForm_file">
+	            	<div style="width: 10%;"  align="center">
+	            		첨부파일
+	            	</div>
+	            	<div style="width: 90%;  border-left: 0.5px solid lightgrey; padding-left: 10px;">
+	            		<c:if test="${not empty fileList }">
+	            			<ul>
+	            				<c:forEach items="${fileList}" var="file">
+	            					<li style="list-style: none;">${file.fileOriginname }</li>
+	            				</c:forEach>
+	            			</ul>
+	            		</c:if>
+	            	</div>
+	            </div>
+            </div>
+            <!--첨부파일 폼-->
+            <br>
+            <!--댓글공간 들어갈 폼-->
+            <div class="boardReplyForm">
+
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script>
-	// 목록으로 돌아가기
-	$(".historyBackBtn").on("click", function(){
-		location.href = "boardList.do";
+	const boardWriter = $(".boardReadFormHidden").data('nickname');
+	const boardNo = $('.boardReadFormHidden').data('no');
+	const bfileCheck = $(".boardReadFormHidden").data('file');
+	
+	// 게시글 삭제하기
+	$(".boardDeleteBtn").on("click", function(){
+		let deleteCheck = confirm("게시글을 삭제하시겠어요?");
+		if(!deleteCheck){
+			return false;
+		}
+		// 삭제를 하면, 해당 게시글에 담긴 첨부파일도 모두 삭제되도록 한다. 첨부파일 존재 여부? 
+		const deleteNumber = boardNo;
+		let data = {
+				boardWriter : boardWriter,
+				boardNo : deleteNumber,
+				bfileCheck : bfileCheck
+		};
+		console.log(data);
+		if(bfileCheck !=0){
+			console.log("첨부파일 존재");
+			$.ajax({
+				url:  "uploadfileDelete.do?boardNo=" + boardNo,
+			    type: "GET",
+			    async: "true",
+			    contentType: "application/text; charset=utf-8",
+			    dataType: "text",
+			    success: function(res){
+			    	console.log("res: " + res);
+			    	// 첨부파일 삭제 이후 원 게시글 삭제 함수 호출.
+			    	boardDelete(deleteNumber);
+			    },
+			    error: function(res){
+			    	console.log("에러: " + res);
+			    }
+			})
+		}else {
+			console.log("첨부파일 미존재");
+			boardDelete(deleteNumber);
+		}
+		
+		// 원 게시글 삭제
+		function boardDelete(no){
+			$.ajax({
+				url: "boardDelete.do",
+				data: JSON.stringify(data),
+				method: "POST",
+				contentType: "application/json; charset=utf-8",
+				dataType: "text",
+				success: function(res){
+					console.log(res);
+					alert("성공적으로 삭제되었습니다.");
+					location.href = "boardList.do";
+				}, 
+				error: function(res){
+					console.log("error: " + res);
+					alert("삭제가 실패했습니다.");
+					location.reload();
+				}
+			})
+		}
+		
 	})
+	
+	// 추천수 -
+	$('.boardLikeitDown').on("click", function(){
+		console.log("추천수 하락");
+	})	
+	
+	// 추천수 + 
+	$('.boardLikeitUp').on("click", function(){
+		console.log("추천수 상승");
+	})
+	
+		
+	// 목록으로 돌아가기
+	$(".boardListBackBtn").on("click", function() {
+		location.href = "boardList.do";
+	});
 </script>
 </html>

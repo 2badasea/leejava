@@ -17,5 +17,10 @@
 	<select id="uploadfileSelect" resultType="co.bada.leejava.uploadfile.UploadfileVO">
 		SELECT * FROM UPLOADFILE WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
 	</select>
+	
+	<delete id="uploadfileDelete" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		DELETE FROM UPLOADFILE 
+			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
+	</delete>
 
 </mapper>

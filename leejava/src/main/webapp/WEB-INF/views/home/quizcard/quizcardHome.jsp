@@ -602,7 +602,7 @@ fieldset {
 		}
 	})
 
-	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
+	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역) 
 	$(".quizcardTable td:nth-child(6)").on("click", function(e) {
 				console.log("유저 닉네임 클릭");
 				let email;

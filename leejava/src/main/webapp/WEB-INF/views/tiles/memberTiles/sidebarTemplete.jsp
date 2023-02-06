@@ -603,7 +603,6 @@ text-decoration: none;
 	        	m_email : m_email
 	        },
 	        success: function (data) {
-	        	console.log("return값인 data는 역시 배열속의 객체구조.");
 	            console.log(data);
 	            $.each(data, function(index, item){
 	            	var $no = item.todo_no;

@@ -60,6 +60,12 @@
 	<update id="boardHitUpdate" parameterType="co.bada.leejava.board.BoardVO">
 		UPDATE BOARD SET BOARDHIT = #{boardHit} WHERE BOARDNO = #{boardNo}
 	</update>
+	
+	<!-- 자유게시판 개별 삭제 -->
+	<delete id="boardDelete" parameterType="co.bada.leejava.board.BoardVO">
+		DELETE FROM BOARD 	
+			WHERE BOARDNO = #{boardNo}
+	</delete>
 		
 
 </mapper>

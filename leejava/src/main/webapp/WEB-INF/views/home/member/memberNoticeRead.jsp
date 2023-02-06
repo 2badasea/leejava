@@ -10,7 +10,7 @@
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
 .noticeReadFormWrapper {
-	margin-top: 10%;
+	margin-top: 1%;
 	margin-left: 15%;
 }
 /* 새로운 공지사항 폼 */

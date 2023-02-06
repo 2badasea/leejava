@@ -33,7 +33,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int boardDelete(BoardVO bvo) {
 		// TODO Auto-generated method stub
-		return 0;
+		return map.boardDelete(bvo);
 	}
 
 	@Override

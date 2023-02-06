@@ -21,4 +21,10 @@ public class UploadfileServiceImpl implements UploadfileService {
 		// TODO Auto-generated method stub
 		return map.uploadfileSelect(uvo);
 	}
+
+	@Override
+	public int uploadfileDelete(UploadfileVO uvo) {
+		// TODO Auto-generated method stub
+		return map.uploadfileDelete(uvo);
+	}
 }

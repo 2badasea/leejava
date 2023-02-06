@@ -95,7 +95,7 @@ public class BoardController {
 	}
 	
 	/**
-	 * 주석 나중에 다시 알아보기
+	 * 자유게시판 개별 글 조회
 	 * @param  
 	 * @return 
 	 */
@@ -105,14 +105,13 @@ public class BoardController {
 					, @RequestParam("boardHit") int boardHit) throws Exception	{
 		
 		bvo.setBoardNo(boardNo);
-		bvo.setBoardHit(boardHit + 1);
 		// 로그인 상태(session 존재) => 조회수 업데이트
 		if(session.getAttribute("session_user") != null) {
+			bvo.setBoardHit(boardHit + 1);
 			boardDao.boardHitUpdate(bvo);
 		} 
 		// bvo.getBfileCheck()의 결과가 0이 아니라면, uploadfileDao를 통해 UploadFileVO uvo를 model에 담아야 한다. 
 		bvo = boardDao.boardSelect(bvo);
-		System.out.println("=================================bvo 값 조회: " + bvo);
 		model.addAttribute("board", bvo);
 		if(bvo.getBfileCheck() != 0) {
 			List<UploadfileVO> list = new ArrayList<>();
@@ -126,4 +125,34 @@ public class BoardController {
 		// 본인이 작성한 게시글일 경우 => 수정하기 버튼도 view단에서 같이 구현한다. 
 		return "home/member/boardRead";
 	}
+	
+	// 자유게시판 개별 게시글 첨부파일 모두 삭제
+	@ResponseBody
+	@RequestMapping(value = "uploadfileDelete.do", method = RequestMethod.GET, produces = "application/text; charset=utf-8")
+	public String uploadfileDelete(UploadfileVO uvo, @RequestParam int boardNo) {
+		logger.info("======================삭제할 글번호: " + boardNo);
+		
+		uvo.setFileBoard(FILEBOARD);
+		uvo.setFileBno(boardNo);
+		
+		int n = uploadfileDao.uploadfileDelete(uvo);
+		
+		return (n==1) ? "success" : "fail";
+	}
+	
+	// 자유게시판 개별 게시글 삭제
+	@ResponseBody
+	@PostMapping(value = "boardDelete.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> boardDelete(@RequestBody BoardVO bvo){
+		
+		int n = boardDao.boardDelete(bvo);
+		String message = (n==1) ? "success" : "fail";
+		if(n == 1) {
+			return new ResponseEntity<String>(message, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
+		}
+	}
+	
+	
 }

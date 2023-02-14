@@ -144,6 +144,15 @@
 			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 			<version>1.16</version>
 		</dependency>
+		
+		<!-- 자유게시판 첨부파일 다운로드 과정에서 추가 --> 
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-core</artifactId>
+		    <version>5.3.20</version>
+		</dependency>
+
 
 		<!-- 위에까지가 내가 추가한 라이브러리 -->
 

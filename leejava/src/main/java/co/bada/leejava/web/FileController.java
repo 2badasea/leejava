@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -14,19 +13,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.maven.doxia.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +45,8 @@ import net.coobird.thumbnailator.Thumbnailator;
 public class FileController {
 	@Autowired
 	UploadfileService uploadfileDao;
-	@Resource(name = "fileUploadPath")
-	String fileUploadPath;  // "C:\\leejava\\upload"
+	
+	String fileUploadPath = "C:\\leejava\\upload\\";  
 	// log 기록
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 	
@@ -136,72 +139,53 @@ public class FileController {
 		return false;
 	}
 	
-	
-	// 첨부파일 다운로드
+	// 첨부파일 다운로드 
+	@PostMapping(value = "boardFileDown.do", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
-	@RequestMapping(value = "boardFileDown.do", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void boardFileDown(HttpServletRequest request, HttpServletResponse response, UploadfileVO uvo
-						, @RequestParam String fileUuid
-						, @RequestParam String fileUploadpath
-						, @RequestParam String fileOriginname) throws Exception {
-		logger.info("================ fileUuid: " + fileUuid);
-		logger.info("================ fileUploadpath: " + fileUploadpath);
-		logger.info("================ fileOriginname: " + fileOriginname);
-		String SAVE_PATH = fileUploadPath;
-
-		String fileName = fileOriginname;
-		String realFileName = "";
-		String encodingFileName = "";
-		String pfileName = fileUuid + "_" + fileOriginname;
+	public ResponseEntity<Resource> boardFileDown(HttpServletRequest request, HttpServletResponse response
+								, @RequestHeader("User-Agent") String userAgent) {
+		String fileName = request.getParameter("fileName");
+		String fileuploadpath = request.getParameter("fileUploadpath");
+		fileuploadpath = fileuploadpath.replace("%", "\\");
+		logger.info("============================= replace 이후:" + fileUploadPath + fileuploadpath + "\\" +fileName);
 		
-		try {
-			String browser = request.getHeader("User-Agent");
-			// 파일 인코딩
-			if (browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
-				encodingFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
-			} else {
-				encodingFileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-			}
-		} catch (UnsupportedEncodingException ex) {
-			logger.info("===============UnsupportedEncodingException");
+		Resource resource = new FileSystemResource(fileUploadPath + fileuploadpath + "\\" +fileName);
+		
+		if(resource.exists() == false) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		realFileName = SAVE_PATH + fileUploadpath + "\\" +  pfileName;
-		System.out.println("===================== encodingFileName : " + encodingFileName);
-		System.out.println("===================== realFileName : " +  realFileName);
-		File file  = new File(realFileName);
-		if (!file.exists()) {
-			// 해당 대상 파일이 정상적으로 존재하지 않으면 return된다. 
-			logger.info("===============존재하지 않음 확인 ~=================");
-			return;
-		}
-		// 파일명 지정
-		response.setContentType("application/octer-stream");
-		response.setHeader("Content-Transfer-Encoding", "binary;");
-		response.setHeader("Content-Disposition", "attachmeent; filename=\"" + encodingFileName + "\"");
+		String resourceName = resource.getFilename();
+		logger.info("======================= resourceName 확인 : " + resourceName);
 		
+		// removeUUID
+		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+		
+		HttpHeaders headers = new HttpHeaders();
 		try {
-			OutputStream os = response.getOutputStream();
-			// 현재 경로에 있는 파일을 가져올 입력스트림 생성. 입력스트림으로 받은 후 출력스트림으로 유저에게 전해준다.
-			FileInputStream fis = new FileInputStream(realFileName);
+			String downloadName = null;
 			
-			int ncount = 0;
-			byte[] bytes = new byte[512];
-
-			// -1이면 더이상 읽어들일 게 없다는 것. => 다 읽어들였다는 의미.
-			while ((ncount = fis.read(bytes)) != -1) {
-				// 출력스트림 시작 => 실제 유저 '다운로드' 폴더에 해당 파일이 생성되기 시작하는 부분
-				os.write(bytes, 0, ncount);
+			if(userAgent.contains("Trident")) {
+				logger.info("IE Browser");
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
+			} else if(userAgent.contains("Edge")) {
+				logger.info("Edge Browser");
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8");
+			} else {
+				logger.info("Chrome Browser");
+				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
 			}
-			// 입출력 스트림 닫아주고 끝
-			fis.close();
-			os.close();
-		} catch (Exception e) {
-			logger.info("===============FileNotFoundException : " + e);
+			
+			logger.info("downloadName : " + downloadName);
+			
+			headers.add("Content-Disposition", "attachment; filename=" + downloadName);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 		
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
-
+	
 	
 	
 	

@@ -66,7 +66,7 @@ public class BoardController {
 	@RequestMapping(value = "boardWritingForm.do", method = { RequestMethod.GET} )
 	public String boardWritingForm() {
 		
-		return "home/member/boardWritingForm";
+		return "home/member/memberBoardWritingForm";
 	}
 	
 	// insert 데이터 테스트
@@ -121,7 +121,7 @@ public class BoardController {
 			model.addAttribute("fileList", list);
 		}
 		// 본인이 작성한 게시글일 경우 => 수정하기 버튼도 view단에서 같이 구현한다. 
-		return "home/member/boardRead";
+		return "home/member/memberBoardRead";
 	}
 	
 	// 자유게시판 개별 게시글 첨부파일 모두 삭제

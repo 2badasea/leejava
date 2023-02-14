@@ -142,7 +142,8 @@
 	            			<ul>
 	            				<c:forEach items="${fileList}" var="file">
 	            					<li class="fileListLi" style="list-style: none;">
-	            						<a class="fileListA" data-uuid="${file.fileUuid }" data-path="${file.fileUploadpath }">${file.fileOriginname }</a>
+<%-- 	            						<a class="fileListA" href="boardFileDown.do?fileUuid=${file.fileUuid }&fileUploadpath=${file.fileUploadpath }&fileOriginname=${file.fileOriginname }">${file.fileOriginname }</a> --%>
+	            						<a class="fileListA" onclick="boardFileDown('${file.fileUuid }','${file.fileUploadpath }', '${file.fileOriginname }' )"  data-fileUuid=${file.fileUuid } data-fileUploadpath=${file.fileUploadpath } data-fileOriginname=${file.fileOriginname }>${file.fileOriginname }</a>
 	            					</li>
 	            				</c:forEach>
 	            			</ul>
@@ -161,32 +162,37 @@
 </div>
 </body>
 <script>
+	// 이 페이지의 작성자, 글번호, 첨부파일 유무 
 	const boardWriter = $(".boardReadFormHidden").data('nickname');
 	const boardNo = $('.boardReadFormHidden').data('no');
 	const bfileCheck = $(".boardReadFormHidden").data('file');
 	
-	// 첨부파일 다운로드
-	$('.fileListA').on('click', function(e){
-		const fileUuid = $(e.target).data('uuid');
-		const uploadPath = $(e.target).data('path');
-		const originName = $(e.target).text();
-		$.ajax({
-			url: "boardFileDown.do",
-			data: {
-				fileUuid: fileUuid,
-				fileUploadpath : uploadPath,
-				fileOriginname : originName
-			},
-			type: "POST",
-			success: function(res){
-				console.log("성공"  );
-			},
-			error: function(res){
-				console.log("실패");
-			}
-			
-		})
-	})
+	function boardFileDown(uuid, path, originname){
+		const fileUuid = uuid;
+		let fileUploadpath = path;
+		const fileOriginname = originname;
+		
+		// 아래 'fileCallPath'와 달리 'fileUploadpath'는 인코딩을 해주어야 한다. 
+		fileUploadpath = encodeURIComponent(fileUploadpath);
+		
+		var fileCallPath = fileUuid + "_" + fileOriginname;
+// 		fileCallPath =  encodeURIComponent(fileCallPath); 에러의 원인. POST로 넘기면 알아서 인코딩을 해준다. 
+		
+		// ajax로는 다운로드 불가 => form태그를 임의로 형성해서 submit()하는 방식으로 시도. 
+		var newForm = $("<form></form>");
+		
+		newForm.attr("name", "newForm");
+		newForm.attr("method", "post");
+		newForm.attr("action", "boardFileDown.do");
+		
+		newForm.append($("<input/>", {type: 'hidden', name : 'fileName', value : fileCallPath }));
+		newForm.append($("<input/>", {type: 'hidden', name : 'fileUploadpath', value : fileUploadpath}));
+		
+		newForm.appendTo("body");
+		
+		newForm.submit();
+	}
+	
 	
 	// 게시글 삭제하기
 	$(".boardDeleteBtn").on("click", function(){

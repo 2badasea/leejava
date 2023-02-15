@@ -183,7 +183,7 @@
 		};
 		
 		$.ajax({
-			url: $("#frm").attr("action"),
+			url: $("#frm").attr("action"), // boardInsert.do
 			data: JSON.stringify(data),
 			type: "POST",
 			contentType: "application/json; charset=utf-8",
@@ -219,6 +219,7 @@
 			processData : false,
 			contentType : false,
 			data : formData,
+			dataType : "json",
 			type : "POST",
 			success: function(result){
 				console.log("ajax 파일 업로드 완료");

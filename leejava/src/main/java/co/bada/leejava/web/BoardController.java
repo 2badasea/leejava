@@ -27,7 +27,7 @@ import co.bada.leejava.uploadfile.UploadfileVO;
 
 @Controller
 public class BoardController {
-	@Autowired
+	@Autowired 
 	BoardService boardDao;
 	@Autowired
 	UploadfileService uploadfileDao;
@@ -96,8 +96,6 @@ public class BoardController {
 	
 	/**
 	 * 자유게시판 개별 글 조회
-	 * @param  
-	 * @return 
 	 */
 	@RequestMapping(value = "boardRead.do", method = RequestMethod.GET)
 	public String boardRead(Model model, BoardVO bvo, HttpSession session, UploadfileVO uvo

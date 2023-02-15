@@ -79,7 +79,6 @@
 .fileListLi{
 	padding-top: 5px;
 	padding-bottom: 5px;
-	text-decoration: underline;
 }
 
 .fileListA:hover{
@@ -137,16 +136,15 @@
 	            	<div style="width: 10%;"  align="center">
 	            		첨부파일
 	            	</div>
-	            	<div style="width: 90%;  border-left: 0.5px solid lightgrey; padding-left: 10px;">
+	            	<div style="display:flex; width: 90%;  border-left: 0.5px solid lightgrey; padding-left: 10px;">
 	            		<c:if test="${not empty fileList }">
-	            			<ul>
-	            				<c:forEach items="${fileList}" var="file">
-	            					<li class="fileListLi" style="list-style: none;">
-<%-- 	            						<a class="fileListA" href="boardFileDown.do?fileUuid=${file.fileUuid }&fileUploadpath=${file.fileUploadpath }&fileOriginname=${file.fileOriginname }">${file.fileOriginname }</a> --%>
-	            						<a class="fileListA" onclick="boardFileDown('${file.fileUuid }','${file.fileUploadpath }', '${file.fileOriginname }' )"  data-fileUuid=${file.fileUuid } data-fileUploadpath=${file.fileUploadpath } data-fileOriginname=${file.fileOriginname }>${file.fileOriginname }</a>
-	            					</li>
-	            				</c:forEach>
-	            			</ul>
+            				<c:forEach items="${fileList}" var="file">
+            						<div class="uploadFileDivs">
+            							<input type="hidden" data-uuid=${file.fileUuid } data-uploadpath=${file.fileUploadpath } data-originname=${file.fileOriginname } data-filetype=${file.fileType }>
+<%--             							<a class="fileListA" onclick="boardFileDown('${file.fileUuid }','${file.fileUploadpath }', '${file.fileOriginname }' )" >${file.fileOriginname }</a> --%>
+            							<a class="fileListA" onclick="boardFileDown(this)" >${file.fileOriginname }</a>
+            						</div>
+            				</c:forEach>
 	            		</c:if>
 	            	</div>
 	            </div>
@@ -167,16 +165,17 @@
 	const boardNo = $('.boardReadFormHidden').data('no');
 	const bfileCheck = $(".boardReadFormHidden").data('file');
 	
-	function boardFileDown(uuid, path, originname){
-		const fileUuid = uuid;
-		let fileUploadpath = path;
-		const fileOriginname = originname;
+	// 첨부파일 다운로드.
+	function boardFileDown(e){
+		const hiddenInput = $(e).prev();
 		
-		// 아래 'fileCallPath'와 달리 'fileUploadpath'는 인코딩을 해주어야 한다. 
-		fileUploadpath = encodeURIComponent(fileUploadpath);
+		// 아래 동적으로 생성한 <form>태그에 의해 post방식으로 전송되면서 알아서 encoding한 값이 서버로 넘어간다. 
+		const fileUuid = hiddenInput.data('uuid');
+		let fileUploadpath = hiddenInput.data('uploadpath');
+		const fileOriginname = hiddenInput.data('originname');
 		
+ 		// fileCallPath =  encodeURIComponent(fileCallPath); 에러의 원인. POST로 넘기면 알아서 인코딩을 해준다. 
 		var fileCallPath = fileUuid + "_" + fileOriginname;
-// 		fileCallPath =  encodeURIComponent(fileCallPath); 에러의 원인. POST로 넘기면 알아서 인코딩을 해준다. 
 		
 		// ajax로는 다운로드 불가 => form태그를 임의로 형성해서 submit()하는 방식으로 시도. 
 		var newForm = $("<form></form>");

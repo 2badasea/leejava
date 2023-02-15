@@ -146,7 +146,6 @@ public class FileController {
 								, @RequestHeader("User-Agent") String userAgent) {
 		String fileName = request.getParameter("fileName");
 		String fileuploadpath = request.getParameter("fileUploadpath");
-		fileuploadpath = fileuploadpath.replace("%", "\\");
 		logger.info("============================= replace 이후:" + fileUploadPath + fileuploadpath + "\\" +fileName);
 		
 		Resource resource = new FileSystemResource(fileUploadPath + fileuploadpath + "\\" +fileName);

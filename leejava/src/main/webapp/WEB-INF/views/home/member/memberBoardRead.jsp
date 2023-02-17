@@ -305,8 +305,9 @@
 	
 	// 추천수 -
 	$('.boardLikeitDown').on("click", function(){
-				
+		console.log("테이블 구성");		
 		console.log("추천수 하락");
+		
 	})	
 	
 	// 추천수 + 

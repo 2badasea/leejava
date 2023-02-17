@@ -1,17 +1,24 @@
 package co.bada.leejava.web;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +38,8 @@ public class BoardController {
 	BoardService boardDao;
 	@Autowired
 	UploadfileService uploadfileDao;
+	@Resource(name = "fileUploadPath")
+	private String fileUploadPath;
 	// 게시판 유형 1번
 	static final int FILEBOARD = 1;
 	
@@ -148,6 +157,27 @@ public class BoardController {
 		}else {
 			return new ResponseEntity<String>(message, HttpStatus.NOT_IMPLEMENTED);
 		}
+	}
+	
+	// 자유게시판 첨부파일 썸네일 이미지 호출
+	@GetMapping("thumbnailDisplay.do")
+	public ResponseEntity<byte[]> thumbnailDisplay(String thumbfilecallpath) {
+		logger.info("================================ 썸네일 파일 이름 확인: " + thumbfilecallpath);
+		
+		File file = new File(fileUploadPath, thumbfilecallpath);
+		logger.info("======================== File 객체 값: " + file);
+		ResponseEntity<byte[]> result = null;
+		
+		try {
+			HttpHeaders header = new HttpHeaders();
+			
+			header.add("Content-type", Files.probeContentType(file.toPath()));
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+		} catch (IOException e) {
+			logger.info("================= 예외 발생");
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	

@@ -47,7 +47,7 @@
 .boardReadForm_contents{
 	padding: 5px;
 	border-bottom: 0.5px solid lightgrey;
-	min-height: 450px;
+	min-height: 400px;
 	height: auto;
 }
 
@@ -86,6 +86,48 @@
 	cursor: pointer;
 	font-weight: bold;
 }
+
+.uploadFileDivs{
+    width: 25%; 
+    padding-top: 10px; 
+    padding-bottom: 10px;
+}
+.thumbnailUploadResult{
+	height: 100px; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+}
+.uploadFileDivs:hover{
+	border: 0.1px solid coral;
+}
+.thumbImg:hover{
+	cursor: pointer;
+}
+/* -원본 이미지 노출 div 스타일 정의  */
+.bigPictureWrapper{
+	position: fixed;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	top: 0%;
+	margin-left: -12%;	
+	width: 100%;
+	height: 100%;
+	background-color: gray;
+	z-index: 100;
+	background: rgba(255,255,255,0.5);
+}
+.bigPicture{
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.bigPicture img{
+	width: 600px;
+}
+
 </style>
 </head>
 <body>
@@ -136,13 +178,15 @@
 	            	<div style="width: 10%;"  align="center">
 	            		첨부파일
 	            	</div>
-	            	<div style="display:flex; width: 90%;  border-left: 0.5px solid lightgrey; padding-left: 10px;">
+	            	<div style="display:flex; width: 90%;  padding-top:0.5px; padding-bottom:0.5px; border-left: 0.5px solid lightgrey; padding-left: 10px;">
 	            		<c:if test="${not empty fileList }">
             				<c:forEach items="${fileList}" var="file">
-            						<div class="uploadFileDivs">
+            						<div class="uploadFileDivs" align="center">
             							<input type="hidden" data-uuid=${file.fileUuid } data-uploadpath=${file.fileUploadpath } data-originname=${file.fileOriginname } data-filetype=${file.fileType }>
-<%--             							<a class="fileListA" onclick="boardFileDown('${file.fileUuid }','${file.fileUploadpath }', '${file.fileOriginname }' )" >${file.fileOriginname }</a> --%>
-            							<a class="fileListA" onclick="boardFileDown(this)" >${file.fileOriginname }</a>
+            							<div class="thumbnailUploadResult">
+            								<!-- DOM객체 생성 이후 script단으로 이미지를 호출 -->
+            							</div>
+	            						<a class="fileListA" onclick="boardFileDown(this)" >${file.fileOriginname }</a>
             						</div>
             				</c:forEach>
 	            		</c:if>
@@ -158,6 +202,12 @@
         </div>
     </div>
 </div>
+<!-- 원본이미지를 화면에 출력시키기 위한 div --> 						
+<div class='bigPictureWrapper'>
+	<div class='bigPicture'>
+			
+	</div>
+</div>
 </body>
 <script>
 	// 이 페이지의 작성자, 글번호, 첨부파일 유무 
@@ -165,9 +215,11 @@
 	const boardNo = $('.boardReadFormHidden').data('no');
 	const bfileCheck = $(".boardReadFormHidden").data('file');
 	
+	
 	// 첨부파일 다운로드.
 	function boardFileDown(e){
-		const hiddenInput = $(e).prev();
+		
+		const hiddenInput = $(e).parent('div').children('input');
 		
 		// 아래 동적으로 생성한 <form>태그에 의해 post방식으로 전송되면서 알아서 encoding한 값이 서버로 넘어간다. 
 		const fileUuid = hiddenInput.data('uuid');
@@ -253,6 +305,7 @@
 	
 	// 추천수 -
 	$('.boardLikeitDown').on("click", function(){
+				
 		console.log("추천수 하락");
 	})	
 	
@@ -266,5 +319,58 @@
 	$(".boardListBackBtn").on("click", function() {
 		location.href = "boardList.do";
 	});
+	
+	// 원본 이미지 호출
+	function showImage(originfileCallPath){
+		console.log("originfileCallPath 확인 : " + originfileCallPath);
+		$(".bigPictureWrapper").css("display", "flex").show();
+		$("body").css('overflow', 'hidden');
+		$(".bigPicture").html("<img src='thumbnailDisplay.do?thumbfilecallpath=" + originfileCallPath +"\'>").animate( { width : '100%', height : '100%'}, 1000);
+	}
+	
+	// 원본 이미지 사라지도록 하기
+	$(".bigPictureWrapper").on("click", function(e){
+		$(".bigPicture").animate({width : '0%', height: '0%'}, 300);
+		$("body").css('overflow', 'unset');
+		setTimeout( () => {
+			$(this).hide();
+		},300);
+	})
+</script>
+<script>
+	$(function(){
+		// DOM이 생성된 이후에 실행.
+		if( $(".uploadFileDivs").length != 0 ){
+			var $imageBox = $('.thumbnailUploadResult');
+			var $inputs = $('.uploadFileDivs').children('input');
+			
+			$.each($inputs, function(index, item){
+				var $box = $imageBox[index];
+				var $filetype = $(item).data('filetype');
+				var $uploadpath = $(item).data('uploadpath');
+				var $uuid = $(item).data('uuid');
+				var $originname = $(item).data('originname');
+				
+				// 썸네일 이미지 경로
+				var $thumbfileCallPath = encodeURIComponent($uploadpath + "\\s_" + $uuid  + "_" + $originname); 
+				// 원본 이미지 경로
+				var $originfileCallPath = encodeURIComponent($uploadpath + "\\" + $uuid  + "_" + $originname); 
+				
+				if($filetype == false){
+					// 타입이 일반 파일인 경우 기본 이미지 호출
+					var $basicImgStr = '<img src="resources/image/attachedFile.png" style="width: 100px;">';
+					$($box).attr("onclick", "boardFileDown(this)");
+					$box.innerHTML = $basicImgStr;
+				} else{
+					// 타입이 이미지인 경우, get방식으로 보내기 때문에 인코딩.(post방식은 필요없음)
+					var $imgStr = '<img class="thumbImg" src="thumbnailDisplay.do?thumbfilecallpath=';
+					$imgStr += $thumbfileCallPath + '" onclick="showImage(\'' + $originfileCallPath;
+					$imgStr += '\''; 
+					$imgStr += ')\" >';
+					$box.innerHTML = $imgStr;
+				}
+			})
+		}
+	})
 </script>
 </html>

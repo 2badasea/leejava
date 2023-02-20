@@ -66,6 +66,25 @@
 		DELETE FROM BOARD 	
 			WHERE BOARDNO = #{boardNo}
 	</delete>
+	
+	<!-- 자유게시판 추천여부 확인 -->
+	<select id="boardLikeCheck" resultType="string">
+		SELECT BOARDLIKEVALUE FROM BOARD_LIKEIT 
+			WHERE NICKNAME = #{boardLikeNick} AND BOARDNO = #{boardNo}
+	</select>
+	
+	<insert id="boardLikeitInsert" parameterType="co.bada.leejava.board.BoardVO">
+		INSERT INTO BOARD_LIKEIT VALUES( #{boardLikeNick}, #{boardNo}, #{boardLikeValue} )
+	</insert>
+	
+	<update id="boardLikeitUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET BOARDLIKEIT = #{boardLikeValue} WHERE BOARDNO = #{boardNo}
+	</update>
+	
+	<!-- 자유게시판 추천테이블 row 데이터 삭제 -->
+	<delete id="boardLikeitDelete" parameterType="co.bada.leejava.board.BoardVO">
+		DELETE FROM BOARD_LIKEIT WHERE NICKNAME = #{boardLikeNick} AND BOARDNO = #{boardNo}
+	</delete>
 		
 
 </mapper>

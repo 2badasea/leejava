@@ -128,6 +128,10 @@
 	width: 600px;
 }
 
+.boardRead_header_right i:hover{
+	cursor: pointer;
+}
+
 </style>
 </head>
 <body>
@@ -158,6 +162,7 @@
                 		</div>
                		</div>
                 	<div class="boardRead_header_right">
+                		<input type="hidden" class="hiddenLikeValue">
                			<div class="boardLikeitDown"><i class="fa-solid fa-arrow-down"></i></div>
                			<div class="boardLikeItCount">${board.boardLikeit }</div>
                			<div class="boardLikeitUp"><i class="fa-solid fa-arrow-up"></i></div>
@@ -210,10 +215,55 @@
 </div>
 </body>
 <script>
-	// 이 페이지의 작성자, 글번호, 첨부파일 유무 
+	// 현재 로그인 중인 세션 닉네임
+	var sessionNickname = $("#hiddenSessionInfo").data('nickname');
+	
+	// 이 페이지의 작성자, 글번호, 첨부파일 유무  
 	const boardWriter = $(".boardReadFormHidden").data('nickname');
 	const boardNo = $('.boardReadFormHidden').data('no');
 	const bfileCheck = $(".boardReadFormHidden").data('file');
+	
+	// 추천수 클릭
+	$('.boardLikeitDown, .boardLikeitUp').on("click", function(e){
+		var hiddenLike = $(".hiddenLikeValue").val();
+		var clickValue = $(e.target).hasClass("fa-arrow-down") ? -1 : 1;
+		var clickPointClass = $(e.target);
+		console.log("clickValue 값: " + clickValue);
+		// 로그인 세션이 만료된 경우 or  클릭한 값이 반대의 값과 같은 경우
+		if(!sessionNickname || clickValue == (hiddenLike * -1) ) return false;
+		$.ajax({
+			url : "boardLikeitUpdate.do",
+			data : {
+				nickname : sessionNickname,
+				boardNo : boardNo,
+				boardLikeValue :  clickValue,
+				checkHiddenLike : hiddenLike
+			},
+			method : "GET",
+			dataType : "json",
+			success: function(res){
+				console.log("성공: " + res);
+				Fnc_afterBoardLikeit(res);
+			},
+			error: function(res){
+				console.log("에러 : " + res);
+			}
+		})
+		
+		function Fnc_afterBoardLikeit(res){
+			$(".boardLikeItCount").text(res.likeCount);
+			$(".hiddenLikeValue").val(res.likeCount);
+			console.log( res.method);
+			if(res.method == 'insert'){
+				$(clickPointClass).css("color", "coral");
+			} else {
+				$(clickPointClass).css("color", "black");
+			}
+		}
+		
+		
+		
+	})	
 	
 	
 	// 첨부파일 다운로드.
@@ -303,18 +353,6 @@
 		}
 	})
 	
-	// 추천수 -
-	$('.boardLikeitDown').on("click", function(){
-		console.log("테이블 구성");		
-		console.log("추천수 하락");
-		
-	})	
-	
-	// 추천수 + 
-	$('.boardLikeitUp').on("click", function(){
-		console.log("추천수 상승");
-	})
-	
 		
 	// 목록으로 돌아가기
 	$(".boardListBackBtn").on("click", function() {
@@ -356,7 +394,7 @@
 				var $thumbfileCallPath = encodeURIComponent($uploadpath + "\\s_" + $uuid  + "_" + $originname); 
 				// 원본 이미지 경로
 				var $originfileCallPath = encodeURIComponent($uploadpath + "\\" + $uuid  + "_" + $originname); 
-				
+				 
 				if($filetype == false){
 					// 타입이 일반 파일인 경우 기본 이미지 호출
 					var $basicImgStr = '<img src="resources/image/attachedFile.png" style="width: 100px;">';
@@ -372,6 +410,36 @@
 				}
 			})
 		}
+		
+		
+		// DOM객체가 생성 이후 추천 여부 체크 => 결과값에 따른 css
+		(function(){
+			console.log("세션 닉네임 확인: " + sessionNickname);
+			if(sessionNickname){
+				$.ajax({
+					url: "boardLikeitCheck.do",
+					type: "GET",
+					data: {
+						boardLikeNick :  sessionNickname,
+						boardNo : boardNo
+					},
+					contentType: "application/text; charset=utf-8",
+					dataType : "text",
+					success: function(res){
+						$('.hiddenLikeValue').val(res);
+						if(res == 1){
+							$(".fa-arrow-up").css("color", "lightblue");
+						} else if(res == -1){
+							$(".fa-arrow-down").css("color", "lightblue");	
+						} 
+					},
+					error : function(res){
+						console.log('res 실패 확인' + res);
+					}
+				})
+			}
+		}());
+		
 	})
 </script>
 </html>

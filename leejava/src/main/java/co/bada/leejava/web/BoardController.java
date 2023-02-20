@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonObject;
+
 import co.bada.leejava.Search;
 import co.bada.leejava.board.BoardService;
 import co.bada.leejava.board.BoardVO;
@@ -179,6 +181,84 @@ public class BoardController {
 		}
 		return result;
 	}
+	
+	// 자유게시판 추천 클릭여부 확인
+	@ResponseBody
+	@GetMapping(value ="boardLikeitCheck.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> boardLikeCheck(BoardVO bvo, @RequestParam String boardLikeNick, @RequestParam int boardNo) {
+		logger.info("================================================ boardLikeNick : " + boardLikeNick);
+		logger.info("================================================ boardNo : " + boardNo);
+		// 닉네임과 게시글 번호를 담아서, 존재여부 확인한다. 해당하는 값이 존재하면 css효과를 준다. 
+		
+		bvo.setBoardLikeNick(boardLikeNick);
+		bvo.setBoardNo(boardNo);
+		
+		System.out.println("================== 조회 결과: " + boardDao.boardLikeCheck(bvo));
+		String result = String.valueOf(boardDao.boardLikeCheck(bvo));
+		
+		if(result.equals("null")) {
+			logger.info("============ 데이터 없음" );
+			result = "0";
+			return new ResponseEntity<String>(result, HttpStatus.OK);
+		} else {
+			logger.info("================================= 찾은 값 : " +  result);
+			return new ResponseEntity<String>(result,HttpStatus.OK);
+		}
+	}
+	
+	// 자유게시판 추천 업데이트
+	@ResponseBody
+	@RequestMapping(value = "boardLikeitUpdate.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> boardLikeitUpdate(BoardVO bvo 
+										,@RequestParam("nickname") String nickname
+										,@RequestParam("boardNo") int boardNo
+										,@RequestParam("boardLikeValue") int boardLikeValue
+										,@RequestParam("checkHiddenLike") int checkHiddenLike){
+		JsonObject json = new JsonObject();
+		
+		
+		logger.info("============================== boardLikeValue " + boardLikeValue);
+		logger.info("============================== checkHiddenLike " + checkHiddenLike);
+		
+		// 경우의 수 1) hidden이 0인 경우 => insert(board_likeit) => update(board)
+		// 경우의 수 2) hidden과 click값이 같은 경우 => delete(board_likeit) => update(board);
+		bvo.setBoardNo(boardNo);
+		// update전 게시글 추천수 조회
+		int likeCount = boardDao.boardSelect(bvo).getBoardLikeit();
+		bvo.setBoardLikeNick(nickname);
+		bvo.setBoardLikeValue(boardLikeValue);
+		if( checkHiddenLike == 0) {  // 추천테이블 insert, 게시판테이블 update
+			// 추천 테이블에 row데이터 추가
+			int n = boardDao.boardLikeitInsert(bvo);
+			if(n == 1) {
+				// board 테이블의 추천수값 업데이트
+				likeCount += boardLikeValue;
+				bvo.setBoardLikeit(likeCount);
+				int m = boardDao.boardLikeitUpdate(bvo);
+				if(m == 1 ) {
+					json.addProperty("method", "insert");
+					json.addProperty("likeCount", likeCount);
+					return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+				}
+			} 
+		} else {  // hiddenClick != 0 인 경우, 즉 hiddenClick과 clickValue의 같이 같다 => delete(추천), update(게시판)
+			int n = boardDao.boardLikeitDelete(bvo);
+			if( n == 1) {
+				likeCount += (boardLikeValue * -1);
+				bvo.setBoardLikeit(likeCount);
+				int m = boardDao.boardLikeitUpdate(bvo);
+				if(m == 1) {
+					json.addProperty("method", "delete");
+					json.addProperty("likeCount", likeCount);
+					return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+				}
+			}
+		}
+		
+		return new ResponseEntity<String>("fail", HttpStatus.ACCEPTED);
+		
+	}
+	
 	
 	
 }

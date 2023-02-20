@@ -304,7 +304,8 @@ text-decoration: none;
 </style>
 </head>
 <body>
-<!-- 파일 업로드를 위한 게시판 유형 구분 hidden 태그 -->
+<!-- 파일 업로드를 위한 게시판 유형 구분 hidden 태그. 자유게시판은 data-board 1 -->
+<input type="hidden" id="hiddenSessionInfo" data-nickname=${session_nickname }>
 <input type="hidden" id="fileboardInput" data-board="1">
 <div class="sidebarTemplete_wrapper">
 		<div class="sidebar_userInfo" align="center">

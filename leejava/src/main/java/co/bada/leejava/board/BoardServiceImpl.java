@@ -61,4 +61,28 @@ public class BoardServiceImpl implements BoardService {
 		
 	}
 
+	@Override
+	public String boardLikeCheck(BoardVO bvo) {
+		// TODO Auto-generated method stub
+		return map.boardLikeCheck(bvo);
+	}
+
+	@Override
+	public int boardLikeitInsert(BoardVO bvo) {
+		// TODO Auto-generated method stub
+		return map.boardLikeitInsert(bvo);
+	}
+
+	@Override
+	public int boardLikeitUpdate(BoardVO bvo) {
+		// TODO Auto-generated method stub
+		return map.boardLikeitUpdate(bvo);
+	}
+
+	@Override
+	public int boardLikeitDelete(BoardVO bvo) {
+		// TODO Auto-generated method stub
+		return map.boardLikeitDelete(bvo);
+	}
+
 }

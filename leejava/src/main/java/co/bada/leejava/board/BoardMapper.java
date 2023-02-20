@@ -21,4 +21,12 @@ public interface BoardMapper {
 	int getBno();
 	// 자유게시판 조회수 업데이트
 	int boardHitUpdate(BoardVO bvo);
+	// 자유게시판 추천 클릭여부
+	String boardLikeCheck(BoardVO bvo);
+	// 자유게시판 추천테이블 insert
+	int boardLikeitInsert(BoardVO bvo);
+	// 자유게시판 추천수 업데이트 
+	int boardLikeitUpdate(BoardVO bvo);
+	// 자유게시판 추천테이블 delete
+	int boardLikeitDelete(BoardVO bvo);
 }

@@ -195,6 +195,8 @@ public class BoardController {
 		
 		System.out.println("================== 조회 결과: " + boardDao.boardLikeCheck(bvo));
 		String result = String.valueOf(boardDao.boardLikeCheck(bvo));
+		System.out.println("================== string으로 변환한 조회 결과: " + result);
+		
 		
 		if(result.equals("null")) {
 			logger.info("============ 데이터 없음" );
@@ -212,12 +214,12 @@ public class BoardController {
 	public ResponseEntity<String> boardLikeitUpdate(BoardVO bvo 
 										,@RequestParam("nickname") String nickname
 										,@RequestParam("boardNo") int boardNo
-										,@RequestParam("boardLikeValue") int boardLikeValue
+										,@RequestParam("clickValue") int clickValue
 										,@RequestParam("checkHiddenLike") int checkHiddenLike){
 		JsonObject json = new JsonObject();
 		
 		
-		logger.info("============================== boardLikeValue " + boardLikeValue);
+		logger.info("============================== clickValue " + clickValue);
 		logger.info("============================== checkHiddenLike " + checkHiddenLike);
 		
 		// 경우의 수 1) hidden이 0인 경우 => insert(board_likeit) => update(board)
@@ -225,31 +227,49 @@ public class BoardController {
 		bvo.setBoardNo(boardNo);
 		// update전 게시글 추천수 조회
 		int likeCount = boardDao.boardSelect(bvo).getBoardLikeit();
+		logger.info("============================== DML 작업 이전 기존 테이블의 좋아요 값: " + likeCount);
 		bvo.setBoardLikeNick(nickname);
-		bvo.setBoardLikeValue(boardLikeValue);
+		bvo.setBoardLikeValue(clickValue);
 		if( checkHiddenLike == 0) {  // 추천테이블 insert, 게시판테이블 update
 			// 추천 테이블에 row데이터 추가
 			int n = boardDao.boardLikeitInsert(bvo);
+			logger.info("=========================== n값: " + n);
 			if(n == 1) {
 				// board 테이블의 추천수값 업데이트
-				likeCount += boardLikeValue;
+				if( clickValue == 1) {
+					likeCount = likeCount + 1;
+				}else {
+					likeCount = likeCount -1;
+				}
+				logger.info("============================== insert 후 수정할 count값 : " + likeCount);
 				bvo.setBoardLikeit(likeCount);
 				int m = boardDao.boardLikeitUpdate(bvo);
+				logger.info("=========================== m값: " + m);
 				if(m == 1 ) {
 					json.addProperty("method", "insert");
 					json.addProperty("likeCount", likeCount);
+					json.addProperty("newHiddenValue", clickValue);
 					return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 				}
 			} 
 		} else {  // hiddenClick != 0 인 경우, 즉 hiddenClick과 clickValue의 같이 같다 => delete(추천), update(게시판)
 			int n = boardDao.boardLikeitDelete(bvo);
+			logger.info("=========================== n값: " + n);
 			if( n == 1) {
-				likeCount += (boardLikeValue * -1);
+				logger.info("============================== delete 전 count값 : " + likeCount);
+				if( clickValue == 1) {
+					likeCount--;
+				}else {
+					likeCount++;
+				}
+				logger.info("============================== delete 후 count값 : " + likeCount);
 				bvo.setBoardLikeit(likeCount);
 				int m = boardDao.boardLikeitUpdate(bvo);
+				logger.info("=========================== m값: " + m);
 				if(m == 1) {
 					json.addProperty("method", "delete");
 					json.addProperty("likeCount", likeCount);
+					json.addProperty("newHiddenValue", 0);
 					return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 				}
 			}

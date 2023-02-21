@@ -226,6 +226,7 @@
 	// 추천수 클릭
 	$('.boardLikeitDown, .boardLikeitUp').on("click", function(e){
 		var hiddenLike = $(".hiddenLikeValue").val();
+		console.log("hiddenLikeValue 값 조회: " + hiddenLike);
 		var clickValue = $(e.target).hasClass("fa-arrow-down") ? -1 : 1;
 		var clickPointClass = $(e.target);
 		console.log("clickValue 값: " + clickValue);
@@ -236,7 +237,7 @@
 			data : {
 				nickname : sessionNickname,
 				boardNo : boardNo,
-				boardLikeValue :  clickValue,
+				clickValue :  clickValue,
 				checkHiddenLike : hiddenLike
 			},
 			method : "GET",
@@ -251,19 +252,26 @@
 		})
 		
 		function Fnc_afterBoardLikeit(res){
+			console.log("화면에 표기될 추천수 값: " + res.likeCount);
 			$(".boardLikeItCount").text(res.likeCount);
-			$(".hiddenLikeValue").val(res.likeCount);
-			console.log( res.method);
+			console.log("새롭게 hidden에 저장될 값: " + res.newHiddenValue);
+			console.log("res.method 값: " +  res.method);
 			if(res.method == 'insert'){
+				// method = 'insert'
+				$(".hiddenLikeValue").val(res.newHiddenValue);
 				$(clickPointClass).css("color", "coral");
 			} else {
+				// method == 'delete'
+				$(".hiddenLikeValue").val(res.newHiddenValue);
 				$(clickPointClass).css("color", "black");
 			}
 		}
-		
-		
-		
 	})	
+	
+	// 임시 hiddenCheckValue 확인용 버튼
+	$('.boardUpdateBtn').on("click", (e) => {
+		console.log("현재 hiddenValue의 값: " + $(".hiddenLikeValue").val());
+	});
 	
 	
 	// 첨부파일 다운로드.
@@ -427,6 +435,7 @@
 					dataType : "text",
 					success: function(res){
 						$('.hiddenLikeValue').val(res);
+						console.log("화면 로드 이후 res 값: " + res);
 						if(res == 1){
 							$(".fa-arrow-up").css("color", "lightblue");
 						} else if(res == -1){

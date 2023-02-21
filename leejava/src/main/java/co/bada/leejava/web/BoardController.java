@@ -241,7 +241,7 @@ public class BoardController {
 				}else {
 					likeCount = likeCount -1;
 				}
-				logger.info("============================== insert 후 수정할 count값 : " + likeCount);
+				logger.info("============================== insert 후 수정할 boardLikeIt 값 : " + likeCount);
 				bvo.setBoardLikeit(likeCount);
 				int m = boardDao.boardLikeitUpdate(bvo);
 				logger.info("=========================== m값: " + m);
@@ -256,14 +256,15 @@ public class BoardController {
 			int n = boardDao.boardLikeitDelete(bvo);
 			logger.info("=========================== n값: " + n);
 			if( n == 1) {
-				logger.info("============================== delete 전 count값 : " + likeCount);
+				logger.info("============================== delete 전 boardLikeIt 값 : " + likeCount);
 				if( clickValue == 1) {
 					likeCount--;
 				}else {
 					likeCount++;
 				}
-				logger.info("============================== delete 후 count값 : " + likeCount);
+				logger.info("============================== delete 후 boardLikeIt 값 : " + likeCount);
 				bvo.setBoardLikeit(likeCount);
+				logger.info("============================== bvo값 조회ㅣ: " + bvo);
 				int m = boardDao.boardLikeitUpdate(bvo);
 				logger.info("=========================== m값: " + m);
 				if(m == 1) {

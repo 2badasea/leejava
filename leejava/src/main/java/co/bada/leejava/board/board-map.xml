@@ -78,7 +78,7 @@
 	</insert>
 	
 	<update id="boardLikeitUpdate" parameterType="co.bada.leejava.board.BoardVO">
-		UPDATE BOARD SET BOARDLIKEIT = #{boardLikeValue} WHERE BOARDNO = #{boardNo}
+		UPDATE BOARD SET BOARDLIKEIT = #{boardLikeit} WHERE BOARDNO = #{boardNo}
 	</update>
 	
 	<!-- 자유게시판 추천테이블 row 데이터 삭제 -->

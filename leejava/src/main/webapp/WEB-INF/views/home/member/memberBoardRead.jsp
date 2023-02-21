@@ -227,7 +227,8 @@
 	$('.boardLikeitDown, .boardLikeitUp').on("click", function(e){
 		var hiddenLike = $(".hiddenLikeValue").val();
 		console.log("hiddenLikeValue 값 조회: " + hiddenLike);
-		var clickValue = $(e.target).hasClass("fa-arrow-down") ? -1 : 1;
+		var clickValue = $(this).attr('class') == 'boardLikeitDown' ? -1 : 1;
+		
 		var clickPointClass = $(e.target);
 		console.log("clickValue 값: " + clickValue);
 		// 로그인 세션이 만료된 경우 or  클릭한 값이 반대의 값과 같은 경우

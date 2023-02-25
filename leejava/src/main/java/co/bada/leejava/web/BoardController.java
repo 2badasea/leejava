@@ -133,12 +133,23 @@ public class BoardController {
 		return "home/member/memberBoardRead";
 	}
 	
+	// 자유게시판 수정 폼 이동
+	@GetMapping(value = "boardUpdateForm.do")
+	public String boardUpdateForm(Model model, BoardVO bvo
+							, @RequestParam int boardNo) {
+		
+		bvo.setBoardNo(boardNo);
+		bvo = boardDao.boardSelect(bvo);
+		model.addAttribute("board", bvo);
+		
+		return "home/member/boardUpdateForm";
+	}
+	
 	// 자유게시판 개별 게시글 첨부파일 모두 삭제
 	@ResponseBody
 	@RequestMapping(value = "uploadfileDelete.do", method = RequestMethod.GET, produces = "application/text; charset=utf-8")
 	public String uploadfileDelete(UploadfileVO uvo, @RequestParam int boardNo) {
 		logger.info("======================삭제할 글번호: " + boardNo);
-		
 		uvo.setFileBoard(FILEBOARD);
 		uvo.setFileBno(boardNo);
 		

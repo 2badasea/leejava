@@ -269,9 +269,14 @@
 		}
 	})	
 	
-	// 임시 hiddenCheckValue 확인용 버튼
-	$('.boardUpdateBtn').on("click", (e) => {
-		console.log("현재 hiddenValue의 값: " + $(".hiddenLikeValue").val());
+	// 수정하는 폼으로 이동. 
+	$('.boardUpdateBtn').on("click", () => {
+		console.log("수정하는 폼 글번호 확인: " + boardNo);
+		const boardUpdateCheck = confirm("게시글을 수정하시겠습니까?");
+		if(!boardUpdateCheck) {
+			return false;
+		}
+		location.href = "boardUpdateForm.do?boardNo=" + boardNo;
 	});
 	
 	

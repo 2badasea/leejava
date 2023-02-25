@@ -206,7 +206,7 @@
 		})
 	})
 	
-	// 파일 업로드 ajax 콜백함수 정의
+	// 파일 업로드 ajax 콜백함수 정의 
 	function Fnc_fileUpload(formData, fileBno){
 		// 첨부파일 업로드 게시판 유형 구분 => 자유게시판 번호 1 
 		const inputFilebno = $("#fileboardInput").data('board');

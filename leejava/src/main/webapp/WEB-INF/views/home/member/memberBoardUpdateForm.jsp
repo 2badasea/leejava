@@ -76,6 +76,25 @@
 .boardTableThTr{
 	height: auto;
 }
+
+/* 첨부파일 리스트 관련 css */
+.fileListInput{
+	outline: none;
+	min-height: 30px;
+	padding-top: 5px;
+	border-style: none;
+} 
+.addFileBtn{
+	float: right;
+	width: auto;
+	height: auto;
+}
+.addFileBtn:hover {
+	cursor: pointer;
+}
+.fileListDiv{
+ 	border-style: none;
+}
 </style>
 <body>
 <input type="hidden" class="sessionCheck" value="${session_nickname }">
@@ -125,9 +144,15 @@
 <script type="text/javascript">	
 	// 세션값 체크.
 	const $sessionCheck = document.querySelector('.sessionCheck').value;
+	
 	const $boardNo = document.querySelector('.boardUpdateHidden').dataset.boardno;
 	const $bfileCheck = document.querySelector('.boardUpdateHidden').dataset.bfilecheck;
 	const $boardWriter = document.querySelector('.boardUpdateHidden').dataset.boardwriter;
+	// 게시판 유형 1(자유게시판)
+	const $fileBoard = 1;
+	// 첨부파일 목록들을 붙일 div 
+	const $attachDiv = document.querySelector('.uploadFileTd');
+	
 	
 	const $boardUpdateEndBtn = document.querySelector('.boardUpdateEndBtn');
 	const $boardContents = document.querySelector('.boardContents');
@@ -139,13 +164,77 @@
 			return false;
 		}
 		
-		
-		
 		// 임시 수정 완료 버튼 구현
 		// 추후에 페이징 정보를 모두 담아서 컨트롤러에 보낸다.
 		// 제목과 내용에 대한 정규식도 보낸다.
 		console.log("수정완료 ^^");
 	})
+	
+	function Fnc_boardAttachedFileList(boardNo, fileboard){
+		console.log("ajax 호출 준비");
+		
+		const xhr =  new XMLHttpRequest();
+		xhr.open("GET", "ajaxAttachFileList.do?boardNo=" + boardNo + "&fileBoard=" + fileboard);
+		xhr.setRequestHeader('Content-type', 'application/text; charset=utf-8');
+		xhr.responseType = 'json';
+		xhr.onload = function(){
+			if(xhr.status == 200){
+				const data = xhr.response;
+				console.log(data);
+				console.log("data의 길이: " + data.length);
+				// map을 활용해서 해당 파일의 정보를 화면에 심는다. 
+				for(const key in data){
+					console.log("key: " + key); 
+					console.log(data[key]);
+					var $originName = data[key].fileOriginname;
+					var $fileType  = data[key].fileType;
+					var $fileUploadpath = data[key].fileUploadpath;
+					var $fileUuid = data[key].fileUuid;
+					
+					var $tempDiv = document.createElement('div');
+					$tempDiv.classList.add('fileListDiv');
+					
+					var str = "<input class='fileListInput' type='text' readonly data-originname='" + $originName; 
+					str += "' data-filetype='" + $fileType + "' data-fileuploadpath='" + $fileUploadpath + "' ";
+					str += " data-fileuuid='" + $fileUuid + "' value='" + $originName + "' >";
+					str += " <button class='addFileBtn' >취소</button>";
+					console.log(str); 
+					$tempDiv.innerHTML = str;
+					$attachDiv.prepend($tempDiv);
+				}
+				
+			}else {
+				console.log('Error occurred', xhr.status);
+			}
+		};
+		xhr.send();
+	}
+	
+	// 파일 리스트 목록 input   class = 'fileListInput'
+	// 파일 리스트 버튼 button  class = 'addFileBtn'
+	// 위 두 개를 감싸는 div    class = 'fileListDiv'
+	// 위 전체를 감싸는 div class = uploadFileTd
+	
+	// 업로드 파일 추가 버튼 함수 정의
+	function Fnc_addFile(){
+		let $fileCount = document.querySelectorAll('.fileListInput').length;
+		if($fileCount >= 3){
+			alert("파일 업로드는 최대 3개만 가능합니다.");
+			return false;
+		} else {
+			var $tempDiv = document.createElement('div');
+			$tempDiv.classList.add('fileListDiv');
+			var $addInput = document.createElement('input');
+			$addInput.classList.add('addFileInput');
+			$addInput.setAttribute('type', 'file');
+			$tempDiv.append($addInput);
+			$attachDiv.prepend($tempDiv);
+			// 추가될 때마다 개별 간격 css로 조정.
+			// 코드가 길어지므로 => str태그를 통해서 구현하도록 하기 => 참고)memberBoardWritingForm.jsp 
+		}
+		
+	}
+		
 	
 </script>
 <script>
@@ -161,6 +250,15 @@
 			alert("현재 로그인 계정과 작성자가 일치하지 않습니다.");
 			location.href = "boardList.do";
 		}
+		
+		// ajax 호출을 통해 첨부파일 목록을 노출
+		if($bfileCheck != 0){
+			console.log('게시판 번호: ' + $boardNo );
+			console.log("게시판 유형 조회: " + $fileBoard );
+			Fnc_boardAttachedFileList($boardNo ,$fileBoard );
+		}
+
+		
 		
 		/* summernote 구현 스크립트 */
 		var toolbar = [
@@ -227,9 +325,6 @@
 			});
 		}
 		
-		// ajax 호출을 통해 첨부파일 목록을 노출
-		
-	   	
 	}); // end for 제이쿼리 $(document).on("ready") 
 </script>
 </html>

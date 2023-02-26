@@ -16,12 +16,11 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.maven.doxia.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.JsonObject;
+
+import co.bada.leejava.board.BoardVO;
 import co.bada.leejava.uploadfile.UploadfileService;
 import co.bada.leejava.uploadfile.UploadfileVO;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -183,6 +185,25 @@ public class FileController {
 		}
 		
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+	
+	// 자유게시판 수정폼에서 첨부파일 목록 호출
+	@ResponseBody
+	@GetMapping(value = "ajaxAttachFileList.do", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<List<UploadfileVO>> ajaxAttachFileList(UploadfileVO uvo, BoardVO bvo
+								, @RequestParam("boardNo") int boardNo
+								, @RequestParam("fileBoard") int fileBoard){
+		logger.info("================================= boardNo 확인: " + boardNo);
+		logger.info("================================= fileBoard 확인: " + fileBoard);
+		
+		JsonObject json = new JsonObject();
+		List<UploadfileVO> list = new ArrayList<>();
+		
+		uvo.setFileBno(boardNo);
+		uvo.setFileBoard(fileBoard);
+		list = uploadfileDao.uploadfileSelect(uvo);
+		logger.info("====================================== list 확인: " + list);
+		return new ResponseEntity<List<UploadfileVO>>(list, HttpStatus.OK);
 	}
 	
 	

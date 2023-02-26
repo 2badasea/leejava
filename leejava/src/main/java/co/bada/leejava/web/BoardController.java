@@ -142,7 +142,7 @@ public class BoardController {
 		bvo = boardDao.boardSelect(bvo);
 		model.addAttribute("board", bvo);
 		
-		return "home/member/boardUpdateForm";
+		return "home/member/memberBoardUpdateForm";
 	}
 	
 	// 자유게시판 개별 게시글 첨부파일 모두 삭제

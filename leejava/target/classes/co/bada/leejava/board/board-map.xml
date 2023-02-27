@@ -85,6 +85,22 @@
 	<delete id="boardLikeitDelete" parameterType="co.bada.leejava.board.BoardVO">
 		DELETE FROM BOARD_LIKEIT WHERE NICKNAME = #{boardLikeNick} AND BOARDNO = #{boardNo}
 	</delete>
+	
+	<!-- 자유게시판 내용 업데이트 업데이트  -->
+	<update id="boardUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET 
+			BOARDHIT = 		 NVL( #{boardHit}, BOARDHIT),  
+			BOARDRDATE = 	 NVL( #{boardRdate}   , BOARDRDATE ),
+			BOARDWDATE =  	 NVL( #{boardWdate} , BOARDWDATE),
+			BOARDWRITER =	 NVL( #{boardWriter}  , BOARDWRITER), 
+			BOARDTITLE =     NVL( #{boardTitle}    , BOARDTITLE),
+			BOARDCONTENTS =  NVL( #{boardContents}   , BOARDCONTENTS),
+			BOARDLIKEIT = 	 NVL( #{boardLikeit}, BOARDLIKEIT),
+			BFILECHECK = NVL( #{bfileCheck}, BFILECHECK)
+		WHERE BOARDNO = #{boardNo}
+	</update>
+	
+	
 		
 
 </mapper>

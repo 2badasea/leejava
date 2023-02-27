@@ -197,7 +197,7 @@
 					var str = "<input class='fileListInput' type='text' readonly data-originname='" + $originName; 
 					str += "' data-filetype='" + $fileType + "' data-fileuploadpath='" + $fileUploadpath + "' ";
 					str += " data-fileuuid='" + $fileUuid + "' value='" + $originName + "' >";
-					str += " <button class='addFileBtn' >취소</button>";
+					str += " <button type='button' class='addFileBtn' >취소</button>";
 					console.log(str); 
 					$tempDiv.innerHTML = str;
 					$attachDiv.prepend($tempDiv);
@@ -218,7 +218,11 @@
 	// 업로드 파일 추가 버튼 함수 정의
 	function Fnc_addFile(){
 		let $fileCount = document.querySelectorAll('.fileListInput').length;
-		if($fileCount >= 3){
+		
+		let $fileInputLength = document.querySelectorAll('.addFileInput').length;
+		console.log("addInput의 개수: " + $fileInputLength );
+		
+		if( ($fileInputLength +  $fileCount ) >= 3){
 			alert("파일 업로드는 최대 3개만 가능합니다.");
 			return false;
 		} else {
@@ -232,9 +236,47 @@
 			// 추가될 때마다 개별 간격 css로 조정.
 			// 코드가 길어지므로 => str태그를 통해서 구현하도록 하기 => 참고)memberBoardWritingForm.jsp 
 		}
-		
 	}
-		
+	
+	// 첨부파일 삭제 이벤트
+	document.querySelector('.uploadFileTd').addEventListener('click', function(e){
+		if( e.target.className == 'addFileBtn'){
+			console.log("delete file click!");
+			const $fileDeleteCheck = confirm("파일을 정말 삭제하시겠습니까?");
+			if(!$fileDeleteCheck){
+				return false;
+			}
+			// <button>의 형제요소 태그 <input> 
+			var $liveAddedInput = e.target.previousElementSibling;
+			
+			var sendJson = new Object();
+			sendJson.originname = $liveAddedInput.dataset.originname;
+			sendJson.filetype = $liveAddedInput.dataset.filetype;
+			sendJson.fileuploadpath = $liveAddedInput.dataset.fileuploadpath;
+			sendJson.fileuuid = $liveAddedInput.dataset.fileuuid;
+			sendJson.fileboard = $fileBoard; // 1
+			sendJson.boardno = $boardNo; // 현재 게시글 번호
+			const xhr = new XMLHttpRequest(); 
+			xhr.open('POST', 'ajaxBoardAttachFileDelete.do');
+			// json 형식으로 보낸다. 마지막 send()에서 JSON.stringify() 활용.
+			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+			xhr.responseType = 'text';
+			xhr.onload = function(){
+				if(xhr.status == 200){
+					console.log("통신 성공ㅜㅜ");
+					const data = xhr.response;
+					console.log(data);
+					// 부모 div태그를 삭제시키기.
+					$liveAddedInput.parentElement.remove();
+				}else{
+					console.log("통신실패", xhr.status, xhr.response);
+				}
+			}
+			xhr.send(JSON.stringify(sendJson));
+			
+		}
+	});
+
 	
 </script>
 <script>
@@ -324,6 +366,7 @@
 				}
 			});
 		}
+	   	
 		
 	}); // end for 제이쿼리 $(document).on("ready") 
 </script>

@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonObject;
 
+import co.bada.leejava.board.BoardService;
 import co.bada.leejava.board.BoardVO;
 import co.bada.leejava.uploadfile.UploadfileService;
 import co.bada.leejava.uploadfile.UploadfileVO;
@@ -47,6 +52,8 @@ import net.coobird.thumbnailator.Thumbnailator;
 public class FileController {
 	@Autowired
 	UploadfileService uploadfileDao;
+	@Autowired 
+	BoardService boardDao;
 	
 	String fileUploadPath = "C:\\leejava\\upload\\";  
 	// log 기록
@@ -206,5 +213,73 @@ public class FileController {
 		return new ResponseEntity<List<UploadfileVO>>(list, HttpStatus.OK);
 	}
 	
+	// 자유게시판 수정 페이지 개별 첨부파일 삭제
+	@ResponseBody
+	@PostMapping(value = "ajaxBoardAttachFileDelete.do", produces = "application/text; charset=utf-8")
+	public ResponseEntity<String> ajaxBoardAttachFileDelete(@RequestBody Map<String,String> inputMap, UploadfileVO uvo, BoardVO bvo){
+		logger.info("=================================================== 데이터 확인");
+		logger.info("=================================================== fileboard : " + inputMap.get("fileboard"));
+		logger.info("=================================================== boardno : " + inputMap.get("boardno"));
+		logger.info("=================================================== fileuuid: " + inputMap.get("fileuuid"));
+		logger.info("=================================================== fileuploadpath: " + inputMap.get("fileuploadpath"));
+		logger.info("=================================================== filetype: " + inputMap.get("filetype"));
+		logger.info("=================================================== originname: " + inputMap.get("originname"));
+		
+		List<UploadfileVO> deleteAttachList = new ArrayList<>();
+		uvo.setFileBoard(Integer.parseInt(inputMap.get("fileboard")));
+		uvo.setFileBno(Integer.parseInt(inputMap.get("boardno")));
+		uvo.setFileOriginname(inputMap.get("originname"));
+		uvo.setFileUuid(inputMap.get("fileuuid"));
+		uvo.setFileUploadpath(inputMap.get("fileuploadpath"));
+		uvo.setFileType( inputMap.get("filetype").equals("true") ? true : false);
+		deleteAttachList.add(uvo);
+		
+		// 실제 파일 삭제(썸네일 이미지 포함)
+		deleteFiles(deleteAttachList);
+		
+		// board테이블 update, uploadfile테이블 delete(row 한 개) 
+		int n = uploadfileDao.uploadfileDeleteOne(uvo);
+		if(n == 1) {
+			// board 테이블도 수정
+			bvo.setBoardNo(Integer.parseInt(inputMap.get("boardno")));
+			int modifiedBfileCheck = boardDao.boardSelect(bvo).getBfileCheck() -1; 
+			bvo.setBfileCheck(modifiedBfileCheck);
+			int m = boardDao.boardUpdate(bvo);
+			if(m == 1) {
+				return new ResponseEntity<String>("success ~~~", HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>("fail to update bfilecheck", HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			return new ResponseEntity<String>("fail to delete uploadfile row data", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 실제 로컬 디렉토리에서 파일 삭제
+	public void deleteFiles(List<UploadfileVO> deleteAttachList) {
+		
+		logger.info("=================================== attachList: " + deleteAttachList);
+		// fileUploadPath  C:\\leejava\\upload\\ 경로 정보 담고 있음.
+		deleteAttachList.forEach(attach -> {
+			try {
+				Path file = Paths.get(fileUploadPath + attach.getFileUploadpath() + "\\" + 
+						attach.getFileUuid() + "_" + attach.getFileOriginname());
+				System.out.println("file 정보: " + file);
+				boolean b = Files.deleteIfExists(file);
+				System.out.println("delteFiles 메서드에서 파일 삭제 성공? : " + b);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					System.out.println("썸네일 이미지 파일도 존재");
+					Path thumbNail = Paths.get(fileUploadPath + attach.getFileUploadpath() + "\\s_" + 
+							attach.getFileUuid() + "_" + attach.getFileOriginname());
+					System.out.println("썸네일 file정보: " + thumbNail);
+					Files.delete(thumbNail);
+				}
+				
+			} catch(Exception e) {
+				logger.error("delete file error" + e.getMessage());
+			} // end catch
+		}); // end forEach
+	}
 	
 }

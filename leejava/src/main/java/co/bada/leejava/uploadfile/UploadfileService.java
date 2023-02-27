@@ -9,4 +9,6 @@ public interface UploadfileService {
 	List<UploadfileVO> uploadfileSelect(UploadfileVO uvo);
 	// 개별 게시글의 첨부파일 전부 삭제
 	int uploadfileDelete(UploadfileVO uvo);
+	// 개별 게시글 첨부파일 한 개 삭제
+	int uploadfileDeleteOne(UploadfileVO uvo);
 }

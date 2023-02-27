@@ -145,7 +145,7 @@ public class BoardController {
 		return "home/member/memberBoardUpdateForm";
 	}
 	
-	// 자유게시판 개별 게시글 첨부파일 모두 삭제
+	// 자유게시판 개별 게시글 첨부파일 모두 삭제 (uploadfile 테이블 상에서 이루어짐)
 	@ResponseBody
 	@RequestMapping(value = "uploadfileDelete.do", method = RequestMethod.GET, produces = "application/text; charset=utf-8")
 	public String uploadfileDelete(UploadfileVO uvo, @RequestParam int boardNo) {
@@ -286,10 +286,10 @@ public class BoardController {
 				}
 			}
 		}
-		
 		return new ResponseEntity<String>("fail", HttpStatus.ACCEPTED);
-		
 	}
+	
+	
 	
 	
 	

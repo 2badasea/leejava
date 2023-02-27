@@ -18,9 +18,16 @@
 		SELECT * FROM UPLOADFILE WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
 	</select>
 	
+	<!-- 첨부파일 테이블에서 삭제 처리. 같은 게시글 모두  -->
 	<delete id="uploadfileDelete" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
 		DELETE FROM UPLOADFILE 
 			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
+	</delete>
+	
+	<!-- 첨부파일 테이블에서 삭제 처리. 개별 하나만 -->
+	<delete id="uploadfileDeleteOne" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		DELETE FROM UPLOADFILE
+			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno} AND FILEUUID = #{fileUuid}
 	</delete>
 
 </mapper>

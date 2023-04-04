@@ -203,7 +203,6 @@ public class FileController {
 		logger.info("================================= boardNo 확인: " + boardNo);
 		logger.info("================================= fileBoard 확인: " + fileBoard);
 		
-		JsonObject json = new JsonObject();
 		List<UploadfileVO> list = new ArrayList<>();
 		
 		uvo.setFileBno(boardNo);

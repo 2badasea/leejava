@@ -144,7 +144,7 @@
 <script type="text/javascript">	
 	// 세션값 체크.
 	const $sessionCheck = document.querySelector('.sessionCheck').value;
-	
+	 
 	const $boardNo = document.querySelector('.boardUpdateHidden').dataset.boardno;
 	const $bfileCheck = document.querySelector('.boardUpdateHidden').dataset.bfilecheck;
 	const $boardWriter = document.querySelector('.boardUpdateHidden').dataset.boardwriter;
@@ -152,17 +152,61 @@
 	const $fileBoard = 1;
 	// 첨부파일 목록들을 붙일 div 
 	const $attachDiv = document.querySelector('.uploadFileTd');
-	
-	
+	// 수정 완료 버튼
 	const $boardUpdateEndBtn = document.querySelector('.boardUpdateEndBtn');
-	const $boardContents = document.querySelector('.boardContents');
 	
+	
+	
+	// 업로드 파일을 대상으로 정규식을 활용하여 확장자나 데이터 크기의 사전 처리
+	const fileRegExp = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+	const fileMaxSize = 5242880;
+	
+	function checkExtension(fileName, fileSize){
+		if(fileSize >= fileMaxSize){
+			alert(fileName + " 파일 사이즈 초과");
+			return false;
+		}
+		if(fileRegExp.test(fileName)){
+			alert(fileName + " 해당 파일은 업로드할 수 없습니다.");
+			return false;
+		}
+	}
+	
+	
+	// 수정 완료 이벤트
 	$boardUpdateEndBtn.addEventListener('click', () => {
 		const $boardUpdateCheck = confirm('수정한 내용을 저장하시겠습니까?');
 		if(!$boardUpdateCheck || $sessionCheck == undefined ){
 			console.log("등록 취소 원인:  $boardUpdateCheck:" + $boardUpdateCheck + ",   $sessionCheck : " + $sessionCheck );
 			return false;
 		}
+		
+		const $boardContents = document.querySelector('.boardContents').value;
+		const $boardTitle = document.querySelector('.boardTitle').value;
+
+		const $uploadfileInput2 = document.querySelectorAll('.addFileInput').length;
+		
+		let $inputFile = document.querySelector('.addFileInput');
+		let $inputFileCnt = document.querySelectorAll(".addFileInput").length; 
+		let $realInputFileCnt = 0;
+		let $formData = new FormData();
+
+		if( $inputFileCnt != 0){
+			for(var i = 0; i<$inputFileCnt; i++){
+				if($inputFile[i].files.length !== 0){
+					if(!checkExtension($inputFile[i].files[0].name, $inputFile[i].files[0].size)){
+						return false;
+					}
+					$formData.append("uploadFile", $inputFile[i].files[0]);
+					$realInputFileCnt++;
+				}
+			}
+		}
+
+		console.log("실제 $formData에 담긴 파일 개수: " + $realInputFileCnt);
+		
+		
+		
 		
 		// 임시 수정 완료 버튼 구현
 		// 추후에 페이징 정보를 모두 담아서 컨트롤러에 보낸다.
@@ -249,6 +293,7 @@
 			// <button>의 형제요소 태그 <input> 
 			var $liveAddedInput = e.target.previousElementSibling;
 			
+			// 삭제시킬 파일 정보를 담을 json 객체 생성
 			var sendJson = new Object();
 			sendJson.originname = $liveAddedInput.dataset.originname;
 			sendJson.filetype = $liveAddedInput.dataset.filetype;

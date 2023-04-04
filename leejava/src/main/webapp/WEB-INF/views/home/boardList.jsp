@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>자유게시판 페이지</title>
+<title>목적을 알 수 없는 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>

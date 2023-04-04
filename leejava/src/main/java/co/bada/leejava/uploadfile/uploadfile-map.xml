@@ -24,7 +24,7 @@
 			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
 	</delete>
 	
-	<!-- 첨부파일 테이블에서 삭제 처리. 개별 하나만 -->
+	<!-- 첨부파일 테이블에서 삭제 처리. 개별 하나만 UUID 값으로 where조건을 걸어두었다. -->
 	<delete id="uploadfileDeleteOne" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
 		DELETE FROM UPLOADFILE
 			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno} AND FILEUUID = #{fileUuid}

@@ -209,6 +209,9 @@
 					</c:if>
 				</ul>
 			</div>
+			<script>
+
+			</script>
 			<div class="boardSearchWrapper">
 				<select id="boardSearchSelect" class="boardSearchSelect" onchange="fn_selectBox()">
 		            <option value="writer">작성자</option>
@@ -224,13 +227,92 @@
 	</div>
 </body>
 <script>
+	// 페이징 "이전" 출력
+	function fn_prev(page, range, rangeSize, listSize, boardWriter, boardTitle, boardContents){
+		var page = ( (range -2 ) * rangeSize) + 1;
+		var range = range - 1;
+		var url = "boardList.do";
+		url += "?page=" + page;
+		url += "&range=" + range;
+		url += "&rangeSize=" + rangeSize;
+		url += "&listSize=" + listSize;
+		url += "&boardWriter=" + boardWriter;
+		url += "&boardContents=" + boardContents;
+		location.href = url;
+	}
+	
+	// 페이징 "다음" 구현
+	function fn_next(page, range, rangeSize, listSize, boardWriter, boardTitle, boardContents){
+		var page = (range * rangeSize) + 1;
+		var range = range++;
+		var url = "boardList.do";
+		url += "?page=" + page;
+		url += "&range=" + range;
+		url += "&listSize=" + listSize;
+		url += "&boardWriter=" + boardWriter;
+		url += "&boardTitle=" + boardTitle;
+		url += "&boardContents=" + boardContents; 
+		location.href = url;
+	}
+	
+	// range내에서 페이지 이동
+	function fn_pagination(boardNo, range, rangeSize, listSize, boardWriter, boardTitle, boardContents){
+		var url = "boardList.do";
+		url += "?page=" + boardNo;
+		url += "&range=" + range;
+		url += "&listSize=" + listSize;
+		url += "&boardWriter=" + boardWriter;
+		url += "&boardTitle=" + boardTitle;
+		url += "&boardContents=" + boardContents;
+		
+		location.href = url;
+	}
+	
+	// 페이징 출력 개수 변경 
+	function page(Paging){
+		let startPage = Paging;
+		let listSize = $("#listSize option:selected").val();
+		let url = "boardList.do?startPage=" + startPage + "&listSize=" + listSize;
+		location.href = url;
+	}
+
+	// 다중 검색
+	$('.boardSearchBtn').on('click', function(){
+		console.log('검색 클릭');
+		var title = '';
+		var content = '';
+		var writer = '';
+		var titleAndContent = '';
+		
+		var select = $(".boardSearchSelect option:selected").val();
+		var data = $('.searchInputBox').val();
+		if(select == 'writer'){
+			writer = data;
+		}else if(select == 'title'){
+			title = data;
+		}else if(select == 'content'){
+			content = data;
+		}else if(select == 'titleAndContent'){
+			title = data;
+			content = data;
+		}
+		
+		var url = "boardList.do";
+		url += "?boardWriter=" + writer;
+		url += "&boardTitle=" + title;
+		url += "&boardContents=" + content;
+		
+		location.href = url;
+	
+	})
+	
+
 	// 자유게시판 게시글 조회
 	function Fn_boardRead(boardNo, boardHit){
 		console.log("번호:" + boardNo);
 		console.log("조회수: " + boardHit);
 		location.href = "boardRead.do?boardNo=" + boardNo + "&boardHit=" + boardHit;
 	}
-
 
 	// 자유게시판 작성폼으로 이동
 	$(".boardWritingBtn").on("click", function(){

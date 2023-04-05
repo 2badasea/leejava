@@ -8,9 +8,10 @@
 			FROM BOARD
 			<!-- 검색항목은 작성자(boardWriter), 제목(boardTitle), 내용(boardContents)  -->
 			<trim prefix="where" prefixOverrides="and | or">
-				<if test="boardWriter != null and boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
-				<if test="boardTitle != null and boardTitle != '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
-				<if test="boardContents != null and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+				<if test="boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+				<if test="boardTitle != '' and boardContents == '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+				<if test="boardTitle == '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+				<if test="boardTitle != '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%' OR BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
 			</trim>
 	</select>
 	
@@ -20,9 +21,10 @@
 			SELECT ROWNUM AS RN, A.* FROM (
 				SELECT * FROM BOARD 
 				<trim prefix="where" prefixOverrides="and | or">
-					<if test="boardWriter != '' and boardWriter != null">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
-					<if test="boardTitle != '' and boardTitle != null">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
-					<if test="boardContents != '' and boardContents != null">AND BOARDCONTENTS LIKE '%'||#{boardContents||'%'</if>
+					<if test="boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+					<if test="boardTitle != '' and boardContents == '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+					<if test="boardTitle == '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+					<if test="boardTitle != '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%' OR BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
 				</trim>
 				ORDER BY BOARDWDATE DESC
 				) A
@@ -99,6 +101,13 @@
 			BFILECHECK = NVL( #{bfileCheck}, BFILECHECK)
 		WHERE BOARDNO = #{boardNo}
 	</update>
+	
+	<!-- 메인페이지에 노출 시킬 자유게시판 5개 리스트 -->
+	<select id="mainBoardSelectList" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM (
+			SELECT * FROM BOARD ORDER BY BOARDWDATE DESC 
+			) WHERE ROWNUM BETWEEN 1 AND 5
+	</select>
 	
 	
 		

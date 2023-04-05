@@ -327,11 +327,10 @@ $(document).ready(function(){
     // 이미지업로드 콜백함수 정의
   	function uploadSummernoteImageFile(file, el) {
 		// 이때 파라미터로 되어있는 el의 값은 이미지 업로드가 발생한 <textarea>태그를 의미한다. 
-    	console.log("file값: ");
 		console.log(file);
-    	data = new FormData();
+    	var data = new FormData();
 		data.append("file", file);
-		$.ajax({
+		newJquery.ajax({
 			data : data,
 			type : "POST",
 			url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
@@ -341,12 +340,10 @@ $(document).ready(function(){
 			success : function(responseData) {
 				console.log("responseData 확인: " + responseData);
 				console.log("responseDate.url 확인: " + responseData.url);
-				$(el).summernote('insertImage', responseData.url);
+				newJquery(el).summernote('insertImage', responseData.url);
 			}
 		});
 	}
-    
-    
     
 })
 </script>

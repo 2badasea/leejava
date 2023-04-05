@@ -144,21 +144,20 @@
 					<tr>
 						<td class="mainPageTableThTr">
 							<h3 style="float: left;">자유 게시판</h3>
-							<a><span style="float: right; color: gray; font-size: 12px;">&lt;더 보기&gt;</span></a>
+							<a href="boardList.do"><span style="float: right; color: gray; font-size: 12px;">&lt;더 보기&gt;</span></a>
 						</td>
 					</tr>
-	<%-- 				<c:forEach items="" var=""> --%>
-						<tr>
+					<c:forEach items="${boards }" var="board">
+						<tr>	
 							<td class="mainPageTableTdTr">
-								<h5 class="tableContentTitle"></h5>
-								<div style="display: flex; float: right;">
-									<h6></h6>
-									&nbsp;&nbsp;
-									<h6></h6>
+								<h5 class="boardsTitleSpan tableContentTitle" onclick="userBoardRead(${board.boardNo}, ${board.boardHit })">${board.boardTitle }</h5 >
+								<div style="display:flex; float: right;">
+									<h6 class="mainNoticeWriter">${board.boardWriter}</h6>&nbsp;&nbsp;
+									<h6 class="mainNoticeWdate">${board.boardWdate}</h6>
 								</div>
 							</td>
 						</tr>
-	<%-- 				</c:forEach> --%>
+					</c:forEach>
 				</table>
 			</div>
 		</div>
@@ -167,13 +166,16 @@
 
 </body>
 <script>
-	/**
-	 * 글제목 클릭 => 글번호, 조회수 파라미터 => 게시글 페이지 조회 이동. 
-	 * @Param no (글번호)
-	 * @Param hit (조회수)
-	*/
+	// 공지사항 조회 이동
 	function userNoticeRead(no, hit) {
 		location.href='memberNoticeRead.do?n_no=' + no + '&n_hit='+hit;
 	}	
+	
+	// 자유게시판 조회 이동
+	function userBoardRead(boardNo, boardHit){
+		location.href = 'boardRead.do?boardNo=' + boardNo + "&boardHit=" + boardHit;
+	}
+	 
+	
 </script>
 </html>

@@ -81,7 +81,6 @@ public class NoticeController {
 	// 공지사항 작성폼 이동
 	@RequestMapping("/noticeRegisterForm.do")
 	public String noticeRegisterForm(Model model) {
-
 		return "home/admin/noticeForm";
 	}
 
@@ -92,24 +91,23 @@ public class NoticeController {
 			HttpServletRequest request) {
 		
 		JsonObject jsonObject = new JsonObject();
-		// C:\leejava\summernoteimageupload
-//		String contextRoot = request.getSession().getServletContext().getRealPath("/");
-//		logger.info("================contextRoot 확인 => " + contextRoot);
 		
-		String fileRoot = "C:\\leejava\\summernoteimageupload\\";
+		String saveDirectory = summernoteImageUploadPath;
+		
 		String originalFileName = multipartFile.getOriginalFilename(); 
 		String extension = originalFileName.substring(originalFileName.lastIndexOf(".")); // 파일 확장자
 		String savedFileName = UUID.randomUUID() + extension; // 물리적으로 저장될 이미지 파일명
 		
-		File targetFile = new File(fileRoot + savedFileName);
+		File targetFile = new File(saveDirectory + savedFileName);
 		
 		try {
 			InputStream fileStream = multipartFile.getInputStream();
 			FileUtils.copyInputStreamToFile(fileStream, targetFile);
-			jsonObject.addProperty("url", fileRoot + savedFileName); 
+			jsonObject.addProperty("url", saveDirectory + savedFileName); 
 			jsonObject.addProperty("responseCode", "success");
 			logger.info("===============targetFile의 정체: " + targetFile);
 		} catch (IOException e) {
+			// 실패 시 저장된 파일 삭제
 			FileUtils.deleteQuietly(targetFile); 
 			logger.info("예외처리가 되었나?");
 			jsonObject.addProperty("responseCode", "error");

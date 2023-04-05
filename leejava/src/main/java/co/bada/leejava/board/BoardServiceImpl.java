@@ -85,4 +85,10 @@ public class BoardServiceImpl implements BoardService {
 		return map.boardLikeitDelete(bvo);
 	}
 
+	@Override
+	public List<BoardVO> mainBoardSelectList() {
+		// TODO Auto-generated method stub
+		return map.mainBoardSelectList();
+	}
+
 }

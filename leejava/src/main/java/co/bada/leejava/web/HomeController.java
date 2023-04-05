@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import co.bada.leejava.AttachImageVO;
 import co.bada.leejava.CoolSMS;
 import co.bada.leejava.SHA256Util;
+import co.bada.leejava.board.BoardService;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.notice.NoticeService;
@@ -45,6 +45,8 @@ public class HomeController {
 	private JavaMailSender mailSender;
 	@Autowired
 	NoticeService noticeDao;
+	@Autowired
+	BoardService boardDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -52,8 +54,10 @@ public class HomeController {
 	@RequestMapping(value = "home.do", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		
+		// 메인페이지 공지사항 게시글 노출
 		model.addAttribute("notices", noticeDao.mainNoticeSelectList());
-
+		// 메인페이지 자유게시판 게시글 노출
+		model.addAttribute("boards", boardDao.mainBoardSelectList());
 		return "home/member/home";
 	}
 

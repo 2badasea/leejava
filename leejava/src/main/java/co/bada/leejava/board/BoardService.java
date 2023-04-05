@@ -30,5 +30,8 @@ public interface BoardService {
 	// 자유게시판 추천테이블 delete
 	int boardLikeitDelete(BoardVO bvo);
 	
+	// 메인페이지 노출 자유게시판 글 리스트
+	List<BoardVO> mainBoardSelectList();
+	
 	
 }

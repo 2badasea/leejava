@@ -89,24 +89,11 @@ text-decoration: none;
 				<li><a class="adminSidemenu specialA" href='adminNoticeList.do'>공지사항 관리</a></li>
 				<li><a class="adminSidemenu specialA" href='adminRepair.do' id="repairGo">유지보수</a></li>
 				<li><a class="adminSidemenu specialA" href='adminBannerManage.do' id="bannerManage">배너 관리</a></li>
-				<li><a class="adminSidemenu specialA" href="adminStudy.do" id="studyGo">테스트</a></li>
 			</ul>
 		</div>
 	</div>
 	<!-- 왼쪽 사이드바 끝-->
 </body>
-<script>
-	// 페이지 이동.
-	$("#repairGo").on("click", function(e){
-		e.preventDefault();
-		location.href="adminRepair.do";
-	})
-	
-	$("#studyGo").on("click", function(e){
-		e.preventDefault();
-		location.href="adminStudy.do";
-	})
-</script>
 <script>
 	/*	문서가 로드되면 실행시킬 이벤트들 */
 	$(function(){

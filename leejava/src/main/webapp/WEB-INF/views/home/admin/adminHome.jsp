@@ -10,9 +10,7 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
-	<div class="adminTest">
-		<button class="testBtn">테스트 버튼 클릭</button>
-	</div>
+	
 </body>
 <script>
 	$(document).on("click", function(){

@@ -94,6 +94,9 @@
 }
 .fileListDiv{
  	border-style: none;
+ 	display: flex;
+ 	justify-content: space-between;
+ 	margin-bottom: 8px;
 }
 </style>
 <body>
@@ -108,7 +111,7 @@
 		</div>
 		<br>
 		<!-- 테이블 형식으로 제목과 내용, 그리고 첨부파일 업로드 칸을 구현한다. -->
-		<form id="frm" action="boardInsert.do" method="post" enctype="multipart/form-data">
+		<form id="frm" action="boardUpdate.do" method="post" enctype="multipart/form-data">
 			<table class="boardFormTable">
 				<tr class="boardTableThTr">
 					<th width="150">제목</th>
@@ -170,6 +173,7 @@
 			alert(fileName + " 해당 파일은 업로드할 수 없습니다.");
 			return false;
 		}
+		return true;
 	}
 	
 	
@@ -183,36 +187,95 @@
 		
 		const $boardContents = document.querySelector('.boardContents').value;
 		const $boardTitle = document.querySelector('.boardTitle').value;
-
-		const $uploadfileInput2 = document.querySelectorAll('.addFileInput').length;
 		
-		let $inputFile = document.querySelector('.addFileInput');
-		let $inputFileCnt = document.querySelectorAll(".addFileInput").length; 
-		let $realInputFileCnt = 0;
+		let $inputFile = $('.addFileInput');
+		let $inputFileCnt = 0; 
 		let $formData = new FormData();
-
-		if( $inputFileCnt != 0){
-			for(var i = 0; i<$inputFileCnt; i++){
-				if($inputFile[i].files.length !== 0){
-					if(!checkExtension($inputFile[i].files[0].name, $inputFile[i].files[0].size)){
+		
+		if($inputFile.length != 0){
+			for(var i = 0; i< $inputFile.length; i++){
+				if($inputFile[i].files.length != 0){
+					
+					if(!checkExtension($inputFile[i].files[0].name, $inputFile[i].files[0].size )){
 						return false;
 					}
 					$formData.append("uploadFile", $inputFile[i].files[0]);
-					$realInputFileCnt++;
+					$inputFileCnt++;
 				}
 			}
 		}
-
-		console.log("실제 $formData에 담긴 파일 개수: " + $realInputFileCnt);
+		console.log("$formData에 담긴 파일 갯수 확인: " + $inputFileCnt);
 		
+		// 기존 업로드 파일
+		var $originFileCnt = $('.fileListInput').length;
 		
+		var $updateBfile = $originFileCnt + $inputFileCnt;
 		
+		if($boardContents.length == 0 || $boardTitle.length == 0){
+			alert("제목 또는 내용을 입력하세요.");
+			return false;
+		}
+		
+		// 수정 요청 보낼 데이터 (board 테이블) + 글 번호도 넘겨야 함.
+		let data = {
+			boardTitle : $boardTitle,
+			boardContents : $boardContents,
+			bfileCheck : $updateBfile,
+			boardNo : $boardNo // 글번호
+		};
+		
+		// ajax 요청 -> board테이블 수정 -> 콜백함수로 실제 파일 업로드(새로 추가된 것만 insert 시킬 것)
+		$.ajax({
+			url : $("#frm").attr("action"), // boardUpdate.do
+			data: JSON.stringify(data),
+			type: "POST",
+			contentType: "application/json; charset=utf-8",
+			dataType: "text", 
+			success: function(response){
+				console.log(response);
+				if( $formData.has('uploadFile')){
+					// 새로 업로드한 파일 목록, 글번호
+					Fnc_fileUpload($formData, response); 
+				} else {
+					alert("수정 성공");
+					location.href = "boardUpdatePRG.do"; 
+				}
+			},
+			error: function(error){
+				alert("에러");
+				console.log(error);
+			}
+		})
 		
 		// 임시 수정 완료 버튼 구현
-		// 추후에 페이징 정보를 모두 담아서 컨트롤러에 보낸다.
-		// 제목과 내용에 대한 정규식도 보낸다.
 		console.log("수정완료 ^^");
 	})
+	
+	// 추가된 업로드 파일 업로드 처리(ajax 콜백함수)
+	function Fnc_fileUpload(formData, fileBno){
+		// 첨부파일 업로드 게시판 유형 1(자유게시판) $fileBoard 
+		const url = "ajaxFileUpload.do?fileBoard=" + $fileBoard + "&fileBno=" + fileBno;
+		
+		// ajax 호출
+		$.ajax({
+			url: url,
+			processData : false,
+			contentType: false,
+			data: formData,
+			type: "POST",
+			success: function(result){
+				alert("수정 성공");
+				console.log(result);
+				location.href = "boardUpdatePRG.do";
+			},
+			error: function(error){
+				console.log(error);
+			}
+		})
+		
+	}
+	
+	
 	
 	function Fnc_boardAttachedFileList(boardNo, fileboard){
 		console.log("ajax 호출 준비");
@@ -270,17 +333,23 @@
 			alert("파일 업로드는 최대 3개만 가능합니다.");
 			return false;
 		} else {
-			var $tempDiv = document.createElement('div');
-			$tempDiv.classList.add('fileListDiv');
-			var $addInput = document.createElement('input');
-			$addInput.classList.add('addFileInput');
-			$addInput.setAttribute('type', 'file');
-			$tempDiv.append($addInput);
-			$attachDiv.prepend($tempDiv);
-			// 추가될 때마다 개별 간격 css로 조정.
-			// 코드가 길어지므로 => str태그를 통해서 구현하도록 하기 => 참고)memberBoardWritingForm.jsp 
+			var $div  = document.createElement('div');
+			$div.classList.add('fileListDiv');
+			var $intputFileTag = "";
+			$intputFileTag += "<input class='addFileInput' type='file'>";
+			$intputFileTag += "<input class='fileCancelBtn' type='button' value='취소'>";
+			$div.innerHTML = $intputFileTag;
+			$attachDiv.prepend($div);
 		}
 	}
+	
+	// 동적으로 추가된 <input type='file'> 삭제
+	$(document).on("click", ".fileCancelBtn", function(){
+		console.log('클릭확인');
+		var selectDiv = $(this).parent();
+		selectDiv.remove();
+	})
+	
 	
 	// 첨부파일 삭제 이벤트
 	document.querySelector('.uploadFileTd').addEventListener('click', function(e){

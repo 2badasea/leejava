@@ -3,6 +3,8 @@ package co.bada.leejava.web;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +73,12 @@ public class BoardController {
 		model.addAttribute("pagination", svo);
 		model.addAttribute("board", list);
 		return "home/member/memberBoardList";
+	}
+	
+	// 
+	@RequestMapping("boardUpdatePRG.do")
+	public String boardUpdatePRG() {
+		return "redirect:boardList.do";
 	}
 	
 	// 자유게시판 작성폼으로 이동
@@ -144,6 +152,35 @@ public class BoardController {
 		
 		return "home/member/memberBoardUpdateForm";
 	}
+	
+	
+	// 자유게시판 수정 처리
+	@PostMapping(value = "boardUpdate.do", produces = "application/text; charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<String> boardUpdate(@RequestBody BoardVO bvo){
+		logger.info("=============================== bvo 값 체크");
+		logger.info("=============================== 글제목: " + bvo.getBoardTitle());
+		logger.info("=============================== 글내용: " + bvo.getBoardContents());
+		logger.info("=============================== 파일숫자: " + bvo.getBfileCheck());
+		logger.info("=============================== 글번호: " + bvo.getBoardNo());
+		
+		// 최근 수정일 구하기
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss");
+        String formattedDate = now.format(formatter);
+        bvo.setBoardRdate(formattedDate);
+		
+		int n = boardDao.boardUpdate(bvo);
+		if(n == 1) {
+			String reponse = String.valueOf(bvo.getBoardNo());
+			return new ResponseEntity<String> (reponse, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<String> ("Controller Error~ ", HttpStatus.NOT_MODIFIED);
+		}
+		
+	}
+	
+	
 	
 	// 자유게시판 개별 게시글 첨부파일 모두 삭제 (uploadfile 테이블 상에서 이루어짐)
 	@ResponseBody

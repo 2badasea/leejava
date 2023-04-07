@@ -214,7 +214,10 @@
 	</div>
 </div>
 </body>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/reply.js"></script>
 <script>
+	
+
 	// 현재 로그인 중인 세션 닉네임
 	var sessionNickname = $("#hiddenSessionInfo").data('nickname');
 	
@@ -392,6 +395,22 @@
 </script>
 <script>
 	$(function(){
+		
+		// 모듈(reply.js) 테스트
+		console.log("=======================");
+		console.log("JS TEST");
+		
+		var bnoValue = '<c:out value="${board.boardNo}" />';
+		
+		// insert문. 실제 insert를 하기 위해선, 데이터를 필요한 데이터를 모두 담아야 한다. 
+		replyService.replyInsert(
+			{reply: "JS TEST", replyer : "tester", bno : bnoValue},
+			function(result){
+				alert("result: " + result);
+			}
+		)
+		
+		
 		// DOM이 생성된 이후에 실행.
 		if( $(".uploadFileDivs").length != 0 ){
 			var $imageBox = $('.thumbnailUploadResult');
@@ -425,7 +444,6 @@
 			})
 		}
 		
-		
 		// DOM객체가 생성 이후 추천 여부 체크 => 결과값에 따른 css
 		(function(){
 			console.log("세션 닉네임 확인: " + sessionNickname);
@@ -455,6 +473,7 @@
 			}
 		}());
 		
+				
 	})
 </script>
 </html>

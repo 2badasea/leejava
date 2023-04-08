@@ -401,14 +401,44 @@
 		console.log("JS TEST");
 		
 		var bnoValue = '<c:out value="${board.boardNo}" />';
+		console.log("bnoValue 값 확인: "  + bnoValue);
+		
+		// 댓글 전체 요청
+// 		replyService.replySelect({bno:bnoValue }), function(list){
+// 			// list 배열의 값이 0, 즉 존재하지 않는다면 len 변수에 0을 할당
+// 			for(var i = 0, len = list.length || 0; i<len; i++){
+// 				console.log(list[i]);
+// 			}
+// 		}
 		
 		// insert문. 실제 insert를 하기 위해선, 데이터를 필요한 데이터를 모두 담아야 한다. 
-		replyService.replyInsert(
-			{reply: "JS TEST", replyer : "tester", bno : bnoValue},
-			function(result){
-				alert("result: " + result);
-			}
-		)
+// 		replyService.replyInsert(
+// 			{reply: "JS TEST", replyer : "tester", bno : bnoValue},
+// 			function(result){
+// 				alert("result: " + result);
+// 			}
+// 		)
+
+		// delete문 (테스트를 위해 23)
+// 		replyService.replyDelete(23, function(count){
+// 			console.log(count);
+			
+// 			if(count === "success"){
+// 				alert("REMOVED");
+// 			}
+// 		}, function(err){
+// 			alert('Error~');
+// 		})
+
+		// update(댓글 수정)
+// 		replyService.replyUpdate(updateData, function(result){
+// 			alert("수정 완료...");
+// 		})
+
+		// getSelect(특정 댓글 조회)
+// 		replyService.replySelect(getData, function(data){
+// 			console.log(data);
+// 		})
 		
 		
 		// DOM이 생성된 이후에 실행.

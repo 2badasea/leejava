@@ -60,6 +60,7 @@ public class BoardReplyController {
 				,@RequestParam(required = false, defaultValue = "1") int page
 				,@RequestParam(required = false, defaultValue = "1") int range
 				,Search svo) {
+		logger.info("================================= boardNo 값 확인: " + boardNo);
 		
 		// svo에는 boardNo 정보가 들어가 있다. 
 		logger.info("============================== svo : " + svo);
@@ -100,7 +101,6 @@ public class BoardReplyController {
 								: new ResponseEntity<String> ("fail", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	// 댓글 수정
 	// 댓글 수정 => 수정할 내용이 json으로 넘어오고,  댓글번호가 파라미터로 넘어온다. 
 	@RequestMapping(method = { RequestMethod.PUT, RequestMethod.PATCH},
 					value = "boardReplyUpdate.do/{boardReplyRno}", 

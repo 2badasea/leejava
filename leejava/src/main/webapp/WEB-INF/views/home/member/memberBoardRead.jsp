@@ -216,7 +216,6 @@
 </body>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/reply.js"></script>
 <script>
-	
 
 	// 현재 로그인 중인 세션 닉네임
 	var sessionNickname = $("#hiddenSessionInfo").data('nickname');
@@ -393,8 +392,8 @@
 		},300);
 	})
 </script>
-<script>
-	$(function(){
+<script type="text/javascript">
+	$(document).ready(function(){
 		
 		// 모듈(reply.js) 테스트
 		console.log("=======================");
@@ -403,13 +402,13 @@
 		var bnoValue = '<c:out value="${board.boardNo}" />';
 		console.log("bnoValue 값 확인: "  + bnoValue);
 		
-		// 댓글 전체 요청
-// 		replyService.replySelect({bno:bnoValue }), function(list){
-// 			// list 배열의 값이 0, 즉 존재하지 않는다면 len 변수에 0을 할당
-// 			for(var i = 0, len = list.length || 0; i<len; i++){
-// 				console.log(list[i]);
-// 			}
-// 		}
+		console.log(replyService);
+		//댓글 전체 요청	
+		replyService.replySelectList( {bno:bnoValue}, function(list){
+			for(var i = 0, len = list.length || 0; i<len; i++){
+				console.log(list[i]);
+			} 
+		})   // End of replySelectList
 		
 		// insert문. 실제 insert를 하기 위해선, 데이터를 필요한 데이터를 모두 담아야 한다. 
 // 		replyService.replyInsert(
@@ -435,8 +434,8 @@
 // 			alert("수정 완료...");
 // 		})
 
-		// getSelect(특정 댓글 조회)
-// 		replyService.replySelect(getData, function(data){
+		// getSelect(특정 1개 댓글 조회)
+// 		replyService.replySelectOne(getData, function(data){
 // 			console.log(data);
 // 		})
 		
@@ -502,8 +501,6 @@
 				})
 			}
 		}());
-		
-				
 	})
 </script>
 </html>

@@ -128,7 +128,7 @@ public class BoardReplyController {
 	}
 	
 	// 댓글 1개 조회(테스트용) 
-	@GetMapping(value = "boardReplySelect.do/{boardReplyBno}/{boardReplyRno}",
+	@GetMapping(value = "boardReplySelectOne.do/{boardReplyBno}/{boardReplyRno}",
 				produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<BoardReplyVO> boardReplySelect( BoardReplyVO brvo
 													, @PathVariable("boardReplyBno") int boardReplyBno

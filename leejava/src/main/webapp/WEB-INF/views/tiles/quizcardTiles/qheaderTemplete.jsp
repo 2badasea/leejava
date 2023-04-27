@@ -350,7 +350,7 @@ a:hover {
 	                <span>공개여부</span>
 	                <br>
 	                <label for="public" class="statusLabel">공개</label>
-                   	 	<input type="radio" name="quizcard_set_status" value="PUBLIC" id="public">
+                   	 	<input type="radio" name="quizcard_set_status" value="PUBLIC" id="public" checked="checked">
                     <label for="private" class="statusLabel">비공개</label>
                     	<input type="radio" name="quizcard_set_status" value="PRIVATE" id="private">
             	</form> <!--------------- form------------- -->
@@ -363,7 +363,7 @@ a:hover {
         </div>
         <div class="quizcard_modal_layer"></div>
     </div>
-<!-------------- 스크랩 문제 모달창 -------------- -->
+<!-------------- 스크랩 문제 모달창 ---------------->
 
      <div class="scrap_modal_container">
         <div class="scrap_modal_content">

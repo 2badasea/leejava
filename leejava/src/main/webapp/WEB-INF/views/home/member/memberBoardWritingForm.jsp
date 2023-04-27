@@ -7,9 +7,9 @@
 <meta charset="UTF-8">
 <title>자유게시판 게시글 작성하기</title>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="resources/js/summernote/summernote-lite.js"></script>
-<script src="resources/js/summernote/lang/summernote-ko-KR.js"></script>
-<link rel="stylesheet" href="resources/css/summernote/summernote-lite.css">
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-lite.js"></script>
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/summernote/summernote-lite.css">
 <style type="text/css">
 .mainFormWrapper{
 	margin-left: 13%;
@@ -291,7 +291,7 @@ $(document).ready(function(){
 		    // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
 		    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
 		    // 글자색
-		    ['color', ['forecolor','color']],
+		    
 		    // 표만들기
 		    ['table', ['table']],
 		    // 글머리 기호, 번호매기기, 문단정렬

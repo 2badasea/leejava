@@ -31,9 +31,9 @@ public class BoardReplyServiceImpl implements BoardReplyService {
 	}
 
 	@Override
-	public List<BoardReplyVO> boardReplyList(Search bvo) {
+	public List<BoardReplyVO> boardReplyList(Search svo) {
 		// TODO Auto-generated method stub
-		return map.boardReplyList(bvo);
+		return map.boardReplyList(svo);
 	}
 
 	@Override
@@ -46,5 +46,11 @@ public class BoardReplyServiceImpl implements BoardReplyService {
 	public BoardReplyVO boardReplySelect(BoardReplyVO brvo) {
 		// TODO Auto-generated method stub
 		return map.boardReplySelect(brvo);
+	}
+
+	@Override
+	public int boardReplyGroupUpdate(BoardReplyVO brvo) {
+		// TODO Auto-generated method stub
+		return map.boardReplyGroupUpdate(brvo);
 	}
 }

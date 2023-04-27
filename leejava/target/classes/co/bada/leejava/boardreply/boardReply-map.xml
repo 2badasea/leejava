@@ -5,45 +5,68 @@
 	<!-- 댓글 개수 조회 -->
 	<select id="getReplyCnt" resultType="int">
 		select count(*)
-			from board_reply where board_reply_bno = #{boardReplyBno}
+			from board_reply where board_reply_bno = #{board_Reply_Bno}
 	</select>
 	
 	<!-- 게시글 별 댓글 전체  -->
 	<select id="boardReplyList" resultType="co.bada.leejava.boardreply.BoardReplyVO">
 		SELECT * FROM (
 			        SELECT ROWNUM AS RN, A.* FROM (
-						                    SELECT * FROM BOARD_REPLY   WHERE BOARD_REPLY_BNO = #{boardReplyBno}
-						                        START WITH  BOARD_REPLY_PARENT = 0 CONNECT BY PRIOR BOARD_REPLY_RNO = BOARD_REPLY_PARENT 
-						                        
-						                        ORDER SIBLINGS BY  BOARD_REPLY_WDATE ASC   
+		                    SELECT * FROM BOARD_REPLY   WHERE BOARD_REPLY_BNO = #{board_Reply_Bno}
+		                        START WITH  BOARD_REPLY_PARENT = 0 CONNECT BY PRIOR BOARD_REPLY_RNO = BOARD_REPLY_PARENT 
+		                        
+		                        ORDER SIBLINGS BY  BOARD_REPLY_WDATE ASC   
 			           ) A 
     	) WHERE RN BETWEEN  #{start} AND #{end}
 	</select>
 	
 	<!-- 댓글 추가 ( depth의 경우, 대댓글이 아닌 경우에는 defulat 갑스올 0이 들어간다. )-->
 	<insert id="boardReplyInsert" parameterType="co.bada.leejava.boardreply.BoardReplyVO">
-		INSERT INTO BOARD_REPLY (BOARD_REPLY_RNO, BOARD_REPLY_BNO
-								, BOARD_REPLY_DEPTH, BOARD_REPLY_CONTENT
-								, BOARD_REPLY_REPLYER, BOARD_REPLY_WDATE
-								, BOARD_REPLY_UDATE) 
-				VALUES (seq_reply.nextval, #{boardReplyBno}, #{boardReplyDepth}, #{boardReplyParent}
-						, #{boardReplyGroup} ,#{boardReplyContent}, #{boardReplyReplyer}
-						, TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'), #{boardReplyUdate} )
+		 <selectKey keyProperty="board_Reply_Rno" resultType="int" order="BEFORE">
+        	SELECT SEQ_BOARDREPLY.NEXTVAL FROM DUAL
+    	</selectKey>
+		INSERT INTO BOARD_REPLY (
+									BOARD_REPLY_RNO
+									, BOARD_REPLY_BNO
+									, BOARD_REPLY_CONTENT
+									, BOARD_REPLY_REPLYER
+									, BOARD_REPLY_WDATE
+									, BOARD_REPLY_DEPTH
+									, BOARD_REPLY_PARENT
+								) 
+								VALUES (
+										#{board_Reply_Rno}    <!-- selectKey의 keyProperty값 setter와 같아야 함-->
+										, #{board_Reply_Bno}
+										, #{board_Reply_Content}
+										, #{board_Reply_Replyer}
+										, TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
+										, #{board_Reply_Depth}
+										, #{board_Reply_Parent}
+								)
 	</insert>
 	
 	<!-- 댓글 삭제 -->
 	<delete id="boardReplyDelete" parameterType="co.bada.leejava.boardreply.BoardReplyVO">
-		DELETE FROM BOARD_REPLY WHERE BOARD_REPLY_RNO = #{boardReplyRno}
+		DELETE FROM BOARD_REPLY WHERE BOARD_REPLY_RNO = #{board_Reply_Rno}
 	</delete>
 	
 	<!-- 댓글 수정 (댓글내용, 최근수정일 값, 댓글번호를 파라미터로 넘긴다) -->
 	<update id="boardReplyUpdate" parameterType="co.bada.leejava.boardreply.BoardReplyVO">
 		UPDATE BOARD_REPLY 
 						SET 
-							BOARD_REPLY_CONTENT = #{boardReplyContent} 
-							AND BOARD_REPLY_UDATE = SYSDATE
+							BOARD_REPLY_CONTENT = #{board_Reply_Content} 
+							, BOARD_REPLY_UDATE = #{board_Reply_Udate}
 						WHERE 
-							BOARD_REPLY_RNO = #{boardReplyRno}
+							BOARD_REPLY_RNO = #{board_Reply_Rno}
+	</update>
+	
+	<!-- 부모 댓글 group값 업데이트 -->
+	<update id="boardReplyGroupUpdate" parameterType="co.bada.leejava.boardreply.BoardReplyVO">
+		UPDATE BOARD_REPLY 
+				SET 
+					BOARD_REPLY_GROUP = BOARD_REPLY_GROUP + #{board_Reply_Group}
+				WHERE
+					BOARD_REPLY_RNO = #{board_Reply_Rno}
 	</update>
 	
 	<!-- 댓글 1개 조회 (bno, rno) -->
@@ -51,7 +74,7 @@
 		SELECT * FROM 
 					BOARD_REPLY 
 				WHERE 
-					BOARD_REPLY_BNO = #{boardReplyBno} AND BOARD_REPLY_RNO = #{boardReplyRno}
+					BOARD_REPLY_BNO = #{board_Reply_Bno} AND BOARD_REPLY_RNO = #{board_Reply_Rno}
 	</select>
 	
 </mapper>

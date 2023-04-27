@@ -14,6 +14,7 @@ public class BoardVO {
 	private int boardHit;			// 조회수
 	private int boardLikeit;		// 추천수(좋아요 수)
 	private int bfileCheck; 		// 첨부파일 존재 유무(0 또는 1의 값을 가지도록)
+	private int replyCnt;			// 댓글 개수
 	
 	// boardlikeit 테이블 
 	private int boardLikeValue; 	// 선택한 추천값

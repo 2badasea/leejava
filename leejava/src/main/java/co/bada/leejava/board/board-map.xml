@@ -99,7 +99,16 @@
 			BOARDCONTENTS =  NVL( #{boardContents}   , BOARDCONTENTS),
 			BOARDLIKEIT = 	 NVL( #{boardLikeit}, BOARDLIKEIT),
 			BFILECHECK = NVL( #{bfileCheck}, BFILECHECK)
-		WHERE BOARDNO = #{boardNo}
+		WHERE BOARDNO = #{replyCnt}
+	</update>
+	
+	<!-- 자유게시판 댓글 수 업데이트 -->
+	<update id="boardReplyCntUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD 
+				SET
+					REPLYCNT = REPLYCNT + #{replyCnt}
+				WHERE 
+					BOARDNO = #{boardNo}
 	</update>
 	
 	<!-- 메인페이지에 노출 시킬 자유게시판 5개 리스트 -->

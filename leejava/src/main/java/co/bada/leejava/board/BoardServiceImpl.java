@@ -91,4 +91,10 @@ public class BoardServiceImpl implements BoardService {
 		return map.mainBoardSelectList();
 	}
 
+	@Override
+	public int boardReplyCntUpdate(BoardVO bvo) {
+		// TODO Auto-generated method stub
+		return map.boardReplyCntUpdate(bvo);
+	}
+
 }

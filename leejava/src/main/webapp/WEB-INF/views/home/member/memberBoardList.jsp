@@ -168,7 +168,11 @@
 					<c:forEach items="${board }" var="board">
 						<tr class="boardListTr">
 							<td>${board.boardNo }</td>
-							<td class="boardListTitleTd" onclick="Fn_boardRead(${board.boardNo},${board.boardHit })">${board.boardTitle }</td>
+							<td class="boardListTitleTd" onclick="Fn_boardRead(${board.boardNo},${board.boardHit })">${board.boardTitle }
+									<c:if test="${board.replyCnt != 0 }">
+										<span style="float: right; color: gray; padding-right: 5%;">[ ${board.replyCnt} ]</span>
+									</c:if> 
+							</td>
 							<td style="font-size: small;">${board.boardWdate }</td>
 							<td>${board.boardWriter }</td>
 							<td>${board.boardHit }</td>

@@ -6,10 +6,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
+<!-- summernote를 위해 필요한 부분 -->
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-lite.js"></script>
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/summernote/summernote-lite.css">
 <style type="text/css">
-.boardReadFormWrapper{
+.boardReadFormWrapper, .boardReplyWrapper{
     margin-top: 1%;
     margin-left: 15%;
     width: 55%;
@@ -47,7 +50,7 @@
 .boardReadForm_contents{
 	padding: 5px;
 	border-bottom: 0.5px solid lightgrey;
-	min-height: 400px;
+	min-height: 300px;
 	height: auto;
 }
 
@@ -56,10 +59,10 @@
 	align-items: center;
 	border-bottom: 0.5px solid lightgrey;
 }
-.boardReadFormWrapper button{
+.boardReadFormWrapper button, .boardReplyInsertBtn, .ReplyUpdateBtn, .ReplyUpdateCancelBtn, .reReplyInsertBtn, .reReplyCancelBtn{
 	border-radius: 20px;
 	border-style: none;
-	padding: 5px;
+	padding: 5px; 	
 	width: auto;
 	height: auto;
 	color: 	#05AA6D;
@@ -69,11 +72,21 @@
 	min-height: 30px;
 }
 
-.boardReadFormWrapper button:hover{
+.boardReadFormWrapper button:hover, 
+.boardReplyInsertBtn:hover, 
+.ReplyUpdateBtn:hover, 
+.ReplyUpdateCancelBtn:hover, 
+.reReplyInsertBtn:hover, 
+.reReplyCancelBtn:hover{
 	cursor: pointer;
 	background-color: #05AA6D;
 	color: whitesmoke;
 	transition: 0.5s;
+}
+.ReplyUpdateBtn, .ReplyUpdateCancelBtn{
+	min-width: 80px;
+	margin-top: 20px;
+	min-height: 40px;
 }
 
 .fileListLi{
@@ -131,7 +144,74 @@
 .boardRead_header_right i:hover{
 	cursor: pointer;
 }
-
+/* 댓글 관련 UI */
+.boardReplyInsertBtn{
+	float: right;
+	margin-right: 5%;
+	width: 100px;
+	height: 40px;
+}
+.boardReplyWriting, .boardReplyUpdating, .reReplyWriting{
+	display: flex;
+	justify-content: space-around;
+	padding: 15px;
+}
+.boardReplyList{
+	margin-top: 100px;
+}
+.boardReplyListHeader{
+	padding-left: 2%;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+.boardReplyListFooter{
+	padding-left: 2%;
+}
+.replyerBtns{
+	padding-right: 5%;
+	display: flex;
+	justify-content: space-between;
+}
+.replyerBtns button{
+	width: 70px;
+	height: 30px;
+	margin-right: 20px; 
+	border-radius: 20px;
+	border-style: none;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+}
+.replyerBtns button:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
+.boardReplyListContents, .replyUpdatingContent{
+	min-height: 50px;
+	width: 80%;
+	padding : 15px;
+	font-size: small;
+}
+.boardReReplyBtn, .boardReplyShow{
+	font-size: smaller;
+}
+.boardReplyShow{
+	margin-left: 2%;
+}
+/* 대댓글창 스타일*/
+.addedReReplyBox{
+	width: 90%;
+	margin-left: 10%;
+	background-color: ghostwhite;
+}
+.reReplyWriting button {
+	margin-left: 10%;
+}
+.reReplyWriting .reReplyCancelBtn{
+	margin-top: 10%;
+}
 </style>
 </head>
 <body>
@@ -199,12 +279,30 @@
 	            </div>
             </div>
             <!--첨부파일 폼-->
-            <br>
-            <!--댓글공간 들어갈 폼-->
-            <div class="boardReplyForm">
-
-            </div>
+            <br><br>
         </div>
+        <hr>
+    </div>
+    <!-- 댓글 관련 박스 -->
+    <div class="boardReplyWrapper">
+    	<input type="hidden" class="replyWriterInfo">
+ 		<c:if test="${not empty session_user }">
+	    	<!-- 댓글 작성 폼 -->
+	    	<div class="boardReplyWriting">
+		     	<div class="boardReplyWriterBox">
+		     		<img alt="" src="${pageContext.request.contextPath}/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">
+		     	</div>
+		     	<div class="boardReplyWritingForm">
+		     		<textarea id="summernote" class="boardReplyContents"></textarea>
+		     	</div>
+	    	</div>
+	    	<div>
+	   		 	<button class="boardReplyInsertBtn" type="button">등록하기</button>
+	    	</div>
+	    </c:if>
+   		 <div class="boardReplyList">
+	   		 <!-- 댓글 리스트 출력 by ajax -->
+   		 </div>
     </div>
 </div>
 <!-- 원본이미지를 화면에 출력시키기 위한 div --> 						
@@ -214,9 +312,10 @@
 	</div>
 </div>
 </body>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/reply.js"></script>
+<!-- 댓글 관련 로직 -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/reply.js?v=<%=System.currentTimeMillis() %>"></script>
 <script>
-
+	
 	// 현재 로그인 중인 세션 닉네임
 	var sessionNickname = $("#hiddenSessionInfo").data('nickname');
 	
@@ -368,7 +467,6 @@
 			})
 		}
 	})
-	
 		
 	// 목록으로 돌아가기
 	$(".boardListBackBtn").on("click", function() {
@@ -391,54 +489,11 @@
 			$(this).hide();
 		},300);
 	})
+	
+
 </script>
-<script type="text/javascript">
+<script>
 	$(document).ready(function(){
-		
-		// 모듈(reply.js) 테스트
-		console.log("=======================");
-		console.log("JS TEST");
-		
-		var bnoValue = '<c:out value="${board.boardNo}" />';
-		console.log("bnoValue 값 확인: "  + bnoValue);
-		
-		console.log(replyService);
-		//댓글 전체 요청	
-		replyService.replySelectList( {bno:bnoValue}, function(list){
-			for(var i = 0, len = list.length || 0; i<len; i++){
-				console.log(list[i]);
-			} 
-		})   // End of replySelectList
-		
-		// insert문. 실제 insert를 하기 위해선, 데이터를 필요한 데이터를 모두 담아야 한다. 
-// 		replyService.replyInsert(
-// 			{reply: "JS TEST", replyer : "tester", bno : bnoValue},
-// 			function(result){
-// 				alert("result: " + result);
-// 			}
-// 		)
-
-		// delete문 (테스트를 위해 23)
-// 		replyService.replyDelete(23, function(count){
-// 			console.log(count);
-			
-// 			if(count === "success"){
-// 				alert("REMOVED");
-// 			}
-// 		}, function(err){
-// 			alert('Error~');
-// 		})
-
-		// update(댓글 수정)
-// 		replyService.replyUpdate(updateData, function(result){
-// 			alert("수정 완료...");
-// 		})
-
-		// getSelect(특정 1개 댓글 조회)
-// 		replyService.replySelectOne(getData, function(data){
-// 			console.log(data);
-// 		})
-		
 		
 		// DOM이 생성된 이후에 실행.
 		if( $(".uploadFileDivs").length != 0 ){
@@ -502,5 +557,452 @@
 			}
 		}());
 	})
+</script>
+<script>
+//제이쿼리 충돌 방지 
+var newJquery = $.noConflict(true);
+var $$ = newJquery; 
+
+// 새로운 jQeury 식별자를 사용해야 한다. 
+$$(document).on("ready", function(){
+	
+ 		/* summernote 구현 스크립트 */
+	var toolbar = [
+	    // 글꼴 설정
+	    ['fontname', ['fontname']],
+	    // 글자 크기 설정
+	    ['fontsize', ['fontsize']],
+	    // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
+	    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+	    // 글자색
+	    ['color', ['forecolor','color']],
+	    // 글머리 기호, 번호매기기, 문단정렬
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    // 줄간격
+	    ['height', ['height']],
+	    // 그림첨부, 링크만들기, 동영상첨부
+// 	    ['insert',['picture','link']],
+	    // 코드보기, 확대해서보기, 도움말
+	    ['view', ['codeview','fullscreen', 'help']]
+	  ];
+
+ 	// 객체형식으로 설정을 구성.
+var setting = {
+ 			value : '',
+           height : 150,
+           minHeight : 100,
+           maxHeight : 200,
+           focus : true,
+           placeholder : '무분별한 욕설과 비난은 자제해주세요',
+           lang : 'ko-KR',
+           toolbar : toolbar, // toolbar 설정은 위에서 해놓음. 
+           callbacks : { 
+           	// summernote에서 제공하는 콜백함수 중 하나. onImageUpload
+           	onImageUpload : function(files, editor, welEditable) {
+           			for (var i = files.length - 1; i >= 0; i--) {
+           					uploadSummernoteImageFile(files[i], this);
+           			}
+           	}
+           }
+  	};
+   // 위 설정대로 summernote를 <textarea> 부분에 호출시킨다. 
+ 	$$('#summernote').summernote(setting);
+	
+ 	
+   // 이미지업로드 콜백함수 정의
+ 	function uploadSummernoteImageFile(file, el) {
+		// 이때 파라미터로 되어있는 el의 값은 이미지 업로드가 발생한 <textarea>태그를 의미한다. 
+		console.log(file);
+	   	var data = new FormData();
+		data.append("file", file);
+		$$.ajax({
+			data : data,
+			type : "POST",
+			url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
+			contentType : false, // multipart/form-data 형식으로 보낼 때는 contentType:을 false로. 
+			enctype : 'multipart/form-data',
+			processData : false,
+			success : function(responseData) {
+				console.log("responseData 확인: " + responseData);
+				console.log("responseDate.url 확인: " + responseData.url);
+				$$(el).summernote('insertImage', responseData.url);
+			}
+		});
+	}
+   
+ 	var bnoValue = '<c:out value="${board.boardNo}" />';
+	console.log("bnoValue 값(글번호) 확인: "  + bnoValue);
+	
+	// 댓글 list가  append()될 박스
+	const replyBox = $$(".boardReplyList");
+	
+	
+	/*
+	 *	댓글 전체 출력하는 부분.
+	*/ 
+	replyService.replySelectList( {bno:bnoValue}, function(list){
+		
+		console.log(list); // pagination, list 두 배열 객체가 리턴된 상황
+		var pagination = list.pagination;
+		var replyList = list.list;
+		
+		// sessionNickname 
+		console.log("현재 로그인 중인 세션 닉네임값: " + sessionNickname);
+		console.log(replyList);
+		// 댓글 출력되는 부분.  board_reply_depth의 값이 2인 경우에는 별도로 구분할 수 있는 속성을 하나 더 추가.			
+		$$.each(replyList, function(index, item){
+			var str = "";
+			// depth의 값에 따라 class속성의 값을 다르게 해서 스타일을 구분
+			if( item.board_Reply_Depth == 2){
+				str += "<div class='addedReplyBox addedReReplyBox'><div>"			
+			} else {
+				str += "<div class='addedReplyBox'><div>";
+			}
+			str += "<br><div class='boardReplyListHeader'>";
+			str += "<div class='replyerInfo'><span class='replyerNickname'>" + item.board_Reply_Replyer  + "</span><br>";
+			str += "<span class='replyerWdate' style='font-size: small;'>" + item.board_Reply_Wdate  + "</span></div>";
+			// 로그인한 유저의 닉네임과 작성자가 같으면 '삭제', '수정' 버튼 활성화
+			if(sessionNickname == item.board_Reply_Replyer){
+				str += "<div class='replyerBtns'><button type='button' class='replyUpdateBtn'>수정하기</button>"; 
+				str += "<button type='button' class='replyDeleteBtn' " + "data-rno='" + item.board_Reply_Rno + "'>삭제하기</button></div>";
+			}
+			str += "</div></div>";
+			str += "<div class='boardReplyListContents'>" + item.board_Reply_Content + "</div>";
+			str += "<div class='boardReplyListFooter'>";
+			// 로그인 상태면 대댓글 달기 가능
+			console.log("아래는 값 확인");
+			console.log(sessionNickname);
+			console.log(item.board_Reply_Depth);
+			if( sessionNickname != "" &&  item.board_Reply_Depth == 1){ 
+				str += "<a class='boardReReplyBtn' href='#'>댓글 달기</a>";
+			}
+			console.log("=============== 그룹값:  " + item.board_Reply_Group );
+			if(item.board_Reply_Group > 1){
+				str += "<a class='boardReplyShow' href='#'>대댓글 보기</a>";
+			}
+			str += "</div><br><hr></div>";
+			str += "</div>"  // End of 'addedReplyBox'  
+			replyBox.append(str);	
+		})
+	})   // End of replySelectList
+	
+	
+	// 대댓글 보기 버튼(추후에 구현 여부 결정)
+	$$(document).on("click", ".boardReplyShow", function(e){
+		e.preventDefault();
+		console.log("대댓글 보기 버튼 클릭");
+	})
+	
+	// 대댓글 작성폼 호출 버튼
+	$$(document).on("click", ".boardReReplyBtn", function(e){
+		e.preventDefault();
+		console.log("대댓글 버튼 클릭");
+		
+		// 이미 활성 중인 창이 있으면 다시 호출하지 못하도록
+		if( $$(".reReplyWriting").length > 0){
+			alert("이미 작성 중인 대댓글이 있습니다.");
+			return false;
+		}
+		
+		// 원댓글(부모댓글) 조회 => 대댓글의 컬럼값. (board_Reply_Parent) => 작성하는 폼에 숨겨둔다.  
+		var parentReplyRno = $$(e.target).closest('.addedReplyBox').find(".replyDeleteBtn").data('rno');
+		
+		var str = "<div>";
+		str += "<div class='reReplyWriting'>";
+		str += "<div class='reReplyWriterBox'><img src='${pageContext.request.contextPath}/resources/img/undraw_profile.svg' style='width: 40px; height: 40px; margin-top: 30px;'>";
+		str += "</div>";
+		str += "<div class='boardReplyWritingForm'><textarea class='reReplySummernote reReplyContents'></textarea></div>";
+		str += "<div><button class='reReplyInsertBtn' type='button' value='" + parentReplyRno +  "'>등록</button>";
+		str += "<button class='reReplyCancelBtn' type='button'>닫기</button>"
+		str += "</div></div><hr></div>";
+
+		console.log(str);
+		$$(e.target).closest(".addedReplyBox").append(str);	
+		$$(".reReplySummernote").summernote(setting);
+	})
+	
+	
+	/*
+	 * 대댓글 등록 완료 버튼 (원글의 댓글번호도 같이 받는다.)
+	*/
+	$$(document).on("click", ".reReplyInsertBtn", function(e){
+		console.log("대댓글 등록 버튼 클릭");
+		
+		// 부모 댓글 번호(board_Reply_Parent값, 부모댓글의 group값에 사용)
+		var parentRno = $$(e.target).val();
+		// 대댓글 작성자 이름
+		var reReplyer = sessionNickname;
+		// 대댓글 작성 내용
+		var reReplyContent = $$(e.target).closest('.reReplyWriting').find('.reReplyContents').val();
+		
+		// 대댓글을 작성하는 경우에도, reply.insert 부분에 data를 넘기는데, => 기본적인 로직은 비슷하지만, 
+		// 대댓글은 기본적으로 depth의 값이 2인 경우. 
+		var reReplyData = {
+				board_Reply_Bno : bnoValue,  // 글번호
+				board_Reply_Replyer : reReplyer,  // 대댓글 작성자 
+				board_Reply_Content : reReplyContent,  // 대댓글 내용
+				board_Reply_Parent : parentRno,  // 부모댓글 댓글번호
+				board_Reply_Depth : 2   // 댓글의 깊이. 본래 기본값1, 대댓글의 경우 2가 기본값.
+		};
+		console.log("전달할 데이터 조회: ");
+		console.log(reReplyData);
+		
+		// 대댓글이 성공적으로 등록되었을 때, 지울 remove
+		var removeDiv = $$(e.target).closest('.reReplyWriting').parent(); 
+		console.log($$(removeDiv).parent().nextAll('.addedReplyBox:not(.addedReReplyBox)').first() );
+		
+		// 콜백함수를 다르게 해야 한다. 칸은 똑같지만, class속성을 다르게 해서 부모댓글과 구분되도록 한다. 
+		replyService.replyInsert(reReplyData, function(jsonData){
+			
+			// 컨트롤러에서 string형태로 리턴했기 때문에 json형으로 핸들링하기 위해 파싱을 해주어야 한다. 
+			jsonData = JSON.parse(jsonData);
+			alert("대댓글이 등록되었습니다.");
+			var str = "<div class='addedReplyBox addedReReplyBox'><div><br>";
+			str += "<div class='boardReplyListHeader'>";
+			str += "<div class='replyerInfo'><span class='replyerNickname'>" + sessionNickname  + "</span><br>";
+			str += "<span class='replyerWdate' style='font-size: small;'>" + jsonData.wdate + "</span></div>";
+			str += "<div class='replyerBtns'><button type='button' class='replyUpdateBtn' >수정하기</button>"; 
+			str += "<button type='button' class='replyDeleteBtn' " + "data-rno='" +  jsonData.rno + "' data-parentrno='" + jsonData.parentRno + "'>삭제하기</button></div>";
+			str += "</div></div>";
+			str += "<div class='boardReplyListContents'>" + reReplyContent + "</div><div class='boardReplyListFooter'>";
+// 			str += "<a class='boardReReplyBtn' href='#'>댓글 달기</a>";  // 추후에 구현
+			str += "</div><br><hr></div></div>";
+			
+			// 기존의 대댓글 입력하는 창은 삭제  
+			if( $$(removeDiv).parent().nextAll('.addedReplyBox:not(.addedReReplyBox)').first().length != 0){
+				$$(removeDiv).parent().nextAll('.addedReplyBox:not(.addedReReplyBox)').first().before(str);
+			} else if( $$(removeDiv).parent().nextAll('.addedReplyBox').length == 0 ){
+				$$(removeDiv).parent().append(str);	
+			} else if( $$(removeDiv).parent().nextAll('.addedReplyBox').length != 0 ){
+				$$(removeDiv).parent().nextAll('.addedReplyBox').last().after(str);
+			}
+			removeDiv.remove();
+			// 아래 append()의 대상을 수정해야 한다. 부모댓글 바로 다음 공간으로.
+			
+			// 콜백함수로 부모댓글의 group값도 증가시킨다. 모듈(reply.js)에 있는 함수를 이용 parentRno.
+			var updateData = {
+					parentRno : parentRno,
+					value : 1
+			}
+			replyService.replyUpdateGroup(updateData, function(result){
+				if(result == "success"){
+					console.log("부모댓글 group update 성공");
+				}else {
+					console.log("부모댓글 group update 실패~~~~~")
+				}
+			})
+			
+		})
+		
+		
+	})
+	
+	// 대댓글 작성 취소 버튼 정의 => 해당 div remove() 시키기
+	$$(document).on("click", ".reReplyCancelBtn", function(e){
+		console.log("대댓글 작성 취소 클릭");
+		console.log($$(e.target));
+		
+		var calcelDiv = $$(e.target).closest('.reReplyWriting').parent();
+		// 창 지워버리기
+		calcelDiv.remove(); 
+	})
+	
+	
+	/*
+	 * 댓글 등록 요청 부분
+	*/ 
+	$$('.boardReplyInsertBtn').on('click', function(){
+		console.log("reply insert click!!");
+		
+		var boardReplyContents = $$('.boardReplyContents').val();
+		if(boardReplyContents == ''){
+			alert("댓글 내용을 입력해주세요.");
+			return false;
+		}
+		// data 담기
+		var replyData = {
+					board_Reply_Replyer : sessionNickname,
+					board_Reply_Bno : bnoValue,
+					board_Reply_Content : boardReplyContents,
+					board_Reply_Depth : 1
+			}
+		$$('.boardReplyContents').val('');
+		
+		// 댓글 등록 함수 호출(data, 성공 시  callback)
+ 		replyService.replyInsert(
+ 			replyData,
+ 			function(jsonData){
+ 				jsonData = JSON.parse(jsonData);
+ 				var str = "<div class='addedReplyBox'><div><br>";
+				str += "<div class='boardReplyListHeader'>";
+				str += "<div class='replyerInfo'><span class='replyerNickname'>" + sessionNickname  + "</span><br>";
+				str += "<span class='replyerWdate' style='font-size: small;'>" + jsonData.wdate + "</span></div>";
+				str += "<div class='replyerBtns'><button type='button' class='replyUpdateBtn' >수정하기</button>"; 
+				str += "<button type='button' class='replyDeleteBtn' " + "data-rno='" +  jsonData.rno + "'>삭제하기</button></div>";
+				str += "</div></div>";
+				str += "<div class='boardReplyListContents'>" + boardReplyContents + "</div><div class='boardReplyListFooter'>";
+				str += "<a class='boardReReplyBtn' href='#'>댓글 달기</a></div><br><hr></div></div>";
+				replyBox.append(str);
+				
+ 				alert("댓글이 등록되었습니다.");	
+ 			} // End of Callback
+ 		) // End of Immediately function 
+	}) // End of Insert function
+
+	
+	/*
+	 *	댓글 삭제. 이때, 대댓글이 존재하면 삭제가 안 되도록 하는 조건 추가
+	*/  
+	$$(document).on('click', ".replyDeleteBtn", function(e){
+		
+		// 삭제할 댓글이 대댓글인 경우, 부모댓글번호를 가지고 있음. 해당 값을 호출
+		var parentRno = 0;
+		if($$(e.target).closest('.addedReplyBox').hasClass('addedReReplyBox')){
+			parentRno = $$(e.target).closest('.addedReplyBox').find(".replyDeleteBtn").data("parentrno");
+			console.log("================================= 대댓글이 삭제될 때만 생성되는 값 참조하는 부모 댓글 번호: " + parentRno);
+		}
+		console.log("이값 뭐임? " + $$(e.target).closest(".addedReplyBox").find(".addedReReplyBox").length);
+		
+		// 대댓글이 다음에 존재한다면 삭제가 안 되도록 한다. 
+		if($$(e.target).closest('.addedReplyBox').next().hasClass('addedReReplyBox')
+				&& !$$(e.target).closest('.addedReplyBox').hasClass('addedReReplyBox')
+				|| $$(e.target).closest(".addedReplyBox").find(".addedReReplyBox").length > 0   ){
+			alert("대댓글이 존재하는 경우, 댓글을 삭제할 수 없습니다.");
+			return false;
+		}
+		
+		var replyDelCheck = confirm("정말 댓글을 삭제하시겠습니까?");
+		if(!replyDelCheck){
+			return false;
+		}
+		
+		// 삭제할 댓글번호 
+		var replyRno = $$(e.target).data('rno');
+		// 삭제 이후 지워질 댓글창 div			
+		var addedReplyBox = $$(e.target).closest(".addedReplyBox");
+		
+		var deleteData = {
+				boardNo : boardNo,
+				replyRno : replyRno
+		}
+		replyService.replyDelete(deleteData, function(result){
+ 			console.log(result);
+			
+ 			if(result === "success"){
+ 				alert("삭제되었습니다.");
+				addedReplyBox.remove();
+				
+				if( parentRno != 0){
+					// 콜백함수로 부모댓글의 group값도 증가시킨다. 모듈(reply.js)에 있는 함수를 이용 parentRno.
+					var updateData = {
+							parentRno : parentRno,
+							value : -1
+					}
+					console.log(updateData);
+					replyService.replyUpdateGroup(updateData, function(result){
+						if(result == "success"){
+							console.log("부모댓글 group update 성공");
+						}else {
+							console.log("부모댓글 group update 실패")
+						}
+					})
+				}
+				
+				
+ 			}
+ 		}, function(err){
+ 			alert('Error~');
+ 		})
+	}) // End of Delete function
+	
+	var updateData = {};
+	var updateBox;
+	
+	// 댓글 수정하기 버튼
+	$$(document).on("click", ".replyUpdateBtn", function(e){
+	
+		if ($$('.replyUpdatingWrapper').length > 0){
+			alert("이미 수정 중인 내역이 존재합니다.");
+			return false;
+		}
+		
+		// 수정 전 댓글내용
+		var originContent = $$(e.target).closest('.addedReplyBox').find('.boardReplyListContents').text();
+		// 수정 댓글번호
+		var originRno = $$(e.target).closest('.addedReplyBox').find('.replyDeleteBtn').data('rno');
+		
+		$$(e.target).closest('.addedReplyBox').children('div').css('display', 'none');
+		 
+		console.log("기존에 작성된 내용: " + originContent);
+		console.log("수정할 댓글 번호: " + originRno);
+		updateData.board_Reply_Rno = originRno;
+		updateBox = $$(e.target).closest('.addedReplyBox').children('div');
+		var str = "<div class='replyUpdatingWrapper'>";
+		str += '<div class="boardReplyUpdating">';
+		str += ' <div class="boardReplyWriterBox">';
+		str += ' <img alt="" src="/leejava/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">';
+		str += ' </div>';
+		str += ' <div class="boardReplyUpdatingForm">';
+		str += ' <textarea class="reSummernote replyUpdatingContent"></textarea>';
+		str += ' </div>';
+		str += '<div>';
+		str += ' <button class="ReplyUpdateCancelBtn" type="button">닫기</button>';
+		str += ' <button class="ReplyUpdateBtn" type="button">수정완료</button>';
+		str += '</div>';
+		str += '</div><hr></div>';
+		
+		$$(e.target).closest('.addedReplyBox').append(str);
+		
+		// 중요한 부분. 동적으로 callbacks 속성에 함수를 추가한다.
+		setting.callbacks.onInit = function() { 
+			$$('.reSummernote').summernote('code', originContent)
+		};
+		
+		$$('.reSummernote').summernote(setting);
+		
+	})
+	
+	// 수정 취소 버튼
+	$$(document).on("click", ".ReplyUpdateCancelBtn", function(e){
+		console.log("수정 취소 클릭");
+		$$(e.target).closest('.addedReplyBox').children('div').css('display', 'block');
+		$$(e.target).closest('.replyUpdatingWrapper').remove();
+	})
+	
+	
+	/*
+	 *	댓글 수정 완료
+	*/
+	$$(document).on("click", ".ReplyUpdateBtn", function(e){
+		console.log("수정 완료 클릭");
+		updateData.board_Reply_Content = $$(e.target).closest('.replyUpdatingWrapper').find(".replyUpdatingContent").val();
+		console.log(updateData);
+		// 넘기는 값은 댓글번호(rno), 글내용(content), 수정일(매퍼상에서 처리);
+		
+		replyService.replyUpdate(updateData, function(result){
+			$$(e.target).closest('.replyUpdatingWrapper').remove();
+			updateBox.css('display', 'block');
+			console.log("수정완료");
+			alert("수정 완료...");
+		})
+		
+		console.log(updateBox);
+		console.log(updateBox.length);
+		console.log(updateBox[1]);
+		$$(updateBox[1]).text(updateData.board_Reply_Content);
+		
+	})
+
+	
+	
+
+
+
+	// getSelect(특정 1개 댓글 조회)
+//		replyService.replySelectOne(getData, function(data){
+//			console.log(data);
+//		})
+	
+})
 </script>
 </html>

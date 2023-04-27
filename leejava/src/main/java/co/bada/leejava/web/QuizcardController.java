@@ -56,12 +56,6 @@ public class QuizcardController {
 		// 페이징 처리 결과로 화면에 출력될 게시글 리스트
 		model.addAttribute("quizcardList", list); 
 		
-		
-		// 밑에 코드들은 페이징 처리하기 이전에 단순히 리스트를 출력할 때 사용했던 소스
-//		model.addAttribute("quizcardList", quizcardDao.quizcardList());
-//		List<QuizcardVO> list = new ArrayList<>();
-//		list = quizcardDao.quizcardList();
-//		logger.info("메인페이지에 넘어갈 퀴즈카드 리스트: " + list);
 		return "home/quizcard/quizcardHome";
 	}
 	

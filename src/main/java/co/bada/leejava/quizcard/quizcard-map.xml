@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.quizcard.QuizcardMapper">
+	
+	<!--  퀴즈카드 생성 -->
+	<insert id="quizcardSetCreate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD VALUES(
+			SET_NO_SEQ.NEXTVAL,   <!-- 시퀀스 적용. -->
+			#{m_email},
+			#{quizcard_set_name},
+			TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
+			TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
+			0,
+			#{quizcard_set_status},
+			#{quizcard_set_intro},
+			0,
+			#{quizcard_type}
+		)
+	</insert>
+	
+	<select id="quizcardSetNoGet" resultType="int">
+		SELECT LAST_NUMBER
+			FROM USER_SEQUENCES
+		WHERE SEQUENCE_NAME = 'SET_NO_SEQ'
+	</select>
+	
+	<insert id="quizcardCategory" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		insert into quizcard_category values(
+			1,
+			#{quizcard_set_no},
+			#{quizcard_category}
+		)
+	</insert>
+	
+	<select id="quizcardSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT Q.QUIZCARD_SET_NO, Q.QUIZCARD_SET_NAME, Q.QUIZCARD_SET_CDATE, 
+				Q.QUIZCARD_SET_UDATE, Q.QUIZCARD_SET_STATUS, Q.QUIZCARD_SET_INTRO,
+				 Q.QUIZCARD_TYPE ,C.QUIZCARD_CATEGORY 
+		FROM QUIZCARD Q INNER JOIN QUIZCARD_CATEGORY C 
+		ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		WHERE Q.QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY Q.QUIZCARD_SET_NO DESC
+	</select>
+	
+	<!--퀴즈카드 첫 생성 이후 기본 question테이블 값. -->
+	<insert id="firstQuestionInsert" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_QUESTION VALUES(
+			TO_NUMBER( #{quizcard_set_no}||'0'||1 ),
+			1,
+			#{quizcard_set_no},
+			'문제를 입력하세요',
+			'힌트를 입력하세요',
+			'답안을 입력하세요',
+			QUIZCARD_INDEX_SEQ.NEXTVAL
+		)
+	</insert>
+	
+	<!-- 퀴즈카드 메인페이지 게시판에 보여줄 목록 -->
+	<select id="quizcardList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT  S.QUIZCARD_SET_NO,  S.QUIZCARD_SET_HIT, S.QUIZCARD_SET_LIKEIT, 
+				S.QUIZCARD_SET_CDATE, S.QUIZCARD_SET_UDATE, S.QUIZCARD_TYPE,
+				S.QUIZCARD_SET_NAME, M.M_NICKNAME, C.QUIZCARD_CATEGORY
+		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
+							ON  S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+						INNER JOIN MEMBER M
+							ON M.M_EMAIL = S.M_EMAIL
+		WHERE S.QUIZCARD_SET_STATUS = 'PUBLIC'				
+		ORDER BY S.QUIZCARD_SET_NO DESC
+	</select>
+	
+	<!-- 아카이브 박스 내가 생성한 세트 이름 조회 -->
+	<select id="ajaxMyQuizcard" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME,  S.QUIZCARD_SET_CDATE, 
+						S.QUIZCARD_SET_UDATE, C.QUIZCARD_CATEGORY
+		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
+			ON S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		WHERE M_EMAIL = #{m_email}
+		ORDER BY S.QUIZCARD_SET_NO DESC
+	</select>
+	
+	<!-- 해당 퀴즈카드 set_no별로 총 문제 갯수 -->
+	<select id="quizcardQuestionCount" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="int">
+		SELECT COUNT(QUIZCARD_NO) 
+			FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 해당 퀴즈카드 set_no 기준 댃글 갯수 조회 -->
+	<select id="quizcardReplyCount" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="int">
+		SELECT  COUNT(QUIZCARD_REPLY_NO) 
+			FROM 
+				QUIZCARD_REPLY 
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 퀴즈카드 대기실에서 보여줄 모든 정보 -->
+	<select id="quizcardBeforeInfo" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		<!--  리턴타입은 ㅟ즈카드 vo객체다. -->
+		SELECT M.M_EMAIL, M.M_NICKNAME, S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME, S.QUIZCARD_SET_CDATE,
+		    	S.QUIZCARD_SET_UDATE, S.QUIZCARD_SET_LIKEIT, S.QUIZCARD_SET_STATUS, S.QUIZCARD_SET_INTRO, 
+		    	S.QUIZCARD_SET_HIT, S.QUIZCARD_TYPE,  C.QUIZCARD_CATEGORY
+		FROM QUIZCARD  S INNER JOIN QUIZCARD_CATEGORY C 
+							ON S.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
+		    			INNER JOIN MEMBER M
+							ON S.M_EMAIL = M.M_EMAIL
+		WHERE S.QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY S.QUIZCARD_SET_NO DESC
+	</select>
+	
+	<!-- 퀴즈카드 세트번호별 문제리스트. -->
+	<select id="quizcardQuestionList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+		FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY QUIZCARD_QUESTION_NO ASC
+	</select>
+	
+	<!-- 퀴즈카드 blur 이벤트에 의한 업데이트 -->
+	<update id="ajaxQuestionUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD_QUESTION 
+		SET 
+			QUIZCARD_QUESTION_NAME = NVL( #{quizcard_question_name}, QUIZCARD_QUESTION_NAME),
+			QUIZCARD_QUESTION_HINT = NVL( #{quizcard_question_hint }, QUIZCARD_QUESTION_HINT),
+			QUIZCARD_QUESTION_ANSWER = NVL( #{quizcard_question_answer}, QUIZCARD_QUESTION_ANSWER)
+		WHERE
+			QUIZCARD_SET_NO = #{quizcard_set_no}
+			and QUIZCARD_QUESTION_NO = ${quizcard_question_no}
+	</update>
+	
+	<!-- 퀴즈카드 업데이트 마지막 수정일 업데이트 -->
+	<update id="quizcardUdateChange" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+			SET QUIZCARD_SET_UDATE = TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
+	<insert id="ajaxQuestionNew" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_QUESTION VALUES(
+			#{quizcard_no},
+			#{quizcard_question_no},
+			#{quizcard_set_no},
+			#{quizcard_question_name},
+			#{quizcard_question_hint},
+			#{quizcard_question_answer},
+			QUIZCARD_INDEX_SEQ.NEXTVAL
+		)
+	</insert>
+	
+	<!-- 퀴즈카드 삭제 이벤트 -->
+	<delete id="ajaxQuestionDel" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE FROM QUIZCARD_QUESTION
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} 
+		AND QUIZCARD_QUESTION_NO = #{quizcard_question_no}
+	</delete>
+	
+	<!-- 퀴즈카드 삭제후 넘버링 작업 -->
+	<update id="ajaxUpdateQuestionNo" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD_QUESTION 
+			SET 
+				QUIZCARD_QUESTION_NO = #{quizcard_question_no},
+				QUIZCARD_NO = #{quizcard_no}
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}  AND
+				QUIZCARD_QUESTION_NO = #{quizcard_question_no} + 1
+	</update>
+	
+	<!-- 메인페이지 퀴즈카드 클릭 시 조회수 증가 -->
+	<update id="quizcardHitUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+					SET 
+						QUIZCARD_SET_HIT = QUIZCARD_SET_HIT + 1 
+					WHERE 
+						QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
+	<!-- 퀴즈카드 문제 출력 by quizcard_question_no -->
+	<select id="ajaxStudyStart" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		AND QUIZCARD_QUESTION_NO = #{quizcard_question_no}
+	</select>
+	
+	<!-- 퀴즈카드 문제 출력 by quizcard_no  -->
+	<select id="ajaxWrongQuestion" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * FROM QUIZCARD_QUESTION 
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no}
+		AND QUIZCARD_NO = #{quizcard_no}
+	</select>
+	
+	<update id="ajaxQuizInfoUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+			SET
+				QUIZCARD_SET_NAME = NVL(#{quizcard_set_name}, QUIZCARD_SET_NAME),
+				QUIZCARD_SET_INTRO = NVL(#{quizcard_set_intro}, QUIZCARD_SET_INTRO),
+				QUIZCARD_SET_STATUS = NVL(#{quizcard_set_status}, QUIZCARD_SET_STATUS),
+				QUIZCARD_TYPE = NVL(#{quizcard_type}, QUIZCARD_TYPE)
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
+	
+	<select id="ajaxScrapSelect" resultType="boolean" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT CASE COUNT(*)  
+			WHEN 0  THEN 'TRUE'  ELSE 'FALSE' END 
+		FROM 
+			QUIZCARD_SCRAP 
+		WHERE 
+			M_EMAIL = #{m_email}  AND QUIZCARD_INDEX = #{quizcard_index}
+	</select>
+	
+	<insert id="ajaxScrapAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_SCRAP
+		VALUES(
+			#{m_email},
+			#{quizcard_index}
+			) 
+	</insert>
+	
+	<!-- 퀴즈카드 Before영역 문제이름만 List로 가져오기 -->
+	<select id="questionNameList" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT QUIZCARD_QUESTION_NAME 
+		FROM 
+			QUIZCARD_QUESTION
+		WHERE 
+			QUIZCARD_SET_NO = #{quizcard_set_no}
+		ORDER BY 
+			QUIZCARD_QUESTION_NO
+	</select>
+	
+	<!-- 퀴즈카드 북마크(즐겨찾기) 추가 quizcard before 페이지 영역 -->
+	<insert id="ajaxBookmarkAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT 
+			INTO QUIZCARD_BOOKMARK 
+		VALUES(
+			#{m_email},
+			#{quizcard_set_no}
+		)
+	</insert>
+	
+	<!-- 퀴즈카드 북마크(즐겨찾기) 취소 quizcard before.jsp  -->
+	<delete id="ajaxBookmarkDelete" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE FROM QUIZCARD_BOOKMARK
+		WHERE M_EMAIL = #{m_email} 
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</delete>
+	
+	<!-- 퀴즈카드 즐겨찾기 추가여부 조회 -->
+	<select id="ajaxBookmarkStatus" resultType="boolean">
+		SELECT CASE COUNT(*) 
+			 WHEN 0 THEN 'TRUE' ELSE 'FALSE' END
+		FROM QUIZCARD_BOOKMARK
+		WHERE M_EMAIL = #{m_email}
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 좋아요 중복여부 눌렀는지 체크 -->
+	<select id="ajaxLikeitCheck" resultType="boolean">
+		SELECT CASE COUNT(*)
+			WHEN 0 THEN 'TRUE' ELSE 'FALSE' END
+		FROM QUIZCARD_LIKEIT
+		WHERE M_EMAIL = #{m_email}
+			AND QUIZCARD_SET_NO = #{quizcard_set_no}
+	</select>
+	
+	<!-- 퀴즈카드 좋아요 클릭 => 테이블 추가. -->
+	<insert id="ajaxLikeitAdd" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_LIKEIT 
+		VALUES (
+			 #{m_email},
+			 #{quizcard_set_no}
+			 )	
+	</insert>
+	
+	<!-- 퀴즈카드 좋아요 테이블에 행 추가 후 quizcard_set_likeit 값도 증가시키기 -->
+	<update id="quizcardLikeitUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+		SET
+			QUIZCARD_SET_LIKEIT = QUIZCARD_SET_LIKEIT + 1
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} 
+	</update>
+	
+	<!-- 퀴즈카드 아카이브 박스 즐겨찾기 영역 조회 ( 세트번화, 세트이름, 카테고리 -->
+	<select id="ajaxBookmark" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT B.QUIZCARD_SET_NO, Q.QUIZCARD_SET_NAME,  C.QUIZCARD_CATEGORY
+		FROM QUIZCARD_BOOKMARK B INNER JOIN QUIZCARD Q
+			ON B.QUIZCARD_SET_NO = Q.QUIZCARD_SET_NO
+		INNER JOIN QUIZCARD_CATEGORY C 
+			ON Q.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
+		WHERE B.M_EMAIL  = #{m_email}
+		ORDER BY B.QUIZCARD_SET_NO DESC
+	</select>
+	
+	<!-- quizcard_history에 기존에 존재하는 데이터가 존재하는지 -->
+	<select id="ajaxHistory" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="boolean">
+		SELECT 
+			CASE WHEN COUNT(*) = 0 THEN 'FALSE' ELSE 'TRUE' END 
+		FROM QUIZCARD_HISTORY
+		WHERE 
+			QUIZCARD_SET_NO = #{quizcard_set_no} AND M_EMAIL = #{m_email}
+	</select>
+	
+	<!-- 퀴즈카드 히스토리 최초 => insert시키기  -->
+	<insert id="ajaxHistoryInsert" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		INSERT INTO QUIZCARD_HISTORY
+			( QUIZCARD_SET_NO, QUIZCARD_SET_NAME, QUIZCARD_CATEGORY, QUIZCARD_HISTORY, QUIZCARD_HISTORY_DATE, M_EMAIL )
+		VALUES
+			( #{quizcard_set_no}, #{quizcard_set_name}, #{quizcard_category}, #{quizcard_history}, TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'), #{m_email} )
+	</insert>
+	
+	<!-- 퀴즈카드 히스토리 업데이트 (학습진도상태와 학습날짜만 수정된다. )-->
+	<update id="ajaxHistoryUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD_HISTORY 
+			SET 
+				QUIZCARD_HISTORY = NVL(#{quizcard_history}, QUIZCARD_HISTORY),
+				QUIZCARD_HISTORY_DATE = TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
+		WHERE QUIZCARD_SET_NO = #{quizcard_set_no} AND M_EMAIL = #{m_email}
+	</update>
+	
+	<!-- 퀴즈카드 히스토리 아카이브 박스(학습중인 세트) 출력 진행상황이 studying인 것 -->
+	<select id="ajaxHistorySelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+		FROM QUIZCARD_HISTORY
+		WHERE M_EMAIL = #{m_email} 
+			AND QUIZCARD_HISTORY = #{quizcard_history}
+	</select>
+	
+	<!-- 퀴즈카드 스크랩문제 아카이브 박스에 출력  -->
+	<select id="ajaxArchiveScrapSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT  S.QUIZCARD_INDEX, Q.QUIZCARD_SET_NO, Q.QUIZCARD_NO, C.QUIZCARD_SET_NAME, G.QUIZCARD_CATEGORY
+			FROM QUIZCARD_SCRAP  S INNER JOIN QUIZCARD_QUESTION Q
+				ON S.QUIZCARD_INDEX  = Q.QUIZCARD_INDEX
+			INNER JOIN QUIZCARD C
+				ON Q.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO 
+			INNER JOIN QUIZCARD_CATEGORY G
+				ON C.QUIZCARD_SET_NO  = G.QUIZCARD_SET_NO
+		WHERE S.M_EMAIL = #{m_email}
+	</select>
+	
+	<!-- 아카이브 박스 스크랩 문제.  삭제 이벤트 -->
+	<delete id="ajaxScrapDelete" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		DELETE 
+			FROM QUIZCARD_SCRAP 
+		WHERE M_EMAIL  = #{m_email} 
+			AND QUIZCARD_INDEX = #{quizcard_index} 
+	</delete>
+	
+	<!-- 아카이브 스크랩 문제 모달창 호출 -->
+	<select id="scrapQuestionSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT * 
+			FROM  QUIZCARD_QUESTION 
+		WHERE QUIZCARD_NO = #{quizcard_no}
+	</select>
+	
+	<!-- 페이징 처리( pageInfo(page, range, listCnt) )를 위한 퀴즈카드 총 갯수 -->
+	<select id="getQuizcardListCnt" resultType="int">
+		SELECT  COUNT(*)
+		    FROM QUIZCARD Q INNER JOIN MEMBER M
+		    	ON Q.M_EMAIL = M.M_EMAIL
+		    INNER JOIN QUIZCARD_CATEGORY C 
+		    	ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
+		<!-- 검색 요소로는 카테고리, 세트이름, 만든이(닉네임)으록 구성된다. 그리고 카테고리처럼 조건이 ALL이면 where like절이 필요없음.-->
+		<trim prefix="where" prefixOverrides="and | or">
+		 	<if test="quizcard_category !='ALL' ">AND C.QUIZCARD_CATEGORY LIKE '%'||#{quizcard_category}||'%'</if>
+			<if test="quizcard_set_name != '' ">AND Q.QUIZCARD_SET_NAME LIKE '%'||#{quizcard_set_name}||'%'</if>
+			<if test="m_nickname !='' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+			AND Q.QUIZCARD_SET_STATUS = 'PUBLIC'
+		</trim>
+	</select>
+	
+	<!-- 페이징 처리가 된 퀴즈카드 리스트. 퀴즈카드 메인에 출력 -->
+	<select id="quizcardSearchSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
+		SELECT *
+		FROM ( SELECT ROWNUM RN, A.*
+		FROM ( SELECT * 
+		FROM QUIZCARD Q INNER JOIN MEMBER M
+			ON Q.M_EMAIL = M.M_EMAIL
+		INNER JOIN QUIZCARD_CATEGORY C 
+			ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO 
+		<trim prefix="where" prefixOverrides="and | or">
+		 	<if test="quizcard_category !='ALL' ">AND C.QUIZCARD_CATEGORY LIKE '%'||#{quizcard_category}||'%'</if>
+			<if test="quizcard_set_name != '' ">AND Q.QUIZCARD_SET_NAME LIKE '%'||#{quizcard_set_name}||'%'</if>
+			<if test="m_nickname !='' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+			AND Q.QUIZCARD_SET_STATUS = 'PUBLIC'
+		</trim>
+		ORDER BY Q.QUIZCARD_SET_CDATE DESC
+		) A
+		) 
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+
+</mapper>

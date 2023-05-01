@@ -29,30 +29,25 @@
 <!-- 	</bean> -->
 	
 	
-	<!--  아래는 배포용 bean 등록  -->
-	<!-- summernote 이미지업로드 경로 bean으로 등록하기 -->
+	<!--  =============아래는 배포용 bean 등록  =================== -->
 	<bean id="summernoteImageUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\summernoteimageupload\" />
+		<constructor-arg value="/home/ubuntu/leejava/summernoteimageupload/" />
 	</bean>
-	
-	<!-- 배너이미지 업로드 되는 경로 -->
+
 	<bean id="bannerimgUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\bannerimg\" />
+		<constructor-arg value="/home/ubuntu/leejava/bannerimg/" />
 	</bean>
-	
-	<!-- 공지사항 첨부파일 업로드 경로 bean으로 등록하기 -->
+
 	<bean id="noticeUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\noticeuploadfiles\" />
+		<constructor-arg value="/home/ubuntu/leejava/noticeuploadfiles/" />
 	</bean>
 	
-	<!-- 자유게시판 첨부파일 업로드 경로 -->
 	<bean id="fileUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\upload\" />
+		<constructor-arg value="/home/ubuntu/leejava/upload/" />
 	</bean>
 	
-	<!-- 프로필 사진 업로드 경로 -->
 	<bean id="profileUploadPath" class="java.lang.String">
-		<constructor-arg value="C:\leejava\profile\" />
+		<constructor-arg value="/home/ubuntu/leejava/profile/" />
 	</bean>
 	
 	

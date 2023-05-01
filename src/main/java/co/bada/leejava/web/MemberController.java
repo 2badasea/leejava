@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -55,6 +56,8 @@ public class MemberController {
 	NoticeService noticeDao;
 	@Autowired
 	TodoService todoDao;
+	@Resource(name="profileUploadPath")
+	private String profileUploadPath;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
@@ -138,9 +141,6 @@ public class MemberController {
 			}
 			
 		} // view에서 넘어오는 파일 객체들에 대해 반복문을 통하여 타입체크 끝
-			
-		// 업로드할 프로필 사진을 저장할 경로 설정
-		String uploadFolder = "C:\\leejava\\profile"; 
 		
 		// 'yyyy-MM-dd' 형태로 날짜 정보를 얻기 위함. 날짜별로 디렉토리를 구성하기 위함. 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -155,7 +155,7 @@ public class MemberController {
 		String profilePath = str.replace("-", File.separator);
 		logger.info("==============='-'을 경로구분자로 변환 후 str의 값: " + profilePath);
 		// File타입의 uploadPath 변수를 통하여 우리가 원하는 경로에 날짜별로 디렉토리를 생성하는 객체를 생성한다.
-		File uploadPath = new File(uploadFolder,profilePath);
+		File uploadPath = new File(profileUploadPath,profilePath);
 		// 그럼 폴더를 생성한다. 폴더를 생성하는 메서드로 mkdir()과 mkdirs() 메서드가 존재하는데,
 			// 후자의 경우 여러 개의 폴더를 생성한다. => 전자의 경우 선행하는 디렉토리가 없으면 만들어지지 않는다.  
 			// 요청이 있을 때마다 새로운 폴더를 생성하는 것을 방지하기 위함 => File객체에서 제공하는 exist()메서드. 

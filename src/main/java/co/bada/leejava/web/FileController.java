@@ -37,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.JsonObject;
-
 import co.bada.leejava.board.BoardService;
 import co.bada.leejava.board.BoardVO;
 import co.bada.leejava.uploadfile.UploadfileService;
@@ -54,8 +52,11 @@ public class FileController {
 	UploadfileService uploadfileDao;
 	@Autowired 
 	BoardService boardDao;
+	@javax.annotation.Resource(name = "fileUploadPath")
+	private String fileUploadPath;  
+//	private String fileUploadPath = "C:\\leejava\\upload\\";  
 	
-	String fileUploadPath = "C:\\leejava\\upload\\";  
+	
 	// log 기록
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 	

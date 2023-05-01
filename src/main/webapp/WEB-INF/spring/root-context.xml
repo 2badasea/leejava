@@ -3,8 +3,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!--  summernote 이미지업로드 경로 bean으로 등록하기 --> 
+<!-- 	<bean id="summernoteImageUploadPath" class="java.lang.String"> -->
+<!-- 		<constructor-arg value="C:\leejava\summernoteimageupload\" /> -->
+<!-- 	</bean> -->
 	
+ 	<!-- 배너이미지 업로드 되는 경로 -->
+<!-- 	<bean id="bannerimgUploadPath" class="java.lang.String"> -->
+<!-- 		<constructor-arg value="C:\leejava\bannerimg\" /> -->
+<!-- 	</bean> -->
+	
+	<!-- 공지사항 첨부파일 업로드 경로 bean으로 등록하기 -->
+<!-- 	<bean id="noticeUploadPath" class="java.lang.String"> -->
+<!-- 		<constructor-arg value="C:\leejava\noticeuploadfiles\" /> -->
+<!-- 	</bean> -->
+	
+	<!-- 자유게시판 첨부파일 업로드 경로 -->
+<!-- 	<bean id="fileUploadPath" class="java.lang.String"> -->
+<!-- 		<constructor-arg value="C:\leejava\upload\" /> -->
+<!-- 	</bean> -->
+	
+	<!-- 프로필 사진 업로드 경로 -->
+<!-- 	<bean id="profileUploadPath" class="java.lang.String"> -->
+<!-- 		<constructor-arg value="C:\leejava\profile\" /> -->
+<!-- 	</bean> -->
+	
+	
+	<!--  아래는 배포용 bean 등록  -->
 	<!-- summernote 이미지업로드 경로 bean으로 등록하기 -->
 	<bean id="summernoteImageUploadPath" class="java.lang.String">
 		<constructor-arg value="C:\leejava\summernoteimageupload\" />
@@ -20,9 +45,19 @@
 		<constructor-arg value="C:\leejava\noticeuploadfiles\" />
 	</bean>
 	
+	<!-- 자유게시판 첨부파일 업로드 경로 -->
 	<bean id="fileUploadPath" class="java.lang.String">
 		<constructor-arg value="C:\leejava\upload\" />
 	</bean>
+	
+	<!-- 프로필 사진 업로드 경로 -->
+	<bean id="profileUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\profile\" />
+	</bean>
+	
+	
+	
+	
 	
 	<!-- 자바 SMTP를 활용한 이메일 보내기 (by 구글)  -->
 	<!-- 지메일의 경우 22년 5월 30일부터 smtp를 사용하는 데 있어서 제한이 생겼다.  -->

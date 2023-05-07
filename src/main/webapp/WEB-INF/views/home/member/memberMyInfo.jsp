@@ -1448,7 +1448,7 @@ label {
 		$("input[type='file']").on('change', function(e){ 
 			/* 기존의 이미지 존재 시 삭제 */
 			if( $(".imgDeleteBtn").length > 0){ 
-				deleteFile();
+				deleteFile();	
 			}
 			// 화면의 이동없이 데이터를 서버로 전달하기 위하여 가상의 <form>태그 역할을 하는 FormData객체 생성.
 				// 화면 전환 없이 FromData객체에 담아서 ajax로 보내는 방식.
@@ -1616,8 +1616,7 @@ label {
 		$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
 			console.log("getJSON 호출 성공");
 			// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
-			
-			if(arr.length !== 1){
+			if(arr.fileName == null){
 				// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
 				console.log("이미지가 없음");
 				let str = "";

@@ -89,6 +89,7 @@ text-decoration: none;
 				<li><a class="adminSidemenu specialA" href='adminNoticeList.do'>공지사항 관리</a></li>
 				<li><a class="adminSidemenu specialA" href='adminRepair.do' id="repairGo">유지보수</a></li>
 				<li><a class="adminSidemenu specialA" href='adminBannerManage.do' id="bannerManage">배너 관리</a></li>
+				<li><a class="adminSidemenu specialA" href='adminTest' id="bannerManage">테스트 게시판</a></li>
 			</ul>
 		</div>
 	</div>

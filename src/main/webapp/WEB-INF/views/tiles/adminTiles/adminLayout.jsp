@@ -19,13 +19,16 @@
 }
 .sideWrapper{
 	width: 11%;
+	position: fixed;
 }
 .mainWrapper {
 	width: 89%;
+	margin-left: 11%;
+	
 }
 .headerWrapper {
 	width: 100%;
-	height: 3%;
+	height: 5%;
 	background-color: whitesmoke;
 }
 .bodyWrapper{
@@ -34,6 +37,7 @@
 }
 .footerWrapper{
 	background-color: whitesmoke;
+	margin-top: 5%;
 	width: 100%;
 	height: 8%;
 }

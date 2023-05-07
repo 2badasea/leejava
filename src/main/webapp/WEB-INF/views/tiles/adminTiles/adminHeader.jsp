@@ -9,6 +9,6 @@
 <!-- Custom styles for this template-->
 </head>
 <body>
-	<span>admin header 영역</span>
+	<span style="float: right;">알림</span>
 </body>
 </html>

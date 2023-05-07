@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.uploadfile.UploadfileMapper">
+	
+	<insert id="uploadfileInsert" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		insert into uploadfile values(
+								#{fileBoard},
+								#{fileBno},
+								#{fileUuid},
+								#{fileUploadpath},
+								#{fileOriginname},
+								#{fileType}
+								)
+	</insert>
+	
+	<!-- 게시글 업로드 파일 조회 -->
+	<select id="uploadfileSelect" resultType="co.bada.leejava.uploadfile.UploadfileVO">
+		SELECT * FROM UPLOADFILE WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
+	</select>
+	
+	<!-- 첨부파일 테이블에서 삭제 처리. 같은 게시글 모두  -->
+	<delete id="uploadfileDelete" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		DELETE FROM UPLOADFILE 
+			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno}
+	</delete>
+	
+	<!-- 첨부파일 테이블에서 삭제 처리. 개별 하나만 UUID 값으로 where조건을 걸어두었다. -->
+	<delete id="uploadfileDeleteOne" parameterType="co.bada.leejava.uploadfile.UploadfileVO">
+		DELETE FROM UPLOADFILE
+			WHERE FILEBOARD = #{fileBoard} AND FILEBNO = #{fileBno} AND FILEUUID = #{fileUuid}
+	</delete>
+
+</mapper>

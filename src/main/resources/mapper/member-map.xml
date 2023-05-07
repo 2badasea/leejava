@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.member.MemberMapper">
+
+<select id="memberSelectList" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * 
+	FROM MEMBER
+</select>
+
+<!-- 관리자 회원목록, 뷰로 가져오기 -->
+<select id="v_memberSelectList" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * 
+	FROM V_MEMBERLIST
+</select>
+
+<!-- 원래 이메일 중복여부와 로그인 용도를 위해 선언했지만, 단순히 정보만 조회하는 것으로, 이메일 여부와 -->
+<select id="memberSelect" parameterType="co.bada.leejava.member.MemberVO"
+resultType="co.bada.leejava.member.MemberVO">
+	SELECT * FROM MEMBER WHERE M_EMAIL = #{m_email} 
+		<if test="m_password !=null">
+			AND M_PASSWORD = #{m_password}
+		</if>
+		<if test="m_phone !=null">
+			AND M_PHONE = #{m_phone}
+		</if>
+</select>
+<!-- 이메일 아이디를 통해 salt값을 조회 -->
+<!--  logger.Info 릃호출해서 봐야한다 -->
+<select id="selectSalt" parameterType="co.bada.leejava.member.MemberVO" resultType="string">
+	SELECT M_SALT 
+	FROM MEMBER 
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+
+<insert id="memberInsert" parameterType="co.bada.leejava.member.MemberVO">
+	INSERT INTO MEMBER VALUES(
+		#{m_email}, #{m_nickname}, #{m_password}, sysdate, 
+		#{m_joinpath}, #{m_phone}, #{m_address}, #{m_status}, #{m_birthdate}, #{m_salt}, #{m_intro})
+</insert>
+
+<!-- 멤버 정보 업데이트 할 때, 오라클에서 제공하는 nvl함수를 이용하여 값이 날라온 것들을 대상으로만 정보가 변경될 수 있도록 -->
+<update id="memberUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER SET 
+		M_NICKNAME = NVL( #{m_nickname}, M_NICKNAME), 
+		M_PASSWORD = NVL( #{m_password}, M_PASSWORD),  
+		M_PHONE = 	 NVL( #{m_phone}   , M_PHONE ),
+		M_ADDRESS =  NVL( #{m_address} , M_ADDRESS),
+		M_STATUS =   NVL( #{m_status}  , M_STATUS), 
+		M_SALT =     NVL( #{m_salt}    , M_SALT),
+		M_INTRO =    NVL( #{m_intro}   , M_INTRO)
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<!-- 회원탈퇴의 경우 상태만 변경하고, 스케줄러나 프로지서를 통해 일주일 뒤에 완전 삭제가능한지 체크 -->
+<delete id="memberDelete" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER SET M_STATUS = 'WITHDRAWL' WHERE M_EMAIL = #{m_email}
+</delete>
+
+<select id="memberEmailCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	SELECT
+		 CASE WHEN COUNT(*)=0  THEN 'TRUE'  ELSE 'FALSE' END 
+	FROM MEMBER
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- 닉네임 중복체크 확인 -->
+<select id="memberNicknameCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	SELECT 
+		CASE WHEN COUNT(*)=0 THEN 'TRUE' ELSE 'FALSE' END
+	FROM MEMBER
+	WHERE M_NICKNAME = #{m_nickname}
+</select>
+
+<!-- 동의약관 insert부분. -->
+<insert id="memberJointerms" parameterType="co.bada.leejava.member.MemberVO">
+	INSERT INTO JOINTERMS VALUES(
+		#{m_email}, 
+		#{m_privacy}, 
+		#{m_promotion}
+		)
+</insert>
+<!-- 새로운 비밀번호로 업데이트하는 구문 ( 로그인 페이지. 새로운 비밀번호 찾는 과정에서 )-->
+<update id="ajaxNewPasswordUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_SALT = #{m_salt}, 
+			M_PASSWORD = #{m_password} 
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<!-- 회원 개인 정보 조회 ( member테이블 + joinTerms 테이블 조인시킴. 나중에 정보 더 추가될 수도 있음. -->
+<select id="memberMyInfoList" resultType="co.bada.leejava.member.MemberVO">
+	SELECT  * 
+		FROM MEMBER M INNER JOIN JOINTERMS  J
+		ON M.M_EMAIL = J.M_EMAIL
+		WHERE M.M_EMAIL = #{m_email}
+</select>
+
+<!-- 개인정보 페이지 닉네임 변경 신청 -->
+<update id="ajaxNicknameUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_NICKNAME = #{m_nickname} 
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<insert id="profileInsert" parameterType="co.bada.leejava.AttachImageVO">
+	INSERT INTO PROFILE_IMAGE(M_EMAIL, UPLOADPATH, FILENAME, UUID) 
+	VALUES( #{m_email}, #{uploadPath}, #{fileName}, #{uuid} )
+</insert>
+
+<update id="ajaxImageEnroll" parameterType="co.bada.leejava.AttachImageVO">
+	<!-- 하나라도 null값일 경우가 없음. uploadpath, filename, uuid, m_email이 넘어옴 -->
+	UPDATE PROFILE_IMAGE 
+		SET UPLOADPATH = #{uploadPath}
+			,FILENAME = #{fileName}
+			,UUID = #{uuid} 
+	WHERE M_EMAIL = #{m_email} 
+</update>
+
+<select id="getAttachList" resultType="co.bada.leejava.AttachImageVO">
+	SELECT * 
+		FROM PROFILE_IMAGE 
+	WHERE M_EMAIL = #{m_email}
+</select>
+
+<!-- 프로필 이미지 기존 정보 있는지 조회 -->
+<select id="profileImageCheck" resultType="boolean">
+	SELECT 
+		CASE WHEN COUNT(*) = 0 THEN 'TRUE'  ELSE 'FALSE' END 
+	FROM PROFILE_IMAGE 
+	WHERE M_EMAIL =  #{m_email} 
+</select>
+
+<!-- 프로필 이미지 신규 등록 -->
+<insert id="insertProfileImage" parameterType="co.bada.leejava.AttachImageVO">
+	INSERT INTO PROFILE_IMAGE VALUES(#{m_email}, #{fileName}, #{uploadPath}, #{uuid} )
+</insert>
+
+<!-- 프로필 이미지 업데이트 -->
+<update id="updateProfileImage" parameterType="co.bada.leejava.AttachImageVO">
+	UPDATE PROFILE_IMAGE 
+		SET FILENAME = #{fileName}
+			,UPLOADPATH = #{uploadPath}
+			,UUID = #{uuid}
+	WHERE M_EMAIL = #{m_email} 
+</update>
+
+<!-- 개인장보 동의 여부, 프로모션 동의 여부 업데이트 by memberMyInfo -->
+<update id="ajaxJoinTermsUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE JOINTERMS SET
+		M_PRIVACY = NVL(#{m_privacy}, M_PRIVACY),
+		M_PROMOTION = NVL(#{m_promotion}, M_PROMOTION)
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<select id="emailSelectByNickname" resultType="co.bada.leejava.member.MemberVO">
+	SELECT M_EMAIL
+	FROM MEMBER
+	WHERE M_NICKNAME = #{m_nickname}
+</select>
+
+<select id="memberInfoSelect" resultType="co.bada.leejava.member.MemberVO">
+	SELECT M.M_NICKNAME, M.M_JOINDATE, M.M_INTRO,  M.M_EMAIL,
+				P.FILENAME, P.UPLOADPATH, P.UUID 
+	FROM MEMBER M FULL OUTER JOIN PROFILE_IMAGE P
+		ON M.M_EMAIL = P.M_EMAIL
+	WHERE  M.M_EMAIL = #{m_email}
+</select>
+
+<select id="quizcardInfoSelect" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * 
+	FROM QUIZCARD 
+	WHERE M_EMAIl = #{m_email}
+</select>
+
+<select id="ajaxPwdCheck" parameterType="co.bada.leejava.member.MemberVO" resultType="boolean">
+	 SELECT 
+	 	CASE WHEN  COUNT(*)  = 0 THEN 'TRUE' ELSE  'FALSE' END  
+	 FROM MEMBER 
+	 WHERE M_EMAIL = #{m_email} AND M_PASSWORD = #{m_password}
+</select>
+
+<!-- 회원의 권한 변경 ( 관리자 화면 )  -->
+<update id="memberStatusUpdate" parameterType="co.bada.leejava.member.MemberVO">
+	UPDATE MEMBER 
+		SET M_STATUS = #{m_status} 
+	WHERE M_EMAIL = #{m_email}
+</update>
+
+<!-- 페이징 처리된 회원리스트를 구하기 위한 사전 row데이터 갯수 구하는 작업 ( 관리자 화면)  -->
+<select id="getMemberListCnt" resultType="int">
+	SELECT COUNT(*) 
+		FROM MEMBER M INNER JOIN JOINTERMS J
+					ON M.M_EMAIL = J.M_EMAIL	
+		<trim prefix="where" prefixOverrides="and | or">
+				<if test="m_joinpath !='ALL' ">AND M.M_JOINPATH LIKE '%'||#{m_joinpath}||'%'</if>	
+				<if test="m_email != null and m_email !=''  ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+				<if test="m_nickname != null and m_nickname != '' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+				<if test="frontCal != null and frontCal != '' and backCal != null and  backCal != '' ">
+					AND M.M_JOINDATE BETWEEN REPLACE(#{frontCal},'-','/') AND REPLACE(#{backCal},'-','/') 
+				</if>		
+		</trim>
+</select>
+
+
+<!-- 회원리스트와 페이징 처리하기 된 회원리스트의 출력 데이터(관리자 화면)  -->
+<select id="memberSearchSelect" resultType="co.bada.leejava.member.MemberVO">
+	SELECT * FROM (
+		SELECT ROWNUM RN, A.* FROM (
+			SELECT * FROM MEMBER M 
+						INNER JOIN JOINTERMS J
+					ON M.M_EMAIL = J.M_EMAIL			
+				<trim prefix="where" prefixOverrides="and | or">
+					<if test="m_joinpath !='ALL' ">AND M.M_JOINPATH LIKE '%'||#{m_joinpath}||'%'</if>	
+					<if test="m_email != null and m_email !=''  ">AND M.M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+					<if test="m_nickname != null and m_nickname != '' ">AND M.M_NICKNAME LIKE '%'||#{m_nickname}||'%'</if>
+					<if test="frontCal != null and frontCal != '' and backCal != null and  backCal != '' ">
+						AND M.M_JOINDATE BETWEEN REPLACE(#{frontCal},'-','/') AND REPLACE(#{backCal},'-','/') 
+					</if>		
+				</trim>
+				ORDER BY M.M_JOINDATE DESC
+		) A  
+	) WHERE RN BETWEEN #{start} AND #{end}
+</select> 
+
+
+</mapper>

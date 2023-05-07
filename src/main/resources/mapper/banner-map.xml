@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.banner.BannerMapper">
+	
+		<insert id="bannerInsert" parameterType="co.bada.leejava.banner.BannerVO">
+			INSERT INTO BANNERIMAGE VALUES(
+				( SELECT NVL(MAX(banno)+1, 1) FROM BANNERIMAGE),
+				#{m_email},
+				#{banfile},
+				#{banpfile},
+				#{banapplytitle},
+				#{banapplycontent},
+				TO_CHAR(SYSDATE, 'YY-MM-DD' ) ,
+				#{banapplytype},
+				'',
+				'',
+				'WAITING'			
+				)
+		</insert>
+		
+		<!-- 회원별롯 신청한 배너문의 리스트 출력  -->
+		<select id="bannerimageSelect" resultType="co.bada.leejava.banner.BannerVO">
+			SELECT * FROM BANNERIMAGE
+				<trim prefix="WHERE" prefixOverrides="AND | OR">
+					<if test="m_email != null and m_email != '' ">AND M_EMAIL = #{m_email}</if>
+					<if test="banpoststatus == 'PUBLICING' ">AND BANPOSTSTATUS = #{banpoststatus}</if>
+				</trim>
+			ORDER BY BANAPPLYDATE DESC
+		</select>
+		
+		<!-- 사용자뷰, 배너 신청 현황 조회 -->
+		<select id="bannerApplySelect" resultType="co.bada.leejava.banner.BannerVO">
+			SELECT * FROM	BANNERIMAGE 
+				WHERE BANNO = #{banno}
+		</select>
+		
+		<!-- 페이징 처리를 위한 데이터 건수 조회 -->
+		<select id="getListCnt" resultType="int">
+			SELECT COUNT(*) FROM BANNERIMAGE
+		</select>
+		
+		<!-- 실질적으로 화면에 출력시킬 페이지 출력 쿼리문 -->
+		<select id="bannerApplyList" resultType="co.bada.leejava.banner.BannerVO">
+			SELECT * FROM (
+			    SELECT ROWNUM RN, A.* FROM (
+			    	SELECT * FROM BANNERIMAGE ORDER BY (
+			    									 CASE BANPOSTSTATUS  WHEN 'PUBLICING' THEN 1 
+       												 ELSE 2 END ),  BANAPPLYDATE DESC 
+			        )   A
+			) WHERE RN BETWEEN  #{start} AND #{end}
+		</select>
+		
+		<!-- 배너 상태값 업데이트	 -->
+		<update id="bannerUpdate" parameterType="co.bada.leejava.banner.BannerVO">
+			UPDATE BANNERIMAGE 
+				<trim prefix="SET" suffixOverrides=",">
+					<if test="banfile != null and banfile != '' ">BANFILE = #{banfile},</if>
+					<if test="banpfile != null and banpfile != '' ">BANPFILE = #{banpfile},</if>
+					<if test="banapplytype != null and banapplytype != ''  ">BANAPPLYTYPE = #{banapplytype},</if>
+					<if test="banapplytitle != null and banapplytitle != '' ">BANAPPLYTITLE = #{banapplytitle},</if>
+					<if test="banapplycontent != null and banapplycontent != '' ">BANAPPLYCONTENT = #{banapplycontent},</if>
+					<if test="banpostdate != null and banpostdate != '' ">BANPOSTDATE = #{banpostdate},</if>
+					<!-- 게재상태 4가지 각각에 대한 업데이트에 따른 경우의 수  -->
+					<if test="banpoststatus == 'EXPIRE'">BANPOSTSTATUS = #{banpoststatus}, BANPOSTENDDATE = TO_CHAR(SYSDATE, 'YY-MM-DD'),</if>
+					<if test="banpoststatus == 'DECLINE' ">BANPOSTSTATUS = #{banpoststatus},</if>
+					<if test="banpoststatus == 'WAITING' ">BANPOSTSTATUS = #{banpoststatus}, BANPOSTDATE = '', BANPOSTENDDATE = '',</if>
+					<if test="banpoststatus == 'PUBLICING' ">BANPOSTSTATUS = #{banpoststatus}, BANPOSTDATE = TO_CHAR(SYSDATE, 'YY-MM-DD'), BANPOSTENDDATE =  TO_CHAR(SYSDATE + #{banapplytype} , 'YY-MM-DD') ,</if>
+				</trim>
+				WHERE BANNO = #{banno}
+		</update>
+	
+	
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- summernote 이미지업로드 경로 bean으로 등록하기 -->
+	<bean id="summernoteImageUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\summernoteimageupload\" />
+	</bean>
+	
+	<!-- 공지사항 첨부파일 업로드 경로 bean으로 등록하기 -->
+	<bean id="noticeUploadPath" class="java.lang.String">
+		<constructor-arg value="C:\leejava\noticeuploadfiles\" />
+	</bean>
+	
+	<!-- 자바 SMTP를 활용한 이메일 보내기 (by 구글)  -->
+	<!-- 지메일의 경우 22년 5월 30일부터 smtp를 사용하는 데 있어서 제한이 생겼다.  -->
+	<!-- gmail설정 -->
+<!-- 	<bean id="mailSender2" class="org.springframework.mail.javamail.JavaMailSenderImpl">  -->
+<!-- 	     <property name="host" value="smtp.gmail.com" /> -->
+<!-- 	     <property name="port" value="587" /> -->
+<!-- 	 <property name="username" value="gnjqtpf1@gmail.com"/> 자신의 이메일 아이디 -->
+<!-- 	 <property name="password" value="dldudtn12"/> 자신의 비밀번호 -->
+<!-- 	  보안연결 TLS과 관련된 설정 --> 
+<!-- 	     <property name="javaMailProperties"> -->
+<!-- 			    <props> -->
+<!-- 			       <prop key="mail.smtp.auth">true</prop> -->
+<!-- 			       <prop key="mail.smtp.ssl.enable">true</prop> -->
+<!-- 			       <prop key="mail.transport.protocol">smtp</prop> -->
+<!-- 				   <prop key="mail.debug">true</prop> -->
+<!-- 				   <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop> -->
+<!-- 				   <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop> -->
+<!-- 			    </props> -->
+<!-- 	     </property> -->
+<!-- 	</bean> -->
+	
+	<!-- navermail설정 혹시나 구글 설정이 안 되는 경우 네이버 활용. -->
+	<!-- 마찬가지로 잘 되는지 체크하고 비밀번호 부분은 지우자 -->
+	<!-- bean으로 등록한  id이름으로 autowired 어노테이션으로 주입이 가능하다.  -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+	 <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
+	 <property name="port" value="465"/> <!-- 메이서버 포트번호 -->
+	 <property name="username" value="gnjqtpf1"/> <!-- 자신의 이메일 아이디 -->
+	 <property name="password" value="whtnwjd34^^"/> <!-- 자신의 비밀번호 -->
+	   <!-- 보안연결 SSL과 관련된 설정 -->
+		 <property name="javaMailProperties">
+ 			  <props>
+				  <prop key="mail.smtp.auth">true</prop>
+				  <prop key="mail.smtp.starttls.enable">true</prop>
+				  <prop key="mail.smtps.checkserveridentity">true</prop>
+				  <prop key="mail.smtps.ssl.trust">*</prop>
+				  <prop key="mail.debug">true</prop>
+				  <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+			  </props>
+	 	</property>
+	</bean>
+	
+	
+		
+</beans>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.board.BoardMapper">
+	
+	<!-- 페이징&검색  처리를 하기 위한 사전 정보. 게시글의 총 갯수 구하기 -->
+	<select id="getBoardListCnt" resultType="int">
+		SELECT COUNT(*) 
+			FROM BOARD
+			<!-- 검색항목은 작성자(boardWriter), 제목(boardTitle), 내용(boardContents)  -->
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+				<if test="boardTitle != '' and boardContents == '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+				<if test="boardTitle == '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+				<if test="boardTitle != '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%' OR BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+			</trim>
+	</select>
+	
+	<!-- 페이징&검색 처리한 게시글 리스트 -->
+	<select id="boardSearchSelect" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM (
+			SELECT ROWNUM AS RN, A.* FROM (
+				SELECT * FROM BOARD 
+				<trim prefix="where" prefixOverrides="and | or">
+					<if test="boardWriter != '' ">AND BOARDWRITER LIKE '%'||#{boardWriter}||'%'</if>
+					<if test="boardTitle != '' and boardContents == '' ">AND BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+					<if test="boardTitle == '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%'</if>
+					<if test="boardTitle != '' and boardContents != '' ">AND BOARDCONTENTS LIKE '%'||#{boardContents}||'%' OR BOARDTITLE LIKE '%'||#{boardTitle}||'%'</if>
+				</trim>
+				ORDER BY BOARDWDATE DESC
+				) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<!-- 자유게시판 게시글 등록 -->
+	<insert id="boardInsert" parameterType="co.bada.leejava.board.BoardVO">
+		INSERT INTO BOARD 
+			VALUES( 
+				BOARD_NO_SEQ.NEXTVAL,  
+				TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
+				'',
+				#{boardWriter},
+				#{boardTitle},
+				#{boardContents},
+				0,
+				0,
+				#{bfileCheck},
+				0
+			)
+	</insert>
+	
+	<!-- 자유게시판 개별 게시글 조회 -->
+	<select id="boardSelect" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM BOARD WHERE BOARDNO = #{boardNo}
+	</select>
+	
+	<!-- 마지막으로 생성된 게시글 번호 조회 (파일 업로드 테이블을 위한 데이터 -->
+	<select id="getBno" resultType="int">
+		SELECT MAX(BOARDNO) FROM BOARD
+	</select>
+	
+	<!-- 자유게시판 조회수 업데이트  -->
+	<update id="boardHitUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET BOARDHIT = #{boardHit} WHERE BOARDNO = #{boardNo}
+	</update>
+	
+	<!-- 자유게시판 개별 삭제 -->
+	<delete id="boardDelete" parameterType="co.bada.leejava.board.BoardVO">
+		DELETE FROM BOARD 	
+			WHERE BOARDNO = #{boardNo}
+	</delete>
+	
+	<!-- 자유게시판 추천여부 확인 -->
+	<select id="boardLikeCheck" resultType="string">
+		SELECT BOARDLIKEVALUE FROM BOARD_LIKEIT 
+			WHERE NICKNAME = #{boardLikeNick} AND BOARDNO = #{boardNo}
+	</select>
+	
+	<insert id="boardLikeitInsert" parameterType="co.bada.leejava.board.BoardVO">
+		INSERT INTO BOARD_LIKEIT VALUES( #{boardLikeNick}, #{boardNo}, #{boardLikeValue} )
+	</insert>
+	
+	<update id="boardLikeitUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET BOARDLIKEIT = #{boardLikeit} WHERE BOARDNO = #{boardNo}
+	</update>
+	
+	<!-- 자유게시판 추천테이블 row 데이터 삭제 -->
+	<delete id="boardLikeitDelete" parameterType="co.bada.leejava.board.BoardVO">
+		DELETE FROM BOARD_LIKEIT WHERE NICKNAME = #{boardLikeNick} AND BOARDNO = #{boardNo}
+	</delete>
+	
+	<!-- 자유게시판 내용 업데이트 업데이트  -->
+	<update id="boardUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD SET 
+			BOARDHIT = 		 NVL( #{boardHit}, BOARDHIT),  
+			BOARDRDATE = 	 NVL( #{boardRdate}   , BOARDRDATE ),
+			BOARDWDATE =  	 NVL( #{boardWdate} , BOARDWDATE),
+			BOARDWRITER =	 NVL( #{boardWriter}  , BOARDWRITER), 
+			BOARDTITLE =     NVL( #{boardTitle}    , BOARDTITLE),
+			BOARDCONTENTS =  NVL( #{boardContents}   , BOARDCONTENTS),
+			BOARDLIKEIT = 	 NVL( #{boardLikeit}, BOARDLIKEIT),
+			BFILECHECK = NVL( #{bfileCheck}, BFILECHECK)
+		WHERE BOARDNO = #{replyCnt}
+	</update>
+	
+	
+	<!-- 자유게시판 댓글 수 업데이트 위의 단순한 컬럼 한 개의 변경으로 위 boardUpdate를 사용하는 건 성능낭비 -->
+	<update id="boardReplyCntUpdate" parameterType="co.bada.leejava.board.BoardVO">
+		UPDATE BOARD 
+				SET
+					REPLYCNT = REPLYCNT + #{replyCnt}
+				WHERE 
+					BOARDNO = #{boardNo}
+	</update>
+	
+	<!-- 메인페이지에 노출 시킬 자유게시판 5개 리스트 -->
+	<select id="mainBoardSelectList" resultType="co.bada.leejava.board.BoardVO">
+		SELECT * FROM (
+			SELECT * FROM BOARD ORDER BY BOARDWDATE DESC 
+			) WHERE ROWNUM BETWEEN 1 AND 5
+	</select>
+	
+	
+		
+
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.repair.RepairMapper">
+
+	<!-- 유지보수 게시판의 페이징을 출력하기 위한 사전정보 (총 게시글의 갯수 구하기) -->	
+	<select id="getRepairListCnt" resultType="int">
+		SELECT COUNT(*) 
+			FROM REPAIR 
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="rcategory != 'ALL' ">AND RCATEGORY LIKE '%'||#{rcategory}||'%' </if>
+				<if test="rgrade != 'ALL' ">AND RGRADE LIKE '%'||#{rgrade}||'%'</if>
+				<if test="rstatus != 'ALL' ">AND RSTATUS LIKE '%'||#{rstatus}||'%'</if>
+				<if test="rtitle != '' and rtitle != null ">AND RTITLE LIKE '%'||#{rtitle}||'%'</if>
+				<if test="rcontent !='' and rcontent != null">AND RCONTENT LIKE '%'||#{rcontent}||'%'</if>
+				<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+			</trim>
+			<trim prefix="ORDER BY">
+				<!-- 'ASC'값 말고는 조건과 함께 기본적으로 최신 순으로 나열한다.   -->
+				<if test="rtimeorder == 'DESC' ">RWDATE DESC</if>
+				<if test="rtimeorder == 'ASC'  ">RWDATE ASC</if>
+				<if test="rtimeorder == 'RGRADEORDER' ">
+					(
+					 CASE RGRADE 
+					 WHEN 'A' THEN 0
+					 WHEN 'B' THEN 1
+					 WHEN 'C' THEN 2
+					 ELSE 3
+					 END
+					),RWDATE ASC
+				</if>
+				<if test="rtimeorder == 'RSTATUSORDER' ">
+					(
+					CASE RSTATUS 
+					WHEN 'ALL' THEN 0
+					WHEN 'FIXING' THEN 1
+					WHEN 'FIXED' THEN 2
+					ELSE 3
+					END
+					)
+					,RWDATE ASC
+				</if>
+				<if test="rtimeorder != 'DESC' and rtimeorder != 'ASC' and rtimeorder != 'RGRADEORDER' and rtimeorder != 'RSTATUSORDER' ">
+					RWDATE DESC	
+			    </if>
+			</trim>
+	</select>
+	
+	<!-- 페이징 처리가 된 초기 유지보수 리스트  -->
+	<select id="repairSearchSelect" resultType="co.bada.leejava.repair.RepairVO">
+		SELECT * FROM (
+			SELECT ROWNUM AS RN, A.* FROM (
+					SELECT * FROM REPAIR 
+				<trim prefix="where" prefixOverrides="and | or">
+					<if test="rcategory != 'ALL' ">AND RCATEGORY LIKE '%'||#{rcategory}||'%' </if>
+					<if test="rgrade != 'ALL' ">AND RGRADE LIKE '%'||#{rgrade}||'%'</if>
+					<if test="rstatus != 'ALL' ">AND RSTATUS LIKE '%'||#{rstatus}||'%'</if>
+					<if test="rtitle != '' and rtitle != null ">AND RTITLE LIKE '%'||#{rtitle}||'%'</if>
+					<if test="rcontent !='' and rcontent != null">AND RCONTENT LIKE '%'||#{rcontent}||'%'</if>
+					<if test="m_email !='' and m_email != null ">AND M_EMAIL LIKE '%'||#{m_email}||'%'</if>
+				</trim>
+				<trim prefix="order by">
+					<if test="rtimeorder == 'DESC'"> RWDATE DESC</if>
+					<if test="rtimeorder == 'ASC'  ">RWDATE ASC</if>
+					<if test="rtimeorder == 'RGRADEORDER' ">
+						(
+						 CASE RGRADE 
+						 WHEN 'A' THEN 0
+						 WHEN 'B' THEN 1
+						 WHEN 'C' THEN 2
+						 ELSE 3
+						 END
+						),RWDATE DESC
+					</if>
+					<if test="rtimeorder == 'RSTATUSORDER' ">
+						(
+						CASE RSTATUS 
+						WHEN 'ALL' THEN 0
+						WHEN 'FIXING' THEN 1
+						WHEN 'FIXED' THEN 2
+						ELSE 3
+						END
+						)
+						,RWDATE DESC
+					</if>
+					<if test="rtimeorder != 'DESC' and rtimeorder != 'ASC'  and rtimeorder != 'RGRADEORDER' and rtimeorder != 'RSTATUSORDER' ">
+						RWDATE DESC	
+					</if>
+				</trim>
+			) A 
+		) 
+		WHERE RN BETWEEN #{start} AND #{end} 
+	</select>
+	
+	<!-- 유지보수 건수 등록 -->
+	<insert id="repairInsert" parameterType="co.bada.leejava.repair.RepairVO">
+		INSERT INTO REPAIR 
+			VALUES(
+				(SELECT NVL(MAX(RNO)+1, 1) FROM REPAIR)
+				, #{rcategory}
+				, #{rtitle}
+				, #{rcontent}   
+				, TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS')
+				, ''
+			    , #{rstatus}
+				, #{m_email}
+			    , #{rgrade}
+			)
+	</insert>
+	
+	<!-- 유지보수 게시판 개별 rowdate 조회 -->
+	<select id="repairList" resultType="co.bada.leejava.repair.RepairVO">
+		SELECT * FROM REPAIR
+			WHERE RNO = #{rno}
+	</select>
+	
+	<!-- 유지보수 게시판 업데이트 -->
+	<update id="repairListUpdate" parameterType="co.bada.leejava.repair.RepairVO">
+		UPDATE REPAIR SET 
+					RSTATUS = NVL(#{rstatus}, RSTATUS),
+					RTITLE = NVL(#{rtitle}, RTITLE),
+					RCATEGORY = NVL(#{rcategory}, RCATEGORY),
+					RCONTENT = NVL(#{rcontent}, RCONTENT),
+					<choose>
+						<when test="rstatus == 'FIXED' ">
+							RFDATE = to_char(sysdate, 'YY-MM-DD HH24:MI:SS'),
+						</when>
+						<when test="rstatus == 'FIXING' or rstatus =='ALL' ">
+							RFDATE = '',
+						</when>
+						<otherwise>
+							RFDATE = RFDATE,
+						</otherwise>
+					</choose>
+					RGRADE = NVL( #{rgrade}, RGRADE)
+		WHERE RNO = #{rno}
+	</update>
+	
+	<!-- 유지보수 게시판 개별 삭제 -->
+	<delete id="repairListDelete" parameterType="co.bada.leejava.repair.RepairVO">
+		DELETE FROM REPAIR 
+			WHERE RNO = #{rno}
+	</delete>
+	
+</mapper>

@@ -10,8 +10,9 @@
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
 <style>
 .noticeReadFormWrapper {
-	margin-top: 10%;
-	margin-left: 15%;
+	margin-top: 7%;
+	margin-left: 10%;
+	margin-bottom: 10%;
 }
 /* 새로운 공지사항 폼 */
 .noticeForm{
@@ -35,13 +36,13 @@ hr{
 .noticeFormHeaderHr{
 	width: 100%;
 }
-span{
+.noticeReadFormWrapper span{
 	font-weight: 900;
 	
 }
 .noticeFormBody{
 	padding: 10px;
-	min-height: 400px;
+	min-height: 300px;
 	width: 98%; 
 	height: auto;
 }
@@ -104,7 +105,7 @@ img,
 	padding: 5px;
 	width: auto;
 	height: auto;
-	color: 	#05AA6D;
+	color: 	#313348;
 	background-color: whitesmoke;
 	font-weight: 900;	
 	min-width: 100px;
@@ -112,7 +113,7 @@ img,
 }
 .noticeReadFormBtns button:hover {
 	cursor: pointer;
-	background-color: #05AA6D;
+	background-color: #313348;
 	color: whitesmoke;
 	transition: 0.5s;
 }

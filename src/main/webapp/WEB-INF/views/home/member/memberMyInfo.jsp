@@ -1616,7 +1616,7 @@ label {
 		$.getJSON("getAttachList.do", { m_email : m_email }, function(arr){
 			console.log("getJSON 호출 성공");
 			// 서버로부터 이미지 정보를 요청하였지만 전달받은 이미지가 없는 경우 콜백함수를 실행할 필요가 없음. 
-			if(arr.fileName == null){
+			if(arr.fileName == ''){
 				// 이미지가 없을 경우 콜백함수를 빠져나가도록 한 부분에 기본이미지가 출력되도록 함. 
 				console.log("이미지가 없음");
 				let str = "";

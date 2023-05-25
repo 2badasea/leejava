@@ -27,19 +27,22 @@
 	
 }
 .headerWrapper {
+	position: fixed;	
 	width: 100%;
 	height: 5%;
 	background-color: whitesmoke;
+	top: 0;
 }
 .bodyWrapper{
 	width: 100%;
-	height: 89%;
+	overflow-y: scroll;
 }
 .footerWrapper{
+	position: fixed;
 	background-color: whitesmoke;
-	margin-top: 5%;
 	width: 100%;
 	height: 8%;
+	bottom: 0;
 }
 </style>
 </head>

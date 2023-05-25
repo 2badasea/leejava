@@ -12,21 +12,21 @@
 <link rel="stylesheet" href="resources/css/summernote/summernote-lite.css">
 <style>
 .mainFormWrapper {
-	margin-left: 10%;
-	margin-top: 5%;
+	margin-top: 5%;    
+	margin-right: 25%;
 }
 .noticeFormTable {
 	margin-top: 2%;
 	border-collapse: collapse;
-	border: 1px solid #05AA6D; 
+	border: 1px solid #313348; 
 }
 .noticeFormTable tr{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 }
 .noticeFormTable th{
 	font-size: 18px;
 	height: 30px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #313348;
 	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -35,9 +35,9 @@
 	text-align: center;
 }
 .noticeFormTable td{
-	border-bottom: 1px solid #05AA6D;
+	border-bottom: 1px solid #313348;
 	height: 20px;
-	border-left: 1px solid #05AA6D;
+	border-left: 1px solid #313348;
 	padding: 5px;
 }
 #n_category,
@@ -49,7 +49,7 @@
 }
 #n_category,
 #n_title{
-	border-bottom: 1px dashed #05AA6D;
+	border-bottom: 1px dashed #313348;
 }
 #n_category{
 	text-align: center;
@@ -66,16 +66,16 @@
 	padding: 5px;
 	width: auto;
 	height: auto;
-	color: 	#05AA6D;
-	background-color: whitesmoke;
+	color: 	whitesmoke;
+	background-color: #313348;
 	font-weight: 900;	
 	min-width: 100px;
 	min-height: 40px;
 }
 .noticeRegisterBtns button:hover {
 	cursor: pointer;
-	background-color: #05AA6D;
-	color: whitesmoke;
+	background-color: whitesmoke;
+	color: #313348;
 	transition: 0.5s;
 }
 .changeFileBtn{
@@ -84,8 +84,8 @@
 	padding: 5px;
 	width: auto;
 	height: auto;
-	color: 	#05AA6D;
-	background-color: whitesmoke;
+	color: 	whitesmoke;
+	background-color: #313348;
 	font-weight: 900;	
 	min-width: 70px;
 	min-height: 30px;
@@ -94,8 +94,8 @@
 }
 .changeFileBtn:hover{
 	cursor: pointer;
-	background-color: #05AA6D;
-	color: whitesmoke;
+	background-color: whitesmoke;
+	color: #313348;
 	transition: 0.5s;
 }
 
@@ -116,7 +116,7 @@ a:hover {
 
 <body>
 	<div class="noticeUpdateForm_wrapper">
-		<div class="mainFormWrapper">
+		<div class="mainFormWrapper" align="center">
 			<h3>공지사항 수정하기</h3>
 			<!-- 공지사항 항목 구성( 카테고리, 제목, 내용, 첨부파일 -->
 			<form action="noticeUpdate.do" id="frm" method="post" enctype="multipart/form-data">
@@ -164,16 +164,13 @@ a:hover {
 	$('.noticeRegisterBtn').on('click', function(){ 
 		// 제목만 체크
 		var noticeTitle = $("#n_title").val();
-		if( noticeTitle === null) {
-			alert("제목을 입력하세요");
-			$("#n_title").focus(); 
-			return false;
-		}
-		// 글을 등록할 때와 마찬가지로 빈 내용은 등록이 불가능하게 한다.
 		var noticeContent = $("#summernote").val();
-		if( noticeContent === ""){ 
-			alert("빈 내용은 공지사항 등록이 불가능합니다."); 
-			$("#summernote").focus(); 
+		var tempNoticeContent = noticeContent.replaceAll('&nbsp;', '');
+		tempNoticeContent = tempNoticeContent.replaceAll('<p>', '');
+		tempNoticeContent = tempNoticeContent.replaceAll('</p>', '');
+		tempNoticeContent = tempNoticeContent.replaceAll('<br>', '');
+		if( noticeTitle.trim() === '' || tempNoticeContent.trim() === ''){
+			alert("제목 또는 내용을 입력하세요.");
 			return false;
 		}
 		$("#frm").submit();

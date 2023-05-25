@@ -373,7 +373,8 @@ public class MemberController {
 	// 반환해주는 데이터가 json형식이 되도록 지정해주기 위해 @GetMapper 어노테이션에 produces속성을 추가
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
-		
+		System.out.println("================================= 컨트롤러 확인?");
+		System.out.println("=================================== 결과: " + memberDao.getAttachList(m_email));
 		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
 	}
 	

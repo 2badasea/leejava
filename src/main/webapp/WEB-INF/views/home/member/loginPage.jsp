@@ -377,7 +377,7 @@
 		var regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		if(inputEmail !== "" && regEmail.test(inputEmail) ){
 				// ajax로 일단 해당 계정이 존재하는지 체크한다. => 따로 이벤트로 정의했다. 코드가 길어질까봐
-				if( emailExistCheck(inputEamil) === "YES" ){
+				if( emailExistCheck(inputEmail) === "YES" ){
 					alert("이메일을 전송했습니다.");
 					$("#inputEmail").attr("readonly", "readonly");
 					$("#emailSendBtn").css("display", "none");

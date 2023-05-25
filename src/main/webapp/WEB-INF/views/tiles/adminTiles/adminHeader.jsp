@@ -9,6 +9,6 @@
 <!-- Custom styles for this template-->
 </head>
 <body>
-	<span style="float: right;">알림</span>
+	<span>알림</span>
 </body>
 </html>

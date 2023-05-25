@@ -398,7 +398,7 @@ text-decoration: none;
 	var uploadResult = $(".uploadResult");
 	if(imageemail !== ''){
 		$.getJSON("getAttachList.do", { m_email : imageemail}, function(arr){
-			if(arr.fileName == null){
+			if(arr.fileName == ''){
 				// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
 				console.log("이미지가 없음");
 				let str = "";

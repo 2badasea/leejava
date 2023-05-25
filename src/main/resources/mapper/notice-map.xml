@@ -94,7 +94,7 @@
 <insert id="noticeInsert" parameterType="co.bada.leejava.notice.NoticeVO">
 	INSERT INTO NOTICE 
 	VALUES( 
-		(SELECT MAX(N_NO)+1 FROM NOTICE),
+		(SELECT NVL(MAX(N_NO), 0 ) +1 FROM NOTICE),
 		#{n_writer},
 		TO_CHAR(SYSDATE, 'YY-MM-DD HH24:MI:SS'),
 		#{n_category},

@@ -77,9 +77,9 @@ text-decoration: none;
 	<!-- 왼쪽 사이드바 -->
 	<div class="adminSidebar_wrapper">
 		<div class="adminSidebarMenu" align="center">
-			<h5>현재 관리자 닉네임: ${session_nickname }</h5>
-			<h5>현재 관리자 권한: ${session_status }</h5>
-			<h5>현재 관리자 아이디: ${session_user }</h5>
+			<h5>관리자 닉네임: ${session_nickname }</h5>
+			<h5>관리자 권한: ${session_status }</h5>
+			<h5>관리자 아이디: ${session_user }</h5>
 			<button type="button" class="tempHomeBtn" onclick="location.href='home.do'">홈으로 가기</button>
 			<button type="button" class="tempHomeBtn" onclick="location.href='adminPage.do'">관리자 홈</button>
 		</div>

@@ -9,7 +9,10 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <style>
 .mainSearchWrapper {
-	margin-top: 10%;
+	margin-top: 5%;
+}
+.adminNoticeList_wrapper{
+	margin-right: 15%;
 }
 .searchTh {
 	width: 100px;
@@ -21,9 +24,14 @@
 tr > td {
 	text-align: center;
 }
+.noticeListWrapper{
+}
+.noticeListOptions{
+	margin-left: 55%;
+	margin-top: 2%;
+}
 .noticeListBtns { 
-	padding-left: 70%;
-	
+	margin-top: 1%;
 }
 .noticeListBtns button { 
 	margin-right: 10px;
@@ -176,6 +184,7 @@ input[type="checkbox"]{
 <body>
 	<div class="adminNoticeList_wrapper">
 		<div class="mainSearchWrapper">
+				<h2 style="text-align: center;">공지사항 검색</h2>
 			<!--검색 공간이 들어가야 하는 곳. ( 검색항목: 카테고리, 제목, 내용, 작성일자  )-->
 				<div class="noticeSearch" align="center">
 					<table class="noticeSearchTable">
@@ -216,35 +225,37 @@ input[type="checkbox"]{
 			<!---------------실질적인 공지사항 리스트들의 목록 --------------------->
 			<div class="noticeListWrapper" align="center">
 				<h2>공지사항 리스트</h2>
-				<c:choose>
-					<c:when test="${pagination.listCnt lt pagination.end }">
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
-					</c:when>
-					<c:otherwise>
-						<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
-					</c:otherwise>
-				</c:choose>
-				&nbsp;&nbsp;&nbsp;
-				<select class="paging" name="searchType" id="listSize" onchange="page(1)">
-					<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건 보기</option>
-					<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option>
-					<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option>
-				</select>
-				<div class="noticeListBtns">
-					<button type="button" class="noticeFormBtn">공지사항 작성</button>
-					<button type="button" class="selectDeleteBtn">선택 삭제</button>
+				<div class="noticeListOptions">
+					<c:choose>
+						<c:when test="${pagination.listCnt lt pagination.end }">
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>
+						</c:when>
+						<c:otherwise>
+							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.end }건)</span>
+						</c:otherwise>
+					</c:choose>
+					&nbsp;&nbsp;&nbsp;
+					<select class="paging" name="searchType" id="listSize" onchange="page(1)">
+						<option value="10" <c:if test="${pagination.getListSize() == 10 }">selected="selected"</c:if>>10건 보기</option>
+						<option value="15" <c:if test="${pagination.getListSize() == 15 }">selected="selected"</c:if>>15건 보기</option>
+						<option value="20" <c:if test="${pagination.getListSize() == 20 }">selected="selected"</c:if>>20건 보기</option>
+					</select>
+					<div class="noticeListBtns">
+						<button type="button" class="noticeFormBtn">공지사항 작성</button>
+						<button type="button" class="selectDeleteBtn">선택 삭제</button>
+					</div>
 				</div>
 				<div class="noticeList">
 					<!--체크박스 공간,  글번호, 작성날짜, 카테고리, 제목, 상단 고정, 관리( 수정, 삭제, 고정or고정취소)  -->
-					<table class="noticeListTable">
+					<table class="noticeListTable" style="width: 80%;">
 						<tr class="noticeListTableThTr">
-							<th style="width: 50px;" class="listTh"><input type="checkbox" id="allCheckBtn"></th>
-							<th style="width: 80px;" class="listTh">글번호</th>
-							<th style="width: 100px;" class="listTh">작성일</th>
-							<th style="width: 100px;" class="listTh">카테고리</th>
-							<th style="width: 400px;" class="listTh">제목</th>
-							<th style="width: 100px;" class="listTh">상단고정</th>
-							<th style="width: 300px;" class="listTh">관리</th>
+							<th style="width: 3%;" class="listTh"><input type="checkbox" id="allCheckBtn"></th>
+							<th style="width: 6%;" class="listTh">글번호</th>
+							<th style="width: 15%;" class="listTh">작성일</th>
+							<th style="width: 8%;" class="listTh">카테고리</th>
+							<th style="width: 30%;" class="listTh">제목</th>
+							<th style="width: 7%;" class="listTh">상단고정</th>
+							<th style="width: 14%;" class="listTh">관리</th>
 						</tr>
 						<c:forEach items="${notice }" var="notice">
 							<tr class="noticeListTr">

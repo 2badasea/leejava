@@ -11,7 +11,7 @@
 </head>
 <body>
 
-	<span>Copyright &copy; Your Website 2022</span>
+	<span>Copyright &copy; Your Website 2023</span>
 
 </body>
 </html>

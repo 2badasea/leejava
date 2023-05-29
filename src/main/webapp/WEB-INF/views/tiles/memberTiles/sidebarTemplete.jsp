@@ -301,6 +301,10 @@ text-decoration: none;
 	max-height: 100px;
 	max-width: 100px;
 }
+.mainLogoImg{
+	width: 90%;
+	padding: 10px;
+}
 </style>
 </head>
 <body>
@@ -308,6 +312,7 @@ text-decoration: none;
 <input type="hidden" id="hiddenSessionInfo" data-nickname=${session_nickname }>
 <input type="hidden" id="fileboardInput" data-board="1">
 <div class="sidebarTemplete_wrapper">
+		<a href="home.do"><img class="mainLogoImg" src="${pageContext.request.contextPath}/resources/image/codergroundmainlogo.jpg"></a>
 		<div class="sidebar_userInfo" align="center">
 <!-- 			<a href="home.do"> -->
 				<div class="uploadResult" onclick="location.href='home.do'">
@@ -316,7 +321,6 @@ text-decoration: none;
 <!-- 			</a> -->
 			<c:if test="${empty session_user}">
 				<div class="sidebar_beforeLogin" >
-					<span>안녕하세용</span>
 					<br>
 					<button type="button" class="sidebar_loginBtn">Login</button>
 					<br>
@@ -333,7 +337,6 @@ text-decoration: none;
 				</div>
 			</c:if>
 		</div>
-		<br>
 		
 		<div class="sidebar_menu" align="center">
 			<ul id="mainMenu">
@@ -349,7 +352,6 @@ text-decoration: none;
 					<li><a href="memberNoticeList.do" class="sideMenu community">공지사항</a></li>
 					<li><a href="boardList.do" class="sideMenu community">자유게시판</a></li>
 					<li><a href="#" class="sideMenu community">QNA</a></li>
-					<li><a href="#" class="sideMenu community">정보/팁</a></li>
 					<li><a href="#" class="sideMenu community">스터디/정기모임</a></li>
 			</ul>
 		<!-- 로그인해서 세션값이 존재하는 유저만 button이 보이도록 한다. -- -->
@@ -423,11 +425,11 @@ text-decoration: none;
 		}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
 	} else {  
 		// 일단은 임시로 로그인하지 않은 경우 => 기본 이미지를 출력시키도록 한다.
-		let str = "";
-		str += "<div id='basic_result_card'>";
-		str += "<img src='resources/image/userimage.jpg'>";
-		str += "</div>";
-		uploadResult.html(str);
+// 		let str = "";
+// 		str += "<div id='basic_result_card'>";
+// 		str += "<img src='resources/image/userimage.jpg'>";
+// 		str += "</div>";
+// 		uploadResult.html(str);
 	}
 
 

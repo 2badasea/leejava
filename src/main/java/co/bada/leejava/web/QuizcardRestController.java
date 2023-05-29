@@ -454,4 +454,6 @@ public class QuizcardRestController {
 		return new ResponseEntity<QuizcardVO>(quizcardDao.scrapQuestionSelect(qvo), HttpStatus.OK);
 	}
 	
+	
+	
 }

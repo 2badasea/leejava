@@ -14,7 +14,8 @@
 			#{quizcard_set_status},
 			#{quizcard_set_intro},
 			0,
-			#{quizcard_type}
+			#{quizcard_type},
+			0
 		)
 	</insert>
 	
@@ -35,7 +36,7 @@
 	<select id="quizcardSelect" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT Q.QUIZCARD_SET_NO, Q.QUIZCARD_SET_NAME, Q.QUIZCARD_SET_CDATE, 
 				Q.QUIZCARD_SET_UDATE, Q.QUIZCARD_SET_STATUS, Q.QUIZCARD_SET_INTRO,
-				 Q.QUIZCARD_TYPE ,C.QUIZCARD_CATEGORY 
+				 Q.QUIZCARD_TYPE, Q.QUIZCARD_REPLYCNT, ,C.QUIZCARD_CATEGORY 
 		FROM QUIZCARD Q INNER JOIN QUIZCARD_CATEGORY C 
 		ON Q.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
 		WHERE Q.QUIZCARD_SET_NO = #{quizcard_set_no}
@@ -58,7 +59,7 @@
 	<!-- 퀴즈카드 메인페이지 게시판에 보여줄 목록 -->
 	<select id="quizcardList" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT  S.QUIZCARD_SET_NO,  S.QUIZCARD_SET_HIT, S.QUIZCARD_SET_LIKEIT, 
-				S.QUIZCARD_SET_CDATE, S.QUIZCARD_SET_UDATE, S.QUIZCARD_TYPE,
+				S.QUIZCARD_SET_CDATE, S.QUIZCARD_SET_UDATE, S.QUIZCARD_TYPE, Q.QUIZCARD_REPLYCNT,
 				S.QUIZCARD_SET_NAME, M.M_NICKNAME, C.QUIZCARD_CATEGORY
 		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
 							ON  S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
@@ -87,9 +88,9 @@
 	
 	<!-- 해당 퀴즈카드 set_no 기준 댃글 갯수 조회 -->
 	<select id="quizcardReplyCount" parameterType="co.bada.leejava.quizcard.QuizcardVO" resultType="int">
-		SELECT  COUNT(QUIZCARD_REPLY_NO) 
+		SELECT  QUIZCARD_REPLYCNT
 			FROM 
-				QUIZCARD_REPLY 
+				QUIZCARD 
 			WHERE 
 				QUIZCARD_SET_NO = #{quizcard_set_no}
 	</select>
@@ -99,7 +100,7 @@
 		<!--  리턴타입은 ㅟ즈카드 vo객체다. -->
 		SELECT M.M_EMAIL, M.M_NICKNAME, S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME, S.QUIZCARD_SET_CDATE,
 		    	S.QUIZCARD_SET_UDATE, S.QUIZCARD_SET_LIKEIT, S.QUIZCARD_SET_STATUS, S.QUIZCARD_SET_INTRO, 
-		    	S.QUIZCARD_SET_HIT, S.QUIZCARD_TYPE,  C.QUIZCARD_CATEGORY
+		    	S.QUIZCARD_SET_HIT, S.QUIZCARD_TYPE, S.QUIZCARD_REPLYCNT,  C.QUIZCARD_CATEGORY
 		FROM QUIZCARD  S INNER JOIN QUIZCARD_CATEGORY C 
 							ON S.QUIZCARD_SET_NO  = C.QUIZCARD_SET_NO
 		    			INNER JOIN MEMBER M
@@ -188,16 +189,19 @@
 		AND QUIZCARD_NO = #{quizcard_no}
 	</select>
 	
+	<!-- 퀴즈카드 정보 수정 -->
 	<update id="ajaxQuizInfoUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		UPDATE QUIZCARD 
 			SET
 				QUIZCARD_SET_NAME = NVL(#{quizcard_set_name}, QUIZCARD_SET_NAME),
 				QUIZCARD_SET_INTRO = NVL(#{quizcard_set_intro}, QUIZCARD_SET_INTRO),
 				QUIZCARD_SET_STATUS = NVL(#{quizcard_set_status}, QUIZCARD_SET_STATUS),
-				QUIZCARD_TYPE = NVL(#{quizcard_type}, QUIZCARD_TYPE)
+				QUIZCARD_TYPE = NVL(#{quizcard_type}, QUIZCARD_TYPE),
+				QUIZCARD_REPLYCNT = NVL(#{quizcard_replycnt}, QUIZCARD_REPLYCNT)
 			WHERE 
 				QUIZCARD_SET_NO = #{quizcard_set_no}
 	</update>
+	
 	
 	<select id="ajaxScrapSelect" resultType="boolean" parameterType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT CASE COUNT(*)  
@@ -388,5 +392,4 @@
 		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
-
 </mapper>

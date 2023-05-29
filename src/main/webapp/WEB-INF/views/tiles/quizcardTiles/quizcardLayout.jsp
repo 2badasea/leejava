@@ -40,7 +40,7 @@ body{
 }
 
 .footerWrapper {
-	background-color: #FFF0F0;
+	background-color: whitesmoke;
 	height: 70px;
 }
 .footerWrapper{

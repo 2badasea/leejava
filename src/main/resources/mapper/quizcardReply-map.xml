@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.bada.leejava.quizcardreply.QuizcardReplyMapper">
+	
+	<!-- 특정 퀴즈카드 세트 번호 댓글 전체 출력 -->
+	<select id="quizcardReplyList" resultType="co.bada.leejava.quizcardreply.QuizcardReplyVO">
+				SELECT * FROM (
+			        SELECT ROWNUM AS RN, A.* FROM (
+		                    SELECT * FROM QUIZCARD_REPLY   WHERE QUIZCARD_REPLY_BNO = #{quizcardSetBno}
+		                        START WITH  QUIZCARD_REPLY_PARENT = 0 CONNECT BY PRIOR QUIZCARD_REPLY_RNO = QUIZCARD_REPLY_PARENT 
+		                        
+		                        ORDER SIBLINGS BY  QUIZCARD_REPLY_WDATE ASC   
+			           ) A 
+    	) WHERE RN BETWEEN  1 AND 20  <!-- rownum값 기준으로 가져오는 것 개선해보기 -->
+	</select>
+	
+</mapper>

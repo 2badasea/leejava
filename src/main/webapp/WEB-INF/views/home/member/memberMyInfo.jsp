@@ -1502,7 +1502,7 @@ label {
 		})
 	
 		// 업로드할 이미지 파일의 형식과 용량이 알맞은지 체크. 만약 아니라면 경고창과 함께 onchage이벤트에서 벗어나도록
-		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
+		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg|png)$");
 		let maxSize = 1048576; //1MB
 		
 		function fileCheck(fileName, fileSize){ 

@@ -148,13 +148,10 @@ public class QuizcardController {
 			// 조회수 업데이트
 			quizcardDao.quizcardHitUpdate(qvo);
 		}
-		// Quizcard_set_no별 문제갯수, 댓글갯수를 먼저 보내고,
+		// Quizcard_set_no별 문제갯수
 		int quizcardQuestionCount = quizcardDao.quizcardQuestionCount(qvo);
 		logger.info("============ 퀴즈카드 문제 갯수: " + quizcardQuestionCount );
-		int quizcardReplyCount = quizcardDao.quizcardReplyCount(qvo);
-		logger.info("=============퀴즈카드 댓글 갯수: " + quizcardReplyCount);
 		model.addAttribute("quizcardQuestionCount", quizcardQuestionCount);
-		model.addAttribute("quizcardReplyCount", quizcardReplyCount);
 		
 		// 마지막으로 나머지 정보를 모두 보낸다.
 		qvo = quizcardDao.quizcardBeforeInfo(qvo);

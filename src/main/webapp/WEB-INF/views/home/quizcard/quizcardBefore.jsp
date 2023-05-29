@@ -8,6 +8,10 @@
 <title>퀴즈카드 대기 페이지</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="https://kit.fontawesome.com/fe7e33d80b.js" crossorigin="anonymous"></script>
+<!-- summernote를 위해 필요한 부분 -->
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-lite.js"></script>
+<script src="${pageContext.request.contextPath}/resources/summernote/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/summernote/summernote-lite.css">
 <style>
 /* 퀴즈카드 학습모드 선택 모달창 */
 .quizcardInfoWrapper {
@@ -55,10 +59,6 @@ textarea{
     padding: 10px;
 }
 
-.quizcardReply {
-    margin-top: 10px;
-    border: 1px solid darkblue
-}
 .beforeA{
 	color: black;
 }
@@ -280,6 +280,49 @@ legend{
 	width: auto;
 	margin-left: 50px;
 }
+/* 댓글 관련 스타일 */
+.quizcardReplyWrapper{
+    margin-top: 1%;
+    margin-left: 1%;
+    width: 55%;
+}
+.quizcardReplyWriting{
+	display: flex;
+	justify-content: space-around;
+	padding: 15px;
+}
+.quizcardReplyInsertBtn{
+	border-radius: 20px;
+	border-style: none;
+	padding: 5px; 	
+	width: auto;
+	height: auto;
+	color: 	#05AA6D;
+	background-color: whitesmoke;
+	font-weight: 900;	
+	min-width: 70px;
+	min-height: 30px;
+	
+	float: right;
+	margin-right: 10%;
+	width: 100px;
+	height: 40px;
+}
+.quizcardReplyInsertBtn:hover{
+	cursor: pointer;
+	background-color: #05AA6D;
+	color: whitesmoke;
+	transition: 0.5s;
+}
+.quizcardReplyWriterBox{
+	width: 10%;
+}
+.quizcardReplyWritingForm {
+	width: 90%;
+}
+.quizcardReplyList{
+	margin-top: 100px;
+}
 </style>
 </head>
 <body>
@@ -325,9 +368,30 @@ legend{
             <h3><b>퀴즈카드 만든이</b>  <a class="setCreaterClickA"><img src="resources/image/loopy.jpeg">${qvo.m_nickname }</a></h3>
             <textarea class="quizcardIntroArea" cols="30" rows="10" readonly="readonly">${qvo.quizcard_set_intro }</textarea>
         </div>
-        <div class="quizcardReply">
-            <p>댓글영역 추후 작업. 총 댓글 갯수:  ${quizcardReplyCount }</p>
+        <!-- 퀴즈카드 댓글 작업 공간 -->
+        <br><br><br>
+        <hr style="width: 56%;">
+        <div class="quizcardReplyWrapper" style="display: none;">
+            <!-- 댓글 작성폼 : 로그인 유저만 노출 -->
+            <c:if test="${not empty session_user }">
+            	<div class="quizcardReplyWriting">
+            		<div class="quizcardReplyWriterBox">
+		     			<img alt="" src="${pageContext.request.contextPath}/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">
+		     		</div>
+			     	<div class="quizcardReplyWritingForm">
+			     		<textarea id="summernote" class="quizcardReplyContents"></textarea>
+			     	</div>
+            	</div>
+            	<div>
+            		<button class="quizcardReplyInsertBtn" type="button">등록하기</button>
+            	</div>
+            </c:if>
         </div>
+        <br><br><br>
+        <hr style="width: 56%;">
+        <div class="quizcardReplyList">
+	   		 	<!-- 댓글 리스트 출력 by ajax -->
+   		</div>
 </div>
     <!-- 위에가 새로운 레이아웃 -->
 	<!-- 퀴즈카드 학습모드 모달창 -->
@@ -401,6 +465,9 @@ legend{
     <!-- ----------------------------------------------- -->
 </body>
 <script>
+	const thisSetNo = $("#quizcardBeforeSetNo").val();
+	const session_user = $("#session_user").val(); 
+	
 	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
 	$(".setCreaterClickA").on("click", function(e){
 		console.log("유저 닉네임 클릭");
@@ -515,9 +582,8 @@ legend{
 </script>
 <script>
 	// 페이지가 로드되자마자 실행시킬 이벤트
+	
 	$(function(){
-		var thisSetNo = $("#quizcardBeforeSetNo").val();
-		var session_user = $("#session_user").val(); 
 		
 		console.log("세트번호: " + thisSetNo );
 		// ajax로 호출 => 모든 문제를 배열에 담고 => 인덱스 생성 => prev, next 화살표 정의하기 
@@ -747,5 +813,6 @@ legend{
 		}	
 	})
 </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/quizcardReply.js?v=<%=System.currentTimeMillis() %>"></script>
 
 </html>

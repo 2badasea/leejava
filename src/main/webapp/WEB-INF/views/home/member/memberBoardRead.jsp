@@ -312,7 +312,7 @@
 	</div>
 </div>
 </body>
-<!-- 댓글 관련 로직 -->
+<!-- 댓글 관련 script 파일 -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/reply.js?v=<%=System.currentTimeMillis() %>"></script>
 <script>
 	
@@ -794,7 +794,6 @@ var setting = {
 			
 		})
 		
-		
 	})
 	
 	// 대댓글 작성 취소 버튼 정의 => 해당 div remove() 시키기
@@ -806,7 +805,6 @@ var setting = {
 		// 창 지워버리기
 		calcelDiv.remove(); 
 	})
-	
 	
 	/*
 	 * 댓글 등록 요청 부분
@@ -992,11 +990,6 @@ var setting = {
 		$$(updateBox[1]).text(updateData.board_Reply_Content);
 		
 	})
-
-	
-	
-
-
 
 	// getSelect(특정 1개 댓글 조회)
 //		replyService.replySelectOne(getData, function(data){

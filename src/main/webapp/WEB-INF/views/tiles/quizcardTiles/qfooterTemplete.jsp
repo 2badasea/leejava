@@ -9,6 +9,6 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
-footer 영역
+	<span>Copyright &copy; Your Website 2023</span>
 </body>
 </html>

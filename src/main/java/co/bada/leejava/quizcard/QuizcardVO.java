@@ -18,6 +18,7 @@ public class QuizcardVO {
 	private String quizcard_set_intro;			// 퀴즈카드 소개(설명) 
 	private int quizcard_set_hit;				// 퀴즈카드 조회수
 	private String quizcard_type;				// 퀴즈카드 유형(box, 주관식, 객관식)
+	private int quizcard_replycnt;				// 댓글 개수
 	
 	
 	// Quizcard_category 테이블

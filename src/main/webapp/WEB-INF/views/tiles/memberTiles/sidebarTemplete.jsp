@@ -135,7 +135,7 @@
 	min-width: 100px;
 	width: auto; 
 	height: 80px;
-	margin-top: 55%;
+	margin-top: 30%;
 	background-color: white;
 	color: #05AA6D;
 	font-weight: 700;
@@ -321,6 +321,8 @@ text-decoration: none;
 <!-- 			</a> -->
 			<c:if test="${empty session_user}">
 				<div class="sidebar_beforeLogin" >
+					<span>테스트 아이디: test@test.com </span><br>
+					<span>테스트 비밀번호: !테스트12 </span>
 					<br>
 					<button type="button" class="sidebar_loginBtn">Login</button>
 					<br>
@@ -400,7 +402,7 @@ text-decoration: none;
 	var uploadResult = $(".uploadResult");
 	if(imageemail !== ''){
 		$.getJSON("getAttachList.do", { m_email : imageemail}, function(arr){
-			if(arr.fileName == ''){
+			if(arr.length == 0 || arr.fileName == ''){
 				// 이미지가 없을 경우 => 기본이미지가 출력되도록 한다.
 				console.log("이미지가 없음");
 				let str = "";

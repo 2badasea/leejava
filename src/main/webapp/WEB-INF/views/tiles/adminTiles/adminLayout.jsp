@@ -18,24 +18,21 @@
 	display: flex;
 }
 .sideWrapper{
-	width: 11%;
-	position: fixed;
+	top: 0;
+	width: 12%;
+ 	position: fixed; 
 }
 .mainWrapper {
-	width: 89%;
-	margin-left: 11%;
-	
+	flex: 1;
+	margin-left: 12%;
 }
 .headerWrapper {
-	position: fixed;	
 	width: 100%;
 	height: 5%;
 	background-color: whitesmoke;
-	top: 0;
 }
 .bodyWrapper{
-	width: 100%;
-	overflow-y: scroll;
+ 	min-height: 700px;
 }
 .footerWrapper{
 	position: fixed;

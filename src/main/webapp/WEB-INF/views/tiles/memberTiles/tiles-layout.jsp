@@ -18,13 +18,14 @@
 	display: flex;
 }
 .memberTilesSideWrapper {
+	top: 0;
 	width: 12%;
-	position: fixed;
-
+ 	position: fixed; 
 }
 .memberTilesMainWrapper {
- 	width: 88%; 
- 	margin-left: 12%; 
+/*   	width: 88%;   */
+	flex: 1;
+	margin-left: 12%;
 }
 .memberTilesHeaderWrapper {
 	width: 60%; 	
@@ -32,11 +33,11 @@
 	height: 25%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
 }
 .memberTilesBodyWrapper{
-	min-height: 800px;
+ 	min-height: 700px; 
 }
 .memberTilesFooterWrapper{
 	background-color: whitesmoke;
-	margin-top: 200px;
+ 	margin-top: 200px; 
 	padding: 20px;
 	height: 70px;
 }

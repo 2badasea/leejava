@@ -11,6 +11,7 @@
 .mainWrapper {
 	margin-left: 15%;
 	margin-top : 1%;
+	width: 45%;
 }
 /*	공지사항 테이블 디자인 */
 .noticeTable{
@@ -56,8 +57,8 @@
 }
 .noticeSearchWrapper{
 	display: flex;
-	margin-top: 30px;
-	margin-left: 300px;
+	margin-top: 1%;
+	justify-content: center;
 }
 .noticeSearchWrapper > select, input {
 	margin-right: 0.5%;
@@ -104,25 +105,27 @@
 .paginationBox{
 	display: flex;
 	justify-content: center;
-	margin-right: 500px;
-	margin-top: 20px;
+	margin-top: 1%;
 }
 .active a{
 	font-weight: bolder;
 	color: tomato;
 	font-size: large;
-} 
+}
+.noticeListSizeOption{
+	margin-left: 83%;
+}
 </style>
 </head>
 <body>
 	<div class="memberNoticeList_wrapper">
 		<div class="mainWrapper">
 			<div class="noticeListWrapper">
-				<div style="margin-left: 30%;">
+				<div align="center">
 					<h1>공지사항</h1>
 				</div>
 				<br>
-				<div style="margin-left: 55%;">
+				<div class='noticeListSizeOption'>
 					<c:choose>
 						<c:when test="${pagination.listCnt lt pagination.end }">
 							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~ ${pagination.listCnt }건)</span>

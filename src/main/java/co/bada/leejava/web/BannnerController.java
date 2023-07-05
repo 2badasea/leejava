@@ -14,10 +14,12 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sound.sampled.AudioFormat.Encoding;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +27,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -112,13 +116,7 @@ public class BannnerController {
 		List<BannerVO> list = new ArrayList<BannerVO>();
 		bvo.setM_email(m_email);
 		list = bannerDao.bannerimageSelect(bvo);
-		if( list.size() != 0) {
-			return new ResponseEntity<List<BannerVO>>(list, HttpStatus.OK);
-		} else { // list변수에 담겨있는 데이터의사이즈 크기 => 0인 경우, null을 리턴.
-			list = null;
-			// 이렇게 리턴해도 되고, 아니면 HttpStatus.OK로 리턴한 다음, 콜백함수 차원에서 반환된 데이터의 길이에 따른 if문을 정의해도 됨.
-			return new ResponseEntity<List<BannerVO>>(list, HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<List<BannerVO>>(list, HttpStatus.OK);
 	}
 	
 	// 관리자뷰의 사이드바에서 배너관리 페이지로 이동 
@@ -228,12 +226,6 @@ public class BannnerController {
 					@RequestParam(required = false, value = "banapplytitle") String banapplytitle,
 					@RequestParam(required = false, value = "banapplycontent") String banapplycontent) throws Exception{
 		
-		System.out.println("새로 선택한 file: " + newFile);
-		System.out.println("기존에 업로드한, exisitngPfileNmae 인코딩 처리 값: " + existingPfilename);
-		System.out.println("새로 선택한 기간 유형 type: " + banapplytype);
-		System.out.println("새로운 title: " + banapplytitle);
-		System.out.println("새로운 content: " + banapplycontent);
-		
 		bvo.setBanno(banno);
 		bvo.setBanapplytype(banapplytype);
 		bvo.setBanapplytitle(banapplytitle);
@@ -276,7 +268,39 @@ public class BannnerController {
 			updateResult = "NO";
 			return new ResponseEntity<String>(updateResult, HttpStatus.NOT_MODIFIED);
 		}
+	}
+	
+	// 배너 신청 취소
+	@ResponseBody
+	@DeleteMapping(value = "ajaxBannerApply/{no}/{pfile}")
+	public ResponseEntity<String> ajaxBannerApply(BannerVO bvo
+												, @PathVariable(value="pfile") String banpfile
+												, @PathVariable(value="no") int banno
+												) throws Exception{
 		
+		logger.info("========================= banno 확인: " + banno);
+		logger.info("========================물리파일 이 nu?? " + ( banpfile == null));
+		if(banpfile !=null) {
+			logger.info("==================== rmBanpfile 존재: " + banpfile);
+			File file = null;
+			try {
+				file = new File(bannerimgUploadPath + URLDecoder.decode(banpfile, "UTF-8"));
+				logger.info("=================== decoder 결과 확인: " + file);
+				// boolean값으로 판단 후, db삭제 시키기
+				boolean b = file.delete();
+				if(b) {
+					bvo.setBanno(banno);
+					int n = bannerDao.ajaxBannerApplyDel(bvo);
+					if(n == 1) {
+						return new ResponseEntity<String>("success", HttpStatus.OK); 
+					}else {
+						return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
+					}
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		} return new ResponseEntity<String>("error", HttpStatus.BAD_REQUEST);
 	}
 	
 	// 배너이미지 신청 거절사유 작성하는 폼 팝업 호출
@@ -304,7 +328,6 @@ public class BannnerController {
 		return new ResponseEntity<List<BannerVO>> (list, HttpStatus.OK);
 		// 보통의 경우 메소드이름과 똑같은  쿼리문 id값을 찾지만, 기존의 list를 출력시키는 "bannerimageSelect" 를 활용한다 <trim>을 줘서
 	}
-	
 	
 	// 배너관리 페이지 => 배너 이미지 조회
 	@GetMapping("bannerDisplay.do")

@@ -22,14 +22,14 @@
 	border-bottom: 0.1px solid lightgray;
 }
 .mainBoards {
-	margin-left: 10%;
+	margin-left: 5%;
 	margin-top: 1%;
 	width: 60%;
 	height: auto;
 }
 .mainBoardsTop, .mainBoardsBottom {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
 }
 
 .bannerBox{

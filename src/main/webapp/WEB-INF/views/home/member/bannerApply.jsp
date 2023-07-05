@@ -85,17 +85,31 @@
 .bannerApplyList{
 	margin-left: 5%;
 	width: 50%;
+	min-height: 25px;
 	height: auto;
-	background: lightgray;
+	background: #05AA6D;
 	display: flex;
+	color: white;
 	justify-content: space-between;
 }
-/* 동적으로 추가된 배너 신청 현황 리스트*/  
+.bannerApplyList span, 
+.bannerApplyList .bannerListIcons{
+	padding: 8px;
+}
+.bannerListIcons{
+}
+.bannerListIcons:hover{
+	cursor: pointer;
+}
+/* 동적으로 추가된 배너 신청 현황 리스트*/   
 .bannerListTable {
 	margin-left: 5%;
 	width: 50%;
 	text-align: center;
 	border-collapse: collapse;
+}
+.bannerListTableTr{
+	height: 40px;
 }
 .bannerapplytitleTd:hover{  /*	해당 배너 신청리스트의 제목에 마우스를 올리면 커서가 활성화되도록 한다. */
 	cursor: pointer;
@@ -103,11 +117,13 @@
 .bannerListTable th{
 	border-bottom: 0.5px solid black;
 	border-left: 0.5px solid black;
+	border-right: 0.5px solid black;
 	font-weight: 700;
 }
 .bannerListTable td{
 	border-left: 0.5px solid #05AA6D;
 	border-bottom: 0.5px solid #05AA6D;
+	border-right: 0.5px solid #05AA6D;
 }
 .bannerListTable tr:not(:first-child):hover{
 	background-color: #F4FFFF;	
@@ -317,143 +333,7 @@
         </div>
         <div class="banapply_modal_layer"></div>
     </div>
-	<script>
-		// 동적으로 생성된 "수정하기"버튼 이벤트 정의
-		$(document).on("click", ".banUpdateCallBtn", function(){
-			var updateCheck = confirm("수정하시겠어요? 최종적으로 \"수정완료\" 버튼을 누르셔야 업데이트 됩니다.");
-			if(!updateCheck){
-				return false;
-			} else {
-				$(".banapplytitle, .banapplycontent").prop("readonly", false);
-				$(".banUpdateCallBtn").text('수정완료!!');
-				$(".banUpdateCallBtn").css({"backgroundColor" : "coral", "color" : "white"});
-				$(".banUpdateCallBtn").addClass("banUpdateEndBtn");
-				$(".banUpdateCallBtn").removeClass('banUpdateCallBtn');
-				// 그리고 동적으로 applytype을 선택하는 select박스와 첨부파일 이미지 선택 <file>태그를 생성한다. 
-				$(".banapplytype").css("display", "none");
-				$('.applyTypeUpdate').css("display", "inline");
-				$(".newBannerFile").css("display","inline");
-			}
-		})
-		
-		// 모달창 닫기
-		$(".banModalCloseBtn").on("click", function(){
-			$(".banapply_modal_container").css("display", "none");
-			$("#frm")[0].reset();
-			$("body").css("overflow", "unset");
-			$(".banapplytype").css("display", "inline");
-			$('.applyTypeUpdate').css("display", "none");
-			$(".banapplytitle, .banapplycontent").prop("readonly", true);
-			// 그리고 WAITING인 신청글에 대해 동적으로 생성된 버튼의 경우 삭제시켜준다.
-			$(".banUpdateCallBtn, .banUpdateEndBtn").remove();
-			$(".newBannerFile").css("display","none");
-			$('#newBannerFile').val('');
-		})
-		
-		// "수정완료" 버튼 이벤트 정의 => 변경된 값들로 업데이트 시킨다. 변경사항이 일어났다면, 버튼을 닫을 때 새로고침. 
-		$(document).on("click", ".banUpdateEndBtn" ,function(){
-				var formData = new FormData();
-				
-				var banno = $(".uploadFileInfo").data('banno');
-				var newType = $(".applyTypeUpdate").val();
-				var newTitle = $(".banapplytitle").val();
-				var newContent = $(".banapplycontent").val();
-				var newFile = $("#newBannerFile")[0];
-				var existingPfileName = $(".uploadFileInfo").data('pfilename');
-				console.log("인코딩 전: " + existingPfileName );
-				existingPfileName = encodeURIComponent( existingPfileName);
-				console.log("인코딩 후 : " + existingPfileName);
-				var regex = new  RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
-				if( newFile.files.length !== 0){
-					if( !regex.test(newFile.files[0].name) ){
-						alert("올바르지 않은 파일 형식입니다.");
-						$("#newBannerFile").val('');
-						return false;
-					} else {
-						// 새로 선택한 이미지 파일이 존재하고, 유효성 체크를 통과 => 기존배너이미지의 물리명과 새로선택한 파일을 formData에 담는다.
-						formData.append("existingPfilename", existingPfileName);
-						formData.append("newBanfile" ,newFile.files[0]);
-					}
-				} 
-				formData.append("banno", banno);
-				formData.append("banapplytype", newType);
-				formData.append("banapplytitle", newTitle);
-				formData.append("banapplycontent", newContent);
-				$.ajax({
-					url: "newBannerUpdate.do",
-					data: formData,
-					method: "PUT",
-					contentType: false,
-					processData : false,
-					success: function(data){
-						console.log("호출 성공");
-						console.log(data);
-						if(data == "YES"){
-							alert("성공적으로 수정되었습니다.");
-							location.reload();
-						}
-						// 그리고 업데이트 되었다면 자동으로 화면 새로고침을 호출한다. 
-					},
-					error: function(err){
-						console.log("호출 실패");
-						console.log(err);
-						location.reload();
-					}
-				})
-		})
-		
-		/*	모달창 관련 스크립트 정의 */
-		// 리스트 제목 클릭 => 글번호를 읽어들여 ajax로 데이터를 가져와서 모달창에 데이터를 넣는다. 
-		$(document).on("click", ".bannerapplytitleTd", function(){
-			var banno = $(this).prev().data('banno');
-			console.log("글번호 확인: " + banno);
-			// 해당 번호를 ajax로 넘겨서 데이터를 모두 가져온다. 
-			var data = { banno : banno};
-			$.ajax({
-				url: "bannerApplySelect.do",
-				type: "GET",
-				data: data,
-				dataType: "json",
-				contentType: "application/json; charset=utf-8",
-				success: function(data){
-					console.log("호출 성공");
-					$(".banapply_modal_container").css("display", "block");
-					$(".banapplydate").val(data.banapplydate);
-					$(".banapplytype").val(data.banapplytype);
-					$(".applyTypeUpdate").val(data.banapplytype);
-					$(".banpoststatus").val(data.banpoststatus);
-					if( data.banpoststatus === 'WAITING'){
-						var str = "<button class='banUpdateCallBtn' style='float: right; margin-right:10px;'>수정하기</button>";
-						$(".banapply_modal_footer").append(str);
-					}
-					$('.banapplytitle').val(data.banapplytitle);
-					$(".banapplycontent").val(data.banapplycontent);
-					$(".banfile").text(data.banfile);
-					$(".uploadFileInfo").data('banno', data.banno);
-					$(".uploadFileInfo").data('filename', data.banfile);
-					$(".uploadFileInfo").data('pfilename', data.banpfile);
-					$("body").css("overflow", "hidden");
-				},
-				error: function(){
-					console.log("호출 실패");
-				}
-			})
-		})
-		
-		// 첨부파일 다운로드
-		$(document).on("click", ".uploadFileLink", function(){
-			console.log("첨부파일 다운로드 시작");
-			var filename = $(".uploadFileInfo").data('filename');
-			var pfilename = $(".uploadFileInfo").data('pfilename');
-			// ajax로 첨부파일 다운로드를 구현해보자
-			var url = "bannerDownload.do?filename=" + filename + "&pfilename=" + pfilename;
-			console.log("filename 값:" + filename);
-			console.log("pfilename 값: " + pfilename);
-			console.log("호출할 url값: " + url);
-			location.href = url;
-		})
-	</script>
-	
+
 <!-- ------------------------------	 -->
 
 	<div class="bannerApplyStatus">
@@ -515,137 +395,302 @@
 	</div>
 </div>
 </body>
+<%-- <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/bannerApply.js" ></script> --%>
 <script>
+	/** Start 배너 신청 정보 수정 모달 */	
+	$(document).on("click", ".banUpdateCallBtn", function() {
+		var updateCheck = confirm("수정하시겠어요? 최종적으로 \"수정완료\" 버튼을 누르셔야 업데이트 됩니다.");
+		if (!updateCheck) {
+			return false;
+		} else {
+			$(".banapplytitle, .banapplycontent").prop("readonly", false);
+			$(".banUpdateCallBtn").text('수정완료!!');
+			$(".banUpdateCallBtn").css({ "backgroundColor": "coral", "color": "white" });
+			$(".banUpdateCallBtn").addClass("banUpdateEndBtn");
+			$(".banUpdateCallBtn").removeClass('banUpdateCallBtn');
+			// 그리고 동적으로 applytype을 선택하는 select박스와 첨부파일 이미지 선택 <file>태그를 생성한다. 
+			$(".banapplytype").css("display", "none");
+			$('.applyTypeUpdate').css("display", "inline");
+			$(".newBannerFile").css("display", "inline");
+		}
+	})
+	
+	// 모달창 닫기
+	$(".banModalCloseBtn").on("click", function() {
+		$(".banapply_modal_container").css("display", "none");
+		$("#frm")[0].reset();
+		$("body").css("overflow", "unset");
+		$(".banapplytype").css("display", "inline");
+		$('.applyTypeUpdate').css("display", "none");
+		$(".banapplytitle, .banapplycontent").prop("readonly", true);
+		// 그리고 WAITING인 신청글에 대해 동적으로 생성된 버튼의 경우 삭제시켜준다.
+		$(".banUpdateCallBtn, .banUpdateEndBtn, .bannerCancelBtn").remove();
+		$(".newBannerFile").css("display", "none");
+		$('#newBannerFile').val('');
+	})
+	
+	
+	// "수정완료" 버튼 이벤트 정의 => 변경된 값들로 업데이트 시킨다. 변경사항이 일어났다면, 버튼을 닫을 때 새로고침. 
+	$(document).on("click", ".banUpdateEndBtn", function() {
+		var formData = new FormData();
+	
+		var banno = $(".uploadFileInfo").data('banno');
+		var newType = $(".applyTypeUpdate").val();
+		var newTitle = $(".banapplytitle").val();
+		var newContent = $(".banapplycontent").val();
+		var newFile = $("#newBannerFile")[0];
+		var existingPfileName = $(".uploadFileInfo").data('pfilename');
+		console.log("인코딩 전: " + existingPfileName);
+		existingPfileName = encodeURIComponent(existingPfileName);
+		console.log("인코딩 후 : " + existingPfileName);
+		var regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg|png)$");
+		if (newFile.files.length !== 0) {
+			if (!regex.test(newFile.files[0].name)) {
+				alert("올바르지 않은 파일 형식입니다.");
+				$("#newBannerFile").val('');
+				return false;
+			} else {
+				// 새로 선택한 이미지 파일이 존재하고, 유효성 체크를 통과 => 기존배너이미지의 물리명과 새로선택한 파일을 formData에 담는다.
+				formData.append("existingPfilename", existingPfileName);
+				formData.append("newBanfile", newFile.files[0]);
+			}
+		}
+		formData.append("banno", banno);
+		formData.append("banapplytype", newType);
+		formData.append("banapplytitle", newTitle);
+		formData.append("banapplycontent", newContent);
+		$.ajax({
+			url: "newBannerUpdate.do",
+			data: formData,
+			method: "PUT",
+			contentType: false,
+			processData: false,
+			success: function(data) {
+				console.log("호출 성공");
+				console.log(data);
+				if (data == "YES") {
+					alert("성공적으로 수정되었습니다.");
+					location.reload();
+				}
+				// 그리고 업데이트 되었다면 자동으로 화면 새로고침을 호출한다. 
+			},
+			error: function(err) {
+				console.log("호출 실패");
+				console.log(err);
+				location.reload();
+			}
+		})
+	})
+	
+	// 리스트 제목 클릭 => 글번호를 읽어들여 ajax로 데이터를 가져와서 모달창에 데이터를 넣는다. 
+	$(document).on("click", ".bannerapplytitleTd", function() {
+		var banno = $(this).prev().data('banno');
+		console.log("글번호 확인: " + banno);
+		// 해당 번호를 ajax로 넘겨서 데이터를 모두 가져온다. 
+		var data = { banno: banno };
+		$.ajax({
+			url: "bannerApplySelect.do",
+			type: "GET",
+			data: data,
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			success: function(data) {
+				console.log("호출 성공");
+				$(".banapply_modal_container").css("display", "block");
+				$(".banapplydate").val(data.banapplydate);
+				$(".banapplytype").val(data.banapplytype);
+				$(".applyTypeUpdate").val(data.banapplytype);
+				$(".banpoststatus").val(data.banpoststatus);
+				// 이미 게시된 것에 대해선 정보 수정 불가능
+				if (data.banpoststatus === 'WAITING') {
+					var str = "<button class='banUpdateCallBtn' style='float: right; margin-right:10px;'>수정하기</button>";
+					var str2 = "<button class='bannerCancelBtn' style='float: right; margin-right:10px;'>신청취소</button>";
+					$(".banapply_modal_footer").append(str).append(str2);
+				}
+				$('.banapplytitle').val(data.banapplytitle);
+				$(".banapplycontent").val(data.banapplycontent);
+				$(".banfile").text(data.banfile);
+				$(".uploadFileInfo").data('banno', data.banno);
+				$(".uploadFileInfo").data('filename', data.banfile);
+				$(".uploadFileInfo").data('pfilename', data.banpfile);
+				$("body").css("overflow", "hidden");
+			},
+			error: function() {
+				console.log("호출 실패");
+			}
+		})
+	})
+	
+	//배너 신청 취소
+	$(document).on("click", ".bannerCancelBtn", function(){
+		console.log("신청취소 클릭");
+		var removeBanNo = $(".uploadFileInfo").data('banno');
+		var removePfile = $(".uploadFileInfo").data('pfilename');
+		removePfile =  encodeURIComponent(removePfile);
+		var banCancelChk = confirm("신청을 취소하시겠어요?");
+		if(banCancelChk){
+			// 삭제 ajax요청
+			$.ajax({
+				url : "ajaxBannerApply/" + removeBanNo + "/" + removePfile,
+				method: "DELETE",
+				success: function(responseText){
+					console.log(responseText);
+					alert("신청이 성공적으로 취소되었습니다.");
+					location.reload();
+				},
+				error: function(xhr, status, error){
+					// 오류 응답 처리
+					console.log('오류: ', error);
+				}
+			})
+		}else {
+			alert("신청이 취소되었습니다.");
+			return false;
+		}
+		// DB상에서 지우고, 실제 local 디렉토리 상의 파일도 삭제 
+	})
+	
+	// 첨부파일 다운로드
+	$(document).on("click", ".uploadFileLink", function() {
+		console.log("첨부파일 다운로드 시작");
+		var filename = $(".uploadFileInfo").data('filename');
+		var pfilename = $(".uploadFileInfo").data('pfilename');
+		// ajax로 첨부파일 다운로드를 구현
+		var url = "bannerDownload.do?filename=" + filename + "&pfilename=" + pfilename;
+		console.log("filename 값:" + filename);
+		console.log("pfilename 값: " + pfilename);
+		console.log("호출할 url값: " + url);
+		location.href = url;
+	})
+	
+	/** End 배너 신청 정보 수정 모달  */
+		
+		
 	const $email = $("#bannerApplyHiddenInput").val();
-	$(".bannerApplyBtn").on("click", function(){
+	$(".bannerApplyBtn").on("click", function() {
 		var formData = new FormData();
 		var $banapplytitle = $(".inputBanapplytitle").val();
 		var $banapplycontent = $(".inputBanapplycontent").val();
 		var $banfile = $(".inputBanfile")[0];
 		var $banapplytype = $("input[name='banapplytype']:checked").val();
 		// 제목이랑 내용 입력값 유무 체크 
-		if($banapplytitle == '' || $banapplycontent == '' ){
+		if ($banapplytitle.trim() == '' || $banapplycontent.trim() == '') {
 			alert("제목과 내용을 입력해주세요");
 			return false;
 		}
 		// 첨부파일의 확장자명 & 존재유무 유효성 체크
-		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg)$");
-		if($banfile.files.length === 0  ){
+		let regex = new RegExp("(.*?)\.(jpg|PNG|JPG|jpeg|png)$");
+		if ($banfile.files.length === 0) {
 			alert("배너로 사용할 이미지를 선택해주세요");
 			return false;
-		} else if( !regex.test($banfile.files[0].name) ){
+		} else if (!regex.test($banfile.files[0].name)) {
 			alert("올바르지 않은 파일 형식입니다.");
 			return false;
 		}
-		console.log("신청자 이메일: " + $email);
-		console.log("제목: " + $banapplytitle );
-		console.log("타입: " + $banapplytype );
-		console.log("내용: " + $banapplycontent  );
-		console.log("파일: " + $banfile );
 		formData.append("m_email", $email);
-		formData.append("banapplytitle", $banapplytitle );
+		formData.append("banapplytitle", $banapplytitle);
 		formData.append("banapplycontent", $banapplycontent);
 		formData.append("banapplytype", $banapplytype);
 		formData.append("banoriginfile", $banfile.files[0]);
-		
+	
 		// formData에 들어있는 key값들 모두 확인
-		for(var key of formData.keys()){
+		for (var key of formData.keys()) {
 			console.log(key);
 		}
 		// formData에 들어있는 value값들 모두 확인
-		for(var value of formData.values()){
+		for (var value of formData.values()) {
 			console.log(value);
 		}
 		// ajax로 데이터를 보낸다.
 		$.ajax({
-			url : "ajaxBannerApply.do",
+			url: "ajaxBannerApply.do",
 			data: formData,
 			type: "POST",
-			processData : false,
+			processData: false,
 			contentType: false, // contentType을 false로 첨부파일을 formData에 담아서 전송가능
-			success: function(data){
+			success: function(data) {
 				console.log("호출 성공");
-				alert(data); 
+				alert(data);
 				location.reload();
 			},
-			error: function(){
+			error: function() {
 				console.log("호출 실패");
 			}
 		})
+	}) 
+	
+	// minusicon,  plusicon 클릭 이벤트에 대한 이벤트 정의
+	$(".minusicon").on("click", function() {
+		$(".bannerListTable").hide();
+		$(this).css("display", "none");
+		$(".plusicon").css("display", "inline");
 	})
 	
-		// minusicon,  plusicon 클릭 이벤트에 대한 이벤트 정의
-		$(".minusicon").on("click", function(){
-			$(".bannerListTable").hide();
-			$(this).css("display", "none");
-			$(".plusicon").css("display", "inline");
-		})
-		
-		$(".plusicon").on("click", function(){
-			$(".bannerListTable").show();
-			$(this).css("display", "none");
-			$(".minusicon").css("display", "inline");
-		})
-		
-		
-</script>
-<script>
-	$(document).on("ready", function(){
+	$(".plusicon").on("click", function() {
+		$(".bannerListTable").show();
+		$(this).css("display", "none");
+		$(".minusicon").css("display", "inline");
+	})
+	
+	
+	/** HTML렌더링 이후에 실행 시킬 소스  */
+	$(document).on("ready", function() {
 		// 회원만 접근이 가능하도록 세션체크를 한다. 
 		var sessionCheck = $("#bannerApplyHiddenInput").val();
-		if(sessionCheck == ''){
+		if (sessionCheck == '') {
 			alert("회원만 접근가능한 메뉴입니다.");
 			location.href = "loginPage.do";
 		}
-		
-		// 이번에는 회원이 접속했을 때 자기 이름으로 된 신청 내역이 있는지 조회. 있으면 화면에 뿌려준다. 
+	
+		// 회원이 접속했을 때 자기 이름으로 된 신청 내역이 있는지 조회. 있으면 화면에 뿌려준다. 
 		var bannercheckEmail = $("#bannerApplyHiddenInput").val();
 		$.ajax({
 			url: "bannerimageSelect.do",
 			method: "GET",
 			data: {
-				m_email : bannercheckEmail
+				m_email: bannercheckEmail
 			},
-			dataType: "json", 
+			dataType: "json",
 			contentType: "application/json; charset=utf-8",
-			success: function(data){
-				console.log("호출 성공");
-				console.log(data);
-				// 원본파일명, 작성날짜, 제목, 게시유형(7일), 게시상태(banpoststatus)
-				var tb = $("<table class='bannerListTable' />");
-				var thtr = $("<tr />").append(
-					$("<th />").text('신청일'),
-					$("<th />").text('제목'),
-					$("<th />").text('신청 유형'),
-					$("<th />").text('이미지 파일명'),
-					$("<th />").text('배너 게시 상태')
-				);
-				tb.append(thtr);
-				$.each(data, function(index, item){
-					var $banno = item.banno;
-					var $banfile = item.banfile;
-					var $banapplydate = item.banapplydate;
-					var $banapplytitle = item.banapplytitle;
-					var $banapplytype = item.banapplytype;
-					var $banpoststatus = item.banpoststatus;
-					var tr = $("<tr />").append(
-						$("<td data-banno='" +  $banno + "' />").text($banapplydate),
-						$("<td class='bannerapplytitleTd' />").text($banapplytitle),
-						$("<td />").text($banapplytype),
-						$("<td />").text($banfile),
-						$("<td />").text($banpoststatus)
+			success: function(data) {
+				if (data.length != 0) {
+					// 원본파일명, 작성날짜, 제목, 게시유형(7일), 게시상태(banpoststatus)
+					var tb = $("<table class='bannerListTable' />");
+					var thtr = $("<tr class='bannerListTableTr' />").append(
+						$("<th />").text('신청일'),
+						$("<th />").text('제목'),
+						$("<th />").text('신청 유형'),
+						$("<th />").text('이미지 파일명'),
+						$("<th />").text('배너 게시 상태')
 					);
-					tb.append(tr);
-				})
-				$(".bannerApplyStatus").append(tb);
+					tb.append(thtr);
+					$.each(data, function(index, item) {
+						var $banno = item.banno;
+						var $banfile = item.banfile;
+						var $banapplydate = item.banapplydate;
+						var $banapplytitle = item.banapplytitle;
+						var $banapplytype = item.banapplytype;
+						var $banpoststatus = item.banpoststatus;
+						var tr = $("<tr />").append(
+							$("<td data-banno='" + $banno + "' />").text($banapplydate),
+							$("<td class='bannerapplytitleTd' />").text($banapplytitle),
+							$("<td />").text($banapplytype),
+							$("<td />").text($banfile),
+							$("<td />").text($banpoststatus)
+						);
+						tb.append(tr);
+					})
+					$(".bannerApplyStatus").append(tb);
+				} else {
+					console.log("신청내역없음");
+				}
 			},
-			error: function(error){
+			error: function(error) {
 				console.log("호출 실패");
 				console.log(error);
-			}	
+			}
 		})
-		
-		
 	})
+	
 </script>
 </html>

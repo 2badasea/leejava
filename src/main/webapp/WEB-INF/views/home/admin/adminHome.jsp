@@ -13,8 +13,5 @@
 	
 </body>
 <script>
-	$(document).on("click", function(){
-		// 관리자 메인 페이지에 출력시킬 메뉴와 기능적인 요소들을 구현해야 한다 . UI, UX 등등
-	})
 </script>
 </html>

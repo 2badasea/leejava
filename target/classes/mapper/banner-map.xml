@@ -18,7 +18,7 @@
 				)
 		</insert>
 		
-		<!-- 회원별롯 신청한 배너문의 리스트 출력  -->
+		<!-- 회원별로 신청한 배너문의 리스트 출력  -->
 		<select id="bannerimageSelect" resultType="co.bada.leejava.banner.BannerVO">
 			SELECT * FROM BANNERIMAGE
 				<trim prefix="WHERE" prefixOverrides="AND | OR">
@@ -68,6 +68,10 @@
 				</trim>
 				WHERE BANNO = #{banno}
 		</update>
+		
+		<delete id="ajaxBannerApplyDel" parameterType="co.bada.leejava.banner.BannerVO">
+			DELETE FROM BANNERIMAGE WHERE BANNO = #{banno}
+		</delete>
 	
 	
 </mapper>

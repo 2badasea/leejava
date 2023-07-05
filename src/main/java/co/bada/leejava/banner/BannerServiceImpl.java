@@ -47,4 +47,9 @@ public class BannerServiceImpl implements BannerService {
 		// TODO Auto-generated method stub
 		return map.bannerUpdate(bvo);
 	}
+
+	@Override
+	public int ajaxBannerApplyDel(BannerVO bvo) {
+		return map.ajaxBannerApplyDel(bvo);
+	}
 }

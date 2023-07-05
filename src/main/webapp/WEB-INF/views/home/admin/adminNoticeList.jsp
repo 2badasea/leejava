@@ -220,9 +220,9 @@ input[type="checkbox"]{
 				</div>
 			<br>
 			<br>
+			<!---------------실질적인 공지사항 리스트들의 목록 --------------------->
 			<hr>
 			<br>
-			<!---------------실질적인 공지사항 리스트들의 목록 --------------------->
 			<div class="noticeListWrapper" align="center">
 				<h2>공지사항 리스트</h2>
 				<div class="noticeListOptions">

@@ -11,6 +11,7 @@
 .mainWrapper {
 	margin-left: 13%;
 	margin-top: 1%;
+	width: 45%;
 }
 .boardTable{
 	margin-top: 2%;
@@ -45,7 +46,7 @@
 
 /*	********************	*/
 .boardList{
-	width: 70%;
+
 }
 .boardListTitleTd:hover{
 	cursor: pointer;
@@ -55,9 +56,8 @@
 }
 .paginationBox{
 	display: flex;
+	margin-top: 1%;
 	justify-content: center;
-	margin-left: 10%;
-	margin-top: 3%;
 }
 .paginationUl > li{
 	list-style-type: none;
@@ -84,9 +84,8 @@
 	font-weight: 900;	
 	min-width: 100px;
 	min-height: 40px;
-	margin-right: 8%;
-	float: right;
-	margin-top: 1%;
+	margin-top: 2%;
+	margin-left: 83%;
 }
 .boardWritingBtn:hover {
 	cursor: pointer;
@@ -113,11 +112,15 @@
 	transition: 0.5s;
 }
 .boardSearchWrapper{
-	margin-left: 20%;
 	margin-top: 1%;
+	display: flex;
+	justify-content: center;
 }
 .boardSearchWrapper select, option, input{
 	height: 20px;
+}
+.boardListSizeOption{
+	margin-left: 80%;
 }
 </style>
 <script>
@@ -132,11 +135,11 @@
 	<div class="memberBoardList_wrapper">
 		<div class="mainWrapper">
 			<div class="boardListWrapper">
-				<div style="margin-left: 28%;">
+				<div align="center">
 					<h1>자유게시판</h1>
 				</div>
 				<br>
-				<div style="margin-left: 55%;">
+				<div class='boardListSizeOption'>
 					<c:choose>
 						<c:when test="${pagination.listCnt lt pagination.end }">
 							<span>(총 ${pagination.listCnt }건 중 ${pagination.start } ~
@@ -180,10 +183,10 @@
 						</tr>
 					</c:forEach>
 				</table>
-				<c:if test="${session_nickname ne null }">
-					<button class="boardWritingBtn">글쓰기</button>
-				</c:if>
 			</div>
+			<c:if test="${session_nickname ne null }">
+				<button class="boardWritingBtn" type="button">글쓰기</button>
+			</c:if>
 			<!-- paging 박스가 들어갈 곳  -->
 			<div id="paginationBox" class="paginationBox">
 				<ul class="paginationUl">

@@ -10,7 +10,7 @@
 <style>
 /*	검색영역, 리스트 영역 공통적으로 적용시킬 디자인 요소	*/
 .memberListWrapper{
-	margin-top: 10%;
+	margin-top: 5%;
 }
 
 .memberListWrapper button{
@@ -31,7 +31,7 @@
 }
 .memberSearch,
 .memberListDiv{
-	padding-right: 10%;
+	margin-right: 15%;
 }
 
 /*	************회원 검색 영역 디자인 **************/
@@ -332,6 +332,7 @@ legend,
 		<div class="memberListWrapper">
 			<!--아래 div는 검색창을 구현한다. 검색항목( 이메일, 닉네임, 가입경로(selectbox) , 가입일  -->
 			<div class="memberSearch" align="center">
+				<h2>회원 검색</h2>
 				<table class="memberSearchTable">
 					<tr>
 						<th>이메일</th>
@@ -365,10 +366,10 @@ legend,
 					<button type="button" class="clearBtn">초기화</button>
 					<button type="button" class="memberSearchBtn">검색</button>
 				</div>
-			</div>
 			<br>
 			<br>
 			<hr>
+			</div>
 			<br>
 			<!-- 아래 div는 회원목록을 보여주는 리스트 -->
 			<div class="memberListDiv" align="center">

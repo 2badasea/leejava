@@ -17,14 +17,8 @@ body{
 	width: 100%;
 	height: 100%;
 }
-	
-/* .wrapper { */
-/* 	width: 100%; */
-/* 	height: 100%; */
-/* 	padding-top: 20px; */
-/* } */
 
-.headerWrapper { /* 얘가 사실상 부모요소의 div역할을 한다  */
+.headerWrapper { 
 	height: 30px;
 	width: 100%;
 	background-color: #FFF0F0;
@@ -35,21 +29,23 @@ body{
 }
 
 .bodyWrapper {
-	min-height: 800px;	
+	min-height: 1000px;	
 	padding-top: 50px;
 }
 
 .footerWrapper {
 	background-color: whitesmoke;
-	height: 70px;
+	height: 100px;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	position: fixed;
 }
 .footerWrapper{
-	margin-top: 200px;
 }
 </style>
 </head>
 <body>
-<!-- 	<div class="wrapper"> -->
 		<div class="headerWrapper">
 			<tiles:insertAttribute name="qheader" />
 		</div>
@@ -59,6 +55,5 @@ body{
 		<div class="footerWrapper">
 			<tiles:insertAttribute name="qfoot" />
 		</div>
-<!-- 	</div> -->
 </body>
 </html>

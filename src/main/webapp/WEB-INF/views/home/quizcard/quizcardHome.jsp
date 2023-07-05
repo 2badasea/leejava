@@ -181,7 +181,7 @@ fieldset {
 }
 
 .quizcardTable {
-	margin-top: 5%;
+	margin-top: 2%;
 	text-align: center;
 	border-collapse: collapse;
 	border: 1px solid teal;

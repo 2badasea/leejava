@@ -18,4 +18,6 @@ public interface BannerMapper {
 	List<BannerVO> bannerApplyList(Search svo);
 	// 배너 상태값 변경 이벤트 
 	int bannerUpdate(BannerVO bvo);
+	// 배너 신청 취소
+	int ajaxBannerApplyDel(BannerVO bvo);
 }

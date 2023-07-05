@@ -322,7 +322,7 @@
 	// 이 페이지의 작성자, 글번호, 첨부파일 유무  
 	const boardWriter = $(".boardReadFormHidden").data('nickname');
 	const boardNo = $('.boardReadFormHidden').data('no');
-	const bfileCheck = $(".boardReadFormHidden").data('file');
+	const bfileCheck = $(".boardReadFormHidden").data('file'); // 첨부 파일 개수
 	
 	// 추천수 클릭
 	$('.boardLikeitDown, .boardLikeitUp').on("click", function(e){
@@ -416,7 +416,7 @@
 		if(!deleteCheck){
 			return false;
 		}
-		// 삭제를 하면, 해당 게시글에 담긴 첨부파일도 모두 삭제되도록 한다. 첨부파일 존재 여부? 
+		// 삭제를 하면, 해당 게시글에 담긴 첨부파일도 모두 삭제되도록 한다. 첨부파일 존재 여부 
 		const deleteNumber = boardNo;
 		let data = {
 				boardWriter : boardWriter,
@@ -424,21 +424,40 @@
 				bfileCheck : bfileCheck
 		};
 		console.log(data);
+		
 		if(bfileCheck !=0){
 			console.log("첨부파일 존재");
+			// 첨부파일 목록들을 모두 가져옴
+			var fileDatas = $('.uploadFileDivs').children('input');
+			var fileAry = [];
+			$.each(fileDatas, function(index, item){
+				var fileCallPath = encodeURIComponent($(item).data('uploadpath') + "\\" + $(item).data('uuid') + "_" + $(item).data('originname'));
+				fileAry.push(fileCallPath);
+				if( $(item).data('filetype') == 1){
+					fileCallPath = encodeURIComponent($(item).data('uploadpath') + "\\s_" + $(item).data('uuid') + "_" + $(item).data('originname'))
+					fileAry.push(fileCallPath);
+				}
+			});
+			const jsonFiles = {'fileName' : fileAry};
+			
 			$.ajax({
 				url:  "uploadfileDelete.do?boardNo=" + boardNo,
-			    type: "GET",
+			    type: "POST",
+			    data : JSON.stringify(jsonFiles),
 			    async: "true",
-			    contentType: "application/text; charset=utf-8",
+			    contentType: "application/json; charset=utf-8", // 생략하면 => x-www-form-urlencoded속성으로 전송됨
 			    dataType: "text",
 			    success: function(res){
 			    	console.log("res: " + res);
 			    	// 첨부파일 삭제 이후 원 게시글 삭제 함수 호출.
-			    	boardDelete(deleteNumber);
+			    	if(res == "success"){
+			    		boardDelete(deleteNumber);
+			    	}else {
+			    		alert("첨부파일을 삭제하는 데 문제가 생겼습니다.");
+			    	}
 			    },
 			    error: function(res){
-			    	console.log("에러: " + res);
+			    	console.log(res);
 			    }
 			})
 		}else {

@@ -2,11 +2,13 @@ package co.bada.leejava.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -16,11 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,7 +102,7 @@ public class BoardController {
 		int n = boardDao.boardInsert(bvo);
 		String message;
 		
-		if(n == 1) {
+		if(n != 0) {
 			if(filesCount == 0) {	// 게시글 등록 성공 & 첨부파일 미존재
 				message = "NOFILE";
 				return new ResponseEntity<String>(message, HttpStatus.OK);
@@ -180,19 +184,46 @@ public class BoardController {
 		
 	}
 	
-	
-	
 	// 자유게시판 개별 게시글 첨부파일 모두 삭제 (uploadfile 테이블 상에서 이루어짐)
 	@ResponseBody
-	@RequestMapping(value = "uploadfileDelete.do", method = RequestMethod.GET, produces = "application/text; charset=utf-8")
-	public String uploadfileDelete(UploadfileVO uvo, @RequestParam int boardNo) {
+	@PostMapping(value = "uploadfileDelete.do", produces = "application/text; charset=utf-8", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> uploadfileDelete(UploadfileVO uvo
+												, @RequestParam int boardNo
+												, @RequestBody Map<String, Object> jsonData) throws Exception{
+		
 		logger.info("======================삭제할 글번호: " + boardNo);
 		uvo.setFileBoard(FILEBOARD);
 		uvo.setFileBno(boardNo);
 		
 		int n = uploadfileDao.uploadfileDelete(uvo);
-		
-		return (n==1) ? "success" : "fail";
+		logger.info("=================== n값 확인 : " + n);
+		boolean fileDeleteCheck = true;
+		if(n != 0) {
+			if (jsonData.containsKey("fileName")) {
+				List<String> fileNameList = (List<String>) jsonData.get("fileName");
+				for (String fileName : fileNameList) {
+					logger.info("value: " + fileName);
+					File file = null;
+					try {
+						file = new File(fileUploadPath + URLDecoder.decode(fileName, "UTF-8"));
+						logger.info("============== file값 확인: " + file);
+						if(file.exists()) {
+							file.delete();
+						}else {
+							logger.info("========================== file.exist() 결과 존재하지 않았음" );
+							fileDeleteCheck = false;
+						}
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (fileDeleteCheck && fileNameList.size() > 0) {
+					return new ResponseEntity<String>("success", HttpStatus.OK);
+				} else {
+					return new ResponseEntity<String>("fail", HttpStatus.NOT_FOUND);
+				}
+			}
+		} return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
 	}
 	
 	// 자유게시판 개별 게시글 삭제

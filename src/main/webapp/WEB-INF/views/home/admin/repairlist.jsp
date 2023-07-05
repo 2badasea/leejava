@@ -24,11 +24,13 @@
 }
 
 .repairSearchWrapper{
-	margin-top: 3%;
 }
-.repairListDiv,
+.repairListDiv{
+	width: 55%;
+	margin-left: 10%;
+}
 .repairSearch{
-	padding-right: 15%;
+	width: 55%;
 }
 .repairFormBtns button,
 .repairSearchWrapper button{
@@ -97,7 +99,7 @@
 }
 
 .repairSearchBtns{
-	margin-top: 20px;
+	margin-top: 2%;
 }
 .repairSearchBtns button{
 	min-width: 100px;
@@ -140,18 +142,18 @@
 	padding: 5px;
 }
 /*  유지보수 리스트 등록하는 폼 디자인 끝나면 다시 block으로 */ 
-.repairSearch{
-	display: none;
-	padding-right: 100px;
-}
+
 /*	유지보수 작성 폼 디자인 */
 .repairForm{
 	border: 0.5px solid #313348;
 	border-radius: 20px;
-	width: 50%;
+	width: 40%;
 	height: auto;
 	padding: 10px;
  	display: display;   
+}
+.repairSearch{
+	display: none;
 }
 .repairFormOpenBtn{
 	display: none;
@@ -186,7 +188,7 @@ textarea:focus,
 	display: none;
 }
 .repairFormSearchBtns {
-	margin-top: 30px;
+	margin-top:1%;
 }
 .repairListTable td{
 	border-left: 1px solid #313348;
@@ -570,6 +572,8 @@ textarea:focus,
   <div class="repairSearchWrapper">	
    		<!-- 유지보수 입력창을 호출하는 폼을 호출한다. --> 
 	<div class="repairSearchWrapperTop">
+		<h1>유지보수 현황 조회</h1>
+		<br>
    		<div class="repairForm">
    			<form id="frm">
 	            <div class="repairFormHeader">
@@ -655,11 +659,11 @@ textarea:focus,
 	           <button type="button" class="repairSearchBtn">검색</button>
 	       </div>
        </div>
-        <div class="repairFormSearchBtns" align="center">
-	   		<button type="button" class="repairFormOpenBtn">유지보수 사항 추가</button>
-	   		<button type="button" class="repairSearchOpenBtn">유지보수 리스트 검색</button>
-   		</div>
    	</div>  <!-- repairSearchWrapperTop 부분 끝 -->
+    <div class="repairFormSearchBtns" align="center">
+  		<button type="button" class="repairFormOpenBtn">유지보수 추가 전환</button>
+  		<button type="button" class="repairSearchOpenBtn">유지보수 검색 전환</button>
+	</div>
    	<script>
    		/*	검색창 이벤트 정리 */
    		// 1. 검색창 입력요소 초기화

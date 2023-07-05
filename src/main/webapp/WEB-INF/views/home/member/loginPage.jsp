@@ -21,7 +21,7 @@
 	width: 40%;
 	display: block;
 	margin-top: 3%;
-	margin-left: 15%;
+	margin-left: 25%;
 	margin-bottom: 10%;
 	z-index: 1;
 }

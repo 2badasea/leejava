@@ -239,7 +239,7 @@ public class FileController {
 		
 		// board테이블 update, uploadfile테이블 delete(row 한 개) 
 		int n = uploadfileDao.uploadfileDeleteOne(uvo);
-		if(n == 1) {
+		if(n != 0) {
 			// board 테이블도 수정
 			bvo.setBoardNo(Integer.parseInt(inputMap.get("boardno")));
 			int modifiedBfileCheck = boardDao.boardSelect(bvo).getBfileCheck() -1; 

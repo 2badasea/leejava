@@ -13,11 +13,12 @@
 .adminBannerManage_wrapper{
 	height: 100%;
 	width: 75%;
+	margin-top: 5%;
 }
 /*	배너 이미지 관리창 디자인 */
 .bannerManageForm{
 	display: flex;
-	min-height: 40%;
+	min-height: 400px;
 }
 
 
@@ -139,7 +140,7 @@
 }
 /*	페이지 상단 PUBLICING 리스트의 박스 디자인 */
 .publicingListBox{
-	margin-left: 25px;
+	margin-left: 10%;
 	width: 40%;
 }
 .bannerimageBox{
@@ -156,7 +157,7 @@
 }
 .banPublicingList td {
 	border-left: 0.3px dotted lightgray;
-	font-size: small;
+	font-size: large;
 }
 .imageFileName {
 	border-style: none;
@@ -178,11 +179,24 @@
 #bannerImage{
 	width: 500px;	
 	height: 200px;
+	margin-top: 5%;
+}
+.selectImageBox{
+	height: 350px;
+}
+.publicingListThTr{
+	font-size: large;
+}
+.publicingListThTr td{
+	padding: 5px;
 }
 .publicingListThTr:hover {
 	background-color: background-color: #B8D7FF;
 }
 .banPublicingList tr:not(.publicingListThTr):hover {
+	background-color: #B8D7FF;
+}
+.clicked{
 	background-color: #B8D7FF;
 }
 </style>
@@ -368,10 +382,10 @@
     <!-- 모달창 끝---------------------------------------------------- -->
     
 	<!-- 크게 두 섹션으로 구성 => 실제 배너이미지 조정하는 부분과 배너신청 현황을 조회하는 곳 -->
-	<div class="bannerManageForm" style="height: 40%; border-bottom: 1px solid navy;">
+	<div class="bannerManageForm" style="border-bottom: 1px solid navy;">
 		<!-- 일단 테이블로 구현한다 => 출력시킬 데이터 항목: 글번호, 이미지파일원본명, 게시시작일, 게시만료일, 게재상태(select) -->
 		<div class="publicingListBox">
-			<h2>배너이미지 리스트</h2>
+			<h2>활성화된 배너이미지</h2>
 			<br>
 			<div class="resultBox">
 				<!-- 여기에 banpoststatus 값이 publicing인 리스트들이 출력된다. -->
@@ -522,12 +536,17 @@
 		console.log("라이브 이벤트 실행 테스트");
 		console.log( $(this).val());
 		console.log( $(this).data('pfile'));
+// 		console.log( $(this).closest('tr'));
 		var banfileName = $(this).val();
 		var banpfileName = $(this).data('pfile');
 		var pfileCallPath = encodeURIComponent( banpfileName );
 		console.log("인코딩 결괏값 확인: " + pfileCallPath);
 		var str = "<img id='bannerImage' src='bannerDisplay.do?banpfileName=" + pfileCallPath + "'>";
 		$(".selectImageBox").html(str);
+		$(".selectImageName").text(banfileName);
+		// 
+		$(this).closest('table').find('.publicingTr').removeClass('clicked');
+		$(this).closest('tr').addClass('clicked');
 	})
 	
 </script>

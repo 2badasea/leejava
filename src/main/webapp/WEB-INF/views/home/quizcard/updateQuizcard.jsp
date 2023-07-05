@@ -305,12 +305,7 @@
         	},
         	success: function(result){
         		console.log(result);
-        		// 업데이트 성공하고 나서, 문제명, 힌트, 답안은 업데이트한 걸로 value값 세팅하기. => 해줄 필요 없음.
-//         		$(e.target).closest(".questionFormBody").find(".quizcard_question_name").val(quizcard_question_name);
-//         		$(e.target).closest(".questionFormBody").find(".quizcard_question_hint").val(quizcard_question_hint);
-//         		$(e.target).closest(".questionFormBody").find(".quizcard_question_answer").val(quizcard_question_answer);
         	}
-        	
         })
         
     })
@@ -478,7 +473,6 @@
 		if ( $(this) === $("input[name='quizcard_set_status']")){
 			console.log("공개여부 blue이벤트 발생");
 		}
-		
 		var setName = $("#setName").val();
 		var	setIntro = $(".quizcard_set_intro").val();
 		console.log("세트 이름: " + setName);
@@ -524,7 +518,6 @@
 			$(".deleteQuestionBtn:first").css("display", "none");
 			$(".addQuestionBtn").not(".addQuestionBtn:last").css("display", "none");
 		}
-		
 		// DB에 저장된 quizcard_set_status값에 따라 미리 radio버튼에 체크를 준다.
 			// 더 간결하게 코드를 짤 수 있는 방법이 생각이 나지 않았음.
 		var status = $(".statusValue").data("statusvalue");

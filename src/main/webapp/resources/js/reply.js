@@ -128,11 +128,11 @@ var replyService = (function(){
 	
 	// return 시키는 객체에 key,value 형식으로 함수를 등록한다. 외부에서 replyService.key 를 호출하면 함수가 호출된다.
 	return {
-	 	replyInsert : Fn_replyInsert,
-	 	replySelectList : Fn_replyList,
-	 	replyDelete : Fn_replyDelete,
-	 	replyUpdate : Fn_replyUpdate,
-	 	replySelectOne : Fn_replySelectOne,
-	 	replyUpdateGroup : Fn_replyGroupUpdate
+	 	replySelectList : Fn_replyList,				// 댓글 전체 출력
+	 	replyInsert : Fn_replyInsert,  				// 댓글 등록
+	 	replyDelete : Fn_replyDelete,				// 댓글 삭제
+	 	replyUpdate : Fn_replyUpdate,				// 댓글 수정
+	 	replySelectOne : Fn_replySelectOne,			// 댓글 1개 조회
+	 	replyUpdateGroup : Fn_replyGroupUpdate		// 부모 댓글 group값 업데이트(insert or delete 시)
 	 }; 
 })();

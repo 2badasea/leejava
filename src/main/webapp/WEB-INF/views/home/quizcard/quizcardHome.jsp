@@ -649,17 +649,14 @@ fieldset {
 						console.log(data);
 						// json 배열의 타입을 출력시켜야 한다   class="userInfo_quizcard" 여기 공간에 append 시킨다. 
 						$.each(data, function(index, item) {
-							var tr = $("<tr class='userInfo_quizcardTr' />")
-									.append(
-											$("<td />").text(
-													item.quizcard_set_no),
-											$("<td />").text(
-													item.quizcard_set_name),
-											$("<td />").text(
-													item.quizcard_set_cdate),
-											$("<td />").text(
-													item.quizcard_category));
-							tb.append(tr);
+							if(item.quizcard_set_status != 'PRIVATE'){
+								var tr = $("<tr class='userInfo_quizcardTr' />").append(
+												 $("<td />").text(item.quizcard_set_no)
+												,$("<td />").text(item.quizcard_set_name)
+												,$("<td />").text(item.quizcard_set_cdate)
+												,$("<td />").text(item.quizcard_category));
+								tb.append(tr);
+							}
 						})
 						$(".userInfo_quizcard").append(tb);
 					},

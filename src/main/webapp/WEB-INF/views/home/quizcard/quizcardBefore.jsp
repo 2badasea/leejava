@@ -15,8 +15,8 @@
 <style>
 /* 퀴즈카드 학습모드 선택 모달창 */
 .quizcardInfoWrapper {
-	margin-top: 8%;
-	margin-left: 3%;
+	margin-top: 4%;
+	margin-left: 5%;
 }
 textarea{
 	resize: none;
@@ -105,8 +105,9 @@ fieldset {
 	display: flex;
 	justify-content: flex-end;
 }
-.questionBtns > button {
+.questionBtns button {
 	margin-right: 10px;
+	color: teal;
 	background-color: whitesmoke;
 	border-style: none;
 	width: 120px;
@@ -114,7 +115,7 @@ fieldset {
     border-radius: 20px;
     font-size: 15px;
 }
-.questionBtns > button:hover{
+.questionBtns button:hover{
 	 cursor: pointer;
      background-color: teal;
      color: white;
@@ -257,17 +258,20 @@ legend{
 	color: teal;
 	font-weight: bolder;
 }
+.updateBtns button,
+.replyBtns button,
 .quizcardMainGoBtn,
 .studyType_modal_container button {
 	border-radius: 20px;
     width: auto;
-    height: auto;
-    font-weight: 900;
+    max-height: 40px;
     color: teal;
     background-color:  whitesmoke;
     border-style: none;
     padding: 10px;
 }
+.updateBtns button:hover,
+.replyBtns button:hover,
 .quizcardMainGoBtn:hover,
 .studyType_modal_container button:hover {
 	cursor: pointer;
@@ -282,9 +286,7 @@ legend{
 }
 /* 댓글 관련 스타일 */
 .quizcardReplyWrapper{
-    margin-top: 1%;
-    margin-left: 1%;
-    width: 55%;
+    width: 40%;
 }
 .quizcardReplyWriting{
 	display: flex;
@@ -294,34 +296,90 @@ legend{
 .quizcardReplyInsertBtn{
 	border-radius: 20px;
 	border-style: none;
-	padding: 5px; 	
+	padding: 10px; 	
 	width: auto;
 	height: auto;
-	color: 	#05AA6D;
+	color: 	teal;
 	background-color: whitesmoke;
-	font-weight: 900;	
 	min-width: 70px;
 	min-height: 30px;
-	
-	float: right;
-	margin-right: 10%;
+	margin-right: 5%;
 	width: 100px;
 	height: 40px;
 }
 .quizcardReplyInsertBtn:hover{
 	cursor: pointer;
-	background-color: #05AA6D;
+	background-color: teal;
 	color: whitesmoke;
 	transition: 0.5s;
 }
+.quizcardReplyWritingBox{
+	display: flex;
+	padding: 15px;
+}
 .quizcardReplyWriterBox{
 	width: 10%;
+	margin-left: 3%;
 }
 .quizcardReplyWritingForm {
-	width: 90%;
+	width: 85%;
 }
-.quizcardReplyList{
-	margin-top: 100px;
+/* 댓글리스트 footer <a>태그 스타일 */
+.reReplyWriteBtn, .reReplyListShowBtn{
+	color: blue;
+	font-size: smaller;
+}
+.replyListUserInfo{
+	display: flex;
+}
+.replyListHeader{
+	display: flex;
+	justify-content: space-between;
+}
+.replyListBox{
+	margin-bottom: 3%;
+	border-bottom: 0.5px solid lightgray;
+	padding: 2%;
+}
+.updateListBox{
+	margin-bottom: 3%;
+	border-bottom: 0.5px solid lightgray;
+	padding: 2%;
+}
+.replyerImage{
+	max-width: 40px;
+	max-height: 40px;
+	margin-top: 5%;
+    border-radius: 50%;
+}
+.replyBtns {
+	width: 20%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.replyListContent{
+	min-height: 50px;
+    width: 80%;
+    padding: 15px;
+    font-size: small; 
+}
+.delReplyBox{
+	max-height: 30px;
+}
+.updateListBox{
+	display: flex;
+	justify-content: space-evenly;
+}
+.updateBtns{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: inherit;
+}
+.replyUdate {
+	font-size: small; 
+	color : teal; 
+	font-weight : 800;
 }
 </style>
 </head>
@@ -356,10 +414,10 @@ legend{
                 <a class="nextQuestion beforeA"><i class="fa-solid fa-angle-right"></i></a>
             </div>
             <div class="questionBtns">
-                <button id="quizcardStartBtn">학습하기</button>
+                <button class="quizcardStartBtn">학습하기</button>
                 <input type="hidden" id="dataInput" data-setno="${qvo.quizcard_set_no }" data-questioncount="${quizcardQuestionCount }">
                 <c:if test="${session_user eq qvo.m_email }">
-					<button id="updateQuizcardBtn">수정 / 단어추가</button>
+					<button class="updateQuizcardBtn">수정 / 단어추가</button>
 				</c:if>
             </div>
         </div>
@@ -370,28 +428,31 @@ legend{
         </div>
         <!-- 퀴즈카드 댓글 작업 공간 -->
         <br><br><br>
-        <hr style="width: 56%;">
-        <div class="quizcardReplyWrapper" style="display: none;">
+        <div class="quizcardReplyWrapper">
+        	<hr style="width: 100%;">
             <!-- 댓글 작성폼 : 로그인 유저만 노출 -->
             <c:if test="${not empty session_user }">
-            	<div class="quizcardReplyWriting">
+            	<div class="quizcardReplyWritingBox">
             		<div class="quizcardReplyWriterBox">
 		     			<img alt="" src="${pageContext.request.contextPath}/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">
 		     		</div>
 			     	<div class="quizcardReplyWritingForm">
-			     		<textarea id="summernote" class="quizcardReplyContents"></textarea>
+			     		<textarea class="summernote" class="quizcardReplyContents"></textarea>
 			     	</div>
             	</div>
-            	<div>
-            		<button class="quizcardReplyInsertBtn" type="button">등록하기</button>
+            	<!-- 댓글 작성 버튼 공간 -->
+            	<div style="display: flex; justify-content: end;">
+            		<button class="quizcardReplyInsertBtn" type="button">댓글등록</button>
             	</div>
+            	<br>
+                <hr style="width: 100%;">	
             </c:if>
+
+            <!-- 댓글 리스트 폼 -->
+            <div class="quizcardReplyListBox">
+        		
+        	</div>
         </div>
-        <br><br><br>
-        <hr style="width: 56%;">
-        <div class="quizcardReplyList">
-	   		 	<!-- 댓글 리스트 출력 by ajax -->
-   		</div>
 </div>
     <!-- 위에가 새로운 레이아웃 -->
 	<!-- 퀴즈카드 학습모드 모달창 -->
@@ -464,355 +525,302 @@ legend{
     </div>
     <!-- ----------------------------------------------- -->
 </body>
-<script>
-	const thisSetNo = $("#quizcardBeforeSetNo").val();
-	const session_user = $("#session_user").val(); 
-	
-	// 사용자 정보 조회하는 모달창 관련 스크립트 부분(공통영역)  ------------------------- 작업 끝나고 밑으로 내려보내기
-	$(".setCreaterClickA").on("click", function(e){
-		console.log("유저 닉네임 클릭");
-		let email;
-		console.log( $(e.target).text()); 
-		$("body").css("overflow", "hidden");	// 모달창 호출 => body영역 스크롤 방지
-		$(".userInfo_modal_container").css("display", "block");
-		var sendNickname = $(e.target).text();
-		// 첫 번째 ajax로 프로필 정보(닉네임, 이메일, 가입날짜, intro + 프로필이미지 정보)		
-		$.ajax({
-			url: "ajaxUserInfo.do?m_nickname=" +  sendNickname,
-			method: "GET",
-			dataType: "json",
-			async: false, 
-			success: function(data){
-				email = data.m_email;
-				$("#m_nickname").val(data.m_nickname);
-				$("#m_joindate").val(data.m_joindate);
-				$("#userIntroForm").val(data.m_intro);
-				$("#userInfoTitle").html(data.m_nickname + " 님의 사용자 정보");
-				$("#userIntroLabel").text(data.m_nickname + " 님의 Intro");
-			},
-			error: function(responseText){
-				console.log("호출 실패");
-				console.log(responseText);
-			}
-		})
-		// 두 번째 ajax => 작성한 퀴즈카드 정보 넣기. 
-		var tb = $("<table class='userInfo_quizcardTb' />");
-		$.ajax({
-			url: "ajaxMyQuizcard.do",
-			method: "GET",
-			dataType: "json",
-			data: {
-				m_email: email
-			},
-			contentType: "application/json; charset=utf-8",
-			success: function(data){
-				console.log("호출 성공");
-				console.log(data);
-				// json 배열의 타입을 출력시켜야 한다   class="userInfo_quizcard" 여기 공간에 append 시킨다. 
-				$.each(data, function(index, item){
-					var tr = $("<tr class='userInfo_quizcardTr' />").append(
-							$("<td />").text(item.quizcard_set_no),
-							$("<td />").text(item.quizcard_set_name),
-							$("<td />").text(item.quizcard_set_cdate),
-							$("<td />").text(item.quizcard_category));
-					tb.append(tr);
-				})
-				$(".userInfo_quizcard").append(tb);
-			},
-			error: function(responseText){
-				console.log("호출 실패");
-				console.log(responseText);
-			}
-		})
-		
-		// email값을 이용하여 get.JSON url을 호출하여 db에 있는 프로필 이미지 정보를 가져와서 화면에 뿌려준다.
-			var uploadResult = $(".userInfo_image");
-			$.getJSON("getAttachList.do", { m_email : email}, function(arr){
-				if(arr.length !== 1){
-					let str = "";
-					str += "<div id='basic_result_card'>";
-					str += "<img src='resources/image/userimage.jpg'>";
-					str += "</div>";
-					uploadResult.html(str);
-					return;
-				}
-				
-				let obj = arr[0];
-				let str = "";
-				console.log("obj.uploadPath 값: " + obj.uploadPath);
-				let fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-				console.log("fileCallPath 값: " + fileCallPath);
-				str += "<div id='basic_result_card'";
-				str += " data-path='" +  obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" +  obj.fileName + "'";
-				str += ">";
-				str += "<img src='display.do?fileName=" + fileCallPath + "'>";
-				str += "</div>";
-				uploadResult.html(str);
-			}) // get.JSON 메서드 영역 끝  ( get.JSON으로 회원의 이미지 정보를 출력하여 display.do로 화면에 출력시킨다.)
-	})
-	
-	// 모달창 닫기버튼(X) 
-	$(".userInfoModalCloseBtn").on('click', function(){
-		console.log("사용자 정보 창 닫기");
-		$(".userInfo_quizcard").empty();  // div안의 영역을 초기화 시켜준다. 
-		$("body").css("overflow", "unset"); // 모달창 호출 => 스크롤 방지 해제
-		$(".userInfo_modal_container").css('display', 'none');
-	})
-	
-	// 외부영역 클릭 모달창 닫기
-	$(document).on("click", function(e){
-		if( $(e.target).closest('.userInfo_modal_content').length == 0 && !$(e.target).hasClass('setCreaterClickA') ){
-			$(".userInfo_quizcard").empty(); 
-			$("body").css("overflow", "unset");
-			$(".userInfo_modal_container").css('display', 'none');
-		}	
-	})
-	
-	// 퀴즈카드 작성자 정보 모달창을 통해 작성자가 생성한 퀴즈카드 set이동 
-	$(document).on("click", ".userInfo_quizcardTr", function(e){
-		var check = confirm("해당 퀴즈카드로 이동하시겠습니까?");
-		if(check){
-			var set_no = $(e.target).parent().find('td').eq(0).text();
-			console.log("set_no: " + set_no);
-			location.href='quizcardBefore.do?set_no=' + set_no;
-		} else {
-			return false;
-		}
-	})
-</script>
-<script>
-	// 페이지가 로드되자마자 실행시킬 이벤트
-	
-	$(function(){
-		
-		console.log("세트번호: " + thisSetNo );
-		// ajax로 호출 => 모든 문제를 배열에 담고 => 인덱스 생성 => prev, next 화살표 정의하기 
-		$.ajax({
-			url: "questionNameList.do",
-			method: "GET",
-			dataType: "JSON",
-			contentType: "application/json; charset=utf-8",
-			data: {
-				quizcard_set_no : thisSetNo
-			},
-			success: function(data){
-				console.log("호출 성공");
-				questionNames(data);
-			},
-			error: function(responseText){
-				console.log("호출 실패");
-				console.log(responseText);
-			}
-		})
-		
-		let questionNameList = [];
-		var count = 0;
-		
-		function questionNames(data){
-			console.log("함수questionNameList(data) 실행");
-			console.log(data);
-			$.each(data, function(index, item){
-				questionNameList.push(item.quizcard_question_name);
-			})
-			console.log("배열조회: " + questionNameList);
-			$(".questionNo").text(count + 1);
-			$(".questionName").text( questionNameList[count] );
-		}
-		
-		// 이전문제버튼, 다음문제 버튼  prevQuestion  nextQuestion
-		$(".prevQuestion").on("click", function(){
-			var number = $(".questionNo").text();
-			console.log("현재 문제 번호: " + number);
-			if(count === 0){
-				return false;
-			} else {
-				count--;
-				console.log("count값: " + count);
-				$(".questionNo").text(count + 1);
-				$(".questionName").text( questionNameList[count] );
-			}
-		})
-		
-		// 다음문제버튼 
-		$(".nextQuestion").on("click", function(){
-			console.log("문제 총 갯수: " + questionNameList.length);
-			if( count === (questionNameList.length-1) ){
-				return false;
-			} else {
-				count++;
-				$(".questionNo").text(count+1);
-				$(".questionName").text( questionNameList[count] );
-			}
-		})
-		
-		// 즐겨찾기 상태여부에 따른 별표 활성화 ajax로 조회. 
-		$.ajax({
-			url: "ajaxBookmarkStatus.do",
-			method: "GET",
-			data: {
-				quizcard_set_no : thisSetNo,
-				m_email : session_user
-			},
-			success: function(responseText){
-				console.log("즐겨찾기 호출 성공");
-				console.log(responseText);
-				if(responseText === "NO"){
-					$("#emptyStar").css("display", "block");
-					$("#addStar").css("display", "none");
-				} else if(responseText === "YES"){
-					$("#emptyStar").css("display", "none");
-					$("#addStar").css("display", "block");
-				}
-			},
-			error: function(responseText){
-				console.log("즐겨찾기 호출 실패");
-				console.log(responseText);
-			}
-		})
-	})
-</script>
-<script>
-	// 이전 퀴즈카드 메인페이지로 돌아가는 이벤트 버튼
-	$(".quizcardMainGoBtn").on('click', function(){
-		location.href = "quizcard.do";
-	})
-
-	// 학습모드 선택 모달창 활성화
-	$("#quizcardStartBtn").on("click", function(){
-		$(".studyType_modal_container").css("display", "block");
-	})
-	
-	// 학습시작 버튼
-	$("#studyStartBtn").on('click', function(){
-		// 세트번호와 학습방식의 값을 날린다. 
-		var setNo = $("#modalHeader").data("setno");
-		var studyType = $("input[name='studyType']:checked").val();
-		// 세트이름, 카테고리, 세트번호는 quizcard_history 테이블에 insert된다.
-		var setName = $("#quizcardBeforeSetNo").data("setname");
-		var setCategory = $("#quizcardBeforeSetNo").data("category");
-		var memail = $("#session_user").val();
-		var data = {
-				quizcard_set_no : setNo,
-				quizcard_set_name : setName,
-				quizcard_category : setCategory,
-				m_email : memail
-		};
-		// ajax 호출 우선.. async: true로 해보고, 에러가 생기면 false로 해보자
-		$.ajax({
-			url: "ajaxHistory.do",
-			method : "POST",
-			dataType: "text",
-			contentType: "application/json; charset=utf-8",
-			data: JSON.stringify(data),
-			success: function(responseText){
-				console.log("호출 성공");
-				if(responseText === "UPDATE" || responseText === "INSERT"){
-					// 두 값을 컨트롤러를 통해 페이지에 넘긴다. 그리고 해당 페이지에서 restController를 통해 작업!
-					location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
-				} else {
-					console.log(responseText);
-					// 비회원이 접근하려고 할 때. 
-					location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
-				}
-			},
-			error: function(responseText){
-				console.log("호출 실패");
-				console.log(responseText);
-				location.href="studyStart.do?setNo=" + setNo + "&studyType=" + studyType;
-			}
-		})
-	})
-	
-	
-	// 학습모드 선택 창닫기
-	$("#studyTypeCloseBtn").on("click", function(){
-		$(".studyType_modal_container").css("display", "none");
-	})
-	
-	// 모달창 외부영역 클릭 => 모달창 비활성화
-	$(document).on("click", ".studyType_modal_layer", function(e){
-		if( !$(e.target).hasClass("studyType_modal_content") ) {
-			$(".studyType_modal_container").css("display", "none");
-		}
-	})
-	
-	// 퀴즈카드 수정페이지 이동 ( by 생성자)
-	$("#updateQuizcardBtn").on("click", function(){
-		// quizcard_set_no값과 해당 세트번호의 문제갯수를 날린다.
-			// 문제갯수의 경우 컨트롤러에서 또 쿼리문을 조회하긴 번거롭기 때문. 
-		// hidden타입의 input태그(id=dataInput)에 세트번호와 문제갯수를 부여함
-		var setNo = $("#dataInput").data("setno");
-		console.log("세트번호: " + setNo);
-		var questionCount = $("#dataInput").data("questioncount");
-		console.log("해당 세트의 문제 갯수: " + questionCount);
-		
-		var check = confirm("해당 퀴즈카드를 수정하시겠어요?");
-		if(check){
-			location.href="updateQuizcard.do?set_no="+setNo + "&questionCount=" + questionCount;
-		} else {
-			return false;
-		}
-	})
-	
-	// 즐겨찾기 추가/취소.
-	$("#starClick").on("click",function(e){
-		var userEmail = $("#session_user").val();
-		if(userEmail === ""){
-			alert("회원들만 이용할 수 있는 서비스입니다.");
-			return false;
-		}
-		var thisSetNo = $("#quizcardBeforeSetNo").val();
-		// 클릭했을 때 별표의 class값에 따라 취소인지 아닌지 여부 판단 empty면 insert 아니면 delete // ajax두 번 호출? 
-		var b = $(e.target).hasClass("empty");
-		if(b){
-			// trun인 경우, 즉 비어있는 경우 => insert시킨다. 
-			$.ajax({
-				url: "ajaxBookmarkAdd.do",
-				type: "POST",
-				data: {
-					m_email : userEmail,
-					quizcard_set_no : thisSetNo
-				},
-				success: function(responseText){
-					console.log("호출 성공");
-					alert("즐겨찾기에 추가되었습니다.");
-					console.log(responseText);
-					if(responseText === "OK"){
-						$("#emptyStar").css("display", "none");
-						$("#addStar").css("display", "block");
-					}
-				},
-				error: function(responseText){
-					console.log("호출 실패");
-					console.log(responseText);
-				}
-			})
-		} else {
-			// empty속성이 없는 경우 => 이미 즐겨찾기 추가된 상태 => delete시키기.
-			$.ajax({
-				url: "ajaxBookmarkDelete.do",
-				type: "POST",
-				data : {
-					m_email : userEmail,
-					quizcard_set_no : thisSetNo
-				},
-				success: function(responseText){
-					console.log("호출 성공");
-					console.log(responseText);
-					alert("즐겨찾기가 취소되었습니다.");
-					if(responseText === "OK"){
-						$("#emptyStar").css("display", "block");
-						$("#addStar").css("display", "none");
-					}
-				},
-				error: function(responseText){
-					console.log("호출 실패");
-					consoel.log(responseText);
-				}
-			})
-		}	
-	})
-</script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/quizcardBefore.js" ></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/quizcardReply.js?v=<%=System.currentTimeMillis() %>"></script>
+<script>
 
+// 퀴즈카드 댓글 작업 스크립트 => 작업 후에 quizcardBefore.js 파일로 코드 이동
+// 댓글 작성 폼 quizcardReplyWritingBox 
+// 댓글 리스트 폼 quizcardReplyListBox
+// 세트번호  const thisSetNo
+// 세션 유저 const session_user
+
+// 제이쿼리 충돌 방지
+var newJquery = $.noConflict(true);
+var $$ = newJquery; 
+	
+$$(document).on("ready", function(){
+
+	
+	/* summernote 구현 스크립트 */
+	var toolbar = [
+	    // 글꼴 설정
+	    ['fontname', ['fontname']],
+	    // 글자 크기 설정
+	    ['fontsize', ['fontsize']],
+	    // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
+	    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+	    // 글자색
+	    ['color', ['forecolor','color']],
+	    // 글머리 기호, 번호매기기, 문단정렬
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    // 줄간격
+	    ['height', ['height']],
+	    // 그림첨부, 링크만들기, 동영상첨부
+	    //['insert',['picture','link']],
+	    // 코드보기, 확대해서보기, 도움말
+	    ['view', ['codeview','fullscreen', 'help']]
+	  ];
+	console.log(toolbar);
+ 	// 객체형식으로 설정을 구성.
+	var setting = {
+	 		   value : '',
+	           height : 150,
+	           minHeight : 100,
+	           maxHeight : 200,
+	           focus : true,
+	           placeholder : '무분별한 욕설과 비난은 자제해주세요',
+	           lang : 'ko-KR',
+	           toolbar : toolbar, // toolbar 설정은 위에서 해놓음. 
+	           callbacks : { 
+	          	 	// summernote에서 제공하는 콜백함수 중 하나. onImageUpload
+		           	onImageUpload : function(files, editor, welEditable) {
+		           			for (var i = files.length - 1; i >= 0; i--) {
+		           					uploadSummernoteImageFile(files[i], this);
+		           			}
+		           	}
+	           }
+	  };
+ 	console.log(setting);
+    // 위 설정대로 summernote를 <textarea> 부분에 호출시킨다. 
+ 	$$('.summernote').summernote(setting);
+ 	
+  	// 이미지업로드 콜백함수 정의
+ 	function uploadSummernoteImageFile(file, el) {
+		// 이때 파라미터로 되어있는 el의 값은 이미지 업로드가 발생한 <textarea>태그를 의미한다. 
+		console.log(file);
+	   	var data = new FormData();
+		data.append("file", file);
+		$$.ajax({
+			data : data,
+			type : "POST",
+			url : "ajaxUploadSummernoteImageFile.do",  // 컨트롤러에서 처리해야 함
+			contentType : false, // multipart/form-data 형식으로 보낼 때는 contentType:을 false로. 
+			enctype : 'multipart/form-data',
+			processData : false,
+			success : function(responseData) {
+				console.log("responseData 확인: " + responseData);
+				console.log("responseDate.url 확인: " + responseData.url);
+				$$(el).summernote('insertImage', responseData.url);
+			}
+		});
+	}
+  	
+  	// 퀴즈카드 댓글 전체 출력시킬 <div> 박스
+  	var quizcardReplyListBox = $$('.quizcardReplyListBox');
+  	
+  	// 해당 퀴즈카드 게시글에 해당하는 댓글 전체 출력
+  	quizcardReplyService.replySelectList(thisSetNo, function(list){
+  		console.log(list);
+  		console.log('로그인 중인 세션 닉네임 : ' +  session_user);
+  		
+  		$$.each(list, function(index, item){
+  			var listHtml = "";
+  			let content = item.quizcard_Reply_Content; 
+  			if(content == null){
+  				// 내용이 공백인 경우 => 삭제된 댓글 => 최소한의 내용만 출력
+  				listHtml += "<div class='replyListBox delReplyBox'>";
+  				listHtml += 	"<div class='replyListBody'>";
+  				listHtml += 		"<div class='replyListContent'>" + "( 삭제된 댓글입니다... )" + "</div>";
+  				listHtml += 	"</div>";
+  				listHtml += "</div>";
+  				quizcardReplyListBox.append(listHtml);
+  			}else { // 내용이 공백이 아닌 경우 => 일반 댓글
+	  				listHtml += "<div class='replyListBox'>";
+	  				listHtml += 	"<div class='replyListHeader'>";
+	  				listHtml += 		"<div class='replyListUserInfo'>"; 
+	  				listHtml += 			"<div class='userInfoImage'>";
+	  				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";
+	  				listHtml += 			"</div>";
+	  				listHtml += 			"<div style='margin-left: 5%;'>";
+	  				listHtml += 				"<span class='replyerNickname'>" + item.quizcard_Reply_Replyer + "</span><br>";
+	  				listHtml += 				"<span class='replyWdate' style='font-size: small;'>" + item.quizcard_Reply_Wdate + "</span>";
+	  			if(item.quizcard_Reply_Udate != null){
+	  				listHtml +=					"<br><span class='replyUdate'>" + '수정됨' + "</span>";						
+	  			}
+	  				listHtml += 			"</div>"; 
+	  				listHtml += 		"</div>"; // userInfo 끝
+	  			if(item.quizcard_Reply_Replyer == session_user){
+	  				listHtml += 		"<div class='replyBtns'>";
+	  				listHtml += 			"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
+	  				listHtml += 			"<button type='button' class='replyDeleteBtn' data-rno='"  + item.quizcard_Reply_Rno + "'>삭제</button>";
+	  				listHtml += 		"</div>";
+	  				listHtml +=		"</div>"     // header부분 끝
+	  			}else {
+	  				listHtml += "	</div>";  // header 부분 끝
+	  			}
+	  				listHtml += 	"<div class='replyListBody'>";
+	  				listHtml += 		"<div class='replyListContent'>" + item.quizcard_Reply_Content + "</div>";
+	  				listHtml += 	"</div>"; // body 끝
+	  				listHtml += "<div class='replyListFooter'>";
+	  			if(session_user != '' && item.quizcard_Reply_Depth == 1){
+	  				listHtml += "<a class='reReplyWriteBtn' href='#'>댓글 달기</a>";
+	  			}
+	  			if(item.quizcard_Reply_Group > 1){
+	  				listHtml += "&nbsp;&nbsp;&nbsp;<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
+	  			}
+	  				listHtml += "</div></div>";    // footer닫고, 댓글리스트 개별 박스 닫기
+	  			quizcardReplyListBox.append(listHtml);
+  			} // End of  if문(삭제된 댓글인지 아닌지 판단)
+  		}) // End of  $$.each
+  		
+  		
+  	})
+  	
+  	// 퀴즈카드 댓글 등록
+  	$$(".quizcardReplyInsertBtn").on('click', () => {
+  		console.log('댓글 등록 버튼 클릭');
+  		var replyContents = $$('.summernote').val();
+  		if(replyContents.trim().length == 0){
+  			alert("댓글 내용을 입력해주세요");
+  			return false;
+  		}
+  		var replyInsertInfo = {
+  				quizcard_Reply_Bno : thisSetNo,
+  				quizcard_Reply_Depth : 1,
+  				quizcard_Reply_Content : replyContents,
+  				quizcard_Reply_Replyer : session_user
+  		};
+  		
+	  	quizcardReplyService.replyInsert(replyInsertInfo, function(data){
+	  		// 입력한 댓글 내용 초기화
+	  		console.log('댓글 등록 성공');
+	  		$$('.summernote').summernote('reset');
+	  		console.log(data);
+	  		// 입력한 댓글 내용을 아래 댓글리스트에 출력시키는 작업
+	  		let rno = data.quizcard_Reply_Rno;
+			let wdate = data.quizcard_Reply_Wdate;
+			let content = data.quizcard_Reply_Content;
+			let writer = data.quizcard_Reply_Replyer;
+	  		
+			let listHtml = "";
+				listHtml += "<div class='replyListBox'>";
+				listHtml +=		"<div class='replyListHeader'>";
+		  		listHtml += 		"<div class='replyListUserInfo'>"; 
+				listHtml += 			"<div class='userInfoImage'>";
+				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";
+				listHtml += 			"</div>";
+				listHtml += 			"<div style='margin-left: 5%;'>";
+				listHtml += 				"<span class='replyerNickname'>" + writer + "<br>";
+				listHtml += 				"<span class='replyWdate' style='font-size: small;'>" + wdate;
+				listHtml += 			"</div>"; 
+				listHtml += 		"</div>";
+				listHtml += 		"<div class='replyBtns'>";
+				listHtml += 			"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
+				listHtml += 			"<button type='button' class='replyDeleteBtn' data-rno='" + rno + "'>삭제</button>";
+				listHtml += 		"</div>";
+				listHtml += 	"</div>";   // header끝
+				listHtml += 	"<div class='replyListBody'>";
+				listHtml += 		"<div class='replyListContent'>" + content + "</div>";
+				listHtml += 	"</div>"; // body 끝
+				listHtml += 	"<div class='replyListFooter'>";
+				listHtml += 		"<a class='reReplyWriteBtn' href='#'>댓글 달기</a>&nbsp;&nbsp;&nbsp;";
+// 				listHtml += 		"<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
+				listHtml += 	"</div>";  // footer끝
+				listHtml += "</div>"; 
+			quizcardReplyListBox.append(listHtml);
+			alert("댓글 등록 성공~");
+	  	})
+  	})
+  	
+  	
+  	// 퀴즈 카드 댓글 삭제
+	$$(document).on('click', '.replyDeleteBtn', function(){
+		console.log('댓글 삭제 클릭');
+		let delNo = $$(this).data('rno');
+		console.log('삭제할 댓글 번호 : ' + delNo);
+		let replyBox = $$(this).closest('.replyListBox');
+		console.log('삭제 후 공백을 붙일 박스 : ' + replyBox);		
+		quizcardReplyService.replyDelete(delNo, function(response){
+			console.log(response);
+			if(response == 'success'){
+				replyBox.empty();  // 해당 선택자 내부의 모든 태그 요소를 지움.
+				let str = "";
+				str += 	"<div class='replyListBody delReplyBox'>";
+				str += 		"<div class='replyListContent'>" + "( 삭제된 댓글입니다... )" + "</div>";
+				str += 	"</div>";
+				replyBox.append(str);
+				alert('댓글이 삭제되었습니다.');
+			}else {
+				alert('댓글 삭제가 실패했습니다.');
+			}
+		})
+	})	
+	function Fn_updateCancel(){
+		console.log('수정 취소 클릭 이벤트 발생');
+	}
+	
+  	
+	// 퀴즈카드 댓글 수정 => 수정 폼 생성
+	$$(document).on('click', ".replyUpdateBtn", function(){
+		console.log('수정 버튼 클릭');
+		let updateBoxCount = $$(".updateListBox").length; 
+		if(updateBoxCount > 0){
+			alert('이미 수정 중인 댓글이 존재합니다 \n작업을 마무리 해주세요');
+			return false;
+		}
+		let updateCheck = confirm('댓글을 수정하시겠어요?');
+		if(!updateCheck){
+			return false;
+		}
+		
+		let rno = $$(this).next().data('rno');
+		let content = $$(this).closest('.replyListBox').find('.replyListContent').text();
+		
+		let hideBox = $$(this).closest('.replyListBox');
+
+		let listHtml  = "";
+			listHtml += "<div class='updateListBox'>";
+			listHtml += 	"<div class='updateContentBox'>";
+			listHtml += 		"<textarea class='updateContentForm" + rno + "'>" + content + "</textarea>";
+			listHtml += 	"</div>";
+			listHtml +=		"<div class='updateBtns'>";
+			listHtml +=   		"<button type='button' class='updateEndBtn' data-rno='" + rno + "'>수정완료</button>";			
+			listHtml +=			"<button type='button' class='updateCancelBtn'>취소</button>";	
+			listHtml +=		"</div>";
+			listHtml += "</div>";
+		hideBox.after(listHtml);
+		
+		let selector = ".updateContentForm" + rno;
+		$$(selector).summernote(setting);
+		
+		hideBox.css('display', 'none');
+	})
+	
+	// 수정 취소 이벤트를 동적으로 부여하기
+	$$(document).on('click', ".updateCancelBtn", function(){
+		// none상태인 수정 전의 기존 댓글 내역 활성화
+		$$('.quizcardReplyListBox').find('div[style*="display: none;"]').css('display', 'block');
+		$$(this).closest('.updateListBox').remove();
+	})
+	
+	// 수정 완료 이벤트도 동적으로 부여해보기
+	$$(document).on('click', '.updateEndBtn', function(){
+		let updateBox = $$(this).closest('.updateListBox');
+		let rno = $$(this).data('rno');
+		let updateContent = $$(this).closest('.updateListBox').find('textarea').val();
+		console.log('수정 완료 댓글 번호 : ' + rno);
+		console.log('수정 완료 댓글 글내용 : ' + updateContent);
+		let data = {
+				quizcard_Reply_Rno : rno,
+				quizcard_Reply_Content : updateContent 
+		};
+		quizcardReplyService.replyUpdate(data, function(response){
+			// 업데이트 성공 이후 실행시킬 콜백
+			console.log('성공여부: ' + response);  // 'success' 출력 확인
+			if(response == 'success'){
+				console.log('여기 왔음?');
+				$$(updateBox).remove();
+				let updatedBox = $$('.quizcardReplyListBox').find('div[style*="display: none;"]');
+				$$(updatedBox).find('.replyListContent').html(updateContent);
+				$$(updatedBox).css('display', 'block');
+			}
+		})
+		
+	})
+	
+	
+	
+})  // End $$(document).on~~
+</script>
 </html>

@@ -65,13 +65,12 @@
 	/* End Summernote */
 
 // 퀴즈카드 댓글 restAPI 	
-var quizcardReplyService = (function(){
+let quizcardReplyService = (function(){
 	
 	// 퀴즈카드 댓글 전체 호출
-	function quizcardReplyList(data, callback, error){
-		var quizcardSetNo = data.qno;
-		console.log("번호확인: " + quizcardSetNo );
-		$.getJSON("quizcardReplyList/" + quizcardSetNo, function(response){
+	function Fn_replyList(thisSetNo, callback, error){
+		console.log("퀴즈카드 댓글 전체 출력 => 세트번호 확인: " + thisSetNo );
+		$.getJSON("quizcardReplyList/" + thisSetNo, function(response){
 			if(callback){
 				callback(response);
 			}
@@ -83,28 +82,75 @@ var quizcardReplyService = (function(){
 		});
 	}
 	
+	// 퀴즈카드 댓글 등록
+	function Fn_replyInsert(insertReplyInfo, callback, error){
+		console.log(insertReplyInfo);
+		$.ajax({
+			method: "POST",
+			url: "quizcardReplyInsert",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify(insertReplyInfo),
+			success: function(responseData){
+				console.log("댓글 등록ajx결과 성공?");
+				if(callback){
+					callback(responseData);
+				}
+			},
+			error: function(error){
+				console.log("댓글 등록 ajax 실패");
+				console.log(error);
+			}
+		})
+	}
+	
+	// 퀴즈카드 댓글 삭제
+	function Fn_replyDelete(delNo, callback){
+		console.log('삭제할 댓글 번호 : ' + delNo);
+		$.ajax({
+			method: 'PUT', 
+			url : "quizcardReplyDelete" + "?replyNo=" + delNo,
+			dataType: "text",
+			success: function(response){
+				if(callback){
+					callback(response);
+				}
+			},
+			error: function(error){
+				console.log('댓글 삭제 ajax 호출 실패	');
+				console.log(error);
+			}
+		})
+	}
+	
+	// 퀴즈카드 댓글 수정
+	function Fn_replyUpdate(data, callback){
+		console.log(data);
+		$.ajax({
+			url : 'quizcardReplyUpdate',
+			method : 'PUT',
+			contentType: 'application/json; charset=utf-8',
+			dataType : 'text',
+			data : JSON.stringify(data),
+			success: function(response){
+				if(callback){
+					callback(response);
+				}
+			},
+			error: function(error){
+				alert('댓글 수정 중 오류 발생');
+				console.log(error);
+			}
+		})
+	}
+	
 	return{
-		replyList : quizcardReplyList // 댓글 전체 호출
+		replySelectList : Fn_replyList,		 	// 댓글 전체 호출
+		replyInsert : Fn_replyInsert,  		 	// 댓글 등록
+		replyDelete : Fn_replyDelete,		 	// 댓글 삭제
+		replyUpdate : Fn_replyUpdate		 	// 댓글 수정
+//		replySelectOne : Fn_replySelectOne,	 	// 댓글 1개 조회
+//		replyUpdateGroup : Fn_replyGroupUpdate  // 부모 댓글 group값 업데이트(insert or delete 시) 
 	};
 	
 })();
-
-$(document).on("ready", function(){
-	
-	// 댓글이 출력되는 공간
-	const replyBox = $(".quizcardReplyList");
-	
-	// 댓글 전체 출력 5월 29일까지 작업
-	/*quizcardReplyService.replyList( { qno : thisSetNo }, function(replyList){
-		console.log('list : ' +  replyList);
-		console.log(replyList);
-		console.log("로그인 유저 닉네임: " + session_user);
-		
-		$.each(replyList, function(index, item){
-			var str = "";
-			// depth(깊이)에 따라 class속성값 추가하여 스타일(배경, 위치) 차별화
-		})
-		
-	})*/
-})
-

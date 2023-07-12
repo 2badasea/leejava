@@ -163,17 +163,16 @@ public class QuizcardController {
 	
 	// Quizcard, 문제 수정 페이지 이동
 	@RequestMapping(value = "updateQuizcard.do") 
-	public String updateQuizcard(Model model, HttpServletRequest request, QuizcardVO qvo,
-				@RequestParam("set_no") int quizcard_set_no,
-				@RequestParam("questionCount") int quizcardQuestionCount ) {
-		logger.info("=========== 쿼리스트링 quicard_set_no의 값: " + quizcard_set_no);
-		logger.info("=========== 쿼리스트링 quizcardQuestionCount의 값: " + quizcardQuestionCount);
+	public String updateQuizcard(Model model, HttpServletRequest request
+									, QuizcardVO qvo
+									, @RequestParam("set_no") int quizcard_set_no
+									, @RequestParam("questionCount") int quizcardQuestionCount ) {
+		
 		// 넘어온 quizcard_set_no를 통해 DB에 있는 자료들을 model로 날린다. 문제 갯수, 퀴즈카드 정보, quizcard_question객체리스트.
 		List<QuizcardVO> questionList = new ArrayList<QuizcardVO>();
 		
 		qvo.setQuizcard_set_no(quizcard_set_no);
 
-//		quizcardQuestionList 쿼리문의 리턴타입이 달라야 한다. 리턴타입이 파라미터가 있는 list타입이어야 한다. 
 		questionList = quizcardDao.quizcardQuestionList(qvo);
 		logger.info("============== questionList에 담긴 qvo객체들의 값: " + questionList);
 		

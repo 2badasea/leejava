@@ -1,6 +1,8 @@
 package co.bada.leejava.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,19 +17,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import co.bada.leejava.Search;
 import co.bada.leejava.member.MemberService;
 import co.bada.leejava.member.MemberVO;
 import co.bada.leejava.quizcard.QuizcardService;
 import co.bada.leejava.quizcard.QuizcardVO;
+import co.bada.leejava.quizcardreply.QuizcardReplyService;
+import co.bada.leejava.quizcardreply.QuizcardReplyVO;
 
 // Quizcard와 관련된 RESTApi 관련 메서드들은 모두 여기로 정의.
 @RestController
@@ -36,6 +42,8 @@ public class QuizcardRestController {
 	QuizcardService quizcardDao;
 	@Autowired
 	MemberService memberDao;
+	@Autowired
+	QuizcardReplyService quizcardReplyDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(QuizcardController.class);
 	
@@ -79,9 +87,9 @@ public class QuizcardRestController {
 		// 여기서 문제넘버링도 조작해야 해서 삽입해야 한다.
 	@PostMapping(value = "/ajaxQuestionNew.do")
 	public ResponseEntity<String> ajaxQuestionNew(QuizcardVO qvo, HttpServletRequest request,
-			@RequestParam(value = "quizcard_question_no") int quizcard_question_no,
-			@RequestParam(value = "quizcard_set_no") int quizcard_set_no,
-			@RequestParam(value = "quizcard_no") String quizcard_no) {
+			@RequestParam int quizcard_question_no,
+			@RequestParam int quizcard_set_no,
+			@RequestParam String quizcard_no) {
 		
 		logger.info("================= 문제번혹값: " + quizcard_question_no);
 		logger.info("================= 세트번호값: " + quizcard_set_no);
@@ -99,7 +107,7 @@ public class QuizcardRestController {
 		
 		String message = null;
 		int n = quizcardDao.ajaxQuestionNew(qvo);
-		if( n ==1 ) {
+		if( n !=0 ) {
 			message = "Insert Success~";
 			return new ResponseEntity<String>(message, HttpStatus.OK);
 		} else {
@@ -156,19 +164,17 @@ public class QuizcardRestController {
 	
 	// 내가 만든 세트 조회하기
 	@GetMapping(value= "/ajaxMyQuizcard.do", produces = MediaType.APPLICATION_JSON_VALUE )
-	public List<QuizcardVO> ajaxMyQuizcard( QuizcardVO qvo,
-				@RequestParam(value = "m_email") String m_email) {
+	public List<QuizcardVO> ajaxMyQuizcard( QuizcardVO qvo
+											,@RequestParam(value = "m_email") String m_email) {
+		
 		logger.info("================ ajax로 넘어온 m_email값: " + m_email);
 		List<QuizcardVO> list = new ArrayList<QuizcardVO>();
 		
 		qvo.setM_email(m_email);
 		list = quizcardDao.ajaxMyQuizcard(qvo);
 		logger.info("=============== qvo 결과 조회: " + qvo);
-		if( list !=null) {
-			return list;
-		} else {
-			return null;
-		}
+		
+		return list;
 	}
 	
 	// 퀴즈카드 문제 호출 
@@ -195,16 +201,11 @@ public class QuizcardRestController {
 	// 퀴즈카드 단어추가/수정 페이지, info 수정
 	@PostMapping(value = "ajaxQuizInfoUpdate.do")
 	public ResponseEntity<String> ajaxQuizInfoUpdate(QuizcardVO qvo, 
-				@RequestParam(value = "quizcard_set_no" ) int quizcard_set_no,
+				@RequestParam int quizcard_set_no,
 				@RequestParam(value = "quizcard_set_name", required = false) String quizcard_set_name,
 				@RequestParam(value = "quizcard_set_intro", required = false) String quizcard_set_intro,
 				@RequestParam(value = "quizcard_type", required = false) String quizcard_type,
 				@RequestParam(value = "quizcard_set_status", required = false) String quizcard_set_status){
-		
-		logger.info("===========세트번호: " + quizcard_set_no);
-		logger.info("===========세트이름: " + quizcard_set_name);
-		logger.info("============세트설명: " + quizcard_set_intro);
-		logger.info("============세트 status: " + quizcard_set_status);
 		
 		qvo.setQuizcard_set_no(quizcard_set_no);
 		qvo.setQuizcard_set_name(quizcard_set_name);
@@ -212,12 +213,12 @@ public class QuizcardRestController {
 		qvo.setQuizcard_set_status(quizcard_set_status);
 		
 		int n = quizcardDao.ajaxQuizInfoUpdate(qvo);
-		if(n ==1) {
+		if(n !=0) {
 			logger.info("수정 성공");
 			return new ResponseEntity<String>("Success!", HttpStatus.OK);
 		} else {
 			logger.info("수정 실패");
-			return new ResponseEntity<String>("Fail~", HttpStatus.NOT_MODIFIED);
+			return new ResponseEntity<String>("Fail", HttpStatus.NOT_MODIFIED);
 		}
 	}
 	
@@ -275,7 +276,6 @@ public class QuizcardRestController {
 		if( list != null) {
 			return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.OK);
 		} else {
-			list = null;
 			return new ResponseEntity<List<QuizcardVO>>(list, HttpStatus.NOT_FOUND);
 		}
 	}
@@ -315,9 +315,13 @@ public class QuizcardRestController {
 	}
 	
 	// 즐겨찾기 상태 조회 
-	@GetMapping(value = "ajaxBookmarkStatus.do", produces = "application/text;charset=utf8")
-	public String ajaxBookmarkStatus(QuizcardVO qvo, @RequestParam String m_email,
-				@RequestParam int quizcard_set_no) {
+	@GetMapping(value = "ajaxBookmarkStatus.do", produces = "application/text; charset=utf8")
+	public String ajaxBookmarkStatus(QuizcardVO qvo
+								, @RequestParam String m_email
+								, @RequestParam int quizcard_set_no) {
+		logger.info("=================================== 즐겨찾기 관련");
+		logger.info("=========================== m_email: " + m_email);
+		logger.info("================================= quizcard_set_no: " + quizcard_set_no);
 		qvo.setM_email(m_email);
 		qvo.setQuizcard_set_no(quizcard_set_no);
 		String responseText =null;
@@ -361,12 +365,12 @@ public class QuizcardRestController {
 	// 사용자 정보 조회 모달창에 출력할 내용.
 	@GetMapping(value = "ajaxUserInfo.do", produces = MediaType.APPLICATION_JSON_VALUE )
 	public ResponseEntity<MemberVO> ajaxUserInfo(MemberVO mvo, QuizcardVO qvo, 
-			@RequestParam("m_nickname") String m_nickname){
+			@RequestParam String m_nickname){
 		
 		mvo.setM_nickname(m_nickname);
 		// 닉네임을 통해서 이메일 조회
 		String m_email = memberDao.emailSelectByNickname(mvo).getM_email();
-		// 해당 이메일읉 오해서 프로필 이미지와ㅈ 정보들을 모두 가져온다. 
+		// 해당 이메일읉 오해서 프로필 이미지와 정보들을 모두 가져온다. 
 		mvo.setM_email(m_email);
 		return new ResponseEntity <MemberVO>(memberDao.memberInfoSelect(mvo), HttpStatus.OK);
 	}
@@ -385,7 +389,6 @@ public class QuizcardRestController {
 	@PostMapping(value = "ajaxHistory.do", produces = "application/text; charset=utf-8")
 	public ResponseEntity<String> ajaxHistory(@RequestBody QuizcardVO qvo){
 		
-		System.out.println("파라미터 qvo값 조회: " + qvo);
 		String responseText = "";
 		boolean b = quizcardDao.ajaxHistory(qvo);
 		if(b) {  // true인 경우. => 해당 quizcard_set_no  데이터로 history테이블에 존재한다는 뜻. => update 실행
@@ -453,6 +456,109 @@ public class QuizcardRestController {
 	public ResponseEntity<QuizcardVO> scrapQuestionSelect(QuizcardVO qvo){
 		return new ResponseEntity<QuizcardVO>(quizcardDao.scrapQuestionSelect(qvo), HttpStatus.OK);
 	}
+	
+	// 퀴즈카드 댓글 전체 호출
+	@GetMapping(value = "quizcardReplyList/{setno}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<QuizcardReplyVO>> quizcardReplyList(@PathVariable("setno") int setno
+																, QuizcardReplyVO qrvo){
+		qrvo.setQuizcard_Reply_Bno(setno);
+		List<QuizcardReplyVO> replyList = new ArrayList<>();
+		replyList = quizcardReplyDao.quizcardReplyList(qrvo);
+		logger.info("========= 퀴즈카드 댓글 전체 리스트: :" + replyList);
+		return new ResponseEntity<>(replyList, HttpStatus.OK);
+	}
+	
+	// 퀴즈카드 댓글 등록
+	@PostMapping(value = "quizcardReplyInsert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "application/json; charset=utf-8")
+	public ResponseEntity<QuizcardReplyVO> quizcardReplyInsert(@RequestBody QuizcardReplyVO qrvo
+															, QuizcardVO qvo){
+		logger.info("퀴즈카드 댓글 등록 ============================ : " + qrvo);
+		
+		Date now = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+		String replyWdateValue = sdf.format(now);
+		logger.info("퀴즈카드 댓글 등록================= replyWdateValue : " + replyWdateValue);
+		qrvo.setQuizcard_Reply_Wdate(replyWdateValue);
+		
+		// 1 or 0 
+		int replyInsertResult = quizcardReplyDao.quizcardReplyInsert(qrvo);
+		logger.info("퀴즈카드 댓글 등록================== 테이블 insert 결과: " + replyInsertResult);
+		// insert이후의 qrvo.getQuizcardReplyRno() 값은 이전과 다름. 객체의 특징. 참조변수는 그대로, 근데 객체에 변동이 생겼기 때문
+		int insertResultRno = qrvo.getQuizcard_Reply_Rno();
+		int insertResultParent = qrvo.getQuizcard_Reply_Parent();
+		
+		// 퀴즈카드 세트 테이블의 댓글 개수 업데이트
+		if(replyInsertResult !=0) {
+			qvo.setQuizcard_set_no(qrvo.getQuizcard_Reply_Bno());
+			qvo.setQuizcard_replycnt(1);
+			int m = quizcardDao.replyCntUpdate(qvo);
+			if(m !=0) {
+				logger.info("======= 퀴즈카드 세트 댓글 수 업데이트 성공");
+			}else {
+				logger.info("======= 퀴즈카드 세트 댓글 수 업데이트 실패");
+			}
+		}
+		
+		// json객체 생성 후, 댓글번호, 작성날짜, 부모댓글 번호 데이터를 전송 by gson.JsonObject
+		// 실제 리턴타입은 QuizcardReplyVO로 했지만 아래 jackson.databind 패키지에 대해서 정리할 것.
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode jsonResponse = objectMapper.createObjectNode();
+		jsonResponse.put("rno", insertResultRno);
+		jsonResponse.put("wdate", replyWdateValue);
+		jsonResponse.put("parentNo", insertResultParent);
+		
+		if(replyInsertResult != 0) {
+			logger.info("====================== 성공 result");
+			return new ResponseEntity<QuizcardReplyVO>(qrvo, HttpStatus.OK);
+//			return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.OK);
+		}else {
+			logger.info("====================== 실패 result");
+			return new ResponseEntity<QuizcardReplyVO>(qrvo, HttpStatus.BAD_REQUEST);
+//			return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 퀴즈카드 댓글 삭제(실제로는 content값을 공백으로 업데이트
+	@PutMapping(value = "quizcardReplyDelete")
+	public ResponseEntity<String> quizcardReplyDelete(@RequestParam int replyNo
+													, QuizcardReplyVO qrvo ){
+		logger.info("===================퀴즈카드 댓글 삭제 넘어온 값 확인 replyNo : " + replyNo);
+		qrvo.setQuizcard_Reply_Rno(replyNo);
+		qrvo.setQuizcard_Reply_Content("");
+		
+		int n = quizcardReplyDao.quizcardReplyDelete(qrvo);
+		logger.info("======= 퀴즈카드 댓글 삭제 n값 확인: " +  n);
+		if(n != 0) {
+			return new ResponseEntity<String>("success", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<String>("fail", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 퀴즈카드 댓글 수정 
+	@PutMapping(value = "quizcardReplyUpdate", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> quizcardReplyUpdate(@RequestBody QuizcardReplyVO qrvo){
+		
+		logger.info("==== @RequestBody로 넘어온 qrvo값 조회: " + qrvo);
+		
+		Date now = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+		String replyUdateValue = sdf.format(now);
+		// 수정된 내역 시간도 담기
+		qrvo.setQuizcard_Reply_Udate(replyUdateValue);
+		
+		int n = quizcardReplyDao.quizcardReplyUpdate(qrvo);
+		logger.info("================ 퀴즈카드 댓글 업데이트 성공? n값 확인: " + n);
+		if(n!=0) {
+			return new ResponseEntity<String>("success", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<String>("fail", HttpStatus.BAD_REQUEST);
+		}
+		
+		
+	}
+	
+	
 	
 	
 	

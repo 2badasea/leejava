@@ -147,7 +147,7 @@
 /* 댓글 관련 UI */
 .boardReplyInsertBtn{
 	float: right;
-	margin-right: 5%;
+	margin-right: 10%;
 	width: 100px;
 	height: 40px;
 }
@@ -656,9 +656,7 @@ var setting = {
 	const replyBox = $$(".boardReplyList");
 	
 	
-	/*
-	 *	댓글 전체 출력하는 부분.
-	*/ 
+	// 댓글 리스트 전체 브라우저에 출력
 	replyService.replySelectList( {bno:bnoValue}, function(list){
 		
 		console.log(list); // pagination, list 두 배열 객체가 리턴된 상황
@@ -666,8 +664,6 @@ var setting = {
 		var replyList = list.list;
 		
 		// sessionNickname 
-		console.log("현재 로그인 중인 세션 닉네임값: " + sessionNickname);
-		console.log(replyList);
 		// 댓글 출력되는 부분.  board_reply_depth의 값이 2인 경우에는 별도로 구분할 수 있는 속성을 하나 더 추가.			
 		$$.each(replyList, function(index, item){
 			var str = "";
@@ -689,13 +685,9 @@ var setting = {
 			str += "<div class='boardReplyListContents'>" + item.board_Reply_Content + "</div>";
 			str += "<div class='boardReplyListFooter'>";
 			// 로그인 상태면 대댓글 달기 가능
-			console.log("아래는 값 확인");
-			console.log(sessionNickname);
-			console.log(item.board_Reply_Depth);
 			if( sessionNickname != "" &&  item.board_Reply_Depth == 1){ 
 				str += "<a class='boardReReplyBtn' href='#'>댓글 달기</a>";
 			}
-			console.log("=============== 그룹값:  " + item.board_Reply_Group );
 			if(item.board_Reply_Group > 1){
 				str += "<a class='boardReplyShow' href='#'>대댓글 보기</a>";
 			}
@@ -843,7 +835,8 @@ var setting = {
 					board_Reply_Content : boardReplyContents,
 					board_Reply_Depth : 1
 			}
-		$$('.boardReplyContents').val('');
+		// 댓글 작성 내용 초기화
+		$$('.summernote').summernote('reset');
 		
 		// 댓글 등록 함수 호출(data, 성공 시  callback)
  		replyService.replyInsert(

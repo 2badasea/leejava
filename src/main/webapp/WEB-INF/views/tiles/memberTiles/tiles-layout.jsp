@@ -31,6 +31,7 @@
 	width: 60%; 	
 	margin-left: 12%; 
 	height: 25%;  /* 편집을 용이하게 하기 위해서 임시로 2%로 둠. 나중에 다시 영역을 늘려서 배너 광고를 삽입한다. */
+	max-height: 365px;
 }
 .memberTilesBodyWrapper{
  	min-height: 700px; 

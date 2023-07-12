@@ -2,16 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.bada.leejava.quizcardreply.QuizcardReplyMapper">
 	
-	<!-- 특정 퀴즈카드 세트 번호 댓글 전체 출력 -->
+	<!-- 특정 퀴즈카드 세트 번호의 댓글 전체 출력 -->
 	<select id="quizcardReplyList" resultType="co.bada.leejava.quizcardreply.QuizcardReplyVO">
 				SELECT * FROM (
 			        SELECT ROWNUM AS RN, A.* FROM (
-		                    SELECT * FROM QUIZCARD_REPLY   WHERE QUIZCARD_REPLY_BNO = #{quizcardSetBno}
+		                    SELECT * FROM QUIZCARD_REPLY   WHERE QUIZCARD_REPLY_BNO = #{quizcard_Reply_Bno}
 		                        START WITH  QUIZCARD_REPLY_PARENT = 0 CONNECT BY PRIOR QUIZCARD_REPLY_RNO = QUIZCARD_REPLY_PARENT 
 		                        
 		                        ORDER SIBLINGS BY  QUIZCARD_REPLY_WDATE ASC   
 			           ) A 
     	) WHERE RN BETWEEN  1 AND 20  <!-- rownum값 기준으로 가져오는 것 개선해보기 -->
 	</select>
+	
+	<!-- 퀴즈 카드 댓글 등록 -->
+	<insert id="quizcardReplyInsert" parameterType="co.bada.leejava.quizcardreply.QuizcardReplyVO">
+		<selectKey keyProperty="quizcard_Reply_Rno"  resultType="int" order="BEFORE">
+			SELECT SEQ_QUIZCARDREPLY.NEXTVAL FROM DUAL
+		</selectKey>
+			INSERT INTO QUIZCARD_REPLY(
+										QUIZCARD_REPLY_RNO,
+										QUIZCARD_REPLY_BNO,
+										QUIZCARD_REPLY_DEPTH,
+										QUIZCARD_REPLY_PARENT,
+										QUIZCARD_REPLY_CONTENT,
+										QUIZCARD_REPLY_REPLYER,
+										QUIZCARD_REPLY_WDATE
+								)VALUES(
+										#{quizcard_Reply_Rno}, <!-- selectKey 조회값 -->
+										#{quizcard_Reply_Bno},
+										#{quizcard_Reply_Depth},
+										#{quizcard_Reply_Parent},
+										#{quizcard_Reply_Content},
+										#{quizcard_Reply_Replyer},
+										#{quizcard_Reply_Wdate}
+								)
+	</insert>
+	
+	<!-- 퀴즈카드 댓글 삭제 => 실제로는 content값 null 처리 -->
+	<update id="quizcardReplyDelete" parameterType="co.bada.leejava.quizcardreply.QuizcardReplyVO">
+		UPDATE QUIZCARD_REPLY 
+			SET 
+				QUIZCARD_REPLY_CONTENT = #{quizcard_Reply_Content}
+			WHERE
+				QUIZCARD_REPLY_RNO = #{quizcard_Reply_Rno} 
+	</update>
+	
+	<!-- 퀴즈카드 댓글 수정  -->
+	<update id="quizcardReplyUpdate" parameterType="co.bada.leejava.quizcardreply.QuizcardReplyVO">
+		UPDATE QUIZCARD_REPLY 
+							SET 
+								QUIZCARD_REPLY_CONTENT = #{quizcard_Reply_Content}, 
+								QUIZCARD_REPLY_UDATE = #{quizcard_Reply_Udate}
+							WHERE 
+								QUIZCARD_REPLY_RNO = #{quizcard_Reply_Rno}
+	</update>
+	
+	
 	
 </mapper>

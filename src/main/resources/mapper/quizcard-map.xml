@@ -72,7 +72,7 @@
 	<!-- 아카이브 박스 내가 생성한 세트 이름 조회 -->
 	<select id="ajaxMyQuizcard" resultType="co.bada.leejava.quizcard.QuizcardVO">
 		SELECT S.QUIZCARD_SET_NO, S.QUIZCARD_SET_NAME,  S.QUIZCARD_SET_CDATE, 
-						S.QUIZCARD_SET_UDATE, C.QUIZCARD_CATEGORY
+						S.QUIZCARD_SET_UDATE, C.QUIZCARD_CATEGORY,  S.QUIZCARD_SET_STATUS
 		FROM QUIZCARD S INNER JOIN QUIZCARD_CATEGORY C
 			ON S.QUIZCARD_SET_NO = C.QUIZCARD_SET_NO
 		WHERE M_EMAIL = #{m_email}
@@ -391,5 +391,14 @@
 		) 
 		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
+	
+	<!-- 퀴즈카드 세트 댓글 수 업데이트 -->
+	<update id="replyCntUpdate" parameterType="co.bada.leejava.quizcard.QuizcardVO">
+		UPDATE QUIZCARD 
+			SET 
+				QUIZCARD_REPLYCNT = QUIZCARD_REPLYCNt + #{quizcard_replycnt}
+			WHERE 
+				QUIZCARD_SET_NO = #{quizcard_set_no}
+	</update>
 	
 </mapper>

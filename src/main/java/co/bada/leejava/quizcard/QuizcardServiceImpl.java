@@ -246,6 +246,11 @@ public class QuizcardServiceImpl implements QuizcardService {
 		return map.quizcardSearchSelect(svo);
 	}
 
+	@Override
+	public int replyCntUpdate(QuizcardVO qvo) {
+		return map.replyCntUpdate(qvo);
+	}
+
 
 
 }

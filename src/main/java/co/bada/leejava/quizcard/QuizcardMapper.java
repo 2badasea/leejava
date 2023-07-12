@@ -22,8 +22,12 @@ public interface QuizcardMapper {
 	List<QuizcardVO> ajaxMyQuizcard(QuizcardVO qvo);
 	// 퀴즈카드 set별 문제 총 갯수 
 	int quizcardQuestionCount(QuizcardVO qvo); 
+	
 	// 퀴즈카드 set별 댓글 갯수
 	int quizcardReplyCount(QuizcardVO qvo);
+	// 퀴즈카드 세트 댓글 수 업데이트
+	int replyCntUpdate(QuizcardVO qvo);
+	
 	// 퀴즈카드 대기실에서 출력시킬 정보들
 	QuizcardVO quizcardBeforeInfo(QuizcardVO qvo);
 	// 퀴즈카드 세트번호별 문제, 힌트, 답 조회

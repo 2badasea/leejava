@@ -18,10 +18,10 @@ header{
 .rightHeader a{
 	margin-left: 30px;
 }
-a:hover{
+header a:hover{
 	cursor: pointer;
 }
-a{
+header a{
 text-decoration: none;
    display: inline-block;
    color: white;
@@ -32,7 +32,7 @@ text-decoration: none;
    transition: 0.3s;
 }
 
-a:hover {
+header a:hover {
     -webkit-transform: scale(1.5,1.5);
     -moz-transform: scale(1.5,1.5);
     -o-transform: scale(1.5,1.5);

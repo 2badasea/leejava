@@ -345,7 +345,7 @@
         console.log("새로 생성된 문제번호: " + newQuestionNo);
         console.log("세트번호: " +  quizcard_set_no);
         // 문제넘버링(인조키) 생성
-        var qno = newQuestionNo <10 ? '0'+newQuestionNo : ''+newQuestionNo;
+        var qno = (newQuestionNo < 10) ? '0'+ newQuestionNo : '' + newQuestionNo;
         var quizcard_no = quizcard_set_no + qno;
         
         $.ajax({
@@ -369,7 +369,7 @@
         $.each($questionForms, function (index, item) {
             console.log("index값: " + index);
             $(item).find('.questionNumber').val(index + 1 + " 번 문제");
-            $(item).find('.questionFormBody').data("no", (index + 1));
+            $(item).find('.questionFormBody').data("no", (index+1));
             $(item).find('.deleteQuestionBtn').data("no", (index+1));
         })
         location.reload();

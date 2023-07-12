@@ -51,15 +51,11 @@ public class BoardReplyController {
 		
 		logger.info("=========================== brvo 값 확인: " + brvo);
 		
-		// insert에 의해 리턴되는 값은 insert 성공여부가 아닌, 댓글번호값. 0만 아니면 성공.
+		// 댓글테이블 insert 결과
 		int insertedRno = replyDao.boardReplyInsert(brvo);
-		
 		// 위 insert문으로 생성된 row데이터의 댓글번호 rno값. 
 		int resultCheck = brvo.getBoard_Reply_Rno();
 		int parentNo = brvo.getBoard_Reply_Parent();
-		logger.info("=========================== insertCount 확인: " + insertedRno);
-		logger.info("============================ resultCheck값 확인:" + resultCheck);
-		logger.info("============================= 참조하는 부모댓글 rno값 확인: "  + parentNo );
 		
 		// 부모댓글, 원글(board) 댓글수(replycnt) 항목도 업데이트
 		if(insertedRno == 1) {
@@ -70,7 +66,7 @@ public class BoardReplyController {
 				logger.info("============================ 원글 replycnt 값도 수정 성공");
 		}
 		
-		// view단에서 보여줄 데이터를 넘기도록
+		// view단에서 보여줄 데이터를 넘기도록 
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(now);

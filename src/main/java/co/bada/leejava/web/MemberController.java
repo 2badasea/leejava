@@ -306,8 +306,7 @@ public class MemberController {
 	@GetMapping("/display.do")
 	public ResponseEntity<byte[]> getImage( @RequestParam String fileName){
 		logger.info("===============fileName의 값: " +fileName);
-		File file = new File("c:\\leejava\\profile\\" + fileName); 
-		
+		File file = new File(profileUploadPath + fileName); 
 		ResponseEntity<byte[]> result = null;  
 		try {
 			// 대상 이미지 파일의 MIME TYPE을 얻기 위해 이전 포스팅에서 사용한 Files 클래스의 
@@ -330,7 +329,7 @@ public class MemberController {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("result 값 : " + result);
+		logger.info("============================  result 값 : " + result);
 		return result; 
 	}
 	/* 이미지 파일 삭제*/
@@ -346,7 +345,7 @@ public class MemberController {
 		// 사용할 URLDecoder.decode(), File.delete() 두 개 모두 예외를 발생시킬 가능성이 큰 메서드. 
 		try {
 			// 메모 95. 삭제할 파일을 대상으로 하는 File클래스를 인스턴스화 하여 앞서 선언한 file참조변수가 참조하도로 한다. 
-			file = new File("c:\\leejava\\profile\\" + URLDecoder.decode(fileName, "UTF-8"));
+			file = new File(profileUploadPath + URLDecoder.decode(fileName, "UTF-8"));
 			logger.info("========================URLDecoder.decode(fileName, 'UTF-8') 결과 : " +file);
 			// delete()메서드를 호출하여 해당 파일을 삭제하도록 코드를 작성한다.
 			file.delete();
@@ -373,8 +372,6 @@ public class MemberController {
 	// 반환해주는 데이터가 json형식이 되도록 지정해주기 위해 @GetMapper 어노테이션에 produces속성을 추가
 	@GetMapping(value = "/getAttachList.do", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AttachImageVO>> getAttachList(String m_email){ 
-		System.out.println("================================= 컨트롤러 확인?");
-		System.out.println("=================================== 결과: " + memberDao.getAttachList(m_email));
 		return new ResponseEntity<List<AttachImageVO>>(memberDao.getAttachList(m_email), HttpStatus.OK);
 	}
 	

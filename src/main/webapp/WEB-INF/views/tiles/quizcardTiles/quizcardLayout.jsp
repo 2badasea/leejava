@@ -13,10 +13,6 @@
 	margin: 0px;
 	padding: 0px;
 }
-body{
-	width: 100%;
-	height: 100%;
-}
 
 .headerWrapper { 
 	height: 30px;
@@ -29,7 +25,7 @@ body{
 }
 
 .bodyWrapper {
-	min-height: 1000px;	
+	min-height: 1200px;	
 	padding-top: 50px;
 }
 
@@ -39,7 +35,7 @@ body{
 	bottom: 0px;
 	left: 0px;
 	width: 100%;
-	position: fixed;
+	margin-top: 100px;
 }
 .footerWrapper{
 }

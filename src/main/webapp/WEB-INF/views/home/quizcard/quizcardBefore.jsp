@@ -258,6 +258,7 @@ legend{
 	color: teal;
 	font-weight: bolder;
 }
+.reReplyInsertBtn,
 .updateBtns button,
 .replyBtns button,
 .quizcardMainGoBtn,
@@ -270,6 +271,7 @@ legend{
     border-style: none;
     padding: 10px;
 }
+.reReplyInsertBtn:hover,
 .updateBtns button:hover,
 .replyBtns button:hover,
 .quizcardMainGoBtn:hover,
@@ -313,10 +315,6 @@ legend{
 	color: whitesmoke;
 	transition: 0.5s;
 }
-.quizcardReplyWritingBox{
-	display: flex;
-	padding: 15px;
-}
 .quizcardReplyWriterBox{
 	width: 10%;
 	margin-left: 3%;
@@ -325,9 +323,10 @@ legend{
 	width: 85%;
 }
 /* 댓글리스트 footer <a>태그 스타일 */
-.reReplyWriteBtn, .reReplyListShowBtn{
-	color: blue;
+.reReplyWriteBtn, .reReplyListShowBtn, .replyFormToggle{
+	color: gray;
 	font-size: smaller;
+	text-decoration: none;
 }
 .replyListUserInfo{
 	display: flex;
@@ -381,6 +380,27 @@ legend{
 	color : teal; 
 	font-weight : 800;
 }
+.quizcardReplyWritingBox{
+	border: solid 1px lightgray;
+	border-radius: 20px;
+}
+/************대댓글 박스 디자인 ***************/
+.reReplyListBox{
+	width: 90%;
+}
+.reReplyWritingbox{
+	margin-left: 5%;
+	border-left: solid 1px gray;
+	margin-top: 2%;
+}
+.reReplyWritingForm{
+	padding-left: 5%;
+	padding-top : 2%;
+	display: flex;
+}
+.reReplyUserInfo{
+	width: 10%;
+}
 </style>
 </head>
 <body>
@@ -429,23 +449,24 @@ legend{
         <!-- 퀴즈카드 댓글 작업 공간 -->
         <br><br><br>
         <div class="quizcardReplyWrapper">
-        	<hr style="width: 100%;">
             <!-- 댓글 작성폼 : 로그인 유저만 노출 -->
             <c:if test="${not empty session_user }">
             	<div class="quizcardReplyWritingBox">
-            		<div class="quizcardReplyWriterBox">
-		     			<img alt="" src="${pageContext.request.contextPath}/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">
-		     		</div>
-			     	<div class="quizcardReplyWritingForm">
-			     		<textarea class="summernote" class="quizcardReplyContents"></textarea>
+            		<div style="display: flex; padding: 15px;">
+	            		<div class="quizcardReplyWriterBox">
+			     			<img alt="" src="${pageContext.request.contextPath}/resources/img/undraw_profile.svg" style="width: 40px; height: 40px; margin-top: 30px;">
+			     		</div>
+				     	<div class="quizcardReplyWritingForm">
+				     		<textarea class="summernote" class="quizcardReplyContents"></textarea>
+				     	</div>
 			     	</div>
-            	</div>
-            	<!-- 댓글 작성 버튼 공간 -->
-            	<div style="display: flex; justify-content: end;">
-            		<button class="quizcardReplyInsertBtn" type="button">댓글등록</button>
+	  	            <!-- 댓글 작성 버튼 공간 -->
+	            	<div style="display: flex; justify-content: end; padding-bottom: 2%;">
+	            		<button class="quizcardReplyInsertBtn" type="button">댓글등록</button>
+	            	</div>
             	</div>
             	<br>
-                <hr style="width: 100%;">	
+            	<br>
             </c:if>
 
             <!-- 댓글 리스트 폼 -->
@@ -609,6 +630,86 @@ $$(document).on("ready", function(){
   	// 퀴즈카드 댓글 전체 출력시킬 <div> 박스
   	var quizcardReplyListBox = $$('.quizcardReplyListBox');
   	
+  	$$(document).on('mouseover mouseout', '.reReplyWriteBtn, .reReplyListShowBtn' , function(event){
+  		if(event.type ==='mouseover'){
+  			$$(this).css('color', 'blue');
+  		}else if(event.type === 'mouseout'){
+  			$$(this).css('color', '');  // 원래 색상으로 되돌리기. 
+  		}
+  	})
+  	
+  	// 대댓글 달기 => 기능 구현 후 아래쪽으로 소스코드 옮겨놓기 
+  	$$(document).on('click', '.reReplyWriteBtn', function(e){
+  		e.preventDefault();
+  		if( $$(this).hasClass('reReplyCancel')){
+  			$$(this).text('댓글 달기');
+  			$$(this).closest('.replyListBox').find('.reReplyWritingbox').remove();
+  			$$(this).removeClass('reReplyCancel');
+  			return false;
+  		}
+  		
+  		let reReplyFormCheck = $$('.reReplyWritingbox').length;
+  		if(reReplyFormCheck != 0){
+  			alert('이미 작성 중인 댓글이 존재합니다.');
+  			return false;
+  		}
+  		$$(this).text('입력 취소');
+  		let parentNo = $$(this).data('parentno'); // 대댓글 등록 시 넘길 모댓글번호값. 
+  		
+  		let reReplyBox = $$(this).closest('.replyListBox').children('.reReplyListBox');
+  		console.log(reReplyBox);
+  		
+  		let reListHtml = "";
+  		reListHtml += "<div class='reReplyWritingbox'>";
+		reListHtml += 	"<div class='reReplyWritingForm'>";
+		reListHtml += 		"<div class='reReplyUserInfo'>";
+		reListHtml +=			"<img class='replyerImage' src='resources/image/userimage.jpg' >";
+		reListHtml += 		"</div>";
+		reListHtml += 		"<div>";
+		reListHtml +=			"<textarea class='reReplyContent'></textarea>";
+		reListHtml += 		"</div";
+		reListHtml +=	"</div>";
+		reListHtml += 	"<div style='float: right; margin-top:3%;'>";
+		reListHtml +=		"<button type='button' class='reReplyInsertBtn' data-parentno='" + parentNo + "'>댓글 등록</button>";
+		reListHtml +=	"</div>";
+		reListHtml += "</div>"
+		$$(this).addClass('reReplyCancel');
+		reReplyBox.append(reListHtml);
+		$$(".reReplyContent").summernote(setting).focus();
+  	})
+  	
+  	// 대댓글 등록insert => ajax로 넘기는 url은 동일
+  	$$(document).on('click', '.reReplyInsertBtn', function(){
+  		console.log('대댓글 등록 클릭');
+  		// 전송할 데이터 5가지(모댓글rno, 대댓글내용, 대댓글작성자, depth값2, 퀴즈카드세트번호)
+  		let reReplyer = session_user;
+  		let reContent = $$(this).closest('.reReplyWritingbox').find('.reReplyContent').val();
+  		if(reReplyer == null){
+  			alert('세션이 만료되었습니다.');
+  			location.href = 'loginPage.do';
+  		}
+  		if(reContent.trim().length == 0 || reReplyer == null ){
+  			alert('댓글을 작성해주세요');
+  			return false;
+  		}
+  		let reParentNo = $$(this).data('parentno');
+  		let reDepth = 2;
+  		let quizcardSetNo = thisSetNo;
+  		
+  		
+  		// 등록완료 콜백함수 때,  sumernote에디터를 초기화 시킨다  .summernote('reset');
+  		let data = {
+  			quizcard_Reply_Parent : reParentNo,
+  			quizcard_Reply_Content : reContent,
+  			quizcard_Reply_Depth : reDepth,
+  			quizcard_Reply_Replyer : reReplyer,
+  			quizcard_Reply_Bno : quizcardSetNo
+  		};
+  		
+  		console.log(data);
+  		
+  	})
+  	
   	// 해당 퀴즈카드 게시글에 해당하는 댓글 전체 출력
   	quizcardReplyService.replySelectList(thisSetNo, function(list){
   		console.log(list);
@@ -652,14 +753,17 @@ $$(document).on("ready", function(){
 	  				listHtml += 	"<div class='replyListBody'>";
 	  				listHtml += 		"<div class='replyListContent'>" + item.quizcard_Reply_Content + "</div>";
 	  				listHtml += 	"</div>"; // body 끝
-	  				listHtml += "<div class='replyListFooter'>";
+	  				listHtml += 	"<div class='replyListFooter'>";
 	  			if(session_user != '' && item.quizcard_Reply_Depth == 1){
-	  				listHtml += "<a class='reReplyWriteBtn' href='#'>댓글 달기</a>";
+	  				listHtml += 		"<a class='reReplyWriteBtn' href='#' data-parentno='" + item.quizcard_Reply_Rno +  "'>댓글 달기</a>&nbsp;&nbsp;&nbsp;";
 	  			}
 	  			if(item.quizcard_Reply_Group > 1){
-	  				listHtml += "&nbsp;&nbsp;&nbsp;<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
+	  				listHtml += 		"<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
 	  			}
-	  				listHtml += "</div></div>";    // footer닫고, 댓글리스트 개별 박스 닫기
+	  				listHtml += 	"</div>";    // footer 끝 
+	  				listHtml += 	"<div class='reReplyListBox'>"; // 대댓글 작성 && 대댓글리스트 출력시킬 폼 
+	  				listHtml +=		"</div>";  
+	  				listHtml +=	"</div>";  // 댓글리스트 개별 박스 닫기
 	  			quizcardReplyListBox.append(listHtml);
   			} // End of  if문(삭제된 댓글인지 아닌지 판단)
   		}) // End of  $$.each
@@ -809,7 +913,6 @@ $$(document).on("ready", function(){
 			// 업데이트 성공 이후 실행시킬 콜백
 			console.log('성공여부: ' + response);  // 'success' 출력 확인
 			if(response == 'success'){
-				console.log('여기 왔음?');
 				$$(updateBox).remove();
 				let updatedBox = $$('.quizcardReplyListBox').find('div[style*="display: none;"]');
 				$$(updatedBox).find('.replyListContent').html(updateContent);

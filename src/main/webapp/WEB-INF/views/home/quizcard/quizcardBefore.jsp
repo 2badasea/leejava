@@ -335,6 +335,10 @@ legend{
 	display: flex;
 	justify-content: space-between;
 }
+.reReplyListHeader{
+	display: flex;
+	justify-content: space-between;
+}
 .replyListBox{
 	margin-bottom: 3%;
 	border-bottom: 0.5px solid lightgray;
@@ -362,9 +366,11 @@ legend{
     padding: 15px;
     font-size: small; 
 }
+.delReReplyBox, 
 .delReplyBox{
 	max-height: 30px;
 }
+
 .updateListBox{
 	display: flex;
 	justify-content: space-evenly;
@@ -386,12 +392,17 @@ legend{
 }
 /************대댓글 박스 디자인 ***************/
 .reReplyListBox{
-	width: 90%;
+	width: 100%;	
 }
+.reReplyWrapper:first-child,
 .reReplyWritingbox{
 	margin-left: 5%;
 	border-left: solid 1px gray;
 	margin-top: 2%;
+}
+.reReplyWrapper{
+	margin-left: 5%;
+	border-left: solid 1px gray;
 }
 .reReplyWritingForm{
 	padding-left: 5%;
@@ -400,6 +411,14 @@ legend{
 }
 .reReplyUserInfo{
 	width: 10%;
+}
+.replyListWrapper{
+	margin-bottom: 3%;
+	padding: 2%;
+}
+.reReplyWrapperForm{
+	margin-left : 3%; 
+	margin-bottom: 2%;
 }
 </style>
 </head>
@@ -638,7 +657,7 @@ $$(document).on("ready", function(){
   		}
   	})
   	
-  	// 대댓글 달기 => 기능 구현 후 아래쪽으로 소스코드 옮겨놓기 
+  	// 대댓글 달기 클릭 => 기능 구현 후 아래쪽으로 소스코드 옮겨놓기 
   	$$(document).on('click', '.reReplyWriteBtn', function(e){
   		e.preventDefault();
   		if( $$(this).hasClass('reReplyCancel')){
@@ -656,8 +675,8 @@ $$(document).on("ready", function(){
   		$$(this).text('입력 취소');
   		let parentNo = $$(this).data('parentno'); // 대댓글 등록 시 넘길 모댓글번호값. 
   		
+  		// 대댓글 작성 폼 붙일 <div>
   		let reReplyBox = $$(this).closest('.replyListBox').children('.reReplyListBox');
-  		console.log(reReplyBox);
   		
   		let reListHtml = "";
   		reListHtml += "<div class='reReplyWritingbox'>";
@@ -696,6 +715,12 @@ $$(document).on("ready", function(){
   		let reDepth = 2;
   		let quizcardSetNo = thisSetNo;
   		
+  		// 새로운 댓글 append시킬 대상
+  		let reReplyBox = $$(this).closest('.replyListBox').children('.reReplyListBox');
+  		// remove대상 div
+  		let removeForm = $$(this).closest('.reReplyWritingbox');
+  		// '입력 취소' -> '댓글 작성' 으로 초기화
+  		let reToggle = $$(this).closest('.replyListBox').find('.reReplyWriteBtn');
   		
   		// 등록완료 콜백함수 때,  sumernote에디터를 초기화 시킨다  .summernote('reset');
   		let data = {
@@ -705,9 +730,57 @@ $$(document).on("ready", function(){
   			quizcard_Reply_Replyer : reReplyer,
   			quizcard_Reply_Bno : quizcardSetNo
   		};
-  		
+  		// 넘기는 데이터 확인
   		console.log(data);
   		
+  		quizcardReplyService.replyInsert(data, function(data){
+  			// 콜백함수로 넘어온 'data' => 대댓글 rno값, 작성날짜, 내용, 작성자 
+  			console.log('ajax호출 성공 후 넘어온 data');
+  			console.log(data);
+  			$$('.reReplyContent').summernote('reset');  // summernote입력 내용 초기화
+  			removeForm.remove(); 
+  			
+			if( $$(reToggle).hasClass('reReplyCancel')){
+				$$(reToggle).text('댓글 달기');
+				$$(reToggle).removeClass('reReplyCancel');
+			}
+  			
+  			let reRno = data.quizcard_Reply_Rno;
+  			let reWdate = data.quizcard_Reply_Wdate;
+  			let reContent = data.quizcard_Reply_Content;
+  			let reReplyer = data.quizcard_Reply_Replyer; 
+  			
+  			// 'reReplyBox'에 붙인다. 
+  			let listHtml = "";
+			listHtml += "<div class='replyListWrapper'>";
+			listHtml +=		"<div class='reReplyWrapper'>";
+			listHtml +=			"<div class='replyListHeader'>";
+	  		listHtml += 			"<div class='replyListUserInfo'>"; 
+			listHtml += 				"<div class='userInfoImage'>";
+			listHtml += 					"<img class='replyerImage' src='resources/image/userimage.jpg'>";
+			listHtml += 				"</div>";
+			listHtml += 				"<div style='margin-left: 5%;'>";
+			listHtml += 					"<span class='replyerNickname'>" + reReplyer + "<br>";
+			listHtml += 					"<span class='replyWdate' style='font-size: small;'>" + reWdate;
+			listHtml += 				"</div>"; 
+			listHtml += 			"</div>";
+			listHtml += 			"<div class='replyBtns'>";
+			listHtml += 				"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
+			listHtml += 				"<button type='button' class='replyDeleteBtn' data-rno='" + reRno + "'>삭제</button>";
+			listHtml += 			"</div>";
+			listHtml += 		"</div>";   // header끝
+			listHtml += 		"<div class='replyListBody'>";
+			listHtml += 			"<div class='replyListContent'>" + reContent + "</div>";
+			listHtml += 		"</div>"; // body 끝
+			listHtml += 		"<div class='replyListFooter'>";
+			listHtml += 			"<a class='reReplyWriteBtn' href='#'>대댓글 달기</a>&nbsp;&nbsp;&nbsp;";
+			listHtml += 		"</div>";  // footer끝
+			listHtml +=		"</div>";
+			listHtml += "</div>"; 
+
+			reReplyBox.append(listHtml);
+			alert('대댓글 등록 성공~');
+  		})
   	})
   	
   	// 해당 퀴즈카드 게시글에 해당하는 댓글 전체 출력
@@ -717,55 +790,116 @@ $$(document).on("ready", function(){
   		
   		$$.each(list, function(index, item){
   			var listHtml = "";
+  			let depth = item.quizcard_Reply_Depth;
   			let content = item.quizcard_Reply_Content; 
-  			if(content == null){
-  				// 내용이 공백인 경우 => 삭제된 댓글 => 최소한의 내용만 출력
-  				listHtml += "<div class='replyListBox delReplyBox'>";
-  				listHtml += 	"<div class='replyListBody'>";
-  				listHtml += 		"<div class='replyListContent'>" + "( 삭제된 댓글입니다... )" + "</div>";
-  				listHtml += 	"</div>";
-  				listHtml += "</div>";
-  				quizcardReplyListBox.append(listHtml);
-  			}else { // 내용이 공백이 아닌 경우 => 일반 댓글
-	  				listHtml += "<div class='replyListBox'>";
-	  				listHtml += 	"<div class='replyListHeader'>";
-	  				listHtml += 		"<div class='replyListUserInfo'>"; 
-	  				listHtml += 			"<div class='userInfoImage'>";
-	  				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";
-	  				listHtml += 			"</div>";
-	  				listHtml += 			"<div style='margin-left: 5%;'>";
-	  				listHtml += 				"<span class='replyerNickname'>" + item.quizcard_Reply_Replyer + "</span><br>";
-	  				listHtml += 				"<span class='replyWdate' style='font-size: small;'>" + item.quizcard_Reply_Wdate + "</span>";
-	  			if(item.quizcard_Reply_Udate != null){
-	  				listHtml +=					"<br><span class='replyUdate'>" + '수정됨' + "</span>";						
-	  			}
-	  				listHtml += 			"</div>"; 
-	  				listHtml += 		"</div>"; // userInfo 끝
-	  			if(item.quizcard_Reply_Replyer == session_user){
-	  				listHtml += 		"<div class='replyBtns'>";
-	  				listHtml += 			"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
-	  				listHtml += 			"<button type='button' class='replyDeleteBtn' data-rno='"  + item.quizcard_Reply_Rno + "'>삭제</button>";
-	  				listHtml += 		"</div>";
-	  				listHtml +=		"</div>"     // header부분 끝
-	  			}else {
-	  				listHtml += "	</div>";  // header 부분 끝
-	  			}
-	  				listHtml += 	"<div class='replyListBody'>";
-	  				listHtml += 		"<div class='replyListContent'>" + item.quizcard_Reply_Content + "</div>";
-	  				listHtml += 	"</div>"; // body 끝
-	  				listHtml += 	"<div class='replyListFooter'>";
-	  			if(session_user != '' && item.quizcard_Reply_Depth == 1){
-	  				listHtml += 		"<a class='reReplyWriteBtn' href='#' data-parentno='" + item.quizcard_Reply_Rno +  "'>댓글 달기</a>&nbsp;&nbsp;&nbsp;";
-	  			}
-	  			if(item.quizcard_Reply_Group > 1){
-	  				listHtml += 		"<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
-	  			}
-	  				listHtml += 	"</div>";    // footer 끝 
-	  				listHtml += 	"<div class='reReplyListBox'>"; // 대댓글 작성 && 대댓글리스트 출력시킬 폼 
-	  				listHtml +=		"</div>";  
-	  				listHtml +=	"</div>";  // 댓글리스트 개별 박스 닫기
-	  			quizcardReplyListBox.append(listHtml);
-  			} // End of  if문(삭제된 댓글인지 아닌지 판단)
+  			
+  			// depth 값이 1인 경우 => 모댓글
+  			if(depth == 1){
+  	  			if(content == null){
+  	  				// 내용이 공백인 경우 => 삭제된 댓글 => 최소한의 내용만 출력
+  	  				listHtml += "<div class='replyListBox delReplyBox'>";
+  	  				listHtml += 	"<div class='replyListBody'>";
+  	  				listHtml += 		"<div class='replyListContent'>" + "( 삭제된 댓글입니다... )" + "</div>";
+  	  				listHtml += 	"</div>";
+  	  				listHtml += "</div>";
+  	  				quizcardReplyListBox.append(listHtml);
+  	  			}else { // 내용이 공백이 아닌 경우 => 일반 댓글
+  		  				listHtml += "<div class='replyListBox'>";
+  		  				listHtml += 	"<div class='replyListHeader'>";
+  		  				listHtml += 		"<div class='replyListUserInfo'>"; 
+  		  				listHtml += 			"<div class='userInfoImage'>";
+  		  				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";
+  		  				listHtml += 			"</div>";
+  		  				listHtml += 			"<div style='margin-left: 5%;'>";
+  		  				listHtml += 				"<span class='replyerNickname'>" + item.quizcard_Reply_Replyer + "</span><br>";
+  		  				listHtml += 				"<span class='replyWdate' style='font-size: small;'>" + item.quizcard_Reply_Wdate + "</span>";
+  		  			if(item.quizcard_Reply_Udate != null){
+  		  				listHtml +=					"<br><span class='replyUdate'>" + '수정됨' + "</span>";						
+  		  			}
+  		  				listHtml += 			"</div>"; 
+  		  				listHtml += 		"</div>"; // userInfo 끝
+  		  			if(item.quizcard_Reply_Replyer == session_user){
+  		  				listHtml += 		"<div class='replyBtns'>";
+  		  				listHtml += 			"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
+  		  				listHtml += 			"<button type='button' class='replyDeleteBtn' data-rno='"  + item.quizcard_Reply_Rno + "'>삭제</button>";
+  		  				listHtml += 		"</div>";
+  		  				listHtml +=		"</div>"     // header부분 끝
+  		  			}else {
+  		  				listHtml += "	</div>";  // header 부분 끝
+  		  			}
+  		  				listHtml += 	"<div class='replyListBody'>";
+  		  				listHtml += 		"<div class='replyListContent'>" + item.quizcard_Reply_Content + "</div>";
+  		  				listHtml += 	"</div>"; // body 끝
+  		  				listHtml += 	"<div class='replyListFooter'>";
+  		  			if(session_user != '' && item.quizcard_Reply_Depth == 1){
+  		  				listHtml += 		"<a class='reReplyWriteBtn' href='#' data-parentno='" + item.quizcard_Reply_Rno +  "'>댓글 달기</a>&nbsp;&nbsp;&nbsp;";
+  		  			}
+  		  			if(item.quizcard_Reply_Group > 1){
+  		  				listHtml += 		"<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
+  		  			}
+  		  				listHtml += 	"</div>";    // footer 끝 
+  		  				listHtml += 	"<div class='reReplyListBox'>"; // 대댓글 작성 && 대댓글리스트 출력시킬 폼 
+  		  				listHtml +=		"</div>";  
+  		  				listHtml +=	"</div>";  // 댓글리스트 개별 박스 닫기
+  		  			quizcardReplyListBox.append(listHtml);
+  	  			} // End of  if문(삭제된 댓글인지 아닌지 판단)
+  			
+  	  		// depth 값이 2이상 => 대댓글인 경우 
+  			}else{ 
+  				// 대댓글이 들어갈 box => 모댓글의 reReplyListBox 
+  				let reReplyAppendBox = $$('.replyListBox:last').find('.reReplyListBox');
+  				
+  	  			if(content == null){
+  	  				// 내용이 공백인 경우 => 삭제된 댓글 => 최소한의 내용만 출력
+  	  				listHtml += "<div class='reReplyWrapper delReReplyBox'>";
+  	  				listHtml += 	"<div class='replyListBody'>";
+  	  				listHtml += 		"<div class='replyListContent'>" + "( 삭제된 댓글입니다... )" + "</div>";
+  	  				listHtml += 	"</div>";
+  	  				listHtml += "</div>";
+  	  				reReplyAppendBox.append(listHtml);
+  	  			}else { // 내용이 공백이 아닌 경우 => 일반 댓글
+  		  				listHtml += "<div class='reReplyWrapper'>";
+  		  				listHtml +=		"<div class='reReplyWrapperForm'>"
+  		  				listHtml += 	"<div class='reReplyListHeader'>";
+  		  				listHtml += 		"<div class='replyListUserInfo'>"; 
+  		  				listHtml += 			"<div class='userInfoImage'>";
+  		  				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";
+  		  				listHtml += 			"</div>";
+  		  				listHtml += 			"<div style='margin-left: 5%;'>";
+  		  				listHtml += 				"<span class='replyerNickname'>" + item.quizcard_Reply_Replyer + "</span><br>";
+  		  				listHtml += 				"<span class='replyWdate' style='font-size: small;'>" + item.quizcard_Reply_Wdate + "</span>";
+  		  			if(item.quizcard_Reply_Udate != null){
+  		  				listHtml +=					"<br><span class='replyUdate'>" + '수정됨' + "</span>";						
+  		  			}
+  		  				listHtml += 			"</div>"; 
+  		  				listHtml += 		"</div>"; // userInfo 끝
+  		  			if(item.quizcard_Reply_Replyer == session_user){
+  		  				listHtml += 		"<div class='replyBtns'>";
+  		  				listHtml += 			"<button type='button' class='replyUpdateBtn'>댓글 수정</button>";
+  		  				listHtml += 			"<button type='button' class='replyDeleteBtn' data-rno='"  + item.quizcard_Reply_Rno + "'>삭제</button>";
+  		  				listHtml += 		"</div>";
+  		  				listHtml +=		"</div>"     // header부분 끝
+  		  			}else {
+  		  				listHtml += "	</div>";  // header 부분 끝
+  		  			}
+  		  				listHtml += 	"<div class='replyListBody'>";
+  		  				listHtml += 		"<div class='replyListContent'>" + item.quizcard_Reply_Content + "</div>";
+  		  				listHtml += 	"</div>"; // body 끝
+  		  				listHtml += 	"<div class='replyListFooter'>";
+  		  			if(session_user != '' && item.quizcard_Reply_Depth == 1){
+  		  				listHtml += 		"<a class='reReplyWriteBtn' href='#' data-parentno='" + item.quizcard_Reply_Rno +  "'>댓글 달기</a>&nbsp;&nbsp;&nbsp;";
+  		  			}
+  		  			if(item.quizcard_Reply_Group > 1){
+  		  				listHtml += 		"<a class='reReplyListShowBtn' href='#'>대댓글 보기</a>";
+  		  			}
+  		  				listHtml += 	"</div>";    // footer 끝 
+  		  				listHtml +=		"</div>"
+  		  				listHtml +=	"</div>";  // 댓글리스트 개별 박스 닫기
+  		  				reReplyAppendBox.append(listHtml);
+  	  			}  
+  			}
+  			
+
   		}) // End of  $$.each
   		
   		
@@ -799,7 +933,7 @@ $$(document).on("ready", function(){
 	  		
 			let listHtml = "";
 				listHtml += "<div class='replyListBox'>";
-				listHtml +=		"<div class='replyListHeader'>";
+				listHtml +=		"<div class='reReplyListHeader'>";
 		  		listHtml += 		"<div class='replyListUserInfo'>"; 
 				listHtml += 			"<div class='userInfoImage'>";
 				listHtml += 				"<img class='replyerImage' src='resources/image/userimage.jpg'>";

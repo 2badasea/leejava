@@ -7,7 +7,6 @@
 <head>
 <meta charset="UTF-8">
 <title><tiles:insertAttribute name="qtitle" /></title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 <style type="text/css">
 * {
 	margin: 0px;

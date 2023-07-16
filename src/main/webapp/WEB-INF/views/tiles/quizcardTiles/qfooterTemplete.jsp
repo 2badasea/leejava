@@ -6,7 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
 	<span>Copyright &copy; Your Website 2023</span>
